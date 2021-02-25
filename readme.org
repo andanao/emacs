@@ -293,16 +293,18 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
    #+end_src
 
 ** Ivy Prescient
-  
+
+ Still not working ¯\_(ツ)_/¯ not sure why though, saying Ivy Prescient is not on melpa
+
    #+begin_src emacs-lisp
-    (use-package ivy-prescient
-      :after counsel
-      :custom
-      (ivy-prescient-enable-filtering nil)
-      :config
+;    (use-package ivy-prescient
+;      :after counsel
+;      :custom
+;      (ivy-prescient-enable-filtering nil)
+;      :config
       ;; Uncomment the following line to have sorting remembered across sessions!
-      (prescient-persist-mode 1)
-      (ivy-prescient-mode 1))
+;      (prescient-persist-mode 1)
+;      (ivy-prescient-mode 1))
     #+end_src
 
     #+RESULTS:
