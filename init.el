@@ -99,7 +99,14 @@
 
    ;"jk" '(org-capture :which-key "org-capture")
 
-
+   "h" '(:ignore t :which-key "describe")
+   "he" 'view-echo-area-messages
+   "hf" 'describe-function
+   "hF" 'describe-face
+   "hk" 'describe-key
+   "hK" 'describe-keymap
+   "hp" 'describe-package
+   "hv" 'describe-variable
    ))
 
 (use-package evil

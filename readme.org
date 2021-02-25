@@ -118,6 +118,7 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
 
 ** General Leader Keys
 
+https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
 
    #+begin_src emacs-lisp
@@ -160,7 +161,14 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
   
       ;"jk" '(org-capture :which-key "org-capture")
 
-
+      "h" '(:ignore t :which-key "describe")
+      "he" 'view-echo-area-messages
+      "hf" 'describe-function
+      "hF" 'describe-face
+      "hk" 'describe-key
+      "hK" 'describe-keymap
+      "hp" 'describe-package
+      "hv" 'describe-variable
       ))
   
    #+end_src
