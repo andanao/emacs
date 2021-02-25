@@ -1,8 +1,7 @@
-* This is just a test right now, I'm not sure if this is the best way to have the main config 
-here is some text and stuff, ooh I don't like that this is in a fixed width font
 #+title Idk how titles work 
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
-
+*  This is just a test right now, I'm not sure if this is the best way to have the main config 
+here is some text and stuff, ooh I don't like that this is in a fixed width font
 * Package System Setup 
 ** Package setup 
    #+begin_src emacs-lisp
