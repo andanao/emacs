@@ -1,7 +1,4 @@
-#+title Idk how titles work 
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
-*  This is just a test right now, I'm not sure if this is the best way to have the main config 
-here is some text and stuff, ooh I don't like that this is in a fixed width font
 * Package System Setup 
 ** Package setup 
    #+begin_src emacs-lisp
@@ -120,6 +117,9 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
    #+end_src
 
 ** General Leader Keys
+
+
+
    #+begin_src emacs-lisp
  
 
@@ -139,11 +139,11 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
       "tt" '(counsel-load-theme :which-key "choose theme:")
 
       "ec" '(lambda () (interactive) (
-	    find-file (expand-file-name "c:/Users/Adrian/Google Drive/_Org/Emacs.org"))
+	    find-file (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/readme.org"))
 	    :which-key "ORG Config")
       
       "ei" '(lambda () (interactive) (
-	    find-file (expand-file-name "c:/Users/Adrian/Google Drive/_Org/init.el"))
+	    find-file (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/init.el"))
 	    :which-key "ORG init")
 	    
       "eb" '(eval-buffer :which-key "eval-buffer")
@@ -157,12 +157,11 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
       "kw" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
       "kk" '(kill-buffer :which-key "kill-buffer")
 
-   
+  
       ;"jk" '(org-capture :which-key "org-capture")
 
 
       ))
-
   
    #+end_src
 
@@ -194,8 +193,6 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
     :after evil
     :config
     (evil-collection-init))
-
-
 
    #+end_src
    
@@ -289,17 +286,19 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
 
 ** Ivy Prescient
   
-*** TODO This is throwing an error that ivy-prescient is not being found on melpa 
-    #+begin_src emacs-lisp
- ;   (use-package ivy-prescient
-  ;    :after counsel
-   ;   :custom
-    ;  (ivy-prescient-enable-filtering nil)
-     ; :config
+   #+begin_src emacs-lisp
+    (use-package ivy-prescient
+      :after counsel
+      :custom
+      (ivy-prescient-enable-filtering nil)
+      :config
       ;; Uncomment the following line to have sorting remembered across sessions!
-      ;(prescient-persist-mode 1)
-      ;(ivy-prescient-mode 1))
+      (prescient-persist-mode 1)
+      (ivy-prescient-mode 1))
     #+end_src
+
+    #+RESULTS:
+    : t
 
 ** Helpful 
 
@@ -599,10 +598,9 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
 
  #+begin_src emacs-lisp
 
- ;; Automatically tangle our Emacs.org config file when we save it
  (defun efs/org-babel-tangle-config ()
    (when (string-equal (file-name-directory (buffer-file-name))
-                     (expand-file-name "c:/Users/Adrian/Google Drive/_Org/"))
+                     (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/"))
 
      ;; Dynamic scoping to the rescue
      (let ((org-confirm-babel-evaluate nil))
@@ -613,7 +611,7 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
  #+end_src
 
  #+RESULTS:
- | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
+ | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 * Development 
 ** Languages
 
