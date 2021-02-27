@@ -115,6 +115,7 @@
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
+  (setq evil-undo-system 'undo-fu)
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
@@ -130,6 +131,12 @@
   :after evil
   :config
   (evil-collection-init))
+
+(use-package undo-fu
+     :config
+     (global-undo-tree-mode -1)
+     (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+     (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
 
 (use-package doom-themes
  ;;:init (load-theme 'doom-palenight t))
@@ -433,9 +440,9 @@
 	:bind-keymap
 	("C-c p" . projectile-command-map)
 	:init
-	;  (when (file-directory-p "~/Projects/Code") 
+	(when (file-directory-p "c:/Users/Adrian/Documents/GitHub/") 
 	;; Specify folder where you keep your coding projects
-	;    (setq projectile-project-search-path '("~Projects/Code")))
+	    (setq projectile-project-search-path '("c:/Users/Adrian/Documents/GitHub/")))
 	(setq projectile-switch-project-action #'projectile-dired))
 
     (use-package counsel-projectile
