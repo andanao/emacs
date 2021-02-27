@@ -88,7 +88,7 @@
 	 :which-key "ORG Config")f
 
    "ei" '(lambda () (interactive) (
-	 find-file (concat efs/user-dir-emacs "init.el"))
+	 find-file (concat efs/user-dir-emacs "init.el")y)
 	 :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")
@@ -364,33 +364,14 @@
 		(org-agenda-files org-agenda-files)))))))
 
      (setq org-capture-templates
-       `(("t" "Tasks / Projects")
-	 ("tt" "Task" entry (file+olp "C:/Users/Adrian/Google Drive/_Org/Tasks.org" "Inbox")
-	      "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+       `(
+	 ("t" "Quick Task" entry (file (concat efs/user-dir-org "inbox.org"))
+	    "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-	 ("j" "Journal Entries")
-	 ("jj" "Journal" entry
-	      (file+olp+datetree "C:/Users/Adrian/Google Drive/_Org/Journal.org")
-	      "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-	      ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-	      :clock-in :clock-resume
-	      :empty-lines 1)
-	 ("jm" "Meeting" entry
-	      (file+olp+datetree "C:/Users/Adrian/Google Drive/_Org/Journal.org")
-	      "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-	      :clock-in :clock-resume
-	      :empty-lines 1)
-
-	 ("w" "Workflows")
-	 ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-	      "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-
-	 ("m" "Metrics Capture")
-	 ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-	  "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+	 ))
 
 
-     ;; This keymap jumps directly to making a journal entry
+     ;; This keymap jumps directly to making  journal entry
      ;; Probably just make a global keymap to org capture
      (define-key global-map (kbd "C-c j")
        (lambda () (interactive) (org-capture nil "jj")))
