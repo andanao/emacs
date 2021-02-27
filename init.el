@@ -84,11 +84,11 @@
    "tt" '(counsel-load-theme :which-key "choose theme:")
 
    "ec" '(lambda () (interactive) (
-	 find-file (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/readme.org"))
+	 find-file (concat efs/user-dir-emacs "readme.org"))
 	 :which-key "ORG Config")
 
    "ei" '(lambda () (interactive) (
-	 find-file (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/init.el"))
+	 find-file (concat efs/user-dir-emacs "init.el"))
 	 :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")

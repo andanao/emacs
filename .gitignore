@@ -10,3 +10,7 @@
 # Undo-tree save-files
 *.~undo-tree
 scratch.org
+#readme.org#
+#scratch.org#
+.#readme.org
+.#scratch.org
