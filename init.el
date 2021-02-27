@@ -85,7 +85,7 @@
 
    "ec" '(lambda () (interactive) (
 	 find-file (concat efs/user-dir-emacs "readme.org"))
-	 :which-key "ORG Config")
+	 :which-key "ORG Config")f
 
    "ei" '(lambda () (interactive) (
 	 find-file (concat efs/user-dir-emacs "init.el"))
@@ -276,9 +276,12 @@
      (setq org-hide-emphasis-markers t)
 
      (setq org-agenda-files
-	   '("C:/Users/Adrian/Google Drive/_Org/Tasks.org"
-	     "C:/Users/Adrian/Google Drive/_Org/Birthdays.org"
-	     "C:/Users/Adrian/Google Drive/_Org/Habits.org"
+	   '(
+		(concat efs/user-dir-org "work.org")
+		(concat efs/user-dir-org "personal.org")
+		(concat efs/user-dir-org "habits.org")
+		(concat efs/user-dir-org "dates.org")
+		(concat efs/user-dir-org "inbox.org")
 	     ))
 
      ;;:hook (org-mode . efs/org-mode-setup)
