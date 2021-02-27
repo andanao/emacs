@@ -1,5 +1,30 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
-* Package System Setup 
+* System Setup
+** Emacs Directory
+   Define the user emacs directory
+
+   #+begin_src emacs-lisp
+   (defvar efs/user-dir-emacs 
+	(format "c:/Users/%s/Documents/GitHub/emacs/" user-login-name))
+    
+   #+end_src
+
+   #+RESULTS:
+   : efs/user-dir-emacs
+
+** Org Directory
+   Define the user org directory
+
+   #+begin_src emacs-lisp
+   (defvar efs/user-dir-org 
+	(format "c:/Users/%s/Documents/GitHub/org/" user-login-name))
+    
+   #+end_src
+
+   #+RESULTS:
+   : efs/user-dir-org
+
+* Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
     ;; Initialize package sources

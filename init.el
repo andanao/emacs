@@ -1,3 +1,9 @@
+(defvar efs/user-dir-emacs 
+     (format "c:/Users/%s/Documents/GitHub/emacs/" user-login-name))
+
+(defvar efs/user-dir-org 
+     (format "c:/Users/%s/Documents/GitHub/org/" user-login-name))
+
 ;; Initialize package sources
 (require 'package)
 
