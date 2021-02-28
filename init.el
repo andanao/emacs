@@ -85,10 +85,10 @@
 
    "ec" '(lambda () (interactive) (
 	 find-file (concat efs/user-dir-emacs "readme.org"))
-	 :which-key "ORG Config")f
+	 :which-key "ORG Config")
 
    "ei" '(lambda () (interactive) (
-	 find-file (concat efs/user-dir-emacs "init.el")y)
+	 find-file (concat efs/user-dir-emacs "init.el"))
 	 :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")
@@ -378,6 +378,22 @@
 
 
      (efs/org-font-setup))
+
+(setq org-capture-templates
+   '( 
+    ("t" "Inbox Task" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
+"* TODO %?\n
+
+  :PROPERTIES:
+  :ID:\t%(org-id-uuid)
+  :CREATED:\t%U
+  :REF:\t%a
+  %i
+  :END:
+  "
+	:empty-lines 1)
+))
 
 (use-package org-bullets
        :after org
