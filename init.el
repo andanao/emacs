@@ -379,6 +379,12 @@
 
      (efs/org-font-setup))
 
+(efs/leader-keys
+    "o" '(:ignore t :wk "org")
+    "oc" '(org-capture :wk "capture")
+
+)
+
 (setq org-capture-templates
    '( 
     ("t" "Inbox Task" entry 
@@ -386,13 +392,13 @@
 "* TODO %?\n
 
   :PROPERTIES:
-  :ID:\t%(org-id-uuid)
+  :ID:     \t%(org-id-uuid)
   :CREATED:\t%U
   :REF:\t%a
   %i
   :END:
   "
-	:empty-lines 1)
+  :kill-buffer t)
 ))
 
 (use-package org-bullets

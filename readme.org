@@ -567,6 +567,15 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
     #+RESULTS:
     : t
+*** Keybindings 
+
+    #+begin_src emacs-lisp
+(efs/leader-keys
+    "o" '(:ignore t :wk "org")
+    "oc" '(org-capture :wk "capture")
+
+)
+    #+end_src
 *** Org Capture Templates 
     
     #+begin_src emacs-lisp
@@ -578,20 +587,18 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 "* TODO %?\n
 
   :PROPERTIES:
-  :ID:\t%(org-id-uuid)
+  :ID:     \t%(org-id-uuid)
   :CREATED:\t%U
   :REF:\t%a
   %i
   :END:
   "
-	:empty-lines 1)
-))
- 
+  :kill-buffer t)
+)) 
     #+end_src
 
     #+RESULTS:
     | t | Inbox Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %? |
-
 
 *** Org Bullets
 
