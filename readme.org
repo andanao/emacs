@@ -579,7 +579,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 *** Org Capture Templates 
     
     #+begin_src emacs-lisp
-
+;(org-id-uuid)
 (setq org-capture-templates
    '( 
     ("t" "Inbox Task" entry 
@@ -594,11 +594,21 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
   :END:
   "
   :kill-buffer t)
+    ("i" "Inbox Task" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
+"* TODO %^{Task}\n
+
+  :PROPERTIES:
+  :ID:     \t%(org-id-uuid)
+  :CREATED:\t%U
+  :REF:\t%a
+  %i
+  :END:
+  "
+  :immediate-finish t
+  :kill-buffer t)
 )) 
     #+end_src
-
-    #+RESULTS:
-    | t | Inbox Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %? |
 
 *** Org Bullets
 
