@@ -2,4 +2,41 @@ This is just a simple file for playing around and testing, there's nothing impor
 
 
 #+begin_src emacs-lisp
+
+
+(setq org-capture-templates
+   '( 
+    ("t" "Inbox Task" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
+"* TODO %?\n
+
+  :PROPERTIES:
+  :ID:     \t%(org-id-uuid)
+  :CREATED:\t%U
+  :REF:\t%a
+  %i
+  :END:
+  "
+  :kill-buffer t)
+))
+
+
+(efs/leader-keys
+  "o" '(org-capture :wk "org-capture"))
+
+#+end_src
+
+#+RESULTS:
+
+
+#+begin_src emacs-lisp
+(org-id-uuid)
+#+end_src
+
+#+RESULTS:
+: f187b4db-f93f-48ca-80b0-07cdb8069551
+
+
+#+begin_src emacs-lisp
+(org-id-get-create)
 #+end_src
