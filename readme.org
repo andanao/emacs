@@ -438,14 +438,19 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
    #+begin_src emacs-lisp
    
     (defun efs/org-mode-setup ()
-	(org-indent-mode)
+	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1))
 
    #+end_src
 
-** Org Mode
+   #+RESULTS:
+   : efs/org-mode-setup
+
 ** General
+
+You should split this up at some point, but right now it is what it is
+
    #+begin_src emacs-lisp
    (use-package org
 	:config
@@ -467,13 +472,13 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 		   (concat efs/user-dir-org "inbox.org")
 		))
 
-	;;:hook (org-mode . efs/org-mode-setup)
+	:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
 	(add-to-list 'org-modules 'org-habit)
 	(setq org-habit-graph-column 60)
 
 	(setq org-todo-keywords
-	  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 	(setq org-refile-targets
@@ -566,7 +571,6 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
    #+end_src
 
    #+RESULTS:
-   : t
 ** Keybindings 
 
     #+begin_src emacs-lisp
@@ -581,7 +585,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
 ** Org Capture Templates 
     
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (setq org-capture-templates
    '( 
     ("t" "Task" entry 
@@ -637,7 +641,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 ))
 
 ;testy no 
-    #+end_src
+#+end_src
 
     #+RESULTS:
     | t | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %? |
