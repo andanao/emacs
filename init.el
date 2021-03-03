@@ -390,53 +390,67 @@
     ("t" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %?\n
-
-  :PROPERTIES:
-  :ID:     \t%(org-id-new)
-  :CREATED:\t%U
-  :REF:\t%a
-  %i
-  :END:
-  "
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
   :kill-buffer t)
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
-  
-  :PROPERTIES:
-  :ID:     \t%(org-id-new)
-  :CREATED:\t%U
-  :REF:\t%a
-  %i
-  :END:
-  "
+
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
   :immediate-finish t
   :kill-buffer t)
     ("C" "CAD" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
 "* TODO %^{Task}\n
-    %?
-  :PROPERTIES:
-  :ID:     \t%(org-id-new)
-  :CREATED:\t%U
-  :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-  :END:
-  "
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:END:
+"
   :kill-buffer t)
     ("P" "Project" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
 "* TODO %^{Task}\n
 
-  :PROPERTIES:
-  :ID:     \t%(org-id-new)
-  :CREATED:\t%U
-  :REF:\t%a 
-  :Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
-  :Cost-est:\t%^{Cost estimate}
-  %i
-  :END:
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a 
+:Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
+:Cost-est:\t%^{Cost estimate}
+%i
+:END:
   "
   :kill-buffer t)
+    ("B" "Book" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
+"* PILE %^{Title}\n
+
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U 
+:AUTHOR:
+:RECCOMMENDER:
+:END:
+  "
+  :kill-buffer t)
+
+
+
 ))
 
 ;testy no
