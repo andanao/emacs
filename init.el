@@ -389,7 +389,8 @@
    '( 
     ("t" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %?\n
+"* TODO %^{Task}\n
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -401,7 +402,6 @@
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
-
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -425,7 +425,7 @@
     ("P" "Project" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
 "* TODO %^{Task}\n
-
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -439,7 +439,7 @@
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
 "* PILE %^{Title}\n
-
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U 
@@ -448,6 +448,17 @@
 :END:
   "
   :kill-buffer t)
+    ("c" "config" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"EMACS")
+"* TODO %^{Title}\n
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U 
+:END:
+  "
+  :kill-buffer t)
+
 
 
 

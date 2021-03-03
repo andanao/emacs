@@ -590,7 +590,8 @@ You should split this up at some point, but right now it is what it is
    '( 
     ("t" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %?\n
+"* TODO %^{Task}\n
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -602,7 +603,6 @@ You should split this up at some point, but right now it is what it is
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
-
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -626,7 +626,7 @@ You should split this up at some point, but right now it is what it is
     ("P" "Project" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
 "* TODO %^{Task}\n
-
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -640,7 +640,7 @@ You should split this up at some point, but right now it is what it is
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
 "* PILE %^{Title}\n
-
+%?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U 
@@ -649,6 +649,17 @@ You should split this up at some point, but right now it is what it is
 :END:
   "
   :kill-buffer t)
+    ("c" "config" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"EMACS")
+"* TODO %^{Title}\n
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U 
+:END:
+  "
+  :kill-buffer t)
+
 
 
 
