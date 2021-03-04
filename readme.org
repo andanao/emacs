@@ -851,7 +851,7 @@ You should split this up at some point, but right now it is what it is
   #+begin_src emacs-lisp
 ;(org-id-get-create)
 ;(org-id-uuid)
-(org-id-new)
+;(org-id-new)
   #+end_src
 
   #+RESULTS:
