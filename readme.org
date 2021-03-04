@@ -437,10 +437,10 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
    #+begin_src emacs-lisp
    
-    (defun efs/org-mode-setup ()
-	(org-indent-mode t)
-	(variable-pitch-mode 1)
-	(visual-line-mode 1))
+(defun efs/org-mode-setup ()
+    (org-indent-mode t)
+    (variable-pitch-mode 1)
+    (visual-line-mode 1))
 
    #+end_src
 
@@ -603,7 +603,7 @@ You should split this up at some point, but right now it is what it is
   :kill-buffer t)
     ("w" "Work Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
-"* TODO %^{Task}\n
+"* TODO %^{Work Task}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -616,7 +616,7 @@ You should split this up at some point, but right now it is what it is
 
     ("p" "Personal Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
-"* TODO %^{Task}\n
+"* TODO %^{Personal Task}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -632,7 +632,7 @@ You should split this up at some point, but right now it is what it is
 
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task}\n
+"* TODO %^{Task to inbox}\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -642,9 +642,9 @@ You should split this up at some point, but right now it is what it is
 "
   :immediate-finish t
   :kill-buffer t)
-    ("C" "CAD" entry 
+    ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
-"* TODO %^{Task}\n
+"* TODO %^{Thing to CAD}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -655,7 +655,7 @@ You should split this up at some point, but right now it is what it is
   :kill-buffer t)
     ("P" "Project" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
-"* TODO %^{Task}\n
+"* TODO %^{Project Name}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -669,7 +669,7 @@ You should split this up at some point, but right now it is what it is
   :kill-buffer t)
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
-"* PILE %^{Title}\n
+"* PILE %^{Book Title}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -681,7 +681,7 @@ You should split this up at some point, but right now it is what it is
   :kill-buffer t)
     ("c" "config" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"EMACS")
-"* TODO %^{Title}\n
+"* TODO %^{Config changes}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -691,7 +691,7 @@ You should split this up at some point, but right now it is what it is
   :kill-buffer t)
     ("p" "Purchase" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Purchase")
-"* TODO %^{Title}\n
+"* TODO %^{What the fuck do you want now?}\n
 %?
 :PROPERTIES:
 :ID:     \t%(org-id-new)
@@ -712,6 +712,7 @@ You should split this up at some point, but right now it is what it is
 
     #+RESULTS:
     | t | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 
 
 
