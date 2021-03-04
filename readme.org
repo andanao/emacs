@@ -882,15 +882,3 @@ Maybe this will be better somewhere else but it works here for now
   
    #+end_src
 
-* Testing 
-  :PROPERTIES:
-  :ID:       a84beff1-8904-4e1a-8078-4864588d4c73
-  :END:
-  #+begin_src emacs-lisp
-;(org-id-get-create)
-;(org-id-uuid)
-;(org-id-new)
-  #+end_src
-
-  #+RESULTS:
-  : f40ad1d9-009e-487d-b8b4-02f360cc6baa

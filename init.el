@@ -591,7 +591,3 @@
   ;; display the diff from git in the same window (may be worth trying different options as well 
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-;(org-id-get-create)
-;(org-id-uuid)
-;(org-id-new)
