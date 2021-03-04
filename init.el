@@ -231,33 +231,34 @@
   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 (defun efs/org-font-setup ()
-       ;; Replace list hyphen with dots
-       (font-lock-add-keywords 'org-mode
-			       '(("^ *\\([-]\\) "
-				  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    ;; Replace list hyphen with dots
+    (font-lock-add-keywords 'org-mode
+        '(("^ *\\([-]\\) "
+            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-       ;; Set faces for heading levels
-       (dolist (face '((org-level-1 . 1.2)
-		       (org-level-2 . 1.1)
-		       (org-level-3 . 1.05)
-		       (org-level-4 . 1.0)
-		       (org-level-5 . 1.0)
-		       (org-level-6 . 1.0)
-		       (org-level-7 . 1.0)
-		       (org-level-8 . 1.0)))
-	 (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-       ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-       (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
-       (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
-       (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-       (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-       (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
-       (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-       (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-       (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-       (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
-       (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-       (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+    ;; Set faces for heading levels
+    (dolist 
+        (face '((org-level-1 . 1.2)
+            (org-level-2 . 1.1)
+            (org-level-3 . 1.05)
+            (org-level-4 . 1.0)
+            (org-level-5 . 1.0)
+            (org-level-6 . 1.0)
+            (org-level-7 . 1.0)
+            (org-level-8 . 1.0)))
+        (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+	  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
 (defun efs/org-mode-setup ()
     (org-indent-mode t)
@@ -377,7 +378,8 @@
        (lambda () (interactive) (org-capture nil "jj")))
 
 
-     (efs/org-font-setup))
+     (efs/org-font-setup)
+     (efs/org-mode-setup))
 
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
@@ -399,6 +401,35 @@
 :END:
 "
   :kill-buffer t)
+    ("w" "Work Task" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
+"* TODO %^{Task}\n
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
+  :kill-buffer t)
+
+    ("p" "Personal Task" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
+"* TODO %^{Task}\n
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
+  :kill-buffer t)
+
+
+
+
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
@@ -458,13 +489,23 @@
 :END:
   "
   :kill-buffer t)
+    ("p" "Purchase" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Purchase")
+"* TODO %^{Title}\n
+%?
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U 
+:Cost:\t%^{Cost}
+:END:
+  "
+  :kill-buffer t)
+
 
 
 
 
 ))
-
-;testy no
 
 (use-package org-bullets
        :after org
