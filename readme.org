@@ -472,7 +472,7 @@ You should split this up at some point, but right now it is what it is
 		   (concat efs/user-dir-org "inbox.org")
 		))
 
-	:hook (org-mode . efs/org-mode-setup)
+	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
 	(add-to-list 'org-modules 'org-habit)
 	(setq org-habit-graph-column 60)
@@ -562,8 +562,7 @@ You should split this up at some point, but right now it is what it is
 	;; This keymap jumps directly to making  journal entry
 	;; Probably just make a global keymap to org capture
 	(define-key global-map (kbd "C-c j")
-	  (lambda () (interactive) (org-capture nil "jj")))
-
+	  (lambda () (interactive) (org-capture nil "i")))
 
 	(efs/org-font-setup)
 	(efs/org-mode-setup))
@@ -572,6 +571,7 @@ You should split this up at some point, but right now it is what it is
    #+end_src
 
    #+RESULTS:
+   : t
 ** Keybindings 
 
     #+begin_src emacs-lisp
@@ -779,6 +779,23 @@ You should split this up at some point, but right now it is what it is
   
    #+end_src
 
+** Evil Org 
+Maybe this will be better somewhere else but it works here for now
+[[https://github.com/Somelauw/evil-org-mode/tree/80ef38fb378541937f6ddfe836809e76eda1e355][Evil Org Github]]
+
+#+begin_src emacs-lisp
+(use-package evil-org
+  :ensure t
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+#+end_src
+
+#+RESULTS:
+| (lambda nil evil-org-mode) | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
+
 ** Auto tangle Config Files
  
 
@@ -798,6 +815,7 @@ You should split this up at some point, but right now it is what it is
 
  #+RESULTS:
  | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
+
 * Development 
 ** Languages
 

@@ -285,7 +285,7 @@
 		(concat efs/user-dir-org "inbox.org")
 	     ))
 
-     :hook (org-mode . efs/org-mode-setup)
+     ;:hook (org-mode . efs/org-mode-setup)
      (require 'org-habit)
      (add-to-list 'org-modules 'org-habit)
      (setq org-habit-graph-column 60)
@@ -375,8 +375,7 @@
      ;; This keymap jumps directly to making  journal entry
      ;; Probably just make a global keymap to org capture
      (define-key global-map (kbd "C-c j")
-       (lambda () (interactive) (org-capture nil "jj")))
-
+       (lambda () (interactive) (org-capture nil "i")))
 
      (efs/org-font-setup)
      (efs/org-mode-setup))
@@ -537,6 +536,14 @@
       (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
       (add-to-list 'org-structure-template-alist '("py" . "src python")))
+
+(use-package evil-org
+  :ensure t
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
