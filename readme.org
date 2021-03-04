@@ -392,7 +392,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
    #+end_src
 
-** Smart Parnes
+** Smart Parens
 [[https://github.com/Fuco1/smartparens/tree/fb1ce4b4013fe6f86dde9dd5bd5d4c032ab0d45b][Smartparens Github]]
 [[https://github.com/expez/evil-smartparens][Evil Smartparens]]
 
