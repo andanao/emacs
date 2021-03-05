@@ -250,18 +250,35 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
 * UI Config 
 ** Color Theme
-   #+begin_src emacs-lisp
-   
-   (use-package doom-themes
-    ;;:init (load-theme 'doom-palenight t))
+ #+begin_src emacs-lisp
+ 
+(defvar efs/theme "'doom-solarized-light")
+(defvar efs/dark-theme "/'doom-acario-dark")
+(defvar efs/theme-list
+    '"doom-solarized-light"
+    "doom-acario-dark"
+)
+
+(print efs/theme-list)
+
+(use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
-
-
-   #+end_src
+(load-theme (interactive) efs/dark-theme)
+ #+end_src
 
    #+RESULTS:
+   : doom-acario-dark
+** Toggle Theme
 
+#+begin_src emacs-lisp
+(defun efs/toggle-theme ()
+    (interactive)
+    (if (eq ())
+)
+
+
+#+end_src
 ** Doom Modeline
 
    #+begin_src emacs-lisp
