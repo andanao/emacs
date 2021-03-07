@@ -1,3 +1,4 @@
+#+title: Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 * System Setup
 ** Emacs Directory
@@ -886,6 +887,8 @@ Maybe this will be better somewhere else but it works here for now
 
 test commit
 huh checkout if evil magit exists somewhere
+Ooof this is just going to be painful and super slow as long as I'm on windows
+
 #+begin_src emacs-lisp
  
 (use-package magit
