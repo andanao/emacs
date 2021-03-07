@@ -148,7 +148,6 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
    #+begin_src emacs-lisp
  
-
    (use-package general
    :after evil
    :config
@@ -179,7 +178,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
 
       "kw" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-      "kk" '(kill-buffer :which-key "kill-buffer")
+      "kk" '(kill-this-buffer :which-key "kill-this-buffer")
 
   
       ;"jk" '(org-capture :which-key "org-capture")
@@ -435,7 +434,7 @@ One for writing code and the other for reading articles."
 (use-package smartparens-config
   :ensure smartparens
   :config (progn (show-smartparens-global-mode t)))
-
+(require 'smartparens-config)
 
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
@@ -861,12 +860,8 @@ Maybe this will be better somewhere else but it works here for now
 
 ** Projectile
 
-   #+begin_src emacs-lisp
-   ;; May not be entirely necessary diviwil uses it mostly just to find files using the counsel projectile repgrip in large repos
-;; the find file fn is worth playing around with once you setup the directories with your stuff
-;; it may be worth talking to manny about all of this and seeing what he is doing to find files in stuff
-;; especially for the org mode files which will end up becoming a large thing I imaigne
-    (use-package projectile
+#+begin_src emacs-lisp
+(use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
 	:custom ((projectile-completion-system 'ivy))
@@ -882,16 +877,16 @@ Maybe this will be better somewhere else but it works here for now
 	:after projectile
 	:config (counsel-projectile-mode))
 
-
-   #+end_src
+#+end_src
 
    #+RESULTS:
    : t
 
 ** Magit
-   test commit
 
-   #+begin_src emacs-lisp
+test commit
+huh checkout if evil magit exists somewhere
+#+begin_src emacs-lisp
  
 (use-package magit
   :commands magit-status
@@ -899,5 +894,11 @@ Maybe this will be better somewhere else but it works here for now
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+
+;(use-package evil-magit
+;   :after magit)
   
-   #+end_src
+#+end_src
+
+
+#+RESULTS:

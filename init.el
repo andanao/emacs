@@ -98,7 +98,7 @@
 
 
    "kw" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-   "kk" '(kill-buffer :which-key "kill-buffer")
+   "kk" '(kill-this-buffer :which-key "kill-this-buffer")
 
 
    ;"jk" '(org-capture :which-key "org-capture")
@@ -261,7 +261,7 @@ One for writing code and the other for reading articles."
 (use-package smartparens-config
   :ensure smartparens
   :config (progn (show-smartparens-global-mode t)))
-
+(require 'smartparens-config)
 
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
@@ -580,11 +580,7 @@ One for writing code and the other for reading articles."
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-;; May not be entirely necessary diviwil uses it mostly just to find files using the counsel projectile repgrip in large repos
-;; the find file fn is worth playing around with once you setup the directories with your stuff
-;; it may be worth talking to manny about all of this and seeing what he is doing to find files in stuff
-;; especially for the org mode files which will end up becoming a large thing I imaigne
-    (use-package projectile
+(use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
 	:custom ((projectile-completion-system 'ivy))
@@ -605,3 +601,5 @@ One for writing code and the other for reading articles."
   ;; display the diff from git in the same window (may be worth trying different options as well 
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+;(use-package evil-magit
+;   :after magit)
