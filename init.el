@@ -144,24 +144,24 @@
      (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
      (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
 
-(defvar efs/theme "'doom-solarized-light")
-(defvar efs/dark-theme "/'doom-acario-dark")
-(defvar efs/theme-list
-    '"doom-solarized-light"
-    "doom-acario-dark"
-)
+;(defvar efs/theme "'doom-solarized-light")
+;(defvar efs/dark-theme "/'doom-acario-dark")
+;(defvar efs/theme-list
+;    '"doom-solarized-light"
+;    '"doom-acario-dark"
+;)
 
-(print efs/theme-list)
+;(print efs/theme-list)
 
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
-(load-theme (interactive) efs/dark-theme)
+;(load-theme (interactive) efs/dark-theme)
 
-(defun efs/toggle-theme ()
-    (interactive)
-    (if (eq ())
-)
+;(defun efs/toggle-theme ()
+;    (interactive)
+;    (if (eq ())
+;)
 
 (use-package all-the-icons)
 

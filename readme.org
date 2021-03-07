@@ -256,19 +256,18 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 (defvar efs/dark-theme "/'doom-acario-dark")
 (defvar efs/theme-list
     '"doom-solarized-light"
-    "doom-acario-dark"
+    '"doom-acario-dark"
 )
 
-(print efs/theme-list)
+;(print efs/theme-list)
 
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
-(load-theme (interactive) efs/dark-theme)
+;(load-theme (interactive) efs/dark-theme)
  #+end_src
 
    #+RESULTS:
-   : doom-acario-dark
 ** Toggle Theme
 
 #+begin_src emacs-lisp
