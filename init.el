@@ -81,8 +81,6 @@
    "e" '(:ignore t :which-key "eval")
    "j" '(:ignore t :which-key "org")
 
-   "tt" '(counsel-load-theme :which-key "choose theme:")
-
    "ec" '(lambda () (interactive) (
 	 find-file (concat efs/user-dir-emacs "readme.org"))
 	 :which-key "ORG Config")
@@ -144,24 +142,37 @@
      (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
      (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
 
-;(defvar efs/theme "'doom-solarized-light")
-;(defvar efs/dark-theme "/'doom-acario-dark")
-;(defvar efs/theme-list
-;    '"doom-solarized-light"
-;    '"doom-acario-dark"
-;)
-
-;(print efs/theme-list)
-
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
-;(load-theme (interactive) efs/dark-theme)
+(defvar efs/switch-themes-var
+  (let ((themes-list (list 
+			    'doom-acario-dark
+			    'doom-solarized-light
+)))
+    (nconc themes-list themes-list))
+  "A circular list of themes to keep switching between.
+  Make sure that the currently enabled theme is at the head of this
+  list always.
 
-;(defun efs/toggle-theme ()
-;    (interactive)
-;    (if (eq ())
-;)
+  A nil value implies no custom theme should be enabled.")
+
+(defun efs/quick-switch-theme ()
+  "Switch between to commonly used faces in Emacs.
+One for writing code and the other for reading articles."
+  (interactive)
+  (if-let* ((next-theme (cadr efs/switch-themes-var)))
+      (progn (when-let* ((current-theme (car efs/switch-themes-var)))
+               (disable-theme (car efs/switch-themes-var)))
+             (load-theme next-theme t)
+             (message "Loaded theme: %s" next-theme))
+    ;; Always have the dark mode-line theme
+    (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
+  (setq efs/switch-themes-var (cdr efs/switch-themes-var)))
+
+
+(efs/leader-keys
+    "tt" '(efs/quick-switch-theme :wk "toggle theme"))
 
 (use-package all-the-icons)
 
