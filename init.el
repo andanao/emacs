@@ -614,7 +614,9 @@ One for writing code and the other for reading articles."
     :config
     (evil-collection-define-key 'normal 'dired-mode-map
       "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer))
+      "l" 'dired-single-buffer)
+      
+     (setq delete-by-moving-to-trash t))
 
 (use-package dired-single
     :commands (dired dired-jump))

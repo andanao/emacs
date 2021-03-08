@@ -977,7 +977,9 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
     :config
     (evil-collection-define-key 'normal 'dired-mode-map
       "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer))
+      "l" 'dired-single-buffer)
+      
+     (setq delete-by-moving-to-trash t))
 
 (use-package dired-single
     :commands (dired dired-jump))
