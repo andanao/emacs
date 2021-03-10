@@ -418,6 +418,23 @@ One for writing code and the other for reading articles."
 "
   :immediate-finish t
   :kill-buffer t)
+
+
+
+    ("k" "Clipboard Link to Inbox" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
+"* TODO %(org-cliplink-capture)\n
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
+  :immediate-finish t
+  :kill-buffer t)
+
+
     ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
 "* TODO %^{Thing to CAD}\n

@@ -634,6 +634,23 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 "
   :immediate-finish t
   :kill-buffer t)
+
+
+
+    ("k" "Clipboard Link to Inbox" entry 
+	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
+"* TODO %(org-cliplink-capture)\n
+:PROPERTIES:
+:ID:     \t%(org-id-new)
+:CREATED:\t%U
+:REF:\t%a
+%i
+:END:
+"
+  :immediate-finish t
+  :kill-buffer t)
+
+
     ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
 "* TODO %^{Thing to CAD}\n
@@ -702,6 +719,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 #+end_src
     #+RESULTS:
     | t | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 ** Org Agenda
 
 #+begin_src emacs-lisp
