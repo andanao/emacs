@@ -63,7 +63,11 @@
 (column-number-mode)
 
 (use-package rainbow-delimiters
- :hook (prog-mode . rainbow-delimiters-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+(desktop-save-mode 1)
+(savehist-mode 1)
+(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 
 ;;Make ESC quit prompts (why wouldn't you want that?)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
