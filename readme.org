@@ -1020,7 +1020,7 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 	"l" 'dired-single-buffer)
 
        (setq delete-by-moving-to-trash t)
-       (setq dired-hide-details-mode t))
+       (setq-default dired-hide-details-mode t))
 
   (use-package dired-single
       :commands (dired dired-jump))
@@ -1037,3 +1037,6 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 				   ;; ("mkv" . "mpv"))))
 
 #+end_src
+
+#+RESULTS:
+| dired-extra-startup | org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |

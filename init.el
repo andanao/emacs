@@ -647,7 +647,7 @@ One for writing code and the other for reading articles."
       "l" 'dired-single-buffer)
 
      (setq delete-by-moving-to-trash t)
-     (setq dired-hide-details-mode t))
+     (setq-default dired-hide-details-mode t))
 
 (use-package dired-single
     :commands (dired dired-jump))
