@@ -602,7 +602,15 @@ One for writing code and the other for reading articles."
     "ok" '(org-cliplink :wk "org-cliplink")
 )
 
+(use-package org-download
+    :init
+    (setq org-download-screenshot-method '"imagemagick/convert")
+    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
 
+)
+;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+;;(setq org-download-screenshot-method '"imagemagick/convert")
+(add-hook 'dired-mode-hook 'org-download-enable)
 
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))

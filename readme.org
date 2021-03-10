@@ -879,6 +879,15 @@ Maybe this will be better somewhere else but it works here for now
 
 #+begin_src emacs-lisp
 
+(use-package org-download
+    :init
+    (setq org-download-screenshot-method '"imagemagick/convert")
+    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+
+)
+;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+;;(setq org-download-screenshot-method '"imagemagick/convert")
+(add-hook 'dired-mode-hook 'org-download-enable)
 #+end_src
 ** Auto tangle Config Files
  
