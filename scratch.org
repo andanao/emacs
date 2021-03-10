@@ -29,3 +29,10 @@
 C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip
 ^ yeah that's gross AF
 
+#+begin_src emacs-lisp
+(efs/org-mode-setup)
+(efs/org-font-setup)
+#+end_src
+
+#+RESULTS:
+: t
