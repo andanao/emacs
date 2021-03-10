@@ -66,7 +66,7 @@
     :hook (prog-mode . rainbow-delimiters-mode))
 
 (desktop-save-mode 1)
-(savehist-mode 1)
+;(savehist-mode 1)
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 
 ;;Make ESC quit prompts (why wouldn't you want that?)
@@ -270,7 +270,7 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-(show-paren-mode t)
+;(show-paren-mode t)
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
@@ -601,16 +601,6 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "ok" '(org-cliplink :wk "org-cliplink")
 )
-
-(use-package org-download
-    :init
-    (setq org-download-screenshot-method '"imagemagick/convert")
-    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
-
-)
-;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
-;;(setq org-download-screenshot-method '"imagemagick/convert")
-(add-hook 'dired-mode-hook 'org-download-enable)
 
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
