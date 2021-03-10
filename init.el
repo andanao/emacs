@@ -266,6 +266,7 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+(show-paren-mode t)
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
@@ -358,6 +359,7 @@ One for writing code and the other for reading articles."
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
+
 	(efs/org-mode-setup))
 
 (efs/leader-keys
@@ -487,7 +489,7 @@ One for writing code and the other for reading articles."
   "
   :kill-buffer t)
     ("p" "Purchase" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Purchase")
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org" ))"Purchase")
 "* TODO %^{What the fuck do you want now?}\n
 %?
 :PROPERTIES:
@@ -595,6 +597,8 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "ok" '(org-cliplink :wk "org-cliplink")
 )
+
+
 
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))

@@ -440,10 +440,11 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+(show-paren-mode t)
 #+end_src
 
 #+RESULTS:
-| evil-smartparens-mode |
+: t
 
 * Org Mode
 ** EFS Org Font Faces
@@ -560,6 +561,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
+
 	(efs/org-mode-setup))
 
 
@@ -703,7 +705,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
   "
   :kill-buffer t)
     ("p" "Purchase" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Purchase")
+	(file+headline (lambda () (concat efs/user-dir-org "personal.org" ))"Purchase")
 "* TODO %^{What the fuck do you want now?}\n
 %?
 :PROPERTIES:
@@ -858,7 +860,6 @@ Maybe this will be better somewhere else but it works here for now
 #+RESULTS:
 | (lambda nil evil-org-mode) | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 
-
 ** Org Cliplink 
 [[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
    #+begin_src emacs-lisp
@@ -868,6 +869,13 @@ Maybe this will be better somewhere else but it works here for now
 )
 
    #+end_src
+
+** Org Download
+
+#+begin_src emacs-lisp
+
+
+#+end_src
 ** Auto tangle Config Files
  
 
