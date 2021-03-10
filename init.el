@@ -360,7 +360,8 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
-
+    "oj" '(org-store-link :wk "org-store-link")
+    "oi" '(org-insert-link :wk "org-insert-link")
 )
 
 (setq org-capture-templates

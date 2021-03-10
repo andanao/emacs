@@ -570,7 +570,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
-
+    "oj" '(org-store-link :wk "org-store-link")
+    "oi" '(org-insert-link :wk "org-insert-link")
 )
     #+end_src
 
