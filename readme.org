@@ -836,6 +836,16 @@ Maybe this will be better somewhere else but it works here for now
 #+RESULTS:
 | (lambda nil evil-org-mode) | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 
+
+** Org Cliplink 
+[[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
+   #+begin_src emacs-lisp
+(use-package org-cliplink)
+(efs/leader-keys
+    "ok" '(org-cliplink :wk "org-cliplink")
+)
+
+   #+end_src
 ** Auto tangle Config Files
  
 

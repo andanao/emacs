@@ -570,6 +570,11 @@ One for writing code and the other for reading articles."
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+(use-package org-cliplink)
+(efs/leader-keys
+    "ok" '(org-cliplink :wk "org-cliplink")
+)
+
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
                     (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/"))
