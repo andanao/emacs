@@ -556,7 +556,10 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	     ("idea" . ?i)))
 
 
-	(efs/org-font-setup)
+;;	(efs/org-font-setup)
+	(org-indent-mode t)
+	(variable-pitch-mode 1)
+	(visual-line-mode 1)
 	(efs/org-mode-setup))
 
 
@@ -565,13 +568,13 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
    #+RESULTS:
    : t
 ** Keybindings 
-
+   
     #+begin_src emacs-lisp
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
     "oj" '(org-store-link :wk "org-store-link")
-    "oi" '(org-insert-link :wk "org-insert-link")
+    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
     #+end_src
 

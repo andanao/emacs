@@ -303,65 +303,68 @@ One for writing code and the other for reading articles."
     (visual-line-mode 1))
 
 (use-package org
-     :config
-      (setq org-ellipsis " ▾")
+	:config
+	 (setq org-ellipsis " ▾")
 
-     (setq org-agenda-start-with-log-mode t)
-     (setq org-log-done 'time)
-     (setq org-log-into-drawer t)
-
-
-     (setq org-hide-emphasis-markers t)
-
-     (setq org-agenda-files
-	   '(
-		(concat efs/user-dir-org "work.org")
-		(concat efs/user-dir-org "personal.org")
-		(concat efs/user-dir-org "habits.org")
-		(concat efs/user-dir-org "dates.org")
-		(concat efs/user-dir-org "inbox.org")
-	     ))
-
-     ;:hook (org-mode . efs/org-mode-setup)
-     (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
-     (setq org-habit-graph-column 60)
-
-     (setq org-todo-keywords
-       '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
-	 (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
-
-     (setq org-refile-targets
-       '(("archive.org" :maxlevel . 1)
-	 ("personal.org" :maxlevel . 1)
-	 ("work.org" :maxlevel . 1)))
-
-     ;; Save Org buffers after refiling!
-     (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-     (setq org-tag-alist
-       '((:startgroup)
-	  ; Put mutually exclusive tags here
-	  (:endgroup)
-	  ("@errand" . ?E)
-	  ("@home" . ?H)
-	  ("@work" . ?W)
-	  ("agenda" . ?a)
-	  ("planning" . ?p)
-	  ("publish" . ?P)
-	  ("batch" . ?b)
-	  ("note" . ?n)
-	  ("idea" . ?i)))
+	(setq org-agenda-start-with-log-mode t)
+	(setq org-log-done 'time)
+	(setq org-log-into-drawer t)
 
 
-     (efs/org-font-setup)
-     (efs/org-mode-setup))
+	(setq org-hide-emphasis-markers t)
+
+	(setq org-agenda-files
+	      '(
+		   (concat efs/user-dir-org "work.org")
+		   (concat efs/user-dir-org "personal.org")
+		   (concat efs/user-dir-org "habits.org")
+		   (concat efs/user-dir-org "dates.org")
+		   (concat efs/user-dir-org "inbox.org")
+		))
+
+	;:hook (org-mode . efs/org-mode-setup)
+	(require 'org-habit)
+	(add-to-list 'org-modules 'org-habit)
+	(setq org-habit-graph-column 60)
+
+	(setq org-todo-keywords
+	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+	(setq org-refile-targets
+	  '(("archive.org" :maxlevel . 1)
+	    ("personal.org" :maxlevel . 1)
+	    ("work.org" :maxlevel . 1)))
+
+	;; Save Org buffers after refiling!
+	(advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+	(setq org-tag-alist
+	  '((:startgroup)
+	     ; Put mutually exclusive tags here
+	     (:endgroup)
+	     ("@errand" . ?E)
+	     ("@home" . ?H)
+	     ("@work" . ?W)
+	     ("agenda" . ?a)
+	     ("planning" . ?p)
+	     ("publish" . ?P)
+	     ("batch" . ?b)
+	     ("note" . ?n)
+	     ("idea" . ?i)))
+
+
+;;	(efs/org-font-setup)
+	(org-indent-mode t)
+	(variable-pitch-mode 1)
+	(visual-line-mode 1)
+	(efs/org-mode-setup))
 
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
     "oj" '(org-store-link :wk "org-store-link")
-    "oi" '(org-insert-link :wk "org-insert-link")
+    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
 
 (setq org-capture-templates
