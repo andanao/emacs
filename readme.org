@@ -136,7 +136,7 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
 #+begin_src emacs-lisp
 (desktop-save-mode 1)
 (savehist-mode 1)
-(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
+;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 #+end_src
 
 * Keybinding Congif
