@@ -1,69 +1,30 @@
-This is just a simple file for playing around and testing, there's nothing important in here
+
 
 
 #+begin_src emacs-lisp
+(use-package org-download)
+#+end_src
 
-(defvar efs/themes-list
-    (list 'doom-acario-dark
-	  'doom-solarized-light)
+#+RESULTS:
+
+#+begin_src emacs-lisp
+(use-package org-download
+    :init
+    (setq org-download-screenshot-method '"imagemagick/convert")
+    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+
 )
-
-(defun toggle-theme()
-    (interactive)
-    (if (eq (car custom-enabled-themes) 'doom-solarized-light)
-	(load-theme 'doom-acario-dark))
-)
-
-
+;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+;;(setq org-download-screenshot-method '"imagemagick/convert")
+(add-hook 'dired-mode-hook 'org-download-enable)
 #+end_src
 
 #+RESULTS:
-: toggle-theme
+| org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |
 
 
-#+begin_src emacs-lisp
-(if (eq "a" "a")
- (print "works?"))
-#+end_src
+ 
+[[https://github.com/abo-abo/org-download/issues/75][abo-abo/org-download#75 Paste from Clipboard on Windows possible?]]
 
-#+RESULTS:
-
-
-#+begin_src emacs-lisp
-(defvar efs/switch-themes-var
-  (let ((themes-list (list 
-			    'doom-acario-dark
-			    'doom-solarized-light
-)))
-    (nconc themes-list themes-list))
-  "A circular list of themes to keep switching between.
-  Make sure that the currently enabled theme is at the head of this
-  list always.
-
-  A nil value implies no custom theme should be enabled.")
-
-(defun efs/quick-switch-theme ()
-  "Switch between to commonly used faces in Emacs.
-One for writing code and the other for reading articles."
-  (interactive)
-  (if-let* ((next-theme (cadr efs/switch-themes-var)))
-      (progn (when-let* ((current-theme (car efs/switch-themes-var)))
-               (disable-theme (car efs/switch-themes-var)))
-             (load-theme next-theme t)
-             (message "Loaded theme: %s" next-theme))
-    ;; Always have the dark mode-line theme
-    (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
-  (setq efs/switch-themes-var (cdr efs/switch-themes-var)))
-
-#+end_src
-
-#+RESULTS:
-: efs/quick-switch-theme
-
-
-#+begin_src emacs-lisp
-(print quick-switch-themes)
-#+end_src
-
-#+RESULTS:
-: (doom-acario-dark doom-solarized-light doom-acario-dark doom-solarized-light . #2)
+C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip
+^ yeah that's gross AF
