@@ -567,7 +567,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
 
-	(efs/org-mode-setup))
+	(efs/org-font-setup))
 
 
    #+end_src

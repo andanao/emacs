@@ -364,7 +364,7 @@ One for writing code and the other for reading articles."
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
 
-	(efs/org-mode-setup))
+	(efs/org-font-setup))
 
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
