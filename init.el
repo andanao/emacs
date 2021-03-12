@@ -639,36 +639,38 @@ One for writing code and the other for reading articles."
 ;   :after magit)
 
 (use-package dired
-    :ensure nil
-    :commands (dired dired-jump)
-    :bind (("C-x C-j" . dired-jump))
-    :custom ((dired-listing-switches "-agho --group-directories-first"))
-    :hook (dired-mode . dired-hide-details-mode)
-    :config
-    (evil-collection-define-key 'normal 'dired-mode-map
-      "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer)
+      :ensure nil
+      :commands (dired dired-jump)
+      :bind (("C-x C-j" . dired-jump))
+      :custom ((dired-listing-switches "-agho --group-directories-first"))
+      :hook (dired-mode . dired-hide-details-mode)
+      :config
+      (evil-collection-define-key 'normal 'dired-mode-map
+	"h" 'dired-single-up-directory
+	"l" 'dired-single-buffer)
 
-     (setq delete-by-moving-to-trash t)
-     (setq-default dired-hide-details-mode t))
+       (setq delete-by-moving-to-trash t)
+       (setq-default dired-hide-details-mode t))
 
-(use-package dired-single
-    :commands (dired dired-jump))
+  (use-package dired-single
+      :commands (dired dired-jump))
 
-(use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package all-the-icons-dired
+      :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package dired-git-info
+  (use-package dired-git-info
+      :ensure t
+      ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
+      :bind (:map dired-mode-map (")" . dired-git-info-mode)))
+
+(use-package diredfl
     :ensure t
-    ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
-    :bind (:map dired-mode-map
-    (")" . dired-git-info-mode)))
-
-
-;(use-package dired-open
-;    :commands (dired dired-jump)
-;    :config
-;    ;; Doesn't work as expected!
-;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-;    (setq dired-open-extensions '(("pdf" . "feh")
-				 ;; ("mkv" . "mpv"))))
+    :config
+    (diredfl-global-mode 1))
+  ;(use-package dired-open
+  ;    :commands (dired dired-jump)
+  ;    :config
+  ;    ;; Doesn't work as expected!
+  ;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
+  ;    (setq dired-open-extensions '(("pdf" . "feh")
+				   ;; ("mkv" . "mpv"))))
