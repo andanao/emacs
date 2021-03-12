@@ -875,6 +875,11 @@ Maybe this will be better somewhere else but it works here for now
 
    #+end_src
 
+** Org Insert Link
+To insert a link to a file
+C-u C-c C-l
+ie universal-argument prefix -> org-insert-link
+
 ** Org Download
 
 ;#+begin_src emacs-lisp
