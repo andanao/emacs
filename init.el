@@ -309,8 +309,8 @@ One for writing code and the other for reading articles."
 
 (use-package org
 	:config
-	 (setq org-ellipsis " ▾")
-
+	(setq org-ellipsis " ▾")
+	(setq org-directory efs/user-dir-org)
 	(setq org-agenda-start-with-log-mode t)
 	(setq org-log-done 'time)
 	(setq org-log-into-drawer t)
