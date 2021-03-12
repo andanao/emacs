@@ -270,6 +270,7 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+(show-paren-mode t)
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
