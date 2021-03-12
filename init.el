@@ -270,7 +270,7 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-;(show-paren-mode t)
+(show-paren-mode t)
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
@@ -309,8 +309,8 @@ One for writing code and the other for reading articles."
 
 (use-package org
 	:config
-	 (setq org-ellipsis " ▾")
-
+	(setq org-ellipsis " ▾")
+	(setq org-directory efs/user-dir-org)
 	(setq org-agenda-start-with-log-mode t)
 	(setq org-log-done 'time)
 	(setq org-log-into-drawer t)
@@ -639,28 +639,38 @@ One for writing code and the other for reading articles."
 ;   :after magit)
 
 (use-package dired
-    :ensure nil
-    :commands (dired dired-jump)
-    :bind (("C-x C-j" . dired-jump))
-    :custom ((dired-listing-switches "-agho --group-directories-first"))
+      :ensure nil
+      :commands (dired dired-jump)
+      :bind (("C-x C-j" . dired-jump))
+      :custom ((dired-listing-switches "-agho --group-directories-first"))
+      :hook (dired-mode . dired-hide-details-mode)
+      :config
+      (evil-collection-define-key 'normal 'dired-mode-map
+	"h" 'dired-single-up-directory
+	"l" 'dired-single-buffer)
+
+       (setq delete-by-moving-to-trash t)
+       (setq-default dired-hide-details-mode t))
+
+  (use-package dired-single
+      :commands (dired dired-jump))
+
+  (use-package all-the-icons-dired
+      :hook (dired-mode . all-the-icons-dired-mode))
+
+  (use-package dired-git-info
+      :ensure t
+      ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
+      :bind (:map dired-mode-map (")" . dired-git-info-mode)))
+
+(use-package diredfl
+    :ensure t
     :config
-    (evil-collection-define-key 'normal 'dired-mode-map
-      "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer)
-
-     (setq delete-by-moving-to-trash t)
-     (setq-default dired-hide-details-mode t))
-
-(use-package dired-single
-    :commands (dired dired-jump))
-
-(use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
-
-;(use-package dired-open
-;    :commands (dired dired-jump)
-;    :config
-;    ;; Doesn't work as expected!
-;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
-;    (setq dired-open-extensions '(("pdf" . "feh")
-				 ;; ("mkv" . "mpv"))))
+    (diredfl-global-mode 1))
+  ;(use-package dired-open
+  ;    :commands (dired dired-jump)
+  ;    :config
+  ;    ;; Doesn't work as expected!
+  ;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
+  ;    (setq dired-open-extensions '(("pdf" . "feh")
+				   ;; ("mkv" . "mpv"))))
