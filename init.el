@@ -270,7 +270,6 @@ One for writing code and the other for reading articles."
 (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
-;(show-paren-mode t)
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
@@ -643,6 +642,7 @@ One for writing code and the other for reading articles."
     :commands (dired dired-jump)
     :bind (("C-x C-j" . dired-jump))
     :custom ((dired-listing-switches "-agho --group-directories-first"))
+    :hook (dired-mode . dired-hide-details-mode)
     :config
     (evil-collection-define-key 'normal 'dired-mode-map
       "h" 'dired-single-up-directory
