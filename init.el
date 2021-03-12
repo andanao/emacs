@@ -658,6 +658,13 @@ One for writing code and the other for reading articles."
 (use-package all-the-icons-dired
     :hook (dired-mode . all-the-icons-dired-mode))
 
+(use-package dired-git-info
+    :ensure t
+    ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
+    :bind (:map dired-mode-map
+    (")" . dired-git-info-mode)))
+
+
 ;(use-package dired-open
 ;    :commands (dired dired-jump)
 ;    :config
