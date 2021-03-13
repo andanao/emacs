@@ -34,7 +34,15 @@ C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy
 (efs/org-font-setup)
 #+end_src
 
+
+#+begin_src emacs-lisp
+(efs/leader-keys 
+    "of" '(lambda() (interactive) (org-insert-link "file:") :wk "org-link-file")
+)
+#+end_src
+
 #+RESULTS:
+<<<<<<< Updated upstream
 : t
 
 [[https://stackoverflow.com/questions/23207938/in-emacs-how-to-enable-automatic-hiding-of-dired-details][stackexchange]]
@@ -62,3 +70,17 @@ C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy
 
 #+RESULTS:
 : dired-readin
+=======
+
+[[file:c:/Users/Adrian/Documents/GitHub/emacs]]
+
+
+[[file:c:/Users/Adrian/Documents/GitHub/emacs]]
+
+
+[[file:scratch.org][<no description>]]
+
+#+begin_src emacs-lisp
+(universal-argument (interactive) (org-insert-link))
+#+end_src
+>>>>>>> Stashed changes
