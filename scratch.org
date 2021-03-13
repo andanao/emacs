@@ -36,3 +36,29 @@ C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy
 
 #+RESULTS:
 : t
+
+[[https://stackoverflow.com/questions/23207938/in-emacs-how-to-enable-automatic-hiding-of-dired-details][stackexchange]]
+#+begin_src emacs-lisp
+(defun mydired-sort ()
+"Sort dired listings with directories first."
+(save-excursion
+ (let (buffer-read-only)
+  (forward-line 2) ;; beyond dir. header
+  (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+(set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+(after dired-after-updating-hook first () activate)
+ "Sort dired listings with directories first before adding marks."
+ (mydired-sort))
+
+
+(defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (mydired-sort)
+  (let ((dired-details-internal-overlay-list  ())) (dired-details-hide)))
+#+end_src
+
+#+RESULTS:
+: dired-readin
