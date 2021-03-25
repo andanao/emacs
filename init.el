@@ -602,6 +602,61 @@ One for writing code and the other for reading articles."
     "ok" '(org-cliplink :wk "org-cliplink")
 )
 
+(setq efs/user-dir-org-screenshot
+    (concat efs/user-dir-org "images/screenshot/"))
+
+(defun efs/org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+
+  (setq org--screenshot-filename
+        (concat
+         (make-temp-name
+          (concat efs/user-dir-org-screenshot
+		    (file-relative-name buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+
+  (shell-command "snippingtool /clip")
+  
+
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--screenshot-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+
+  (insert (concat "[[file:" org--screenshot-filename "]]"))
+  (org-display-inline-images))
+
+
+(efs/leader-keys 
+    "os" '(efs/org-screenshot :wk "org-screenshot")
+)
+
+(setq efs/user-dir-org-images
+    (concat efs/user-dir-org "images/"))
+
+(defun efs/org-clip-image ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+
+  (setq org--image-filename
+        (concat
+         (make-temp-name
+          (concat efs/user-dir-org-images
+		    (file-relative-name buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--image-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+
+  (insert (concat "[[file:" org--image-filename "]]"))
+  (org-display-inline-images))
+
+
+(efs/leader-keys 
+    "s" '(efs/org-clip-image :wk "org-insert-clipboard-image")
+)
+
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
                     (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/"))

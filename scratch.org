@@ -1,86 +1,54 @@
 
 
+Most code taken from: [[https://www.sastibe.de/2018/11/take-screenshots-straight-into-org-files-in-emacs-on-win10/][Take Screenshots Straight into Org Files in Emacs on Win10]]
 
+at some point it may be worth taking a look at integrating this with
+[[https://github.com/abo-abo/org-download][org-download]]
+
+Set up my default save directory: (it may be worth adding an alt one for things that shouldn't be up on github)
 #+begin_src emacs-lisp
-(use-package org-download)
+(setq efs/user-dir-org-screenshot
+    (concat efs/user-dir-org "images/screenshot/"))
 #+end_src
 
-#+RESULTS:
+Steps
+1. set file save location to org-screenshot-filename
+2. shell command to the snipping tool
+3. save clipboard image as org-screenshot-filename
+4. insert image inline with org
 
 #+begin_src emacs-lisp
-(use-package org-download
-    :init
-    (setq org-download-screenshot-method '"imagemagick/convert")
-    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+(defun efs/org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
 
-)
-;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
-;;(setq org-download-screenshot-method '"imagemagick/convert")
-(add-hook 'dired-mode-hook 'org-download-enable)
-#+end_src
+  (setq org--screenshot-filename
+        (concat
+         (make-temp-name
+          (concat efs/user-dir-org-screenshot
+		    (file-relative-name buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
 
-#+RESULTS:
-| org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |
+  (shell-command "snippingtool /clip")
+  
 
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--screenshot-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
 
- 
-[[https://github.com/abo-abo/org-download/issues/75][abo-abo/org-download#75 Paste from Clipboard on Windows possible?]]
-
-C:\Users\Adrian\AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\TempState\ScreenClip
-^ yeah that's gross AF
-
-#+begin_src emacs-lisp
-(efs/org-mode-setup)
-(efs/org-font-setup)
-#+end_src
+  (insert (concat "[[file:" org--screenshot-filename "]]"))
+  (org-display-inline-images))
 
 
-#+begin_src emacs-lisp
 (efs/leader-keys 
-    "of" '(lambda() (interactive) (org-insert-link "file:") :wk "org-link-file")
+    "os" '(efs/org-screenshot :wk "org-screenshot")
 )
+
 #+end_src
 
 #+RESULTS:
-<<<<<<< Updated upstream
-: t
-
-[[https://stackoverflow.com/questions/23207938/in-emacs-how-to-enable-automatic-hiding-of-dired-details][stackexchange]]
-#+begin_src emacs-lisp
-(defun mydired-sort ()
-"Sort dired listings with directories first."
-(save-excursion
- (let (buffer-read-only)
-  (forward-line 2) ;; beyond dir. header
-  (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-(set-buffer-modified-p nil)))
-
-(defadvice dired-readin
-(after dired-after-updating-hook first () activate)
- "Sort dired listings with directories first before adding marks."
- (mydired-sort))
 
 
-(defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-  "Sort dired listings with directories first before adding marks."
-  (mydired-sort)
-  (let ((dired-details-internal-overlay-list  ())) (dired-details-hide)))
-#+end_src
-
-#+RESULTS:
-: dired-readin
-=======
-
-[[file:c:/Users/Adrian/Documents/GitHub/emacs]]
 
 
-[[file:c:/Users/Adrian/Documents/GitHub/emacs]]
 
-
-[[file:scratch.org][<no description>]]
-
-#+begin_src emacs-lisp
-(universal-argument (interactive) (org-insert-link))
-#+end_src
->>>>>>> Stashed changes

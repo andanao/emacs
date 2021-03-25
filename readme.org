@@ -875,25 +875,96 @@ Maybe this will be better somewhere else but it works here for now
 
    #+end_src
 
-** Org Insert Link
+** Insert File Link
 To insert a link to a file
 C-u C-c C-l
 ie universal-argument prefix -> org-insert-link
 
-** Org Download
+** Insert Screenshot
 
-;#+begin_src emacs-lisp
+Most code taken from: [[https://www.sastibe.de/2018/11/take-screenshots-straight-into-org-files-in-emacs-on-win10/][Take Screenshots Straight into Org Files in Emacs on Win10]]
 
-(use-package org-download
-    :init
-    (setq org-download-screenshot-method '"imagemagick/convert")
-    (setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
+at some point it may be worth taking a look at integrating this with
+[[https://github.com/abo-abo/org-download][org-download]]
 
-)
-;(setq-default org-download-image-dir ((lambda () (concat efs/user-dir-org "images/"))))
-;;(setq org-download-screenshot-method '"imagemagick/convert")
-(add-hook 'dired-mode-hook 'org-download-enable)
+Set up my default save directory: (it may be worth adding an alt one for things that shouldn't be up on github)
+#+begin_src emacs-lisp
+(setq efs/user-dir-org-screenshot
+    (concat efs/user-dir-org "images/screenshot/"))
 #+end_src
+
+Steps
+1. set file save location to org-screenshot-filename
+2. shell command to the snipping tool
+3. save clipboard image as org-screenshot-filename
+4. insert image inline with org
+
+#+begin_src emacs-lisp
+(defun efs/org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+
+  (setq org--screenshot-filename
+        (concat
+         (make-temp-name
+          (concat efs/user-dir-org-screenshot
+		    (file-relative-name buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+
+  (shell-command "snippingtool /clip")
+  
+
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--screenshot-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+
+  (insert (concat "[[file:" org--screenshot-filename "]]"))
+  (org-display-inline-images))
+
+
+(efs/leader-keys 
+    "os" '(efs/org-screenshot :wk "org-screenshot")
+)
+
+#+end_src
+
+
+** Insert Image from clipboard
+
+Same thing as the insert screenshot but works faster and with Win-S
+
+#+begin_src emacs-lisp
+(setq efs/user-dir-org-images
+    (concat efs/user-dir-org "images/"))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+(defun efs/org-clip-image ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+
+  (setq org--image-filename
+        (concat
+         (make-temp-name
+          (concat efs/user-dir-org-images
+		    (file-relative-name buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--image-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+
+  (insert (concat "[[file:" org--image-filename "]]"))
+  (org-display-inline-images))
+
+
+(efs/leader-keys 
+    "s" '(efs/org-clip-image :wk "org-insert-clipboard-image")
+)
+#+end_src
+
 ** Auto tangle Config Files
  
 
