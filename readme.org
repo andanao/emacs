@@ -4,23 +4,14 @@
 ** Emacs Directory
    Define the user emacs directory
 
-   #+begin_src emacs-lisp
    (defvar efs/user-dir-emacs 
 	(format "c:/Users/%s/Documents/GitHub/emacs/" user-login-name))
     
-   #+end_src
-
-   #+RESULTS:
-   : efs/user-dir-emacs
-
 ** Org Directory
-   Define the user org directory
+   User org dictionary defined in default .emacs config file
 
-   #+begin_src emacs-lisp
    (defvar efs/user-dir-org 
 	(format "c:/Users/%s/Documents/GitHub/org/" user-login-name))
-    
-   #+end_src
 
    #+RESULTS:
    : efs/user-dir-org
