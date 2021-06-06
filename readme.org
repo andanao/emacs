@@ -494,9 +494,10 @@ One for writing code and the other for reading articles."
 
 ** EFS Org Mode Setup
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
    
 (defun efs/org-mode-setup ()
+    (interactive)
     (org-indent-mode t)
     (variable-pitch-mode 1)
     (visual-line-mode 1))
