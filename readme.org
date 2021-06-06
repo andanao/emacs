@@ -495,8 +495,12 @@ One for writing code and the other for reading articles."
 
    #+end_src
 
+#+begin_src emacs-lisp
+  (efs/leader-keys
+    "of" '(efs/org-mode-setup :wk "org mode setup fn")
+  )
+#+end_src
    #+RESULTS:
-   : efs/org-mode-setup
 
 ** General
 
