@@ -1,21 +1,20 @@
 #+title: Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 * System Setup
+Setting default file and directory locations, these are all defined in the default startup .emacs file to work on different computers
 ** Emacs Directory
    Define the user emacs directory: efs/user-dir-emacs 
 
-   Currently defined in the default .emacs file used for emacs init to work on various computers
-
-   
+   defined in the default .emacs file used for emacs init to work on various computers
 ** Org Directory
-   User org dictionary defined in default .emacs config file
+   User org-mode file directory: efs/user-dir-org
+   defined in default .emacs config file
+** Readme config file
+efs/user-dir-readme - this files full path 
 
-   (defvar efs/user-dir-org 
-	(format "c:/Users/%s/Documents/GitHub/org/" user-login-name))
-
-   #+RESULTS:
-   : efs/user-dir-org
-
+** init.el config file
+efs/user-dir-config
+directory for the actual config file used when running,
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
