@@ -1,0 +1,6 @@
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters)
+
+#+end_src
+
+#+RESULTS:

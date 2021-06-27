@@ -53,11 +53,10 @@
 	    eshell-mode-hook))
 	(add-hook mode(lambda () (display-line-numbers-mode 0))))
 
-;; Enable column number
 (column-number-mode)
 
-;;(use-package rainbow-delimiters
-  ;;  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (desktop-save-mode 1)
 ;(savehist-mode 1)
