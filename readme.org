@@ -18,25 +18,25 @@ directory for the actual config file used when running,
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
-    ;; Initialize package sources
-    (require 'package)
-    
-    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                             ("org" . "https://orgmode.org/elpa/")
-                             ("elpa" . "https://elpa.gnu.org/packages/")))
+     ;; Initialize package sources
+     (require 'package)
 
-    (package-initialize)
-    (unless package-archive-contents
-    (package-refresh-contents))
+     (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                              ("org" . "https://orgmode.org/elpa/")
+                              ("elpa" . "https://elpa.gnu.org/packages/")))
+
+     (package-initialize)
+     (unless package-archive-contents
+     (package-refresh-contents))
 
 
 
-    ;; Initialize use-package on non-Linux platforms
-    (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
+     ;; Initialize use-package on non-Linux platforms
+     (unless (package-installed-p 'use-package)
+     (package-install 'use-package))
 
-    (require 'use-package)
-    (setq use-package-always-ensure t)
+     (require 'use-package)
+     (setq use-package-always-ensure t)
 
    #+end_src
 
@@ -985,7 +985,6 @@ same directory as the org-buffer and insert a link to this file."
  #+RESULTS:
  | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 
- 
 * Development 
 ** Languages
 
@@ -1143,3 +1142,15 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 
   
+** UTF-8 
+From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
+
+#+BEGIN_SRC emacs-lisp 
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+#+END_SRC
+
+#+RESULTS:
+| UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
+

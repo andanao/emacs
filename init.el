@@ -730,3 +730,7 @@ same directory as the org-buffer and insert a link to this file."
   ;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
+
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
