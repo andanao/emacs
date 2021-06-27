@@ -44,10 +44,10 @@ directory for the actual config file used when running,
    : t
 
 ** TODO Auto Updates
-   
+
 * Basic UI Config
 ** Basic Config 
- Setting up some basic stuff here
+ Setting up some basic UI stuff, disabling startup and some minor visual changes
 
  #+begin_src emacs-lisp
 
@@ -70,8 +70,7 @@ directory for the actual config file used when running,
  : t
 
 ** Font configuration
-
-Setting up fonts and stuff, I'm not sure how I feel about Cantarell
+Setting up fonts and stuff, I'm still not sure how I feel about Cantarell
 
 #+begin_src emacs-lisp
 
@@ -129,7 +128,7 @@ Setting up fonts and stuff, I'm not sure how I feel about Cantarell
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 #+end_src
 
-* Keybinding Congif
+* Keybinding Config
 ** Global Esc
    #+begin_src emacs-lisp
    ;;Make ESC quit prompts (why wouldn't you want that?)
@@ -965,24 +964,22 @@ same directory as the org-buffer and insert a link to this file."
 #+end_src
 
 ** Auto tangle Config Files
- 
+ Tangle readme.org file to init.el on save
 
  #+begin_src emacs-lisp
 
- (defun efs/org-babel-tangle-config ()
-   (when (string-equal (file-name-directory (buffer-file-name))
-                     (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/"))
+   (defun efs/org-babel-tangle-config ()
+     (when
+	 (string= buffer-file-name efs/user-dir-readme)
+	 (let ((org-confirm-babel-evaluate nil)))
+	 (org-babel-tangle)))
 
-     ;; Dynamic scoping to the rescue
-     (let ((org-confirm-babel-evaluate nil))
-       (org-babel-tangle))))
-
- (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
-
+   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
  #+end_src
 
  #+RESULTS:
- | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
+ | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
+
 
 * Development 
 ** Languages

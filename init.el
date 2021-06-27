@@ -1,9 +1,3 @@
-(defvar efs/user-dir-emacs 
-     (format "c:/Users/%s/Documents/GitHub/emacs/" user-login-name))
-
-(defvar efs/user-dir-org 
-     (format "c:/Users/%s/Documents/GitHub/org/" user-login-name))
-
 ;; Initialize package sources
 (require 'package)
 
@@ -62,8 +56,8 @@
 ;; Enable column number
 (column-number-mode)
 
-(use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
+;;(use-package rainbow-delimiters
+  ;;  :hook (prog-mode . rainbow-delimiters-mode))
 
 (desktop-save-mode 1)
 ;(savehist-mode 1)
@@ -86,7 +80,7 @@
    "j" '(:ignore t :which-key "org")
 
    "ec" '(lambda () (interactive) (
-	 find-file (concat efs/user-dir-emacs "readme.org"))
+	 find-file (concat efs/user-dir-readme))
 	 :which-key "ORG Config")
 
    "ei" '(lambda () (interactive) (
@@ -303,9 +297,15 @@ One for writing code and the other for reading articles."
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
 (defun efs/org-mode-setup ()
-    (org-indent-mode t)
+    (interactive)
+    ;; (org-indent-mode t)
     (variable-pitch-mode 1)
-    (visual-line-mode 1))
+    (visual-line-mode 1)
+    (efs/org-font-setup))
+
+(efs/leader-keys
+  "of" '(efs/org-mode-setup :wk "org mode setup fn")
+)
 
 (use-package org
 	:config
@@ -658,12 +658,10 @@ same directory as the org-buffer and insert a link to this file."
 )
 
 (defun efs/org-babel-tangle-config ()
-  (when (string-equal (file-name-directory (buffer-file-name))
-                    (expand-file-name "c:/Users/Adrian/Documents/GitHub/emacs/"))
-
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
+  (when
+      (string= buffer-file-name efs/user-dir-readme)
+      (let ((org-confirm-babel-evaluate nil)))
+      (org-babel-tangle)))
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
@@ -729,3 +727,5 @@ same directory as the org-buffer and insert a link to this file."
   ;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
+
+(print efs/user-dir-readme)
