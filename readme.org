@@ -515,6 +515,19 @@ One for writing code and the other for reading articles."
 #+end_src
    #+RESULTS:
 
+** Keybindings 
+   
+    #+begin_src emacs-lisp
+(efs/leader-keys
+    "o" '(:ignore t :wk "org")
+    "oc" '(org-capture :wk "capture")
+    "oj" '(org-store-link :wk "org-store-link")
+    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
+)
+    #+end_src
+
+    #+RESULTS:
+
 ** General
 
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
@@ -530,14 +543,6 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 	(setq org-hide-emphasis-markers t)
 
-	(setq org-agenda-files
-	      '(
-		   (concat efs/user-dir-org "work.org")
-		   (concat efs/user-dir-org "personal.org")
-		   (concat efs/user-dir-org "habits.org")
-		   (concat efs/user-dir-org "dates.org")
-		   (concat efs/user-dir-org "inbox.org")
-		))
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
@@ -583,18 +588,27 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
    #+RESULTS:
    : t
-** Keybindings 
    
-    #+begin_src emacs-lisp
-(efs/leader-keys
-    "o" '(:ignore t :wk "org")
-    "oc" '(org-capture :wk "capture")
-    "oj" '(org-store-link :wk "org-store-link")
-    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
-)
-    #+end_src
+** Org Agenda
 
-    #+RESULTS:
+#+begin_src emacs-lisp
+  (efs/leader-keys
+    "oa"'(org-agenda :wk "org-agenda") 
+  )
+  (setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "work.org")
+         (concat efs/user-dir-org "personal.org")
+         (concat efs/user-dir-org "habits.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         ))
+
+
+#+end_src
+
+#+RESULTS:
+| c:/Git/Org/work.org | c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org |
 
 ** Org Capture Templates 
     
@@ -990,7 +1004,7 @@ same directory as the org-buffer and insert a link to this file."
 
  #+RESULTS:
  | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
-
+ 
 * Development 
 ** Languages
 

@@ -310,6 +310,13 @@ One for writing code and the other for reading articles."
   "of" '(efs/org-mode-setup :wk "org mode setup fn")
 )
 
+(efs/leader-keys
+    "o" '(:ignore t :wk "org")
+    "oc" '(org-capture :wk "capture")
+    "oj" '(org-store-link :wk "org-store-link")
+    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
+)
+
 (use-package org
 	:config
 	(setq org-ellipsis " ▾")
@@ -321,14 +328,6 @@ One for writing code and the other for reading articles."
 
 	(setq org-hide-emphasis-markers t)
 
-	(setq org-agenda-files
-	      '(
-		   (concat efs/user-dir-org "work.org")
-		   (concat efs/user-dir-org "personal.org")
-		   (concat efs/user-dir-org "habits.org")
-		   (concat efs/user-dir-org "dates.org")
-		   (concat efs/user-dir-org "inbox.org")
-		))
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
@@ -370,11 +369,16 @@ One for writing code and the other for reading articles."
 	(efs/org-font-setup))
 
 (efs/leader-keys
-    "o" '(:ignore t :wk "org")
-    "oc" '(org-capture :wk "capture")
-    "oj" '(org-store-link :wk "org-store-link")
-    "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
+  "oa"'(org-agenda :wk "org-agenda") 
 )
+(setq org-agenda-files
+      (list 
+       (concat efs/user-dir-org "work.org")
+       (concat efs/user-dir-org "personal.org")
+       (concat efs/user-dir-org "habits.org")
+       (concat efs/user-dir-org "dates.org")
+       (concat efs/user-dir-org "inbox.org")
+       ))
 
 (setq org-capture-templates
    '( 
