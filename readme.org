@@ -227,20 +227,17 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
    #+RESULTS:
    : t
    
-** Undo-fu
-   Simple linear undo with emacs, nothin super fancy [[https://github.com/emacsmirror/undo-fu][Undo-Fu]]
+** Undo tree visualizer
+[[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
 
-   Checkout [[https://gitlab.com/ideasman42/emacs-undo-fu-session][Undo fu sessions]] for saving of redo-undo functionality across sessions
-   #+begin_src emacs-lisp
-   (use-package undo-fu
-	:config
-	(global-undo-tree-mode -1)
-	(define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-	(define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package undo-tree)
+  (setq evil-undo-system 'undo-tree)
+  (setq global-undo-tree-mode 't)
+#+end_src
 
-   #+RESULTS:
-   : t
+#+RESULTS:
+: t
 
 * UI Config 
 ** Color Theme

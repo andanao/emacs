@@ -134,11 +134,9 @@
   :config
   (evil-collection-init))
 
-(use-package undo-fu
-     :config
-     (global-undo-tree-mode -1)
-     (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-     (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo))
+(use-package undo-tree)
+(setq evil-undo-system 'undo-tree)
+(setq global-undo-tree-mode 't)
 
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
