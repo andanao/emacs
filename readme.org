@@ -116,9 +116,11 @@ Setting up fonts and stuff, I'm still not sure how I feel about Cantarell
 ** Rainbow Delimiters
 
    #+begin_src emacs-lisp
-(use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
+;;(use-package rainbow-delimiters
+  ;;  :hook (prog-mode . rainbow-delimiters-mode))
    #+end_src
+
+   #+RESULTS:
 
 ** Restore session
 
@@ -157,7 +159,7 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
       "j" '(:ignore t :which-key "org")
       
       "ec" '(lambda () (interactive) (
-	    find-file (concat efs/user-dir-emacs "readme.org"))
+	    find-file (concat efs/user-dir-readme))
 	    :which-key "ORG Config")
       
       "ei" '(lambda () (interactive) (
@@ -929,7 +931,7 @@ same directory as the org-buffer and insert a link to this file."
 
 ** Insert Image from clipboard
 
-Same thing as the insert screenshot but works faster and with Win-S
+Same thing as the insert screenshot but works faster and can use with Win-S from clipboard
 
 #+begin_src emacs-lisp
 (setq efs/user-dir-org-images
@@ -1135,3 +1137,10 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 #+RESULTS:
 | dired-extra-startup | org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |
+
+* testing
+  #+begin_src emacs-lisp
+(print efs/user-dir-readme)
+  #+end_src
+
+  
