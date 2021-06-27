@@ -143,52 +143,53 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 
 
    #+begin_src emacs-lisp
- 
-   (use-package general
-   :after evil
-   :config
-   (general-create-definer efs/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-    (efs/leader-keys
-      "t" '(:ignore t :wk "toggles") 
-      "k" '(:ignore t :wk "kill")
-      "e" '(:ignore t :which-key "eval")
-      "j" '(:ignore t :which-key "org")
-      
-      "ec" '(lambda () (interactive) (
-	    find-file (concat efs/user-dir-readme))
-	    :which-key "ORG Config")
-      
-      "ei" '(lambda () (interactive) (
-	    find-file (concat efs/user-dir-emacs "init.el"))
-	    :which-key "ORG init")
-	    
-      "eb" '(eval-buffer :which-key "eval-buffer")
-      "ep" '(eval-last-sexp :which-key "eval-last-sexp")
-      "eo" '(org-mode-restart :which-key "org-mode-restart")
+
+     (use-package general
+     :after evil
+     :config
+     (general-create-definer efs/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+      (efs/leader-keys
+        "t" '(:ignore t :wk "toggles") 
+        "k" '(:ignore t :wk "kill")
+        "e" '(:ignore t :which-key "eval")
+        "j" '(:ignore t :which-key "org")
+
+        "ec" '(lambda () (interactive) (
+              find-file (concat efs/user-dir-readme))
+              :which-key "ORG Config")
+
+        "ei" '(lambda () (interactive) (
+              find-file (concat efs/user-dir-emacs "init.el"))
+              :which-key "ORG init")
+
+        "eb" '(eval-buffer :which-key "eval-buffer")
+        "ep" '(eval-last-sexp :which-key "eval-last-sexp")
+        "eo" '(org-mode-restart :which-key "org-mode-restart")
 
 
-      ;"SPC"  '(normal-mode :which-key "normal-mode")
+        ;"SPC"  '(normal-mode :which-key "normal-mode")
 
 
-      "kw" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-      "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+        "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
+        "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+        "kl"'(delete-window :wk "delete-window")
 
-  
-      ;"jk" '(org-capture :which-key "org-capture")
 
-      "h" '(:ignore t :which-key "describe")
-      "he" 'view-echo-area-messages
-      "hf" 'describe-function
-      "hF" 'describe-face
-      "hk" 'describe-key
-      "hK" 'describe-keymap
-      "hp" 'describe-package
-      "hv" 'describe-variable
-      ))
-  
+        ;"jk" '(org-capture :which-key "org-capture")
+
+        "h" '(:ignore t :which-key "describe")
+        "he" 'view-echo-area-messages
+        "hf" 'describe-function
+        "hF" 'describe-face
+        "hk" 'describe-key
+        "hK" 'describe-keymap
+        "hp" 'describe-package
+        "hv" 'describe-variable
+        ))
+
    #+end_src
 
    #+RESULTS:

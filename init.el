@@ -79,12 +79,12 @@
    "j" '(:ignore t :which-key "org")
 
    "ec" '(lambda () (interactive) (
-	 find-file (concat efs/user-dir-readme))
-	 :which-key "ORG Config")
+         find-file (concat efs/user-dir-readme))
+         :which-key "ORG Config")
 
    "ei" '(lambda () (interactive) (
-	 find-file (concat efs/user-dir-emacs "init.el"))
-	 :which-key "ORG init")
+         find-file (concat efs/user-dir-emacs "init.el"))
+         :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")
    "ep" '(eval-last-sexp :which-key "eval-last-sexp")
@@ -94,8 +94,9 @@
    ;"SPC"  '(normal-mode :which-key "normal-mode")
 
 
-   "kw" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
+   "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
    "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+   "kl"'(delete-window :wk "delete-window")
 
 
    ;"jk" '(org-capture :which-key "org-capture")
