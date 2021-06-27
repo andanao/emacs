@@ -15,6 +15,12 @@ efs/user-dir-readme - this files full path
 ** init.el config file
 efs/user-dir-config
 directory for the actual config file used when running,
+** Computer id
+set efs/computer-id
+currently:
+    work
+    Personal
+
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
