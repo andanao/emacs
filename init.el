@@ -134,9 +134,14 @@
   :config
   (evil-collection-init))
 
-(use-package undo-tree)
-(setq evil-undo-system 'undo-tree)
-(setq global-undo-tree-mode 't)
+(use-package undo-tree
+  :diminish undo-tree-mode
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq evil-undo-system 'undo-tree)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)))
 
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))

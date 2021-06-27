@@ -231,9 +231,15 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
 
 #+begin_src emacs-lisp
-  (use-package undo-tree)
-  (setq evil-undo-system 'undo-tree)
-  (setq global-undo-tree-mode 't)
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :config
+    (progn
+      (global-undo-tree-mode)
+      (setq evil-undo-system 'undo-tree)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t)))
+
 #+end_src
 
 #+RESULTS:
