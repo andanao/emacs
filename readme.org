@@ -982,7 +982,7 @@ same directory as the org-buffer and insert a link to this file."
  #+RESULTS:
  | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 
-
+ 
 * Development 
 ** Languages
 
@@ -1138,9 +1138,5 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 #+RESULTS:
 | dired-extra-startup | org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |
 
-* testing
-  #+begin_src emacs-lisp
-(print efs/user-dir-readme)
-  #+end_src
 
   

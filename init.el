@@ -727,5 +727,3 @@ same directory as the org-buffer and insert a link to this file."
   ;    ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
-
-(print efs/user-dir-readme)
