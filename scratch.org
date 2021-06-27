@@ -1,6 +1,3 @@
 #+begin_src emacs-lisp
-  (use-package rainbow-delimiters)
-
+(print evil-want-C-w-delete)
 #+end_src
-
-#+RESULTS:
