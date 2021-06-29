@@ -951,7 +951,6 @@ same directory as the org-buffer and insert a link to this file."
 
 #+end_src
 
-
 ** Insert Image from clipboard
 
 Same thing as the insert screenshot but works faster and can use with Win-S from clipboard
@@ -1003,8 +1002,29 @@ same directory as the org-buffer and insert a link to this file."
  #+end_src
 
  #+RESULTS:
- | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
- 
+ | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) | 
+** New org note
+Quick fn to define a new org note
+
+#+begin_src emacs-lisp
+  (defun efs/new-org-note ()
+    (interactive)
+    (setq input (read-string "Enter new Filename:\t"))
+    ;; (setq input "test file NaMe")
+    (setq input (replace-regexp-in-string "\s" "-" input))
+    (setq input (downcase input))
+    (setq input (concat efs/user-dir-org input ".org"))
+    (find-file input)
+    (evil-insert-state)
+    )
+  (efs/leader-keys
+    "on" '(efs/new-org-note :wk "new-org-note")
+  )
+#+end_src
+
+#+RESULTS:
+
+** TODO quick go to scratch.org
 * Development 
 ** Languages
 

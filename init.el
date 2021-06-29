@@ -672,6 +672,20 @@ same directory as the org-buffer and insert a link to this file."
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
+(defun efs/new-org-note ()
+  (interactive)
+  (setq input (read-string "Enter new Filename:\t"))
+  ;; (setq input "test file NaMe")
+  (setq input (replace-regexp-in-string "\s" "-" input))
+  (setq input (downcase input))
+  (setq input (concat efs/user-dir-org input ".org"))
+  (find-file input)
+  (evil-insert-state)
+  )
+(efs/leader-keys
+  "on" '(efs/new-org-note :wk "new-org-note")
+)
+
 (use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
