@@ -1,32 +1,16 @@
+** Emojify :tada: :
+  I Using emojis as labels :heart_eyes:
 
+   #+begin_src emacs-lisp
+     (use-package emojify
+       :hook (after-init . global-emojify-mode))
+     (add-hook 'after-init-hook #'global-emojify-mode)
 
-#+begin_src emacs-lisp
-efs/user-dir-org
-#+end_src
+     (efs/leader-keys
+       ";" '(emojify-insert-emoji :wk "insert emoji")
+     )
+     #+end_src
 
-#+RESULTS:
-: c:/Git/Org/
+   #+RESULTS:
 
-
-#+begin_src emacs-lisp
-  (defun efs/new-org-note ()
-    (interactive)
-    (setq input (read-string "Enter new Filename:\t"))
-    ;; (setq input "test file NaMe")
-    (setq input (replace-regexp-in-string "\s" "-" input))
-    (setq input (downcase input))
-    (setq input (concat efs/user-dir-org input ".org"))
-    (find-file input)
-    (evil-insert-state)
-   )
-#+end_src
-
-#+RESULTS:
-: efs/new-org-note
-
-#+begin_src emacs-lisp
-(with-temp-buffer input "test")
-#+end_src
-
-#+RESULTS:
-: test
+   
