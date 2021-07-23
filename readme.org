@@ -1023,6 +1023,18 @@ Quick fn to define a new org note
 #+end_src
 
 #+RESULTS:
+** Remove Line breaks in region
+#+begin_src emacs-lisp
+(defun efs/remove-newlines-in-region ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match " " nil t))))
+
+#+end_src
+
 
 ** TODO quick go to scratch.org
 * Development 

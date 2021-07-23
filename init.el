@@ -686,6 +686,14 @@ same directory as the org-buffer and insert a link to this file."
   "on" '(efs/new-org-note :wk "new-org-note")
 )
 
+(defun efs/remove-newlines-in-region ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match " " nil t))))
+
 (use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
