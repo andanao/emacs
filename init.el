@@ -269,6 +269,14 @@ One for writing code and the other for reading articles."
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 (show-paren-mode t)
 
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+(add-hook 'after-init-hook #'global-emojify-mode)
+
+(efs/leader-keys
+  ";" '(emojify-insert-emoji :wk "insert emoji")
+)
+
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
     (font-lock-add-keywords 'org-mode

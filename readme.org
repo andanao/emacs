@@ -452,6 +452,23 @@ One for writing code and the other for reading articles."
 #+RESULTS:
 : t
 
+** Emojify :tada: :
+  I Using emojis as labels :heart_eyes:
+
+   #+begin_src emacs-lisp
+     (use-package emojify
+       :hook (after-init . global-emojify-mode))
+     (add-hook 'after-init-hook #'global-emojify-mode)
+
+     (efs/leader-keys
+       ";" '(emojify-insert-emoji :wk "insert emoji")
+     )
+     #+end_src
+
+   #+RESULTS:
+
+   
+
 * Org Mode
 ** EFS Org Font Faces
 
