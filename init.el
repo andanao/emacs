@@ -312,6 +312,7 @@ One for writing code and the other for reading articles."
     ;; (org-indent-mode t)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
+    (org-redisplay-inline-images)
     (efs/org-font-setup))
 
 (efs/leader-keys
