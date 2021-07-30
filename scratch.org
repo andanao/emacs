@@ -1,16 +1,46 @@
-** Emojify :tada: :
-  I Using emojis as labels :heart_eyes:
 
-   #+begin_src emacs-lisp
-     (use-package emojify
-       :hook (after-init . global-emojify-mode))
-     (add-hook 'after-init-hook #'global-emojify-mode)
+#+begin_src emacs-lisp
 
-     (efs/leader-keys
-       ";" '(emojify-insert-emoji :wk "insert emoji")
-     )
-     #+end_src
+  (setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "work.org")
+         (concat efs/user-dir-org "personal.org")
+         (concat efs/user-dir-org "habits.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         ))
 
-   #+RESULTS:
 
-   
+#+end_src
+
+#+RESULTS:
+| c:/Users/adanaos/Documents/GitHub/org_work/work.org | c:/Users/adanaos/Documents/GitHub/org_work/personal.org | c:/Users/adanaos/Documents/GitHub/org_work/habits.org | c:/Users/adanaos/Documents/GitHub/org_work/dates.org | c:/Users/adanaos/Documents/GitHub/org_work/inbox.org |
+
+#+begin_src emacs-lisp
+(if (string= efs/computer-id "work") 
+    (setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "work.org")
+         (concat efs/user-dir-org "personal.org")
+         (concat efs/user-dir-org "habits.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         ))
+
+
+    ((setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "work.org")
+         (concat efs/user-dir-org "personal.org")
+         (concat efs/user-dir-org "habits.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         ))
+)
+
+
+(print org-agenda-files)
+#+end_src
+
+#+RESULTS:
+| c:/Users/adanaos/Documents/GitHub/org_work/work.org | c:/Users/adanaos/Documents/GitHub/org_work/personal.org | c:/Users/adanaos/Documents/GitHub/org_work/habits.org | c:/Users/adanaos/Documents/GitHub/org_work/dates.org | c:/Users/adanaos/Documents/GitHub/org_work/inbox.org |
