@@ -377,16 +377,24 @@ One for writing code and the other for reading articles."
 	(efs/org-font-setup))
 
 (efs/leader-keys
-  "oa"'(org-agenda :wk "org-agenda") 
+    "oa"'(org-agenda :wk "org-agenda") 
+  )
+(if (string= efs/computer-id "work") 
+    (setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "work.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         ))
+
+    ((setq org-agenda-files
+        (list 
+         (concat efs/user-dir-org "personal.org")
+         (concat efs/user-dir-org "habits.org")
+         (concat efs/user-dir-org "dates.org")
+         (concat efs/user-dir-org "inbox.org")
+         )))
 )
-(setq org-agenda-files
-      (list 
-       (concat efs/user-dir-org "work.org")
-       (concat efs/user-dir-org "personal.org")
-       (concat efs/user-dir-org "habits.org")
-       (concat efs/user-dir-org "dates.org")
-       (concat efs/user-dir-org "inbox.org")
-       ))
 
 (setq org-capture-templates
    '( 
