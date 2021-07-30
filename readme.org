@@ -612,25 +612,28 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 Check computer ID before setting org agenda (I don't want work at home and home at work, if captured in inbox can later be moved from one place to another)
 
 #+begin_src emacs-lisp
-  (efs/leader-keys
-    "oa"'(org-agenda :wk "org-agenda") 
+    (efs/leader-keys
+      "oa"'(org-agenda :wk "org-agenda") 
+    )
+  (if (string= efs/computer-id "work") 
+      (setq org-agenda-files (list 
+	   (concat efs/user-dir-org "work.org")
+	   (concat efs/user-dir-org "personal.org")
+	   (concat efs/user-dir-org "habits.org")
+	   (concat efs/user-dir-org "dates.org")
+	   (concat efs/user-dir-org "inbox.org")
+	   ))
   )
-(if (string= efs/computer-id "work") 
-    (setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "work.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         ))
-
-    ((setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "personal.org")
-         (concat efs/user-dir-org "habits.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         )))
-)
+  (if (string= efs/computer-id "personal") 
+      (setq org-agenda-files
+	  (list 
+	   (concat efs/user-dir-org "work.org")
+	   (concat efs/user-dir-org "personal.org")
+	   (concat efs/user-dir-org "habits.org")
+	   (concat efs/user-dir-org "dates.org")
+	   (concat efs/user-dir-org "inbox.org")
+	   ))
+  )
 #+end_src
 
 #+RESULTS:
@@ -779,6 +782,7 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 #+end_src
     #+RESULTS:
     | t | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 
 ** Org Agenda
 
@@ -1028,7 +1032,7 @@ same directory as the org-buffer and insert a link to this file."
  #+end_src
 
  #+RESULTS:
- | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) | 
+ | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 ** New org note
 Quick fn to define a new org note
 

@@ -1,46 +1,43 @@
 
+
 #+begin_src emacs-lisp
-
-  (setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "work.org")
-         (concat efs/user-dir-org "personal.org")
-         (concat efs/user-dir-org "habits.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         ))
-
-
+  (if (string= "personal" efs/computer-id)
+      (list 
+	   (concat efs/user-dir-org "work.org")
+	   (concat efs/user-dir-org "personal.org")
+	   (concat efs/user-dir-org "habits.org")
+	   (concat efs/user-dir-org "dates.org")
+	   (concat efs/user-dir-org "inbox.org")
+	   )) (print "nay")
 #+end_src
 
 #+RESULTS:
-| c:/Users/adanaos/Documents/GitHub/org_work/work.org | c:/Users/adanaos/Documents/GitHub/org_work/personal.org | c:/Users/adanaos/Documents/GitHub/org_work/habits.org | c:/Users/adanaos/Documents/GitHub/org_work/dates.org | c:/Users/adanaos/Documents/GitHub/org_work/inbox.org |
+: nay
 
 #+begin_src emacs-lisp
-(if (string= efs/computer-id "work") 
-    (setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "work.org")
-         (concat efs/user-dir-org "personal.org")
-         (concat efs/user-dir-org "habits.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         ))
+  (if (string= efs/computer-id "work") 
+      (setq org-agenda-files (list 
+	   (concat efs/user-dir-org "work.org")
+	   (concat efs/user-dir-org "personal.org")
+	   (concat efs/user-dir-org "habits.org")
+	   (concat efs/user-dir-org "dates.org")
+	   (concat efs/user-dir-org "inbox.org")
+	   ))
+  )
+  (if (string= efs/computer-id "personal") 
+      (setq org-agenda-files
+	  (list 
+	   (concat efs/user-dir-org "work.org")
+	   (concat efs/user-dir-org "personal.org")
+	   (concat efs/user-dir-org "habits.org")
+	   (concat efs/user-dir-org "dates.org")
+	   (concat efs/user-dir-org "inbox.org")
+	   ))
+  )
 
-
-    ((setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "work.org")
-         (concat efs/user-dir-org "personal.org")
-         (concat efs/user-dir-org "habits.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         ))
-)
-
-
-(print org-agenda-files)
+  (print org-agenda-files)
 #+end_src
 
 #+RESULTS:
-| c:/Users/adanaos/Documents/GitHub/org_work/work.org | c:/Users/adanaos/Documents/GitHub/org_work/personal.org | c:/Users/adanaos/Documents/GitHub/org_work/habits.org | c:/Users/adanaos/Documents/GitHub/org_work/dates.org | c:/Users/adanaos/Documents/GitHub/org_work/inbox.org |
+| c:/Git/Org/work.org | c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org |
+

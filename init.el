@@ -380,20 +380,23 @@ One for writing code and the other for reading articles."
     "oa"'(org-agenda :wk "org-agenda") 
   )
 (if (string= efs/computer-id "work") 
+    (setq org-agenda-files (list 
+	 (concat efs/user-dir-org "work.org")
+	 (concat efs/user-dir-org "personal.org")
+	 (concat efs/user-dir-org "habits.org")
+	 (concat efs/user-dir-org "dates.org")
+	 (concat efs/user-dir-org "inbox.org")
+	 ))
+)
+(if (string= efs/computer-id "personal") 
     (setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "work.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         ))
-
-    ((setq org-agenda-files
-        (list 
-         (concat efs/user-dir-org "personal.org")
-         (concat efs/user-dir-org "habits.org")
-         (concat efs/user-dir-org "dates.org")
-         (concat efs/user-dir-org "inbox.org")
-         )))
+	(list 
+	 (concat efs/user-dir-org "work.org")
+	 (concat efs/user-dir-org "personal.org")
+	 (concat efs/user-dir-org "habits.org")
+	 (concat efs/user-dir-org "dates.org")
+	 (concat efs/user-dir-org "inbox.org")
+	 ))
 )
 
 (setq org-capture-templates
