@@ -143,6 +143,20 @@
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)))
 
+(defun efs/remove-newlines-in-region ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match " " nil t))))
+
+(efs/leader-keys
+    "r"  '(:ignore t :wk "replace")
+    "rr" 'replace-regexp
+    "rn" '(efs/remove-newlines-in-region :wk "remove new lines") ;defined later
+)
+
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
@@ -703,14 +717,6 @@ same directory as the org-buffer and insert a link to this file."
 (efs/leader-keys
   "on" '(efs/new-org-note :wk "new-org-note")
 )
-
-(defun efs/remove-newlines-in-region ()
-  "Removes all newlines in the region."
-  (interactive)
-  (save-restriction
-    (narrow-to-region (point) (mark))
-    (goto-char (point-min))
-    (while (search-forward "\n" nil t) (replace-match " " nil t))))
 
 (use-package projectile
 	:diminish projectile-mode

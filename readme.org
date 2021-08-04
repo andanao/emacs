@@ -252,6 +252,29 @@ https://lccambiaghi.github.io/vanilla-emacs/readme.html#org9191e9f
 #+RESULTS:
 : t
 
+** Remove Line breaks in region
+#+begin_src emacs-lisp
+(defun efs/remove-newlines-in-region ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t) (replace-match " " nil t))))
+
+#+end_src
+
+** Replacek
+   #+begin_src emacs-lisp
+(efs/leader-keys
+    "r"  '(:ignore t :wk "replace")
+    "rr" 'replace-regexp
+    "rn" '(efs/remove-newlines-in-region :wk "remove new lines") ;defined later
+)
+   #+end_src
+
+   #+RESULTS:
+
 * UI Config 
 ** Color Theme
  #+begin_src emacs-lisp
@@ -1051,18 +1074,6 @@ Quick fn to define a new org note
 #+end_src
 
 #+RESULTS:
-** Remove Line breaks in region
-#+begin_src emacs-lisp
-(defun efs/remove-newlines-in-region ()
-  "Removes all newlines in the region."
-  (interactive)
-  (save-restriction
-    (narrow-to-region (point) (mark))
-    (goto-char (point-min))
-    (while (search-forward "\n" nil t) (replace-match " " nil t))))
-
-#+end_src
-
 
 ** TODO quick go to scratch.org
 * Development 
