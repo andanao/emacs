@@ -18,8 +18,6 @@
   (if (string= efs/computer-id "work") 
       (setq org-agenda-files (list 
 	   (concat efs/user-dir-org "work.org")
-	   (concat efs/user-dir-org "personal.org")
-	   (concat efs/user-dir-org "habits.org")
 	   (concat efs/user-dir-org "dates.org")
 	   (concat efs/user-dir-org "inbox.org")
 	   ))
@@ -39,5 +37,40 @@
 #+end_src
 
 #+RESULTS:
-| c:/Git/Org/work.org | c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org |
+| c:/Users/adanaos/Documents/GitHub/org_work/work.org | c:/Users/adanaos/Documents/GitHub/org_work/dates.org | c:/Users/adanaos/Documents/GitHub/org_work/inbox.org |
+* sdf
+  #+begin_src emacs-lisp
+(cdr my-rops)  
+#+end_src
 
+#+RESULTS:
+| 2_3_03_02 | 2_3_03_03 | 2_3_03_04 | 2_3_03_05 | 2_3_03_06 | 2_3_03_07 | 2_3_03_08 | 2_3_03_09 | 2_3_03_10 | 2_3_03_11 | 2_3_03_12 | 2_3_03_13 | 2_3_03_14 | 2_3_03_15 | 2_3_03_16 | 2_3_03_17 | 2_3_03_18 | 2_3_03_19 | 2_3_03_20 | 2_3_01_01 | 2_3_01_02 | 2_3_01_03 | 2_3_01_04 | 2_3_01_05 | 2_3_01_06 | 2_3_01_07 | 2_3_01_08 |
+
+
+#+begin_src python
+print ("hello world")
+#+end_src
+
+#+RESULTS:
+: None
+
+#+begin_src python :results output
+import random
+if random.randint(0,10) % 2 == 0:
+    print ("even")
+else:
+    print("odd")
+#+end_src
+
+#+RESULTS:
+: odd
+
+#+RESULTS:i
+
+
+#+begin_src python :results output
+print("Hello, world!")
+#+end_src
+
+#+RESULTS:
+: Hello, world!
