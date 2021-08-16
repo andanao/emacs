@@ -635,7 +635,6 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 #+end_src
 
 #+RESULTS:
-| c:/Git/Org/work.org | c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org |
 
 ** Org Capture Templates 
     
