@@ -404,7 +404,6 @@ One for writing code and the other for reading articles."
 (if (string= efs/computer-id "personal") 
     (setq org-agenda-files
 	(list 
-	 (concat efs/user-dir-org "work.org")
 	 (concat efs/user-dir-org "personal.org")
 	 (concat efs/user-dir-org "habits.org")
 	 (concat efs/user-dir-org "dates.org")
