@@ -664,10 +664,11 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 #+begin_src emacs-lisp
 (setq org-capture-templates
    '( 
-    ("t" "Task" entry 
+    ("c" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
 %?
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -771,29 +772,6 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 :END:
   "
   :kill-buffer t)
-    ("c" "config" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"EMACS")
-"* TODO %^{Config changes}\n
-%?
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:END:
-  "
-  :kill-buffer t)
-    ("p" "Purchase" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org" ))"Purchase")
-"* TODO %^{What the fuck do you want now?}\n
-%?
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:Cost:\t%^{Cost}
-:END:
-  "
-  :kill-buffer t)
-
-
 
 
 
@@ -801,7 +779,8 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 
 #+end_src
     #+RESULTS:
-    | t | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+    | c | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 
 
 ** Org Agenda

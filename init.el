@@ -413,10 +413,11 @@ One for writing code and the other for reading articles."
 
 (setq org-capture-templates
    '( 
-    ("t" "Task" entry 
+    ("c" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
 %?
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -520,29 +521,6 @@ One for writing code and the other for reading articles."
 :END:
   "
   :kill-buffer t)
-    ("c" "config" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"EMACS")
-"* TODO %^{Config changes}\n
-%?
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:END:
-  "
-  :kill-buffer t)
-    ("p" "Purchase" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org" ))"Purchase")
-"* TODO %^{What the fuck do you want now?}\n
-%?
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:Cost:\t%^{Cost}
-:END:
-  "
-  :kill-buffer t)
-
-
 
 
 
