@@ -78,12 +78,11 @@
    "e" '(:ignore t :which-key "eval")
    "j" '(:ignore t :which-key "org")
 
-   "ec" '(lambda () (interactive) (
-         find-file (concat efs/user-dir-readme))
-         :which-key "ORG Config")
+   "er" '(lambda () (interactive) 
+	 (find-file (concat efs/user-dir-readme))
+         :wk "Readme Config")
 
-   "ei" '(lambda () (interactive) (
-         find-file (concat efs/user-dir-emacs "init.el"))
+   "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
          :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")
