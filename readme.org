@@ -1068,7 +1068,19 @@ Quick fn to define a new org note
 
 #+RESULTS:
 
-** TODO quick go to scratch.org
+** Open Scratch.org
+~leader C-s~ Open and go to scratch.org
+
+#+begin_src emacs-lisp
+(efs/leader-keys
+    "C-s" '(lambda () (interactive) (
+    find-file (concat efs/user-dir-org "scratch.org"))
+    :wk "ORG Config")
+)
+#+end_src
+
+#+RESULTS:
+
 * Development 
 ** Languages
 

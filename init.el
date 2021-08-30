@@ -702,6 +702,12 @@ same directory as the org-buffer and insert a link to this file."
   "on" '(efs/new-org-note :wk "new-org-note")
 )
 
+(efs/leader-keys
+    "C-s" '(lambda () (interactive) (
+    find-file (concat efs/user-dir-org "scratch.org"))
+    :wk "ORG Config")
+)
+
 (use-package projectile
 	:diminish projectile-mode
 	:config (projectile-mode)
