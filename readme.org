@@ -657,6 +657,17 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 
 #+RESULTS:
 
+** Agenda interaction 
+Don' move windows and set org span to 1 day
+
+#+begin_src emacs-lisp
+(setq org-agenda-window-setup 'current-window)
+(setq org-agenda-span 1)
+#+end_src
+
+#+RESULTS:
+: 1
+
 ** Org Capture Templates 
     
 #+begin_src emacs-lisp

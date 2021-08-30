@@ -410,6 +410,9 @@ One for writing code and the other for reading articles."
 	 ))
 )
 
+(setq org-agenda-window-setup 'current-window)
+(setq org-agenda-span 1)
+
 (setq org-capture-templates
    '( 
     ("c" "Task" entry 
