@@ -681,6 +681,7 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
 "* TODO %^{Work Task}\n
 %?
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -694,6 +695,7 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
 "* TODO %^{Personal Task}\n
 %?
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -709,6 +711,7 @@ Check computer ID before setting org agenda (I don't want work at home and home 
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task to inbox}\n
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -724,6 +727,7 @@ Check computer ID before setting org agenda (I don't want work at home and home 
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %(org-cliplink-capture)\n
+   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
