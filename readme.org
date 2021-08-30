@@ -160,7 +160,7 @@ Enable column numbers
       (efs/leader-keys
         "t" '(:ignore t :wk "toggles") 
         "k" '(:ignore t :wk "kill")
-        "e" '(:ignore t :which-key "eval")
+        "e" '(:ignore t :whch-key "eval")
         "j" '(:ignore t :which-key "org")
 
         "er" '(lambda () (interactive) 
@@ -634,8 +634,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 Check computer ID before setting org agenda (I don't want work at home and home at work, if captured in inbox can later be moved from one place to another)
 
 #+begin_src emacs-lisp
-    (efs/leader-keys
-      "oa"'(org-agenda :wk "org-agenda") 
+  (efs/leader-keys
+      "oa"'(lambda () (interactive) (org-agenda nil "a") :wk "org-agenda") 
     )
   (if (string= efs/computer-id "work") 
       (setq org-agenda-files (list 

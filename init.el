@@ -75,7 +75,7 @@
  (efs/leader-keys
    "t" '(:ignore t :wk "toggles") 
    "k" '(:ignore t :wk "kill")
-   "e" '(:ignore t :which-key "eval")
+   "e" '(:ignore t :whch-key "eval")
    "j" '(:ignore t :which-key "org")
 
    "er" '(lambda () (interactive) 
@@ -391,7 +391,7 @@ One for writing code and the other for reading articles."
 	(efs/org-font-setup))
 
 (efs/leader-keys
-    "oa"'(org-agenda :wk "org-agenda") 
+    "oa"'(lambda () (interactive) (org-agenda nil "a") :wk "org-agenda") 
   )
 (if (string= efs/computer-id "work") 
     (setq org-agenda-files (list 
