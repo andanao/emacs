@@ -1127,7 +1127,7 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 
 #+RESULTS:
-: magit-file-dispatch
+: magit-status
 
 * File Management
 ** Dired Bindings
