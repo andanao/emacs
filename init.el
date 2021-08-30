@@ -732,6 +732,8 @@ same directory as the org-buffer and insert a link to this file."
 
 ;(use-package evil-magit
 ;   :after magit)
+(global-set-key (kbd "C-c g") 'magit-file-dispatch)
+(global-set-key (kbd "C-x C-g") 'magit-status)
 
 (use-package dired
       :ensure nil
