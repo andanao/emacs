@@ -787,6 +787,17 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 
 
 
+** Quick Capture 
+Quickly capture something to inbox with leader C-c
+
+#+begin_src emacs-lisp
+(efs/leader-keys
+    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+#+end_src
+
+#+RESULTS:
+
+
 ** Org Agenda
 
 #+begin_src emacs-lisp

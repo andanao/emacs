@@ -530,6 +530,9 @@ One for writing code and the other for reading articles."
 
 ))
 
+(efs/leader-keys
+    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+
 ;; Configure custom agenda views
 (setq org-agenda-custom-commands
 	 '(("d" "Dashboard"
