@@ -775,6 +775,18 @@ same directory as the org-buffer and insert a link to this file."
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
 
+(with-eval-after-load 'dired
+;; C-c l to launch a file in Windows similar to running
+;; start "" filename in the console
+(defun efs/dired-win-default ()
+  (interactive)
+  (let ((filename (dired-replace-in-string "/"
+                                           "\\"
+                                           (dired-get-filename))))
+
+    (w32-shell-execute 1 filename)))
+(define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
+
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))

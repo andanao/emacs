@@ -1040,6 +1040,8 @@ same directory as the org-buffer and insert a link to this file."
 )
 #+end_src
 
+#+RESULTS:
+
 ** Auto tangle Config Files
  Tangle readme.org file to init.el on save
 
@@ -1246,7 +1248,28 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 | dired-extra-startup | org-download-enable | all-the-icons-dired-mode | doom-modeline-set-project-modeline |
 
 
-  
+ 
+** Open in Windows Default 
+Use the default OS program to open the selected file in dired
+
+  #+begin_src emacs-lisp
+  (with-eval-after-load 'dired
+  ;; C-c l to launch a file in Windows similar to running
+  ;; start "" filename in the console
+  (defun efs/dired-win-default ()
+    (interactive)
+    (let ((filename (dired-replace-in-string "/"
+                                             "\\"
+                                             (dired-get-filename))))
+					     
+      (w32-shell-execute 1 filename)))
+  (define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
+  #+end_src
+
+  #+RESULTS:
+  : efs/dired-win-default
+
+
 ** UTF-8 
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 
