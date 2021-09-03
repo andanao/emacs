@@ -714,9 +714,6 @@ SCHEDULED: %t
 "
   :kill-buffer t)
 
-
-
-
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task to inbox}\n
@@ -731,8 +728,6 @@ SCHEDULED: %t
   :immediate-finish t
   :kill-buffer t)
 
-
-
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %(org-cliplink-capture)\n
@@ -746,7 +741,6 @@ SCHEDULED: %t
 "
   :immediate-finish t
   :kill-buffer t)
-
 
     ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
@@ -773,6 +767,7 @@ SCHEDULED: %t
 :END:
   "
   :kill-buffer t)
+
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
 "* PILE %^{Book Title}\n
@@ -786,13 +781,12 @@ SCHEDULED: %t
   "
   :kill-buffer t)
 
-
-
 ))
 
 #+end_src
     #+RESULTS:
     | c | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 
 
 
@@ -1205,7 +1199,6 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 ** Dired
 #+begin_src emacs-lisp
-
   (use-package dired
       :ensure nil
       :commands (dired dired-jump)

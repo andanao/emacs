@@ -456,9 +456,6 @@ SCHEDULED: %t
 "
   :kill-buffer t)
 
-
-
-
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task to inbox}\n
@@ -473,8 +470,6 @@ SCHEDULED: %t
   :immediate-finish t
   :kill-buffer t)
 
-
-
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %(org-cliplink-capture)\n
@@ -488,7 +483,6 @@ SCHEDULED: %t
 "
   :immediate-finish t
   :kill-buffer t)
-
 
     ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
@@ -515,6 +509,7 @@ SCHEDULED: %t
 :END:
   "
   :kill-buffer t)
+
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
 "* PILE %^{Book Title}\n
@@ -527,8 +522,6 @@ SCHEDULED: %t
 :END:
   "
   :kill-buffer t)
-
-
 
 ))
 
