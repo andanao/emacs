@@ -676,8 +676,8 @@ Don' move windows and set org span to 1 day
     ("c" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -689,8 +689,8 @@ Don' move windows and set org span to 1 day
     ("w" "Work Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
 "* TODO %^{Work Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -703,8 +703,8 @@ Don' move windows and set org span to 1 day
     ("p" "Personal Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
 "* TODO %^{Personal Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -720,7 +720,7 @@ Don' move windows and set org span to 1 day
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task to inbox}\n
-   SCHEDULED: %t
+SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -736,7 +736,7 @@ Don' move windows and set org span to 1 day
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %(org-cliplink-capture)\n
-   SCHEDULED: %t
+SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -793,6 +793,7 @@ Don' move windows and set org span to 1 day
 #+end_src
     #+RESULTS:
     | c | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
 
 
 

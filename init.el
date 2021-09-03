@@ -418,8 +418,8 @@ One for writing code and the other for reading articles."
     ("c" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -431,8 +431,8 @@ One for writing code and the other for reading articles."
     ("w" "Work Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
 "* TODO %^{Work Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -445,8 +445,8 @@ One for writing code and the other for reading articles."
     ("p" "Personal Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
 "* TODO %^{Personal Task}\n
+SCHEDULED: %t
 %?
-   SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -462,7 +462,7 @@ One for writing code and the other for reading articles."
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %^{Task to inbox}\n
-   SCHEDULED: %t
+SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -478,7 +478,7 @@ One for writing code and the other for reading articles."
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
 "* TODO %(org-cliplink-capture)\n
-   SCHEDULED: %t
+SCHEDULED: %t
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
