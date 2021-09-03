@@ -796,3 +796,6 @@ same directory as the org-buffer and insert a link to this file."
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
+(if (string= efs/computer-id "work") 
+    (load-file (concat efs/user-dir-org "work.el")))

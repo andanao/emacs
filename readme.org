@@ -1298,3 +1298,14 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 #+RESULTS:
 | UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
 
+* Load Computer specific config files 
+
+** Work
+
+#+begin_src emacs-lisp
+(if (string= efs/computer-id "work") 
+    (load-file (concat efs/user-dir-org "work.el")))
+#+end_src
+
+#+RESULTS:
+: t
