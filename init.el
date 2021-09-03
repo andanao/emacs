@@ -82,7 +82,11 @@
 	 (find-file (concat efs/user-dir-readme))
          :wk "Readme Config")
 
-   "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+   "ew" '(lambda () (interactive) 
+	 (find-file (concat efs/user-dir-org "work-config.org"))
+         :wk "Readme Config")
+
+  "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
          :which-key "ORG init")
 
    "eb" '(eval-buffer :which-key "eval-buffer")
@@ -150,10 +154,19 @@
     (goto-char (point-min))
     (while (search-forward "\n" nil t) (replace-match " " nil t))))
 
+(defun efs/format-dir-winstyle ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\\" nil t) (replace-match "\\\\" nil t))))
+
 (efs/leader-keys
     "r"  '(:ignore t :wk "replace")
     "rr" 'replace-regexp
-    "rn" '(efs/remove-newlines-in-region :wk "remove new lines") ;defined later
+    "rn" '(efs/remove-newlines-in-region :wk "remove new lines")
+    "rs" '(efs/format-dir-winstyle :wk "format dir style windows")
 )
 
 (use-package doom-themes

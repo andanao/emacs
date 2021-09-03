@@ -167,7 +167,11 @@ Enable column numbers
 	      (find-file (concat efs/user-dir-readme))
               :wk "Readme Config")
 
-        "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+        "ew" '(lambda () (interactive) 
+	      (find-file (concat efs/user-dir-org "work-config.org"))
+              :wk "Readme Config")
+
+       "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
               :which-key "ORG init")
 
         "eb" '(eval-buffer :which-key "eval-buffer")
@@ -262,12 +266,30 @@ Enable column numbers
 
 #+end_src
 
-** Replacek
+** Fix file dir formatting for win
+this is always so annoying
+#+begin_src emacs-lisp
+(defun efs/format-dir-winstyle ()
+  "Removes all newlines in the region."
+  (interactive)
+  (save-restriction
+    (narrow-to-region (point) (mark))
+    (goto-char (point-min))
+    (while (search-forward "\\" nil t) (replace-match "\\\\" nil t))))
+
+#+end_src
+
+#+RESULTS:
+: efs/format-dir-winstyle
+
+
+** Replace hotkeys
    #+begin_src emacs-lisp
 (efs/leader-keys
     "r"  '(:ignore t :wk "replace")
     "rr" 'replace-regexp
-    "rn" '(efs/remove-newlines-in-region :wk "remove new lines") ;defined later
+    "rn" '(efs/remove-newlines-in-region :wk "remove new lines")
+    "rs" '(efs/format-dir-winstyle :wk "format dir style windows")
 )
    #+end_src
 
