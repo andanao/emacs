@@ -430,9 +430,9 @@ One for writing code and the other for reading articles."
    '( 
     ("c" "Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task}\n
+"* TODO %^{Task}
 SCHEDULED: %t
-%?
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -443,9 +443,9 @@ SCHEDULED: %t
   :kill-buffer t)
     ("w" "Work Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
-"* TODO %^{Work Task}\n
+"* TODO %^{Work Task}
 SCHEDULED: %t
-%?
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -457,9 +457,9 @@ SCHEDULED: %t
 
     ("p" "Personal Task" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
-"* TODO %^{Personal Task}\n
+"* TODO %^{Personal Task}
 SCHEDULED: %t
-%?
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -471,8 +471,8 @@ SCHEDULED: %t
 
     ("i" "Quick Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task to inbox}\n
-SCHEDULED: %t
+"* TODO %^{Task to inbox}
+SCHEDULED: %t\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -485,8 +485,8 @@ SCHEDULED: %t
 
     ("k" "Clipboard Link to Inbox" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %(org-cliplink-capture)\n
-SCHEDULED: %t
+"* TODO %(org-cliplink-capture)
+SCHEDULED: %t\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -499,8 +499,8 @@ SCHEDULED: %t
 
     ("m" "CAD Model" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
-"* TODO %^{Thing to CAD}\n
-%?
+"* TODO %^{Thing to CAD}
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -510,8 +510,8 @@ SCHEDULED: %t
   :kill-buffer t)
     ("P" "Project" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
-"* TODO %^{Project Name}\n
-%?
+"* TODO %^{Project Name}
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U
@@ -525,8 +525,8 @@ SCHEDULED: %t
 
     ("B" "Book" entry 
 	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
-"* PILE %^{Book Title}\n
-%?
+"* PILE %^{Book Title}
+%?\n
 :PROPERTIES:
 :ID:     \t%(org-id-new)
 :CREATED:\t%U 
