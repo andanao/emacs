@@ -403,9 +403,6 @@ One for writing code and the other for reading articles."
 
 	(efs/org-font-setup))
 
-(efs/leader-keys
-    "oa"'(lambda () (interactive) (org-agenda nil "a") :wk "org-agenda") 
-  )
 (if (string= efs/computer-id "work") 
     (setq org-agenda-files (list 
 	 (concat efs/user-dir-org "work.org")
@@ -422,6 +419,21 @@ One for writing code and the other for reading articles."
 	 (concat efs/user-dir-org "inbox.org")
 	 ))
 )
+
+(defun efs/org-agenda-open ()
+    (interactive)
+    (evil-window-split)
+    (evil-window-down 1)
+    (org-agenda nil "a"))
+(efs/leader-keys
+      "oa"'(efs/org-agenda-open :wk "org-agenda"))
+
+(defun efs/org-agenda-quit ()
+    (interactive)
+    (org-agenda-quit)
+    (delete-window))
+(evil-define-key 'motion org-agenda-mode-map
+    (kbd "q") 'efs/org-agenda-quit)
 
 (setq org-agenda-window-setup 'current-window)
 (setq org-agenda-span 1)

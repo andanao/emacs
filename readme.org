@@ -653,13 +653,11 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
    : t
    
 ** Org Agenda
+*** Files
 
 Check computer ID before setting org agenda (I don't want work at home and home at work, if captured in inbox can later be moved from one place to another)
 
 #+begin_src emacs-lisp
-  (efs/leader-keys
-      "oa"'(lambda () (interactive) (org-agenda nil "a") :wk "org-agenda") 
-    )
   (if (string= efs/computer-id "work") 
       (setq org-agenda-files (list 
 	   (concat efs/user-dir-org "work.org")
@@ -679,6 +677,37 @@ Check computer ID before setting org agenda (I don't want work at home and home 
 #+end_src
 
 #+RESULTS:
+
+
+*** Agenda Open
+split window and focus down on agenda open
+
+#+begin_src emacs-lisp
+(defun efs/org-agenda-open ()
+    (interactive)
+    (evil-window-split)
+    (evil-window-down 1)
+    (org-agenda nil "a"))
+(efs/leader-keys
+      "oa"'(efs/org-agenda-open :wk "org-agenda"))
+#+end_src
+
+#+RESULTS:
+
+*** Agenda Quit
+    Close window on quitting agenda
+
+#+begin_src emacs-lisp
+(defun efs/org-agenda-quit ()
+    (interactive)
+    (org-agenda-quit)
+    (delete-window))
+(evil-define-key 'motion org-agenda-mode-map
+    (kbd "q") 'efs/org-agenda-quit)
+#+end_src
+
+#+RESULTS:
+
 
 ** Agenda interaction 
 Don' move windows and set org span to 1 day
