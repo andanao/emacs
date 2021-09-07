@@ -296,7 +296,8 @@ One for writing code and the other for reading articles."
 (show-paren-mode t)
 
 (use-package emojify
-  :hook (after-init . global-emojify-mode))
+  :hook (after-init . global-emojify-mode)
+  )
 (add-hook 'after-init-hook #'global-emojify-mode)
 
 (efs/leader-keys
@@ -402,6 +403,13 @@ One for writing code and the other for reading articles."
 	(visual-line-mode 1)
 
 	(efs/org-font-setup))
+
+(use-package org-appear)
+(add-hook 'org-mode-hook 'org-appear-mode)
+(setq  org-appear-autolinks t)
+(setq org-appear-autoentities t)
+(setq org-appear-autosubmarkers t)
+(setq org-appear-delay 0.3)
 
 (if (string= efs/computer-id "work") 
     (setq org-agenda-files (list 
