@@ -718,6 +718,8 @@ same directory as the org-buffer and insert a link to this file."
 )
 (efs/leader-keys "f" '(efs/org-find-file :wk "Org Find File"))
 
+(add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
+
 (defun efs/org-babel-tangle-config ()
   (when
       (string= buffer-file-name efs/user-dir-readme)

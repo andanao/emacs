@@ -1122,6 +1122,15 @@ Counsel find file in my org directory
 
 #+RESULTS:
 
+** Org Normal on C-c C-c 
+Return to normal state after C-c C-c
+
+#+begin_src emacs-lisp
+(add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
+#+end_src
+
+#+RESULTS:
+| evil-normal-state |
 
 ** Auto tangle Config Files
  Tangle readme.org file to init.el on save
