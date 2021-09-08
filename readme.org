@@ -664,11 +664,11 @@ Make it less of a pain to edit emphasized text in org mode [[https://github.com/
 (setq org-appear-autoentities t)
 (setq org-appear-autosubmarkers t)
 (setq org-appear-autokeywords t) 
-(setq org-appear-delay 0.3)
+(setq org-appear-delay 0.6)
 #+end_src
 
 #+RESULTS:
-: 0.3
+: 0.6
 
 ** Org Agenda
 *** Files

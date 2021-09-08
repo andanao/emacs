@@ -412,7 +412,7 @@ One for writing code and the other for reading articles."
 (setq org-appear-autoentities t)
 (setq org-appear-autosubmarkers t)
 (setq org-appear-autokeywords t) 
-(setq org-appear-delay 0.3)
+(setq org-appear-delay 0.6)
 
 (if (string= efs/computer-id "work") 
     (setq org-agenda-files (list 
