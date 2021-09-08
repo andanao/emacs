@@ -1107,6 +1107,21 @@ same directory as the org-buffer and insert a link to this file."
 
 #+RESULTS:
 
+** Org Find File 
+Counsel find file in my org directory
+
+#+begin_src emacs-lisp
+(defun efs/org-find-file ()
+    "Find file in efs/user-dir-org"
+    (interactive)
+    (counsel-find-file efs/user-dir-org)
+)
+(efs/leader-keys "f" '(efs/org-find-file :wk "Org Find File"))
+#+end_src
+
+#+RESULTS:
+
+
 ** Auto tangle Config Files
  Tangle readme.org file to init.el on save
 
