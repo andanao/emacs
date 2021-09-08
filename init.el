@@ -376,11 +376,6 @@ One for writing code and the other for reading articles."
 	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
-	(setq org-refile-targets
-	  '(("archive.org" :maxlevel . 1)
-	    ("personal.org" :maxlevel . 1)
-	    ("work.org" :maxlevel . 1)))
-
 	;; Save Org buffers after refiling!
 	(advice-add 'org-refile :after 'org-save-all-org-buffers)
 
@@ -405,6 +400,8 @@ One for writing code and the other for reading articles."
 	(visual-line-mode 1)
 
 	(efs/org-font-setup))
+
+(setq org-archive-location "archive.org::datetree/* Archived Tasks")
 
 (use-package org-appear)
 (add-hook 'org-mode-hook 'org-appear-mode)

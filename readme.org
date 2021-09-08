@@ -618,11 +618,6 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
-	(setq org-refile-targets
-	  '(("archive.org" :maxlevel . 1)
-	    ("personal.org" :maxlevel . 1)
-	    ("work.org" :maxlevel . 1)))
-
 	;; Save Org buffers after refiling!
 	(advice-add 'org-refile :after 'org-save-all-org-buffers)
 
@@ -653,7 +648,16 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
    #+RESULTS:
    : t
-   
+  
+** Org Archive Location 
+
+#+begin_src emacs-lisp
+(setq org-archive-location "archive.org::datetree/* Archived Tasks")
+#+end_src
+
+#+RESULTS:
+: archive.org::datetree/* Archived Tasks
+
 ** Org Appear mode
 Make it less of a pain to edit emphasized text in org mode [[https://github.com/awth13/org-appear][awth13/org-appear]]
 
