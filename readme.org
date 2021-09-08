@@ -649,6 +649,25 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
    #+RESULTS:
    : t
   
+
+** Org Refile Targets 
+Refile targets dependant on computer id
+
+#+begin_src emacs-lisp
+(if (string= efs/computer-id "personal") 
+    (setq org-refile-targets
+	  '(("personal.org" :maxlevel . 1))))
+
+(if (string= efs/computer-id "work") 
+    (setq org-refile-targets
+	  '(("work.org" :maxlevel . 1))))
+
+	;; Save Org buffers after refiling!
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
+
+#+RESULTS:
+
 ** Org Archive Location 
 
 #+begin_src emacs-lisp

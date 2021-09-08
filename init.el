@@ -401,6 +401,17 @@ One for writing code and the other for reading articles."
 
 	(efs/org-font-setup))
 
+(if (string= efs/computer-id "personal") 
+    (setq org-refile-targets
+	  '(("personal.org" :maxlevel . 1))))
+
+(if (string= efs/computer-id "work") 
+    (setq org-refile-targets
+	  '(("work.org" :maxlevel . 1))))
+
+	;; Save Org buffers after refiling!
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+
 (setq org-archive-location "archive.org::datetree/* Archived Tasks")
 
 (use-package org-appear)
