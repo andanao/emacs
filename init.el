@@ -360,7 +360,7 @@ One for writing code and the other for reading articles."
 	(setq org-agenda-start-with-log-mode t)
 	(setq org-log-done 'time)
 	(setq org-log-into-drawer t)
-
+	(setq org-pretty-entities t)
 
 	(setq org-hide-emphasis-markers t)
 

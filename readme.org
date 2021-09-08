@@ -602,7 +602,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(setq org-agenda-start-with-log-mode t)
 	(setq org-log-done 'time)
 	(setq org-log-into-drawer t)
-
+	(setq org-pretty-entities t)
 
 	(setq org-hide-emphasis-markers t)
 
@@ -1266,6 +1266,7 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 *** 
 
 ** Dired
+
 #+begin_src emacs-lisp
   (use-package dired
       :ensure nil
