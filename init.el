@@ -361,6 +361,7 @@ One for writing code and the other for reading articles."
 	(setq org-log-done 'time)
 	(setq org-log-into-drawer t)
 	(setq org-pretty-entities t)
+	(setq org-hidden-keywords '(title) )
 
 	(setq org-hide-emphasis-markers t)
 
@@ -409,6 +410,7 @@ One for writing code and the other for reading articles."
 (setq  org-appear-autolinks t)
 (setq org-appear-autoentities t)
 (setq org-appear-autosubmarkers t)
+(setq org-appear-autokeywords t) 
 (setq org-appear-delay 0.3)
 
 (if (string= efs/computer-id "work") 
