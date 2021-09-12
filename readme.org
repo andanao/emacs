@@ -136,6 +136,16 @@ Enable column numbers
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 #+end_src
 
+** Unbind C-x C-c from save and kill
+In my clumsyness I've hit this too many times
+   
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x C-c") 'nil)
+#+end_src
+
+#+RESULTS:
+
+
 * Keybinding Config
 ** Global Esc
    #+begin_src emacs-lisp

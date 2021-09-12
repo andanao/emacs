@@ -62,6 +62,8 @@
 ;(savehist-mode 1)
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 
+(global-set-key (kbd "C-x C-c") 'nil)
+
 ;;Make ESC quit prompts (why wouldn't you want that?)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
