@@ -712,25 +712,22 @@ Make it less of a pain to edit emphasized text in org mode [[https://github.com/
 ** Org Agenda
 *** Files
 
-Check computer ID before setting org agenda (I don't want work at home and home at work, if captured in inbox can later be moved from one place to another)
-
+Check computer ID before setting org agenda 
 #+begin_src emacs-lisp
-  (if (string= efs/computer-id "work") 
-      (setq org-agenda-files (list 
-	   (concat efs/user-dir-org "work.org")
-	   (concat efs/user-dir-org "dates.org")
-	   (concat efs/user-dir-org "inbox.org")
-	   ))
-  )
-  (if (string= efs/computer-id "personal") 
-      (setq org-agenda-files
-	  (list 
-	   (concat efs/user-dir-org "personal.org")
-	   (concat efs/user-dir-org "habits.org")
-	   (concat efs/user-dir-org "dates.org")
-	   (concat efs/user-dir-org "inbox.org")
-	   ))
-  )
+
+(setq org-agenda-files (list 
+    (concat efs/personal-dir-org "dates.org")
+    (concat efs/personal-dir-org "inbox.org")
+    (concat efs/personal-dir-org "habits.org")
+))
+
+(if (string= efs/computer-id "work") 
+    (add-to-list 'org-agenda-files  
+	(concat efs/user-dir-org "work.org")))
+  
+(if (string= efs/computer-id "personal") 
+    (add-to-list 'org-agenda-files  
+	   (concat efs/personal-dir-org "personal.org")))
 #+end_src
 
 #+RESULTS:

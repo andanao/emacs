@@ -427,22 +427,19 @@ One for writing code and the other for reading articles."
 (setq org-appear-autokeywords t) 
 (setq org-appear-delay 0.6)
 
+(setq org-agenda-files (list 
+    (concat efs/personal-dir-org "dates.org")
+    (concat efs/personal-dir-org "inbox.org")
+    (concat efs/personal-dir-org "habits.org")
+))
+
 (if (string= efs/computer-id "work") 
-    (setq org-agenda-files (list 
-	 (concat efs/user-dir-org "work.org")
-	 (concat efs/user-dir-org "dates.org")
-	 (concat efs/user-dir-org "inbox.org")
-	 ))
-)
+    (add-to-list 'org-agenda-files  
+	(concat efs/user-dir-org "work.org")))
+  
 (if (string= efs/computer-id "personal") 
-    (setq org-agenda-files
-	(list 
-	 (concat efs/user-dir-org "personal.org")
-	 (concat efs/user-dir-org "habits.org")
-	 (concat efs/user-dir-org "dates.org")
-	 (concat efs/user-dir-org "inbox.org")
-	 ))
-)
+    (add-to-list 'org-agenda-files  
+	   (concat efs/personal-dir-org "personal.org")))
 
 (defun efs/org-agenda-open ()
     (interactive)
