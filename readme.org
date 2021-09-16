@@ -762,7 +762,6 @@ split window and focus down on agenda open
 
 #+RESULTS:
 
-
 *** Agenda interaction 
  Don' move windows and set org span to 1 day
 
@@ -773,6 +772,15 @@ split window and focus down on agenda open
 
  #+RESULTS:
  : 1
+
+*** Agenda Scheduled Leaders 
+Formatting for scheduled __ : if today otherwise ## :
+#+begin_src emacs-lisp
+(setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
+#+end_src
+
+#+RESULTS:
+| __ : | %02d : |
 
 ** Org Capture Templates 
     
