@@ -461,117 +461,135 @@ One for writing code and the other for reading articles."
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 
-(setq org-capture-templates
-   '( 
-    ("c" "Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
-    ("w" "Work Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
-"* TODO %^{Work Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
+(add-to-list  'org-capture-templates   
+    '("c" "Task" entry 
+	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %^{Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+	:kill-buffer t))
 
-    ("p" "Personal Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
-"* TODO %^{Personal Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
-
-    ("i" "Quick Inbox" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task to inbox}
-SCHEDULED: %t\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :immediate-finish t
-  :kill-buffer t)
-
-    ("k" "Clipboard Link to Inbox" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %(org-cliplink-capture)
-SCHEDULED: %t\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :immediate-finish t
-  :kill-buffer t)
-
-    ("m" "CAD Model" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
-"* TODO %^{Thing to CAD}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:END:
-"
-  :kill-buffer t)
-    ("P" "Project" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
-"* TODO %^{Project Name}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a 
-:Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
-:Cost-est:\t%^{Cost estimate}
-%i
-:END:
-  "
-  :kill-buffer t)
-
-    ("B" "Book" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
-"* PILE %^{Book Title}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:AUTHOR:
-:RECCOMMENDER:
-:END:
-  "
-  :kill-buffer t)
-
+(if (string= efs/computer-id "work") 
+(add-to-list  'org-capture-templates   
+    '("w" "Work Task" entry 
+	 (file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
+ "* TODO %^{Work Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :kill-buffer t)
 ))
+
+(add-to-list  'org-capture-templates   
+    '("p" "Personal Task" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Tasks")
+ "* TODO %^{Personal Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :kill-buffer t)
+)
+
+(add-to-list  'org-capture-templates   
+    '("i" "Quick Inbox" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %^{Task to inbox}
+ SCHEDULED: %t\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :immediate-finish t
+   :kill-buffer t)
+)
+
+(efs/leader-keys
+    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+
+(add-to-list  'org-capture-templates   
+    '("k" "Clipboard Link to Inbox" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %(org-cliplink-capture)
+ SCHEDULED: %t\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :immediate-finish t
+   :kill-buffer t)
+)
+
+(add-to-list  'org-capture-templates   
+    '("P" "Project" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Projects")
+ "* TODO %^{Project Name}
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a 
+ :Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
+ :Cost-est:\t%^{Cost estimate}
+ %i
+ :END:
+   "
+   :kill-buffer t)
+)
+
+(add-to-list  'org-capture-templates   
+    '("B" "Book" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "books.org"))"Endless Pile")
+ "* PILE %^{Book Title}
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U 
+ :AUTHOR:
+ :RECCOMMENDER:
+ :END:
+   "
+   :kill-buffer t)
+)
+
+(add-to-list  'org-capture-templates   
+    '("t" "Quote" entry 
+	 (file (lambda () (concat efs/personal-dir-org "quotes.org")))
+ "* %^{Quote or Note}
+%?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U 
+ :SOURCE: %^{Source}
+ :REF: \t%a
+ :END:
+   "
+   :kill-buffer t)
+)
 
 (efs/leader-keys
     "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))

@@ -782,129 +782,203 @@ Formatting for scheduled __ : if today otherwise ## :
 #+RESULTS:
 | __ : | %02d : |
 
-** Org Capture Templates 
-    
-#+begin_src emacs-lisp
-(setq org-capture-templates
-   '( 
-    ("c" "Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
-    ("w" "Work Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
-"* TODO %^{Work Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
 
-    ("p" "Personal Task" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Tasks")
-"* TODO %^{Personal Task}
-SCHEDULED: %t
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :kill-buffer t)
+** Org Capture  
 
-    ("i" "Quick Inbox" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %^{Task to inbox}
-SCHEDULED: %t\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :immediate-finish t
-  :kill-buffer t)
+*** Inbox    
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("c" "Task" entry 
+	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %^{Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+	:kill-buffer t))
 
-    ("k" "Clipboard Link to Inbox" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "inbox.org"))"Inbox")
-"* TODO %(org-cliplink-capture)
-SCHEDULED: %t\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a
-%i
-:END:
-"
-  :immediate-finish t
-  :kill-buffer t)
+    #+end_src
 
-    ("m" "CAD Model" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"CAD")
-"* TODO %^{Thing to CAD}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:END:
-"
-  :kill-buffer t)
-    ("P" "Project" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "personal.org"))"Projects")
-"* TODO %^{Project Name}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U
-:REF:\t%a 
-:Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
-:Cost-est:\t%^{Cost estimate}
-%i
-:END:
-  "
-  :kill-buffer t)
-
-    ("B" "Book" entry 
-	(file+headline (lambda () (concat efs/user-dir-org "books.org"))"Endless Pile")
-"* PILE %^{Book Title}
-%?\n
-:PROPERTIES:
-:ID:     \t%(org-id-new)
-:CREATED:\t%U 
-:AUTHOR:
-:RECCOMMENDER:
-:END:
-  "
-  :kill-buffer t)
-
-))
-
-#+end_src
     #+RESULTS:
-    | c | Task | entry | (file+headline (lambda nil (concat efs/user-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+    | c | Task | entry | (file+headline (lambda nil (concat efs/personal-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
+
+*** Work 
+
+    #+begin_src emacs-lisp
+(if (string= efs/computer-id "work") 
+(add-to-list  'org-capture-templates   
+    '("w" "Work Task" entry 
+	 (file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
+ "* TODO %^{Work Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :kill-buffer t)
+))
+    #+end_src
+
+    #+RESULTS:
+    | w | Work Task | entry | (file+headline (lambda nil (concat efs/user-dir-org work.org)) Tasks) | * TODO %^{Work Task} |
 
 
+*** Personal 
+
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("p" "Personal Task" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Tasks")
+ "* TODO %^{Personal Task}
+ SCHEDULED: %t
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | p | Personal Task | entry | (file+headline (lambda nil (concat efs/personal-dir-org personal.org)) Tasks) | * TODO %^{Personal Task} |
+
+*** Quick Inbox
+
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("i" "Quick Inbox" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %^{Task to inbox}
+ SCHEDULED: %t\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :immediate-finish t
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | i | Quick Inbox | entry | (file+headline (lambda nil (concat efs/personal-dir-org inbox.org)) Inbox) | * TODO %^{Task to inbox} |
+
+**** Quick Capture 
+  Quickly capture something to inbox with leader C-c
+
+  #+begin_src emacs-lisp
+  (efs/leader-keys
+      "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+  #+end_src
+
+  #+RESULTS:
 
 
+*** Clipboard Link
 
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("k" "Clipboard Link to Inbox" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+ "* TODO %(org-cliplink-capture)
+ SCHEDULED: %t\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a
+ %i
+ :END:
+ "
+   :immediate-finish t
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | k | Clipboard Link to Inbox | entry | (file+headline (lambda nil (concat efs/personal-dir-org inbox.org)) Inbox) | * TODO %(org-cliplink-capture) |
+
+*** Project
+
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("P" "Project" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Projects")
+ "* TODO %^{Project Name}
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U
+ :REF:\t%a 
+ :Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
+ :Cost-est:\t%^{Cost estimate}
+ %i
+ :END:
+   "
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | P | Project | entry | (file+headline (lambda nil (concat efs/personal-dir-org personal.org)) Projects) | * TODO %^{Project Name} |
+
+*** Book
+
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("B" "Book" entry 
+	 (file+headline (lambda () (concat efs/personal-dir-org "books.org"))"Endless Pile")
+ "* PILE %^{Book Title}
+ %?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U 
+ :AUTHOR:
+ :RECCOMMENDER:
+ :END:
+   "
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | B | Book | entry | (file+headline (lambda nil (concat efs/personal-dir-org books.org)) Endless Pile) | * PILE %^{Book Title} |
+
+*** Quote
+
+    #+begin_src emacs-lisp
+(add-to-list  'org-capture-templates   
+    '("t" "Quote" entry 
+	 (file (lambda () (concat efs/personal-dir-org "quotes.org")))
+ "* %^{Quote or Note}
+%?\n
+ :PROPERTIES:
+ :ID:     \t%(org-id-new)
+ :CREATED:\t%U 
+ :SOURCE: %^{Source}
+ :REF: \t%a
+ :END:
+   "
+   :kill-buffer t)
+)
+    #+end_src
+
+    #+RESULTS:
+    | t | Quote | entry | (file (lambda nil (concat efs/personal-dir-org quotes.org))) | * %^{Quote or Note} |
 
 ** Quick Capture 
 Quickly capture something to inbox with leader C-c
