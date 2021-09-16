@@ -337,12 +337,15 @@ One for writing code and the other for reading articles."
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
 (defun efs/org-mode-setup ()
-    (interactive)
-    ;; (org-indent-mode t)
-    (variable-pitch-mode 1)
-    (visual-line-mode 1)
-    (org-redisplay-inline-images)
-    (efs/org-font-setup))
+      (interactive)
+      ;; (org-indent-mode t)
+      (variable-pitch-mode 1)
+      (visual-line-mode 1)
+      (org-redisplay-inline-images)
+      (efs/org-font-setup))
+
+
+(add-hook 'org-mode-hook 'efs/org-mode-setup)
 
 (efs/leader-keys
   "of" '(efs/org-mode-setup :wk "org mode setup fn")

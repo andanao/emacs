@@ -579,10 +579,13 @@ One for writing code and the other for reading articles."
       (org-redisplay-inline-images)
       (efs/org-font-setup))
 
+
+(add-hook 'org-mode-hook 'efs/org-mode-setup)
+
    #+end_src
 
    #+RESULTS:
-   : efs/org-mode-setup
+   | efs/org-mode-setup | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | (lambda nil (add-hook 'after-save-hook #'ses/org-babel-tangle-config)) | (lambda nil (add-hook 'after-save-hook #'efs/org-babel-tangle-config)) | (lambda nil evil-org-mode) | org-tempo-setup | efs/org-mode-visual-fill | org-bullets-mode | org-appear-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | (lambda nil (display-line-numbers-mode 0)) |
 
 #+begin_src emacs-lisp
   (efs/leader-keys
