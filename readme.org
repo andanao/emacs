@@ -9,6 +9,9 @@ Setting default file and directory locations, these are all defined in the defau
 ** Org Directory
    User org-mode file directory: efs/user-dir-org
    defined in default .emacs config file
+** Personal Org Directory
+   Personal org directory (see all tasks on work computer and shared inbox)
+   efs/personal-dir-org
 ** Readme config file
 efs/user-dir-readme - this files full path 
 
