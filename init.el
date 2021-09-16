@@ -591,9 +591,6 @@ One for writing code and the other for reading articles."
    :kill-buffer t)
 )
 
-(efs/leader-keys
-    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
-
 (use-package org-bullets
        :after org
        :hook (org-mode . org-bullets-mode)
