@@ -410,9 +410,12 @@ One for writing code and the other for reading articles."
     (setq org-refile-targets
 	  '(("personal.org" :maxlevel . 1))))
 
+
+(setq efs/temp (concat efs/user-dir-org "work.org"))
 (if (string= efs/computer-id "work") 
     (setq org-refile-targets
-	  '(("work.org" :maxlevel . 1))))
+	  '((efs/temp :maxlevel . 1))))
+
 
 	;; Save Org buffers after refiling!
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -436,7 +439,7 @@ One for writing code and the other for reading articles."
 (if (string= efs/computer-id "work") 
     (add-to-list 'org-agenda-files  
 	(concat efs/user-dir-org "work.org")))
-  
+
 (if (string= efs/computer-id "personal") 
     (add-to-list 'org-agenda-files  
 	   (concat efs/personal-dir-org "personal.org")))
