@@ -787,8 +787,8 @@ Formatting for scheduled __ : if today otherwise ## :
 
 *** Inbox    
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("c" "Task" entry 
+(setq  org-capture-templates   
+   (list  '( "c" "Task" entry 
 	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task}
  SCHEDULED: %t
@@ -800,8 +800,7 @@ Formatting for scheduled __ : if today otherwise ## :
  %i
  :END:
  "
-	:kill-buffer t))
-
+	:kill-buffer t)))
     #+end_src
 
     #+RESULTS:
@@ -973,8 +972,7 @@ Formatting for scheduled __ : if today otherwise ## :
  :REF: \t%a
  :END:
    "
-   :kill-buffer t)
-)
+   :kill-buffer t))
     #+end_src
 
     #+RESULTS:

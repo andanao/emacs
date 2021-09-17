@@ -461,8 +461,8 @@ One for writing code and the other for reading articles."
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 
-(add-to-list  'org-capture-templates   
-    '("c" "Task" entry 
+(setq  org-capture-templates   
+   (list  '( "c" "Task" entry 
 	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task}
  SCHEDULED: %t
@@ -474,7 +474,7 @@ One for writing code and the other for reading articles."
  %i
  :END:
  "
-	:kill-buffer t))
+	:kill-buffer t)))
 
 (if (string= efs/computer-id "work") 
 (add-to-list  'org-capture-templates   
@@ -588,8 +588,7 @@ One for writing code and the other for reading articles."
  :REF: \t%a
  :END:
    "
-   :kill-buffer t)
-)
+   :kill-buffer t))
 
 (use-package org-bullets
        :after org
