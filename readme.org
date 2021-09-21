@@ -716,12 +716,11 @@ Make it less of a pain to edit emphasized text in org mode [[https://github.com/
 *** Files
 
 Check computer ID before setting org agenda 
-#+begin_src emacs-lisp
 
+#+begin_src emacs-lisp
 (setq org-agenda-files (list 
     (concat efs/personal-dir-org "dates.org")
     (concat efs/personal-dir-org "inbox.org")
-    (concat efs/personal-dir-org "habits.org")
 ))
 
 (if (string= efs/computer-id "work") 
@@ -730,7 +729,8 @@ Check computer ID before setting org agenda
 
 (if (string= efs/computer-id "personal") 
     (add-to-list 'org-agenda-files  
-	   (concat efs/personal-dir-org "personal.org")))
+	(concat efs/personal-dir-org "habits.org")
+	(concat efs/personal-dir-org "personal.org")))
 #+end_src
 
 #+RESULTS:
