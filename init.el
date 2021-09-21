@@ -811,5 +811,4 @@ same directory as the org-buffer and insert a link to this file."
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 (if (string= efs/computer-id "work") 
-    ((message "loading work.el")
-    (load-file (concat efs/user-dir-org "work.el"))))
+    ((load-file (concat efs/user-dir-org "work.el"))))
