@@ -63,6 +63,7 @@
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 
 (global-set-key (kbd "C-x C-c") 'nil)
+(global-set-key (kbd "C-x C-z") 'nil)
 
 ;;Make ESC quit prompts (why wouldn't you want that?)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -463,6 +464,8 @@ One for writing code and the other for reading articles."
 (setq org-agenda-span 1)
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
+
+(setq diary-file (concat efs/user-dir-org "diary.org"))
 
 (setq  org-capture-templates   
    (list  '( "c" "Task" entry 

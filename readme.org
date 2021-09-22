@@ -139,11 +139,13 @@ Enable column numbers
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 #+end_src
 
-** Unbind C-x C-c from save and kill
-In my clumsyness I've hit this too many times
+** Unbind Hide/kill emacs session C-x
+
+In my clumsyness I've hit theste  too many times
    
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-c") 'nil)
+(global-set-key (kbd "C-x C-z") 'nil)
 #+end_src
 
 #+RESULTS:
@@ -785,6 +787,11 @@ Formatting for scheduled __ : if today otherwise ## :
 #+RESULTS:
 | __ : | %02d : |
 
+
+** Org Diary File 
+ #+begin_src emacs-lisp
+ (setq diary-file (concat efs/user-dir-org "diary.org"))
+ #+end_src
 
 ** Org Capture  
 
