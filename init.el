@@ -441,9 +441,11 @@ One for writing code and the other for reading articles."
 	(concat efs/user-dir-org "work.org")))
 
 (if (string= efs/computer-id "personal") 
-    (add-to-list 'org-agenda-files  
-	(concat efs/personal-dir-org "habits.org")
-	(concat efs/personal-dir-org "personal.org")))
+    (progn
+	  (add-to-list 'org-agenda-files  
+	      (concat efs/personal-dir-org "habits.org"))
+	 (add-to-list 'org-agenda-files
+	      (concat efs/personal-dir-org "personal.org"))))
 
 (defun efs/org-agenda-open ()
     (interactive)
