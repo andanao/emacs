@@ -421,7 +421,7 @@ One for writing code and the other for reading articles."
 	;; Save Org buffers after refiling!
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-(setq org-archive-location "archive.org::datetree/* Archived Tasks")
+(setq org-archive-location "archive.org::datetree/")
 
 (use-package org-appear)
 (add-hook 'org-mode-hook 'org-appear-mode)

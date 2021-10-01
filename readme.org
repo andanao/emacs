@@ -692,11 +692,11 @@ Refile targets dependant on computer id
 ** Org Archive Location 
 
 #+begin_src emacs-lisp
-(setq org-archive-location "archive.org::datetree/* Archived Tasks")
+(setq org-archive-location "archive.org::datetree/")
 #+end_src
 
 #+RESULTS:
-: archive.org::datetree/* Archived Tasks
+: archive.org::datetree/
 
 ** Org Appear mode
 Make it less of a pain to edit emphasized text in org mode [[https://github.com/awth13/org-appear][awth13/org-appear]]
