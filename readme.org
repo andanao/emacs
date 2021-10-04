@@ -780,8 +780,9 @@ split window and focus down on agenda open
  Don' move windows and set org span to 1 day
 
  #+begin_src emacs-lisp
- (setq org-agenda-window-setup 'current-window)
- (setq org-agenda-span 1)
+   (setq org-agenda-window-setup 'current-window)
+   (setq org-agenda-span 1)
+   (setq org-agenda-persistent-filter t)
  #+end_src
 
  #+RESULTS:
