@@ -438,6 +438,7 @@ One for writing code and the other for reading articles."
 (setq org-agenda-files (list 
     (concat efs/personal-dir-org "dates.org")
     (concat efs/personal-dir-org "inbox.org")
+    (concat efs/personal-dir-org "conf-tasks.org")
 ))
 
 (if (string= efs/computer-id "work") 
@@ -446,9 +447,9 @@ One for writing code and the other for reading articles."
 
 (if (string= efs/computer-id "personal") 
     (progn
-	  (add-to-list 'org-agenda-files  
+	(add-to-list 'org-agenda-files  
 	      (concat efs/personal-dir-org "habits.org"))
-	 (add-to-list 'org-agenda-files
+	(add-to-list 'org-agenda-files
 	      (concat efs/personal-dir-org "personal.org"))))
 
 (defun efs/org-agenda-open ()
