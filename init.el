@@ -426,6 +426,8 @@ One for writing code and the other for reading articles."
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (setq org-archive-location "archive.org::datetree/")
+(efs/leader-keys 
+    "C-a" '(org-archive-subtree :wk "org-archive-subtree"))
 
 (use-package org-appear)
 (add-hook 'org-mode-hook 'org-appear-mode)

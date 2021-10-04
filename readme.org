@@ -694,10 +694,12 @@ Refile targets dependant on computer id
 
 #+RESULTS:
 
-** Org Archive Location 
+** Org Archive  
 
 #+begin_src emacs-lisp
 (setq org-archive-location "archive.org::datetree/")
+(efs/leader-keys 
+    "C-a" '(org-archive-subtree :wk "org-archive-subtree"))
 #+end_src
 
 #+RESULTS:
