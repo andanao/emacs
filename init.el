@@ -407,17 +407,21 @@ One for writing code and the other for reading articles."
 
 	(efs/org-font-setup))
 
-(if (string= efs/computer-id "personal") 
-    (setq org-refile-targets
-	  '(("personal.org" :maxlevel . 1))))
+(setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
+  (if (string= efs/computer-id "personal") 
+	(setq org-refile-targets
+	      (list
+		'("personal.org" :maxlevel . 1)
+		'(efs/conf-task-file :maxlevel . 1))))
 
 
-(setq efs/temp (concat efs/user-dir-org "work.org"))
-(if (string= efs/computer-id "work") 
-    (setq org-refile-targets
-	  '((efs/temp :maxlevel . 1))))
+    (if (string= efs/computer-id "work") 
+	(setq org-refile-targets
+	      (list
+		'("work.org" :maxlevel . 1)
+		'(efs/conf-task-file :maxlevel . 1))))
 
-
+	    ;; Save Org buffers after refiling!
 	;; Save Org buffers after refiling!
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
