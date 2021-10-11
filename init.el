@@ -408,6 +408,7 @@ One for writing code and the other for reading articles."
 	(efs/org-font-setup))
 
 (setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
+(setq efs/work-task-file (concat efs/user-dir-org "work.org"))
   (if (string= efs/computer-id "personal") 
 	(setq org-refile-targets
 	      (list
@@ -418,7 +419,7 @@ One for writing code and the other for reading articles."
     (if (string= efs/computer-id "work") 
 	(setq org-refile-targets
 	      (list
-		'("work.org" :maxlevel . 1)
+		'(efs/work-task-file :maxlevel . 1)
 		'(efs/conf-task-file :maxlevel . 1))))
 
 	    ;; Save Org buffers after refiling!
