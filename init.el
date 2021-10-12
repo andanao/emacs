@@ -441,7 +441,7 @@ One for writing code and the other for reading articles."
 (setq org-agenda-files (list 
     (concat efs/personal-dir-org "dates.org")
     (concat efs/personal-dir-org "inbox.org")
-    (concat efs/personal-dir-org "conf-tasks.org")
+    ;(concat efs/personal-dir-org "conf-tasks.org")
 ))
 
 (if (string= efs/computer-id "work") 

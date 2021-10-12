@@ -732,7 +732,7 @@ Check computer ID before setting org agenda
   (setq org-agenda-files (list 
       (concat efs/personal-dir-org "dates.org")
       (concat efs/personal-dir-org "inbox.org")
-      (concat efs/personal-dir-org "conf-tasks.org")
+      ;(concat efs/personal-dir-org "conf-tasks.org")
   ))
 
   (if (string= efs/computer-id "work") 
@@ -748,7 +748,7 @@ Check computer ID before setting org agenda
 #+end_src
 
 #+RESULTS:
-| c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org | c:/Git/Org/conf-tasks.org |
+| c:/Git/Org/personal.org | c:/Git/Org/habits.org | c:/Git/Org/dates.org | c:/Git/Org/inbox.org |
 
 *** Agenda Open
 split window and focus down on agenda open
