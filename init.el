@@ -119,18 +119,8 @@
         "kk" '(kill-this-buffer :which-key "kill-this-buffer")
         "kl"'(delete-window :wk "delete-window")
 
-
-        ;"jk" '(org-capture :which-key "org-capture")
-
-        "h" '(:ignore t :which-key "describe")
-        "he" 'view-echo-area-messages
-        "hf" 'describe-function
-        "hF" 'describe-face
-        "hk" 'describe-key
-        "hK" 'describe-keymap
-        "hp" 'describe-package
-        "hv" 'describe-variable
-        ))
+        
+      )
 
      (use-package evil
        :init
@@ -325,6 +315,7 @@ One for writing code and the other for reading articles."
 (global-set-key (kbd "C-h C-c") 'describe-key-briefly)
 (global-set-key (kbd "C-h C-k") 'describe-key)
 (global-set-key (kbd "C-h C-e") 'view-echo-area-messages)
+(global-set-key (kbd "C-h C-j") 'describe-face)
 
 (use-package hydra
   :defer t)
