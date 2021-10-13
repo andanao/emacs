@@ -525,24 +525,39 @@ One for writing code and the other for reading articles."
    #+end_src
 
 
-** Text Scaling
-
-   #+begin_src emacs-lisp
- 
-   (use-package hydra
-    :defer t)
-
-   (defhydra hydra-text-scale (:timeout 4)
-     "scale text"
-     ("j" text-scale-increase "in")
-     ("k" text-scale-decrease "out")
-     ("f" nil "finished" :exit t))
+** Hydra Text Scaling
 
 
-   (efs/leader-keys
-     "ts" '(hydra-text-scale/body :which-key "scale text"))
+#+begin_src emacs-lisp
 
-   #+end_src
+(use-package hydra
+  :defer t)
+
+(defhydra hydra-text-scale (:timeout 2)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
+
+(efs/leader-keys
+  "ts" '(hydra-text-scale/body :which-key "scale text"))
+
+#+end_src
+
+** Hydra window adjust
+
+#+begin_src emacs-lisp
+(defhydra hydra-window-adjust (:timeout 5)
+  ("k" (evil-window-increase-height 5) "increase height")
+  ("j" (evil-window-decrease-height 5) "decrease height")
+  ("h" (evil-window-increase-width 10) "increase width")
+  ("l" (evil-window-decrease-width 10) "decrease width")
+  ("e" balance-windows "balance windows")
+  ("f" nil "finished" :exit t)
+  )
+
+(efs/leader-keys "C-w" '(hydra-window-adjust/body :wk "hydra window adjust"))
+#+end_src
 
 ** Smart Parens
 [[https://github.com/Fuco1/smartparens/tree/fb1ce4b4013fe6f86dde9dd5bd5d4c032ab0d45b][Smartparens Github]]

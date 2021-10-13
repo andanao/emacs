@@ -326,18 +326,28 @@ One for writing code and the other for reading articles."
 (global-set-key (kbd "C-h C-k") 'describe-key)
 (global-set-key (kbd "C-h C-e") 'view-echo-area-messages)
 
-   (use-package hydra
-    :defer t)
+(use-package hydra
+  :defer t)
 
-   (defhydra hydra-text-scale (:timeout 4)
-     "scale text"
-     ("j" text-scale-increase "in")
-     ("k" text-scale-decrease "out")
-     ("f" nil "finished" :exit t))
+(defhydra hydra-text-scale (:timeout 2)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
 
+(efs/leader-keys
+  "ts" '(hydra-text-scale/body :which-key "scale text"))
 
-   (efs/leader-keys
-     "ts" '(hydra-text-scale/body :which-key "scale text"))
+(defhydra hydra-window-adjust (:timeout 5)
+  ("k" (evil-window-increase-height 5) "increase height")
+  ("j" (evil-window-decrease-height 5) "decrease height")
+  ("h" (evil-window-increase-width 10) "increase width")
+  ("l" (evil-window-decrease-width 10) "decrease width")
+  ("e" balance-windows "balance windows")
+  ("f" nil "finished" :exit t)
+  )
+
+(efs/leader-keys "C-w" '(hydra-window-adjust/body :wk "hydra window adjust"))
 
 (use-package evil-smartparens)
 
