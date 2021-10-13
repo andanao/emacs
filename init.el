@@ -43,10 +43,10 @@
 
 ;; Set Font sizes
 (defvar efs/default-font-size 120)
-(defvar efs/default-variable-font-size 200)
+(defvar efs/default-variable-font-size 120)
 
 ;Set line spacing
-(setq line-spacing 3)
+(setq line-spacing .2)
 
 ;; Set default font
 (set-face-attribute 'default nil :font mono :height efs/default-font-size)
@@ -56,6 +56,8 @@
 
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
+
+(variable-pitch-mode 1)
 
    ;; Enable line numbers
    (global-display-line-numbers-mode t)
@@ -296,14 +298,14 @@ One for writing code and the other for reading articles."
      :init
      (ivy-rich-mode 1))
 
-;    (use-package ivy-prescient
-;      :after counsel
-;      :custom
-;      (ivy-prescient-enable-filtering nil)
-;      :config
+   (use-package ivy-prescient
+     :after counsel
+     :custom
+     (ivy-prescient-enable-filtering nil)
+     :config
       ;; Uncomment the following line to have sorting remembered across sessions!
-;      (prescient-persist-mode 1)
-;      (ivy-prescient-mode 1))
+     (prescient-persist-mode 1)
+     (ivy-prescient-mode 1))
 
    (use-package helpful
      :ensure t
@@ -399,9 +401,7 @@ One for writing code and the other for reading articles."
 
 (add-hook 'org-mode-hook 'efs/org-mode-setup)
 
-  (efs/leader-keys
-    "of" '(efs/org-mode-setup :wk "org mode setup fn")
-  )
+(efs/leader-keys "of" '(efs/org-mode-setup :wk "org mode setup fn"))
 
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
