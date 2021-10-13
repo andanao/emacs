@@ -25,12 +25,22 @@ currently:
     work
     Personal
 
-    
 ** Load Path
    #+begin_src emacs-lisp
- (add-to-list 'load-path efs/user-dir-emacs)
+(add-to-list 'load-path efs/user-dir-emacs)
 (add-to-list 'load-path efs/user-dir-org)
    #+end_src
+
+   
+** Debug on Error
+   Nice to load it early, makes troubleshooting a problem easier
+   #+begin_src emacs-lisp
+(setq debug-on-error t)
+   #+end_src
+
+   #+RESULTS:
+   : t
+
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp

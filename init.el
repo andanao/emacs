@@ -1,6 +1,8 @@
 (add-to-list 'load-path efs/user-dir-emacs)
 (add-to-list 'load-path efs/user-dir-org)
 
+(setq debug-on-error t)
+
 ;; Initialize package sources
 (require 'package)
 
