@@ -648,14 +648,14 @@ One for writing code and the other for reading articles."
 	  :custom
 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
 
-   (defun efs/org-mode-visual-fill ()
-	(setq visual-fill-column-width 100
-	    visual-fill-column-center-text t)
-	(visual-fill-column-mode 1))
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 120
+	visual-fill-column-center-text t
+	visual-fill-column-enable-sensible-window-split t)
+  (visual-fill-column-mode 1))
 
-
-    (use-package visual-fill-column
-	:hook (org-mode . efs/org-mode-visual-fill))
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
 
    (with-eval-after-load 'org
      (org-babel-do-load-languages
@@ -685,8 +685,6 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "ok" '(org-cliplink :wk "org-cliplink")
 )
-
-(setq org-image-actual-width (/ (car (window-text-pixel-size)) 2))
 
 (setq efs/user-dir-org-screenshot
     (concat efs/user-dir-org "images/screenshot/"))
