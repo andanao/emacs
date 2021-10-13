@@ -83,44 +83,38 @@
    ;;Make ESC quit prompts (why wouldn't you want that?)
    (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-     (use-package general
-     :after evil
-     :config
-     (general-create-definer efs/leader-keys
-      :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
-      :global-prefix "C-SPC")
-      (efs/leader-keys
-        "t" '(:ignore t :wk "toggles") 
-        "k" '(:ignore t :wk "kill")
-        "e" '(:ignore t :whch-key "eval")
-        "j" '(:ignore t :which-key "org")
-
-        "er" '(lambda () (interactive) 
-	      (find-file (concat efs/user-dir-readme))
-              :wk "Readme Config")
-
-        "ew" '(lambda () (interactive) 
-	      (find-file (concat efs/user-dir-org "work-config.org"))
-              :wk "Readme Config")
-
-       "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
-              :which-key "ORG init")
-
-        "eb" '(eval-buffer :which-key "eval-buffer")
-        "ep" '(eval-last-sexp :which-key "eval-last-sexp")
-        "eo" '(org-mode-restart :which-key "org-mode-restart")
-
-
-        ;"SPC"  '(normal-mode :which-key "normal-mode")
-
-
-        "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-        "kk" '(kill-this-buffer :which-key "kill-this-buffer")
-        "kl"'(delete-window :wk "delete-window")
-
-        
-      )
+(use-package general
+ :after evil
+ :config
+ (general-create-definer efs/leader-keys
+   :keymaps '(normal insert visual emacs)
+   :prefix "SPC"
+   :global-prefix "C-SPC")
+ (efs/leader-keys
+   "t" '(:ignore t :wk "toggles") 
+   "k" '(:ignore t :wk "kill")
+   "e" '(:ignore t :whch-key "eval")
+   "j" '(:ignore t :which-key "org")
+   
+   "er" '(lambda () (interactive) 
+	   (find-file (concat efs/user-dir-readme))
+           :wk "Readme Config")
+   
+   "ew" '(lambda () (interactive) 
+	   (find-file (concat efs/user-dir-org "work-config.org"))
+           :wk "Readme Config")
+   
+   "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+           :which-key "ORG init")
+   
+   "eb" '(eval-buffer :which-key "eval-buffer")
+   "ep" '(eval-last-sexp :which-key "eval-last-sexp")
+   "eo" '(org-mode-restart :which-key "org-mode-restart")
+   
+   "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
+   "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+   "kl"'(delete-window :wk "delete-window")
+   ))
 
      (use-package evil
        :init
@@ -206,9 +200,6 @@
 
 (setq custom-theme-directory efs/user-dir-emacs)
 
-(use-package doom-themes
-    :init (load-theme 'doom-acario-dark t))
-
 (defvar efs/switch-themes-var
   (let ((themes-list (list 
 			    'doom-molokai
@@ -220,6 +211,11 @@
   list always.
 
   A nil value implies no custom theme should be enabled.")
+
+(use-package doom-themes
+    :init 
+(load-theme (car efs/switch-themes-var) t)
+    )
 
 (defun efs/quick-switch-theme ()
   "Switch between to commonly used faces in Emacs.
@@ -234,7 +230,9 @@ One for writing code and the other for reading articles."
              (message "Loaded theme: %s" next-theme))
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
-  (setq efs/switch-themes-var (cdr efs/switch-themes-var)))
+  (setq efs/switch-themes-var (cdr efs/switch-themes-var))
+  (efs/org-mode-setup)
+  )
 
 
 (efs/leader-keys

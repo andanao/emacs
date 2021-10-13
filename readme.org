@@ -179,44 +179,38 @@ In my clumsyness I've hit theste  too many times
 
    #+begin_src emacs-lisp
 
-     (use-package general
-     :after evil
-     :config
-     (general-create-definer efs/leader-keys
-      :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
-      :global-prefix "C-SPC")
-      (efs/leader-keys
-        "t" '(:ignore t :wk "toggles") 
-        "k" '(:ignore t :wk "kill")
-        "e" '(:ignore t :whch-key "eval")
-        "j" '(:ignore t :which-key "org")
-
-        "er" '(lambda () (interactive) 
-	      (find-file (concat efs/user-dir-readme))
-              :wk "Readme Config")
-
-        "ew" '(lambda () (interactive) 
-	      (find-file (concat efs/user-dir-org "work-config.org"))
-              :wk "Readme Config")
-
-       "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
-              :which-key "ORG init")
-
-        "eb" '(eval-buffer :which-key "eval-buffer")
-        "ep" '(eval-last-sexp :which-key "eval-last-sexp")
-        "eo" '(org-mode-restart :which-key "org-mode-restart")
-
-
-        ;"SPC"  '(normal-mode :which-key "normal-mode")
-
-
-        "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-        "kk" '(kill-this-buffer :which-key "kill-this-buffer")
-        "kl"'(delete-window :wk "delete-window")
-
-        
-      )
+(use-package general
+ :after evil
+ :config
+ (general-create-definer efs/leader-keys
+   :keymaps '(normal insert visual emacs)
+   :prefix "SPC"
+   :global-prefix "C-SPC")
+ (efs/leader-keys
+   "t" '(:ignore t :wk "toggles") 
+   "k" '(:ignore t :wk "kill")
+   "e" '(:ignore t :whch-key "eval")
+   "j" '(:ignore t :which-key "org")
+   
+   "er" '(lambda () (interactive) 
+	   (find-file (concat efs/user-dir-readme))
+           :wk "Readme Config")
+   
+   "ew" '(lambda () (interactive) 
+	   (find-file (concat efs/user-dir-org "work-config.org"))
+           :wk "Readme Config")
+   
+   "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+           :which-key "ORG init")
+   
+   "eb" '(eval-buffer :which-key "eval-buffer")
+   "ep" '(eval-last-sexp :which-key "eval-last-sexp")
+   "eo" '(org-mode-restart :which-key "org-mode-restart")
+   
+   "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
+   "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+   "kl"'(delete-window :wk "delete-window")
+   ))
 
    #+end_src
 
@@ -352,17 +346,8 @@ Normally insert enables overtype, but I've never once wanted that
     #+begin_src emacs-lisp
 (setq custom-theme-directory efs/user-dir-emacs)
     #+end_src
-    
-** Color Theme
- #+begin_src emacs-lisp
-(use-package doom-themes
-    :init (load-theme 'doom-acario-dark t))
 
- #+end_src
-
-** Toggle Theme
-
-Toggle between themes, bound to SCP-tt
+** Color theme list
 
 #+begin_src emacs-lisp
 (defvar efs/switch-themes-var
@@ -376,7 +361,22 @@ Toggle between themes, bound to SCP-tt
   list always.
 
   A nil value implies no custom theme should be enabled.")
+#+end_src
 
+** Color Theme
+ #+begin_src emacs-lisp
+(use-package doom-themes
+    :init 
+(load-theme (car efs/switch-themes-var) t)
+    )
+
+ #+end_src
+
+** Toggle Theme
+
+Toggle between themes, bound to SCP-tt
+
+#+begin_src emacs-lisp
 (defun efs/quick-switch-theme ()
   "Switch between to commonly used faces in Emacs.
 One for writing code and the other for reading articles."
@@ -390,7 +390,9 @@ One for writing code and the other for reading articles."
              (message "Loaded theme: %s" next-theme))
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
-  (setq efs/switch-themes-var (cdr efs/switch-themes-var)))
+  (setq efs/switch-themes-var (cdr efs/switch-themes-var))
+  (efs/org-mode-setup)
+  )
 
 
 (efs/leader-keys
