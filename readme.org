@@ -351,7 +351,7 @@ Toggle between themes, bound to SCP-tt
 #+begin_src emacs-lisp
 (defvar efs/switch-themes-var
   (let ((themes-list (list 
-			    'doom-acario-dark
+			    'doom-molokai
 			    'doom-acario-light
 )))
     (nconc themes-list themes-list))
@@ -1118,6 +1118,13 @@ Maybe this will be better somewhere else but it works here for now
 )
 
    #+end_src
+
+** Org Inline Image size
+Scale org images to the window text display size
+   
+#+begin_src emacs-lisp
+(setq org-image-actual-width (/ (car (window-text-pixel-size)) 2))
+#+end_src
 
 ** Insert File Link
 To insert a link to a file

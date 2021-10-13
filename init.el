@@ -184,7 +184,7 @@
 
 (defvar efs/switch-themes-var
   (let ((themes-list (list 
-			    'doom-acario-dark
+			    'doom-molokai
 			    'doom-acario-light
 )))
     (nconc themes-list themes-list))
@@ -659,6 +659,8 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "ok" '(org-cliplink :wk "org-cliplink")
 )
+
+(setq org-image-actual-width (/ (car (window-text-pixel-size)) 2))
 
 (setq efs/user-dir-org-screenshot
     (concat efs/user-dir-org "images/screenshot/"))
