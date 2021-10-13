@@ -309,6 +309,13 @@ One for writing code and the other for reading articles."
        ([remap describe-variable] . counsel-describe-variable)
        ([remap describe-key] . helpful-key))
 
+(global-set-key (kbd "C-h C-v") 'describe-variable)
+(global-set-key (kbd "C-h C-f") 'describe-function)
+(global-set-key (kbd "C-h C-b") 'describe-bindings)
+(global-set-key (kbd "C-h C-c") 'describe-key-briefly)
+(global-set-key (kbd "C-h C-k") 'describe-key)
+(global-set-key (kbd "C-h C-e") 'view-echo-area-messages)
+
    (use-package hydra
     :defer t)
 
@@ -649,7 +656,7 @@ One for writing code and the other for reading articles."
 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
 
 (defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 120
+  (setq visual-fill-column-width 110
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t)
   (visual-fill-column-mode 1))
