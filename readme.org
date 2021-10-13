@@ -694,16 +694,23 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
    #+begin_src emacs-lisp
    (use-package org
 	:config
-	(setq org-ellipsis " ▾")
-	(setq org-directory efs/user-dir-org)
-	(setq org-agenda-start-with-log-mode t)
-	(setq org-log-done 'time)
-	(setq org-log-into-drawer t)
-	(setq org-pretty-entities t)
-	(setq org-pretty-entities-include-sub-superscripts nil) 
-	(setq org-hidden-keywords '(title) )
-	(setq org-hide-emphasis-markers t)
-	(setq org-src-preserve-indentation t)
+	(setq org-ellipsis " ▾ "
+	      org-directory efs/user-dir-org
+	      org-agenda-start-with-log-mode t
+	      org-log-done 'time
+	      org-log-into-drawer t
+	      org-pretty-entities t
+	      org-pretty-entities-include-sub-superscripts nil 
+	      org-hidden-keywords '(title) 
+	      org-hide-emphasis-markers t
+	      org-src-preserve-indentation t
+	      org-image-actual-width (/ (car (window-text-pixel-size)) 2)
+	      org-startup-indented t
+	      org-agenda-block-separator ""
+	      org-fontify-whole-heading-line t
+	      org-fontify-done-headline t
+	      org-fontify-quote-and-verse-blocks t
+	      )
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
