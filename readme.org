@@ -25,6 +25,12 @@ currently:
     work
     Personal
 
+    
+** Load Path
+   #+begin_src emacs-lisp
+ (add-to-list 'load-path efs/user-dir-emacs)
+(add-to-list 'load-path efs/user-dir-org)
+   #+end_src
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
