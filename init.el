@@ -177,6 +177,10 @@
     "rs" '(efs/format-dir-winstyle :wk "format dir style windows")
 )
 
+(evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
+(evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
+(evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
+
 (setq custom-theme-directory efs/user-dir-emacs)
 
 (use-package doom-themes
