@@ -196,6 +196,7 @@
   "Switch between to commonly used faces in Emacs.
 One for writing code and the other for reading articles."
   (interactive)
+  (disable-theme (car custom-enabled-themes))
   (if-let* ((next-theme (cadr efs/switch-themes-var)))
       (progn (when-let* ((current-theme (car efs/switch-themes-var)))
                (disable-theme (car efs/switch-themes-var)))
