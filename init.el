@@ -36,18 +36,26 @@
 
  (setq visible-bell t) ; set up the visible bell (no annoying beeping sounds)
 
- ;; Set Font sizesb
- (defvar efs/default-font-size 140)
- (defvar efs/default-variable-font-size 140)
+(setq mono "Fira Code Retina")
+(setq sans "Cantarell")
+(setq serif "EtBembo")
+;; (setq serif "Garamond")
+
+;; Set Font sizes
+(defvar efs/default-font-size 120)
+(defvar efs/default-variable-font-size 200)
+
+;Set line spacing
+(setq line-spacing 3)
 
 ;; Set default font
-(set-face-attribute 'default nil :font "Fira Code Retina" :height efs/default-font-size)
+(set-face-attribute 'default nil :font mono :height efs/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font mono :height efs/default-font-size)
 
 ;; Set the variable pitch fa
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
 
    ;; Enable line numbers
    (global-display-line-numbers-mode t)
