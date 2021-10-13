@@ -326,7 +326,16 @@ this is always so annoying
 
    #+RESULTS:
 
-* UI Config 
+* Theme Setup
+
+   
+** Set Custom Theme Directory
+    A little annoying that I have to specify this and it isn't loaded from load path and that each theme file must be named ~foo-theme.el~ but I'm not about to rewrite something minor
+
+    #+begin_src emacs-lisp
+(setq custom-theme-directory efs/user-dir-emacs)
+    #+end_src
+    
 ** Color Theme
  #+begin_src emacs-lisp
 (use-package doom-themes
@@ -390,6 +399,7 @@ One for writing code and the other for reading articles."
 
    #+end_src
 
+* UI Config 
 ** Which key
 
    #+begin_src emacs-lisp

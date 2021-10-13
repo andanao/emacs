@@ -177,6 +177,8 @@
     "rs" '(efs/format-dir-winstyle :wk "format dir style windows")
 )
 
+(setq custom-theme-directory efs/user-dir-emacs)
+
 (use-package doom-themes
     :init (load-theme 'doom-acario-dark t))
 
