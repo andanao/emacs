@@ -3,40 +3,40 @@
 
 (setq debug-on-error t)
 
-;; Initialize package sources
-(require 'package)
+     ;; Initialize package sources
+     (require 'package)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+     (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                              ("org" . "https://orgmode.org/elpa/")
+                              ("elpa" . "https://elpa.gnu.org/packages/")))
 
-(package-initialize)
-(unless package-archive-contents
-(package-refresh-contents))
-
-
-
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-(package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
-
-(setq inhibit-startup-message t)
+     (package-initialize)
+     (unless package-archive-contents
+     (package-refresh-contents))
 
 
-(scroll-bar-mode -1)  ;; Disable the visible scrollbar
-(tool-bar-mode -1)    ;; Disablet the toolbar
-(tooltip-mode -1)     ;; Disable tooltips
-(set-fringe-mode 10)  ;; Add some breathing room
+
+     ;; Initialize use-package on non-Linux platforms
+     (unless (package-installed-p 'use-package)
+     (package-install 'use-package))
+
+     (require 'use-package)
+     (setq use-package-always-ensure t)
+
+ (setq inhibit-startup-message t)
 
 
-(menu-bar-mode -1) ; Disable the menu bar
+ (scroll-bar-mode -1)  ;; Disable the visible scrollbar
+ (tool-bar-mode -1)    ;; Disablet the toolbar
+ (tooltip-mode -1)     ;; Disable tooltips
+ (set-fringe-mode 10)  ;; Add some breathing room
 
-(setq visible-bell t) ; set up the visible bell (no annoying beeping sounds)
 
-;; Set Font sizesb
+ (menu-bar-mode -1) ; Disable the menu bar
+
+ (setq visible-bell t) ; set up the visible bell (no annoying beeping sounds)
+
+ ;; Set Font sizesb
  (defvar efs/default-font-size 140)
  (defvar efs/default-variable-font-size 140)
 
@@ -49,16 +49,16 @@
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-variable-font-size :weight 'regular)
 
-;; Enable line numbers
-(global-display-line-numbers-mode t)
+   ;; Enable line numbers
+   (global-display-line-numbers-mode t)
 
-;; Disable lines in some modes 
-(dolist (mode '(org-mode-hook
-	    term-mode-hook
-	    eshell-mode-hook))
-	(add-hook mode(lambda () (display-line-numbers-mode 0))))
+   ;; Disable lines in some modes 
+   (dolist (mode '(org-mode-hook
+	       term-mode-hook
+	       eshell-mode-hook))
+	   (add-hook mode(lambda () (display-line-numbers-mode 0))))
 
-(column-number-mode)
+ (column-number-mode)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -70,89 +70,89 @@
 (global-set-key (kbd "C-x C-c") 'nil)
 (global-set-key (kbd "C-x C-z") 'nil)
 
-;;Make ESC quit prompts (why wouldn't you want that?)
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+   ;;Make ESC quit prompts (why wouldn't you want that?)
+   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-(use-package general
-:after evil
-:config
-(general-create-definer efs/leader-keys
- :keymaps '(normal insert visual emacs)
- :prefix "SPC"
- :global-prefix "C-SPC")
- (efs/leader-keys
-   "t" '(:ignore t :wk "toggles") 
-   "k" '(:ignore t :wk "kill")
-   "e" '(:ignore t :whch-key "eval")
-   "j" '(:ignore t :which-key "org")
+     (use-package general
+     :after evil
+     :config
+     (general-create-definer efs/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+      (efs/leader-keys
+        "t" '(:ignore t :wk "toggles") 
+        "k" '(:ignore t :wk "kill")
+        "e" '(:ignore t :whch-key "eval")
+        "j" '(:ignore t :which-key "org")
 
-   "er" '(lambda () (interactive) 
-	 (find-file (concat efs/user-dir-readme))
-         :wk "Readme Config")
+        "er" '(lambda () (interactive) 
+	      (find-file (concat efs/user-dir-readme))
+              :wk "Readme Config")
 
-   "ew" '(lambda () (interactive) 
-	 (find-file (concat efs/user-dir-org "work-config.org"))
-         :wk "Readme Config")
+        "ew" '(lambda () (interactive) 
+	      (find-file (concat efs/user-dir-org "work-config.org"))
+              :wk "Readme Config")
 
-  "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
-         :which-key "ORG init")
+       "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+              :which-key "ORG init")
 
-   "eb" '(eval-buffer :which-key "eval-buffer")
-   "ep" '(eval-last-sexp :which-key "eval-last-sexp")
-   "eo" '(org-mode-restart :which-key "org-mode-restart")
-
-
-   ;"SPC"  '(normal-mode :which-key "normal-mode")
+        "eb" '(eval-buffer :which-key "eval-buffer")
+        "ep" '(eval-last-sexp :which-key "eval-last-sexp")
+        "eo" '(org-mode-restart :which-key "org-mode-restart")
 
 
-   "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-   "kk" '(kill-this-buffer :which-key "kill-this-buffer")
-   "kl"'(delete-window :wk "delete-window")
+        ;"SPC"  '(normal-mode :which-key "normal-mode")
 
 
-   ;"jk" '(org-capture :which-key "org-capture")
+        "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
+        "kk" '(kill-this-buffer :which-key "kill-this-buffer")
+        "kl"'(delete-window :wk "delete-window")
 
-   "h" '(:ignore t :which-key "describe")
-   "he" 'view-echo-area-messages
-   "hf" 'describe-function
-   "hF" 'describe-face
-   "hk" 'describe-key
-   "hK" 'describe-keymap
-   "hp" 'describe-package
-   "hv" 'describe-variable
-   ))
 
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll nil)
-  (setq evil-want-C-i-jump nil)
-  (setq evil-want-C-w-delete nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+        ;"jk" '(org-capture :which-key "org-capture")
 
-  ;; Use visual line motions even outside of visual-line mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+        "h" '(:ignore t :which-key "describe")
+        "he" 'view-echo-area-messages
+        "hf" 'describe-function
+        "hF" 'describe-face
+        "hk" 'describe-key
+        "hK" 'describe-keymap
+        "hp" 'describe-package
+        "hv" 'describe-variable
+        ))
 
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+     (use-package evil
+       :init
+       (setq evil-want-integration t)
+       (setq evil-want-keybinding nil)
+       (setq evil-want-C-u-scroll nil)
+       (setq evil-want-C-i-jump nil)
+       (setq evil-want-C-w-delete nil)
+       :config
+       (evil-mode 1)
+       (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
 
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+       ;; Use visual line motions even outside of visual-line mode buffers
+       (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+       (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (progn
-    (global-undo-tree-mode)
-    (setq evil-undo-system 'undo-tree)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+       (evil-set-initial-state 'messages-buffer-mode 'normal)
+       (evil-set-initial-state 'dashboard-mode 'normal))
+
+     (use-package evil-collection
+       :after evil
+       :config
+       (evil-collection-init))
+
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :config
+    (progn
+      (global-undo-tree-mode)
+      (setq evil-undo-system 'undo-tree)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t)))
 
 (defun efs/remove-newlines-in-region ()
   "Removes all newlines in the region."
@@ -217,53 +217,53 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "tt" '(efs/quick-switch-theme :wk "toggle theme"))
 
-(use-package all-the-icons)
+   (use-package all-the-icons)
 
-;; Doom modeline config
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-)
+   ;; Doom modeline config
+   (use-package doom-modeline
+     :ensure t
+     :init (doom-modeline-mode 1)
+   )
 
-(use-package which-key
- :defer 0
- :diminish which-key-mode
- :config
- (which-key-mode)
- (setq which-key-idle-delay 0.3))
+   (use-package which-key
+    :defer 0
+    :diminish which-key-mode
+    :config
+    (which-key-mode)
+    (setq which-key-idle-delay 0.3))
 
-(use-package counsel
-  :bind (("C-M-j" . 'counsel-switch-buffer)
-      :map minibuffer-local-map
-      ("C-r" . 'counsel-minibuffer-history))
-  :custom
-  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
-  :config
-  (counsel-mode 1))
+   (use-package counsel
+     :bind (("C-M-j" . 'counsel-switch-buffer)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history))
+     :custom
+     (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+     :config
+     (counsel-mode 1))
 
-(use-package ivy
- :diminish ;; Hides from the mode line
- :bind (("C-s" . swiper)
-      :map ivy-minibuffer-map
-      ("TAB" . ivy-alt-done)
-      ("C-l" . ivy-alt-done)
-      ("C-j" . ivy-next-line)
-      ("C-k" . ivy-previous-line)
-      :map ivy-switch-buffer-map
-      ("C-k" . ivy-previous-line)
-      ("C-l" . ivy-done)
-      ("C-d" . ivy-switch-buffer-kill)
-      :map ivy-reverse-i-search-map
-      ("C-k" . ivy-previous-line)
-      ("C-d" . ivy-reverse-i-search-kill))
- :config
- (ivy-mode 1))
+   (use-package ivy
+    :diminish ;; Hides from the mode line
+    :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
 
-
-(use-package ivy-rich
-  :after ivy
-  :init
-  (ivy-rich-mode 1))
+   
+   (use-package ivy-rich
+     :after ivy
+     :init
+     (ivy-rich-mode 1))
 
 ;    (use-package ivy-prescient
 ;      :after counsel
@@ -274,30 +274,30 @@ One for writing code and the other for reading articles."
 ;      (prescient-persist-mode 1)
 ;      (ivy-prescient-mode 1))
 
-(use-package helpful
-  :ensure t
-  :commands (helpful-callable helpful-variable helpful-command helpful-key)
-  :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-  :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+   (use-package helpful
+     :ensure t
+     :commands (helpful-callable helpful-variable helpful-command helpful-key)
+     :custom
+       (counsel-describe-function-function #'helpful-callable)
+       (counsel-describe-variable-function #'helpful-variable)
+     :bind
+       ([remap describe-function] . counsel-describe-function)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-variable] . counsel-describe-variable)
+       ([remap describe-key] . helpful-key))
 
-(use-package hydra
- :defer t)
+   (use-package hydra
+    :defer t)
 
-(defhydra hydra-text-scale (:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finished" :exit t))
+   (defhydra hydra-text-scale (:timeout 4)
+     "scale text"
+     ("j" text-scale-increase "in")
+     ("k" text-scale-decrease "out")
+     ("f" nil "finished" :exit t))
 
 
-(efs/leader-keys
-  "ts" '(hydra-text-scale/body :which-key "scale text"))
+   (efs/leader-keys
+     "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 (use-package evil-smartparens)
 
@@ -311,14 +311,14 @@ One for writing code and the other for reading articles."
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 (show-paren-mode t)
 
-(use-package emojify
-  :hook (after-init . global-emojify-mode)
-  )
-(add-hook 'after-init-hook #'global-emojify-mode)
+     (use-package emojify
+       :hook (after-init . global-emojify-mode)
+       )
+     (add-hook 'after-init-hook #'global-emojify-mode)
 
-(efs/leader-keys
-  ";" '(emojify-insert-emoji :wk "insert emoji")
-)
+     (efs/leader-keys
+       ";" '(emojify-insert-emoji :wk "insert emoji")
+     )
 
 (defun efs/org-font-setup ()
     ;; Replace list hyphen with dots
@@ -350,7 +350,7 @@ One for writing code and the other for reading articles."
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
-(defun efs/org-mode-setup ()
+  (defun efs/org-mode-setup ()
       (interactive)
       ;; (org-indent-mode t)
       (variable-pitch-mode 1)
@@ -361,9 +361,9 @@ One for writing code and the other for reading articles."
 
 (add-hook 'org-mode-hook 'efs/org-mode-setup)
 
-(efs/leader-keys
-  "of" '(efs/org-mode-setup :wk "org mode setup fn")
-)
+  (efs/leader-keys
+    "of" '(efs/org-mode-setup :wk "org mode setup fn")
+  )
 
 (efs/leader-keys
     "o" '(:ignore t :wk "org")
@@ -372,7 +372,7 @@ One for writing code and the other for reading articles."
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
 
-(use-package org
+   (use-package org
 	:config
 	(setq org-ellipsis " ▾")
 	(setq org-directory efs/user-dir-org)
@@ -382,9 +382,8 @@ One for writing code and the other for reading articles."
 	(setq org-pretty-entities t)
 	(setq org-pretty-entities-include-sub-superscripts nil) 
 	(setq org-hidden-keywords '(title) )
-
 	(setq org-hide-emphasis-markers t)
-
+	(setq org-src-preserve-indentation t)
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
@@ -420,24 +419,24 @@ One for writing code and the other for reading articles."
 
 	(efs/org-font-setup))
 
-(setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
-(setq efs/work-task-file (concat efs/user-dir-org "work.org"))
-  (if (string= efs/computer-id "personal") 
-	(setq org-refile-targets
-	      (list
-		'("personal.org" :maxlevel . 1)
-		'(efs/conf-task-file :maxlevel . 1))))
+  (setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
+  (setq efs/work-task-file (concat efs/user-dir-org "work.org"))
+    (if (string= efs/computer-id "personal") 
+	  (setq org-refile-targets
+		(list
+		  '("personal.org" :maxlevel . 1)
+		  '(efs/conf-task-file :maxlevel . 1))))
 
 
-    (if (string= efs/computer-id "work") 
-	(setq org-refile-targets
-	      (list
-		'(efs/work-task-file :maxlevel . 1)
-		'(efs/conf-task-file :maxlevel . 1))))
+      (if (string= efs/computer-id "work") 
+	  (setq org-refile-targets
+		(list
+		  '(efs/work-task-file :maxlevel . 1)
+		  '(efs/conf-task-file :maxlevel . 1))))
 
-	    ;; Save Org buffers after refiling!
-	;; Save Org buffers after refiling!
-(advice-add 'org-refile :after 'org-save-all-org-buffers)
+	      ;; Save Org buffers after refiling!
+	  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (setq org-archive-location "archive.org::datetree/")
 (efs/leader-keys 
@@ -451,22 +450,22 @@ One for writing code and the other for reading articles."
 (setq org-appear-autokeywords t) 
 (setq org-appear-delay 0.6)
 
-(setq org-agenda-files (list 
-    (concat efs/personal-dir-org "dates.org")
-    (concat efs/personal-dir-org "inbox.org")
-    ;(concat efs/personal-dir-org "conf-tasks.org")
-))
+  (setq org-agenda-files (list 
+      (concat efs/personal-dir-org "dates.org")
+      (concat efs/personal-dir-org "inbox.org")
+      ;(concat efs/personal-dir-org "conf-tasks.org")
+  ))
 
-(if (string= efs/computer-id "work") 
-    (add-to-list 'org-agenda-files  
-	(concat efs/user-dir-org "work.org")))
+  (if (string= efs/computer-id "work") 
+      (add-to-list 'org-agenda-files  
+	  (concat efs/user-dir-org "work.org")))
 
-(if (string= efs/computer-id "personal") 
-    (progn
-	(add-to-list 'org-agenda-files  
-	      (concat efs/personal-dir-org "habits.org"))
-	(add-to-list 'org-agenda-files
-	      (concat efs/personal-dir-org "personal.org"))))
+  (if (string= efs/computer-id "personal") 
+      (progn
+	  (add-to-list 'org-agenda-files  
+		(concat efs/personal-dir-org "habits.org"))
+	  (add-to-list 'org-agenda-files
+		(concat efs/personal-dir-org "personal.org"))))
 
 (defun efs/org-agenda-open ()
     (interactive)
@@ -483,13 +482,13 @@ One for writing code and the other for reading articles."
 (evil-define-key 'motion org-agenda-mode-map
     (kbd "q") 'efs/org-agenda-quit)
 
-(setq org-agenda-window-setup 'current-window)
-(setq org-agenda-span 1)
-(setq org-agenda-persistent-filter t)
+   (setq org-agenda-window-setup 'current-window)
+   (setq org-agenda-span 1)
+   (setq org-agenda-persistent-filter t)
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 
-(setq diary-file (concat efs/user-dir-org "diary.org"))
+ (setq diary-file (concat efs/user-dir-org "diary.org"))
 
 (setq  org-capture-templates   
    (list  '( "c" "Task" entry 
@@ -555,8 +554,8 @@ One for writing code and the other for reading articles."
    :kill-buffer t)
 )
 
-(efs/leader-keys
-    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+  (efs/leader-keys
+      "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
 
 (add-to-list  'org-capture-templates   
     '("k" "Clipboard Link to Inbox" entry 
@@ -620,36 +619,36 @@ One for writing code and the other for reading articles."
    "
    :kill-buffer t))
 
-(use-package org-bullets
-       :after org
-       :hook (org-mode . org-bullets-mode)
-       :custom
-       (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
+   (use-package org-bullets
+	  :after org
+	  :hook (org-mode . org-bullets-mode)
+	  :custom
+	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
 
-(defun efs/org-mode-visual-fill ()
-     (setq visual-fill-column-width 100
-	 visual-fill-column-center-text t)
-     (visual-fill-column-mode 1))
+   (defun efs/org-mode-visual-fill ()
+	(setq visual-fill-column-width 100
+	    visual-fill-column-center-text t)
+	(visual-fill-column-mode 1))
 
 
- (use-package visual-fill-column
-     :hook (org-mode . efs/org-mode-visual-fill))
+    (use-package visual-fill-column
+	:hook (org-mode . efs/org-mode-visual-fill))
 
-(with-eval-after-load 'org
-  (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((emacs-lisp . t)
-        (python . t))))
+   (with-eval-after-load 'org
+     (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((emacs-lisp . t)
+           (python . t))))
 
- (setq org-confirm-babel-evaluate nil)
+    (setq org-confirm-babel-evaluate nil)
 
-(with-eval-after-load 'org
-;; This is needed as of Org 9.2
-      (require 'org-tempo)
+    (with-eval-after-load 'org
+  ;; This is needed as of Org 9.2
+	(require 'org-tempo)
 
-      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-      (add-to-list 'org-structure-template-alist '("py" . "src python")))
+	(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+	(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+	(add-to-list 'org-structure-template-alist '("py" . "src python")))
 
 (use-package evil-org
   :ensure t
@@ -730,27 +729,27 @@ same directory as the org-buffer and insert a link to this file."
 
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 
-(defun efs/org-babel-tangle-config ()
-  (when
-      (string= buffer-file-name efs/user-dir-readme)
-      (let ((org-confirm-babel-evaluate nil)))
-      (org-babel-tangle)))
+   (defun efs/org-babel-tangle-config ()
+     (when
+	 (string= buffer-file-name efs/user-dir-readme)
+	 (let ((org-confirm-babel-evaluate nil)))
+	 (org-babel-tangle)))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-(defun efs/new-org-note ()
-  (interactive)
-  (setq input (read-string "Enter new Filename:\t"))
-  ;; (setq input "test file NaMe")
-  (setq input (replace-regexp-in-string "\s" "-" input))
-  (setq input (downcase input))
-  (setq input (concat efs/user-dir-org input ".org"))
-  (find-file input)
-  (evil-insert-state)
+  (defun efs/new-org-note ()
+    (interactive)
+    (setq input (read-string "Enter new Filename:\t"))
+    ;; (setq input "test file NaMe")
+    (setq input (replace-regexp-in-string "\s" "-" input))
+    (setq input (downcase input))
+    (setq input (concat efs/user-dir-org input ".org"))
+    (find-file input)
+    (evil-insert-state)
+    )
+  (efs/leader-keys
+    "on" '(efs/new-org-note :wk "new-org-note")
   )
-(efs/leader-keys
-  "on" '(efs/new-org-note :wk "new-org-note")
-)
 
 (efs/leader-keys
     "C-s" '(lambda () (interactive) (
@@ -786,7 +785,7 @@ same directory as the org-buffer and insert a link to this file."
 (global-set-key (kbd "C-c g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
-(use-package dired
+  (use-package dired
       :ensure nil
       :commands (dired dired-jump)
       :bind (("C-x C-j" . dired-jump))
@@ -823,17 +822,17 @@ same directory as the org-buffer and insert a link to this file."
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
 
-(with-eval-after-load 'dired
-;; C-c l to launch a file in Windows similar to running
-;; start "" filename in the console
-(defun efs/dired-win-default ()
-  (interactive)
-  (let ((filename (dired-replace-in-string "/"
-                                           "\\"
-                                           (dired-get-filename))))
-
-    (w32-shell-execute 1 filename)))
-(define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
+  (with-eval-after-load 'dired
+  ;; C-c l to launch a file in Windows similar to running
+  ;; start "" filename in the console
+  (defun efs/dired-win-default ()
+    (interactive)
+    (let ((filename (dired-replace-in-string "/"
+                                             "\\"
+                                             (dired-get-filename))))
+					     
+      (w32-shell-execute 1 filename)))
+  (define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
 
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)

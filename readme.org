@@ -175,6 +175,9 @@ In my clumsyness I've hit theste  too many times
 
    #+end_src
 
+   #+RESULTS:
+   : keyboard-escape-quit
+
 ** General Leader Keys
 
 
@@ -663,9 +666,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(setq org-pretty-entities t)
 	(setq org-pretty-entities-include-sub-superscripts nil) 
 	(setq org-hidden-keywords '(title) )
-
 	(setq org-hide-emphasis-markers t)
-
+	(setq org-src-preserve-indentation t)
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
@@ -867,7 +869,6 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
     #+RESULTS:
-    | c | Task | entry | (file+headline (lambda nil (concat efs/personal-dir-org inbox.org)) Inbox) | * TODO %^{Task} |
 
 *** Work 
 
