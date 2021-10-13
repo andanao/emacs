@@ -270,6 +270,34 @@ In my clumsyness I've hit theste  too many times
    #+RESULTS:
    : t
    
+** Evil Window Control
+
+#+begin_src emacs-lisp
+
+(evil-global-set-key 'normal (kbd "C-w C-h") 'evil-window-left)
+(evil-global-set-key 'insert (kbd "C-w C-h") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'evil-window-left)))
+
+
+(evil-global-set-key 'normal (kbd "C-w C-j") 'evil-window-down)
+(evil-global-set-key 'insert (kbd "C-w C-j") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'evil-window-down)))
+
+
+(evil-global-set-key 'normal (kbd "C-w C-k") 'evil-window-up)
+(evil-global-set-key 'insert (kbd "C-w C-k") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'evil-window-up)))
+
+
+(evil-global-set-key 'normal (kbd "C-w C-l") 'evil-window-right)
+(evil-global-set-key 'insert (kbd "C-w C-l") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'evil-window-right)))
+
+#+end_src
 ** Undo tree visualizer
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
 
@@ -316,8 +344,7 @@ this is always so annoying
 #+RESULTS:
 : efs/format-dir-winstyle
 
-
-** Replace Keybindings
+** Regex Replace Keybindings
    #+begin_src emacs-lisp
 (efs/leader-keys
     "r"  '(:ignore t :wk "replace")
@@ -329,7 +356,7 @@ this is always so annoying
 
    #+RESULTS:
 
-** Insert to toggle line
+** Insert to toggle comment
 Normally insert enables overtype, but I've never once wanted that 
    
 #+begin_src emacs-lisp
