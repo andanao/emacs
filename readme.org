@@ -391,7 +391,7 @@ One for writing code and the other for reading articles."
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
   (setq efs/switch-themes-var (cdr efs/switch-themes-var))
-  (efs/org-mode-setup)
+  (efs/org-font-setup)
   )
 
 
