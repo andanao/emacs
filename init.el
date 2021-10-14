@@ -202,8 +202,8 @@
 
 (defvar efs/switch-themes-var
   (let ((themes-list (list 
-			    'doom-molokai
-			    'doom-acario-light
+			    'ads-dark
+			    'ads-light
 )))
     (nconc themes-list themes-list))
   "A circular list of themes to keep switching between.
