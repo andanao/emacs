@@ -151,7 +151,25 @@
    (rainbow-delimiters-depth-4-face :foreground cyan)
    (rainbow-delimiters-depth-5-face :foreground magenta)
    (rainbow-delimiters-depth-6-face :foreground orange)
-   (rainbow-delimiters-depth-7-face :foreground green))
+   (rainbow-delimiters-depth-7-face :foreground green)
+   ;;;; 
+   (org-block     :foreground nil  :inherit 'fixed-pitch)
+   (org-table     :inherit 'fixed-pitch)
+   (org-formula   :inherit 'fixed-pitch)
+   (org-code      :inherit '(shadow fixed-pitch))
+   (org-table     :inherit '(shadow fixed-pitch))
+   (org-verbatim  :inherit '(shadow fixed-pitch))
+   (org-special-keyword  :inherit '(font-lock-comment-face fixed-pitch))
+   (org-meta-line  :inherit '(font-lock-comment-face fixed-pitch))
+   (org-checkbox   :inherit 'fixed-pitch)
+   (line-number  :inherit 'fixed-pitch)
+   (line-number-current-line  :inherit 'fixed-pitch)
+   (org-document-title :weight 'bold :height 3.0) 
+
+
+
+
+   )
 
   ;;;; Base theme variable overrides
   ;; ()
