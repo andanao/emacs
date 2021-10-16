@@ -641,7 +641,6 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	      header-line-format " "
 	      
 	      )
 
@@ -984,7 +983,9 @@ Formatting for scheduled __ : if today otherwise ## :
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 110
 	visual-fill-column-center-text t
-	visual-fill-column-enable-sensible-window-split t)
+	visual-fill-column-enable-sensible-window-split t
+	header-line-format " "
+	)
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column

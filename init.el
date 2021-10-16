@@ -399,7 +399,6 @@ One for writing code and the other for reading articles."
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	      header-line-format " "
 	      
 	      )
 
@@ -643,7 +642,9 @@ One for writing code and the other for reading articles."
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 110
 	visual-fill-column-center-text t
-	visual-fill-column-enable-sensible-window-split t)
+	visual-fill-column-enable-sensible-window-split t
+	header-line-format " "
+	)
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column
