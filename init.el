@@ -538,7 +538,7 @@ One for writing code and the other for reading articles."
   (push '("#+end_quote" . "”") prettify-symbols-alist)
   (push '("#+BEGIN_SRC" . "«") prettify-symbols-alist)
   (push '("#+END_SRC" . "»") prettify-symbols-alist)
-  (push '("#+begin_src" . "»«") prettify-symbols-alist)
+  (push '("#+begin_src" . "«") prettify-symbols-alist)
   (push '("#+end_src" . "»") prettify-symbols-alist)
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
