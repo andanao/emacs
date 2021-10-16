@@ -399,6 +399,8 @@ One for writing code and the other for reading articles."
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
+	      header-line-format " "
+	      
 	      )
 
 	;:hook (org-mode . efs/org-mode-setup)
