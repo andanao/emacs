@@ -632,11 +632,10 @@ One for writing code and the other for reading articles."
    "
    :kill-buffer t))
 
-   ;; (use-package org-bullets
-   ;; 	  :after org
-   ;; 	  :hook (org-mode . org-bullets-mode)
-   ;; 	  :custom
-   ;; 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
+   (use-package org-bullets
+	  :after org
+	  :hook (org-mode . org-bullets-mode)
+	 )
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 110

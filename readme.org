@@ -968,14 +968,10 @@ Formatting for scheduled __ : if today otherwise ## :
 ** Org Bullets
 
    #+begin_src emacs-lisp
-
-   ;; (use-package org-bullets
-   ;; 	  :after org
-   ;; 	  :hook (org-mode . org-bullets-mode)
-   ;; 	  :custom
-   ;; 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
-
-
+   (use-package org-bullets
+	  :after org
+	  :hook (org-mode . org-bullets-mode)
+	 )
    #+end_src
 
 ** Org Visual fill
