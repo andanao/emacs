@@ -398,6 +398,7 @@ One for writing code and the other for reading articles."
 	      org-fontify-whole-heading-line t
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
+	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
 	      )
 
 	;:hook (org-mode . efs/org-mode-setup)
@@ -631,11 +632,11 @@ One for writing code and the other for reading articles."
    "
    :kill-buffer t))
 
-   (use-package org-bullets
-	  :after org
-	  :hook (org-mode . org-bullets-mode)
-	  :custom
-	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
+   ;; (use-package org-bullets
+   ;; 	  :after org
+   ;; 	  :hook (org-mode . org-bullets-mode)
+   ;; 	  :custom
+   ;; 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 110

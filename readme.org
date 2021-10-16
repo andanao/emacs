@@ -640,6 +640,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-fontify-whole-heading-line t
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
+	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
 	      )
 
 	;:hook (org-mode . efs/org-mode-setup)
@@ -968,11 +969,11 @@ Formatting for scheduled __ : if today otherwise ## :
 
    #+begin_src emacs-lisp
 
-   (use-package org-bullets
-	  :after org
-	  :hook (org-mode . org-bullets-mode)
-	  :custom
-	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
+   ;; (use-package org-bullets
+   ;; 	  :after org
+   ;; 	  :hook (org-mode . org-bullets-mode)
+   ;; 	  :custom
+   ;; 	  (org-bullets-bullet-lits '(("◉" "○" "●" "○" "●" "○" "●"))))
 
 
    #+end_src
