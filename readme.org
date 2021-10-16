@@ -404,6 +404,18 @@ One for writing code and the other for reading articles."
 
 #+end_src
 
+** Refresh Theme
+
+Useful for testing out changes to themes, I should probably add a hook to automatically do this whenever the active theme has been updated
+#+begin_src emacs-lisp
+(defun efs/refresh-theme ()
+  (interactive)
+  (load-theme (car custom-enabled-themes) t)
+)
+(efs/leader-keys "tj" 'efs/refresh-theme)
+#+end_src
+
+
 
 ** Doom Modeline
 

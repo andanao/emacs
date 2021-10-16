@@ -243,6 +243,12 @@ One for writing code and the other for reading articles."
 (efs/leader-keys
     "tt" '(efs/quick-switch-theme :wk "toggle theme"))
 
+(defun efs/refresh-theme ()
+  (interactive)
+  (load-theme (car custom-enabled-themes) t)
+)
+(efs/leader-keys "tj" 'efs/refresh-theme)
+
    (use-package all-the-icons)
 
    ;; Doom modeline config
