@@ -223,9 +223,6 @@ determine the exact padding."
    (markdown-header-face :inherit 'bold :foreground red)
    ((markdown-code-face &override) :background (doom-lighten base3 0.05))
    ;;;; org <built-in>
-   ((org-block &override) :background bg-alt)
-   ((org-block-begin-line &override) :background bg :slant 'italic)
-   ((org-quote &override) :background base1)
    (org-hide :foreground hidden)
    ;;;; solaire-mode
    (solaire-mode-line-face
@@ -243,20 +240,55 @@ determine the exact padding."
    (whitespace-big-indent :inherit 'default)
 
 
+   ;;;; rainbow-delimiters
+   (rainbow-delimiters-depth-1-face :foreground magenta)
+   (rainbow-delimiters-depth-2-face :foreground orange)
+   (rainbow-delimiters-depth-3-face :foreground green)
+   (rainbow-delimiters-depth-4-face :foreground cyan)
+   (rainbow-delimiters-depth-5-face :foreground violet)
+   (rainbow-delimiters-depth-6-face :foreground dark-cyan)
+   (rainbow-delimiters-depth-7-face :foreground red)
+   ;;;; 
+
    
-   (org-block     :foreground nil  :inherit 'fixed-pitch)
-   (org-table     :inherit 'fixed-pitch)
+   (org-ellipsis :foreground orange)
+   (org-tag :foreground yellow :bold nil)
+   (org-quote :height 2.8 :font serif :foreground fg :background bg)
+   (org-todo :foreground yellow :bold 'inherit :font sans)
+   (org-done :inherit '(fixed-pitch org-headline-done))
+   (org-list-dt :foreground yellow)
+
+   ((org-block &override)    :foreground bg :background "#00000F" :inherit 'fixed-pitch)
+   (org-block-begin :background bg :height 0.8)
+   
+   (org-table     :foreground cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
-   (org-code      :inherit '(shadow fixed-pitch))
-   (org-table     :inherit '(shadow fixed-pitch))
-   (org-verbatim  :inherit '(shadow fixed-pitch))
+   (org-code      :foreground cyan :inherit 'fixed-pitch)
+   (org-verbatim  :font serif :height 1.2 :slant 'italic :foreground base8)
+
+   
    (org-special-keyword  :inherit '(font-lock-comment-face fixed-pitch))
    (org-meta-line  :inherit '(font-lock-comment-face fixed-pitch))
-   (org-checkbox   :inherit 'fixed-pitch)
-   (line-number  :inherit 'fixed-pitch)
+   (org-checkbox   :height 0.8 :inherit 'fixed-pitch)
+   (org-checkbox-statistics-todo :foreground orange :inherit 'org-checkbox)
+   (org-checkbox-statistics-done :foreground base5 :inherit 'org-checkbox)
+   (line-number    :inherit 'fixed-pitch)
    (line-number-current-line  :inherit 'fixed-pitch)
-   (org-document-title :weight 'bold :height 3.0) 
+   (org-document-title :height 3.0) 
+   (org-level-1 :height 1.8 :foreground base8 )
+   (org-level-2 :height 1.6 :foreground base8 )
+   (org-level-3 :height 1.4 :foreground base8 )
+   (org-level-4 :height 1.3 :foreground base8 )
+   (org-level-5 :height 1.2 :foreground base8 )
+   (org-level-6 :height 1.1 :foreground base8 )
+   (org-level-7 :height 1.1 :foreground base8 )
+   (org-level-8 :height 1.1 :foreground base8 )
 
+   (org-drawer         :foreground base5 :inherit 'fixed-pitch)
+   (org-property-value :foreground cyan :inherit 'fixed-pitch)
+   (org-date :foreground orange  :inherit 'fixed-pitch)
+
+   (ivy-org :font serif :height 1.2 :weight 'bold)
 
 
    )
