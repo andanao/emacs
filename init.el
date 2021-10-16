@@ -44,8 +44,6 @@
 (menu-bar-mode -1)                      ; Disable the menu bar
 (set-fringe-mode 10)                    ; Add some breathing room
 
-
-
 (setq mono "Fira Code Retina")
 (setq sans "Cantarell")
 (setq serif "EtBembo")
@@ -521,6 +519,22 @@ One for writing code and the other for reading articles."
    (setq org-agenda-persistent-filter t)
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
+
+(defun efs/org-prettify-symbols-alist ()
+  ;; I'm not happy with how these look, I'll have to figure out somethings at a future date
+  ;; (push '("[ ]" . "☐" ) prettify-symbols-alist)
+  ;; (push '("[X]" . "☑" ) prettify-symbols-alist)
+  ;; (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_QUOTE" . "“") prettify-symbols-alist)
+  (push '("#+END_QUOTE" . "”") prettify-symbols-alist)
+  (push '("#+begin_quote" . "“") prettify-symbols-alist)
+  (push '("#+end_quote" . "”") prettify-symbols-alist)
+  (push '("#+BEGIN_SRC" . "«") prettify-symbols-alist)
+  (push '("#+END_SRC" . "»") prettify-symbols-alist)
+  (push '("#+begin_src" . "»«") prettify-symbols-alist)
+  (push '("#+end_src" . "»") prettify-symbols-alist)
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
  (setq diary-file (concat efs/user-dir-org "diary.org"))
 

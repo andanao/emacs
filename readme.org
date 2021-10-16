@@ -31,13 +31,11 @@ currently:
 (add-to-list 'load-path efs/user-dir-org)
    #+end_src
 
-   
 ** Debug on Error
    Nice to load it early, makes troubleshooting a problem easier
    #+begin_src emacs-lisp
 (setq debug-on-error t)
    #+end_src
-
 
 * Package System Setup
 ** Package setup 
@@ -96,17 +94,7 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 
 #+end_src
 
-
 * Basic UI Config
-** Basic Config 
- Setting up some basic UI stuff, disabling startup and some minor visual changes
-
- #+begin_src emacs-lisp
-
-
-
- #+end_src
-
 
 ** Font configuration
 Setting up font properties
@@ -180,7 +168,6 @@ In my clumsyness I've hit theste  too many times
 (global-set-key (kbd "C-x C-c") 'nil)
 (global-set-key (kbd "C-x C-z") 'nil)
 #+end_src
-
 
 * Keybinding Config
 ** Global Esc
@@ -613,7 +600,6 @@ One for writing code and the other for reading articles."
      #+end_src
 
    
-
 * Org Mode
 ** EFS Org Mode Setup
 
@@ -822,6 +808,26 @@ Formatting for scheduled __ : if today otherwise ## :
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 #+end_src
 
+** Org Prettify
+
+#+begin_src emacs-lisp
+(defun efs/org-prettify-symbols-alist ()
+  ;; I'm not happy with how these look, I'll have to figure out somethings at a future date
+  ;; (push '("[ ]" . "☐" ) prettify-symbols-alist)
+  ;; (push '("[X]" . "☑" ) prettify-symbols-alist)
+  ;; (push '("[-]" . "❍" ) prettify-symbols-alist)
+  (push '("#+BEGIN_QUOTE" . "“") prettify-symbols-alist)
+  (push '("#+END_QUOTE" . "”") prettify-symbols-alist)
+  (push '("#+begin_quote" . "“") prettify-symbols-alist)
+  (push '("#+end_quote" . "”") prettify-symbols-alist)
+  (push '("#+BEGIN_SRC" . "«") prettify-symbols-alist)
+  (push '("#+END_SRC" . "»") prettify-symbols-alist)
+  (push '("#+begin_src" . "»«") prettify-symbols-alist)
+  (push '("#+end_src" . "»") prettify-symbols-alist)
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
+
+#+end_src
 
 ** Org Diary File 
  #+begin_src emacs-lisp
