@@ -650,7 +650,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 	(setq org-todo-keywords
 	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
-	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
+		      "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 	;; Save Org buffers after refiling!
 	(advice-add 'org-refile :after 'org-save-all-org-buffers)

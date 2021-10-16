@@ -408,7 +408,8 @@ One for writing code and the other for reading articles."
 
 	(setq org-todo-keywords
 	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
-	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
+		      "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 	;; Save Org buffers after refiling!
 	(advice-add 'org-refile :after 'org-save-all-org-buffers)
