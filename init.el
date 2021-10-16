@@ -57,8 +57,6 @@
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
 
-(variable-pitch-mode 1)
-
    ;; Enable line numbers
    (global-display-line-numbers-mode t)
 

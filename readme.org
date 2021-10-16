@@ -114,7 +114,6 @@ Setting up font properties
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
 
-(variable-pitch-mode 1)
 #+end_src
 
 

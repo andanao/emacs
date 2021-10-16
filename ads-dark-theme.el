@@ -174,7 +174,7 @@ Can be an integer to determine the exact padding."
    (rainbow-delimiters-depth-6-face :foreground orange)
    (rainbow-delimiters-depth-7-face :foreground green)
    ;;;; 
-   (org-block     :foreground nil  :inherit 'fixed-pitch)
+   ;; (org-block     :foreground nil  :inherit 'fixed-pitch)
    (org-table     :inherit 'fixed-pitch)
    (org-formula   :inherit 'fixed-pitch)
    (org-code      :inherit '(shadow fixed-pitch))
