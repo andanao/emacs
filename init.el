@@ -832,6 +832,29 @@ same directory as the org-buffer and insert a link to this file."
 (global-set-key (kbd "C-c g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
+(defun efs/prog-mode-configure-prettify-symbols-alist ()
+  "Set prettify symbols alist."
+  (setq prettify-symbols-alist '(("lambda" . "λ")
+                                 ("->" . "→")
+                                 ("->>" . "↠")
+                                 ("=>" . "⇒")
+                                 ("map" . "↦")
+                                 ("/=" . "≠")
+                                 ("!=" . "≠")
+                                 ("==" . "≡")
+                                 ("<=" . "≤")
+                                 (">=" . "≥")
+                                 ("=<<" . "=≪")
+                                 (">>=" . "≫=")
+                                 ("<=<" . "↢")
+                                 (">=>" . "↣")
+                                 ("&&" . "∧")
+                                 ("||" . "∨")
+                                 ("not" . "¬")))
+  (prettify-symbols-mode))
+
+(add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
+
   (use-package dired
       :ensure nil
       :commands (dired dired-jump)
