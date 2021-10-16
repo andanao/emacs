@@ -858,5 +858,8 @@ same directory as the org-buffer and insert a link to this file."
   (define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
 
 (prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
