@@ -1,8 +1,26 @@
 (require 'doom-themes)
 
-(setq ads-dark-brighter-comments nil )
-(setq ads-dark-brighter-modeline nil )
-(setq ads-dark-padded-modeline nil)
+(defgroup ads-dark-theme nil
+  "Options for the `doom-molokai' theme."
+  :group 'doom-themes)
+
+(defcustom ads-dark-brighter-modeline nil
+  "If non-nil, more vivid colors will be used to style the mode-line."
+  :group 'ads-dark-theme
+  :type 'boolean)
+
+(defcustom ads-dark-brighter-comments nil
+  "If non-nil, comments will be highlighted in more vivid colors."
+  :group 'ads-dark-theme
+  :type 'boolean)
+
+(defcustom ads-dark-padded-modeline doom-themes-padded-modeline
+  "If non-nil, adds a 4px padding to the mode-line.
+Can be an integer to determine the exact padding."
+  :group 'ads-dark-theme
+  :type '(choice integer boolean))
+
+
 
 (def-doom-theme ads-dark
   "A dark, vibrant theme inspired by Doom themes & Textmate's Molokai."
