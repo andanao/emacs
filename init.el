@@ -23,18 +23,28 @@
      (require 'use-package)
      (setq use-package-always-ensure t)
 
- (setq inhibit-startup-message t)
+(setq-default
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ require-final-newline t                ; Newline at end of file
+ scroll-margin 5                        ; Add a margin when scrolling vertically
+ scroll-conservatively 10               ; Avoid recentering when scrolling far
+ help-window-select t                   ; Focus new help windows when opened
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ visible-bell t                         ; set up the visible bell (no annoying beeping sounds)
+ )
+
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(fset 'yes-or-no-p 'y-or-n-p)           ; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(scroll-bar-mode -1)                    ; Disable the visible scrollbar
+(tool-bar-mode -1)                      ; Disablet the toolbar
+(tooltip-mode -1)                       ; Disable tooltips
+(menu-bar-mode -1)                      ; Disable the menu bar
+(set-fringe-mode 10)                    ; Add some breathing room
 
 
- (scroll-bar-mode -1)  ;; Disable the visible scrollbar
- (tool-bar-mode -1)    ;; Disablet the toolbar
- (tooltip-mode -1)     ;; Disable tooltips
- (set-fringe-mode 10)  ;; Add some breathing room
-
-
- (menu-bar-mode -1) ; Disable the menu bar
-
- (setq visible-bell t) ; set up the visible bell (no annoying beeping sounds)
 
 (setq mono "Fira Code Retina")
 (setq sans "Cantarell")
