@@ -390,7 +390,6 @@ One for writing code and the other for reading articles."
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
   (setq efs/switch-themes-var (cdr efs/switch-themes-var))
-  (efs/org-font-setup)
   )
 
 
@@ -489,7 +488,7 @@ One for writing code and the other for reading articles."
      (prescient-persist-mode 1)
      (ivy-prescient-mode 1))
     #+end_src
-
+    
 
 ** Helpful 
 
@@ -669,13 +668,10 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	     ("note" . ?n)
 	     ("idea" . ?i)))
 
-
-;;	(efs/org-font-setup)
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
-
-	(efs/org-font-setup))
+	)
 
 
    #+end_src

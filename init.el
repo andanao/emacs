@@ -229,7 +229,6 @@ One for writing code and the other for reading articles."
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
   (setq efs/switch-themes-var (cdr efs/switch-themes-var))
-  (efs/org-font-setup)
   )
 
 
@@ -427,13 +426,10 @@ One for writing code and the other for reading articles."
 	     ("note" . ?n)
 	     ("idea" . ?i)))
 
-
-;;	(efs/org-font-setup)
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
-
-	(efs/org-font-setup))
+	)
 
   (setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
   (setq efs/work-task-file (concat efs/user-dir-org "work.org"))
