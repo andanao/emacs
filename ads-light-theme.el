@@ -290,7 +290,7 @@ determine the exact padding."
 
    (ivy-org :font serif :height 1.2 :weight 'bold)
 
-
+   (header-line :height 2.0 :background bg)
    )
 
   ;;;; Base theme variable overrides-

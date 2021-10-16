@@ -204,6 +204,7 @@ Can be an integer to determine the exact padding."
    (org-date :foreground orange  :inherit 'fixed-pitch)
 
    (ivy-org :font serif :height 1.2 :weight 'bold)
+   (header-line :height 2.0 :background bg)
    )
 
   ;;;; Base theme variable overrides
