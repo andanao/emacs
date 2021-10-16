@@ -1,5 +1,33 @@
 (require 'doom-themes)
 
+;;; Variables
+(defgroup ads-light-theme nil
+  "Options for the `ads-light' theme."
+  :group 'doom-themes)
+
+(defcustom ads-light-brighter-modeline nil
+  "If non-nil, more vivid colors will be used to style the mode-line."
+  :group 'ads-light-theme
+  :type 'boolean)
+
+(defcustom ads-light-brighter-comments nil
+  "If non-nil, comments will be highlighted in more vivid colors."
+  :group 'ads-light-theme
+  :type 'boolean)
+
+(defcustom ads-light-comment-bg ads-light-brighter-comments
+  "If non-nil, comments will have a subtle, darker background. Enhancing their
+legibility."
+  :group 'ads-light-theme
+  :type 'boolean)
+
+(defcustom ads-light-padded-modeline doom-themes-padded-modeline
+  "If non-nil, adds a 4px padding to the mode-line. Can be an integer to
+determine the exact padding."
+  :group 'ads-light-theme
+  :type '(or integer boolean))
+
+
 (def-doom-theme ads-light
   "A light theme inspired by Doom themes Acario light"
 
@@ -42,8 +70,8 @@
    (vertical-bar   base0)
    (selection      bg-blue)
    (builtin        blue)
-   (comments       (if doom-acario-light-brighter-comments cyan grey))
-   (doc-comments   (doom-darken (if doom-acario-light-brighter-comments cyan green) 0.25))
+   (comments       (if ads-light-brighter-comments cyan grey))
+   (doc-comments   (doom-darken (if ads-light-brighter-comments cyan green) 0.25))
    (constants      magenta)
    (functions      yellow)
    (keywords       red)
@@ -63,11 +91,11 @@
 
    ;; custom categories
    (hidden bg)
-   (-modeline-dark doom-acario-light-brighter-modeline)
+   (-modeline-dark ads-light-brighter-modeline)
    (-modeline-bright -modeline-dark)
    (-modeline-pad
-    (when doom-acario-light-padded-modeline
-      (if (integerp doom-acario-light-padded-modeline) doom-acario-light-padded-modeline 4)))
+    (when ads-light-padded-modeline
+      (if (integerp ads-light-padded-modeline) ads-light-padded-modeline 4)))
 
    (modeline-fg     nil)
    (modeline-fg-alt base5)
@@ -86,7 +114,7 @@
   ;;;; Base theme face overrides
   (((font-lock-comment-face &override)
     :slant 'italic
-    :background (if doom-acario-light-comment-bg (doom-darken bg 0.05)))
+    :background (if ads-light-comment-bg (doom-darken bg 0.05)))
    ((line-number &override) :foreground base4)
    ((line-number-current-line &override) :foreground orange)
    (mode-line
