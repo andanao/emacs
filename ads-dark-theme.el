@@ -1,8 +1,11 @@
 (require 'doom-themes)
 
+(setq ads-dark-brighter-comments nil )
+(setq ads-dark-brighter-modeline nil )
+(setq ads-dark-padded-modeline nil)
 
 (def-doom-theme ads-dark
-  "A dark, vibrant theme inspired by Textmate's Monokai."
+  "A dark, vibrant theme inspired by Doom themes & Textmate's Molokai."
 
   ;; name        gui       256       16
   ((bg         '("#1c1e1f" "black"   "black"        ))
@@ -48,8 +51,8 @@
    (vertical-bar   (doom-lighten bg 0.1))
    (selection      base5)
    (builtin        orange)
-   (comments       (if doom-molokai-brighter-comments violet base5))
-   (doc-comments   (if doom-molokai-brighter-comments
+   (comments       (if ads-dark-brighter-comments violet base5))
+   (doc-comments   (if ads-dark-brighter-comments
                        (doom-lighten violet 0.1)
                      (doom-lighten base5 0.25)))
    (constants      orange)
@@ -73,16 +76,16 @@
    ;; mandatory for derived themes.
    (modeline-fg          fg)
    (modeline-fg-alt      base4)
-   (modeline-bg          (if doom-molokai-brighter-modeline base4 base3))
-   (modeline-bg-inactive (doom-darken (if doom-molokai-brighter-modeline
+   (modeline-bg          (if ads-dark-brighter-modeline base4 base3))
+   (modeline-bg-inactive (doom-darken (if ads-dark-brighter-modeline
                                           base3
                                         base2)
                                       0.2))
    (org-quote `(,(doom-lighten (car bg) 0.05) "#1f1f1f"))
 
    (-modeline-pad
-    (when doom-molokai-padded-modeline
-      (if (integerp doom-molokai-padded-modeline) doom-molokai-padded-modeline 4))))
+    (when ads-dark-padded-modeline
+      (if (integerp ads-dark-padded-modeline) ads-dark-padded-modeline 4))))
 
 
   ;;;; Base theme face overrides
@@ -175,4 +178,4 @@
   ;; ()
   )
 
-;;; doom-molokai-theme.el ends here
+;;; ads-dark-theme.el ends here
