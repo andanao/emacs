@@ -312,6 +312,14 @@ One for writing code and the other for reading articles."
 (global-set-key (kbd "C-h C-e") 'view-echo-area-messages)
 (global-set-key (kbd "C-h C-j") 'describe-face)
 
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  ;; (browse-kill-ring-default-keybindings) ended up setting this myself down below same thing but I know what idiot set it
+  (setq browse-kill-ring-highlight-current-entry t)
+  )
+(global-set-key (kbd "M-y") 'browse-kill-ring)
+
 (use-package hydra
   :defer t)
 
@@ -393,6 +401,7 @@ One for writing code and the other for reading articles."
 	      org-hide-emphasis-markers t
 	      org-src-preserve-indentation t
 	      org-image-actual-width (/ (car (window-text-pixel-size)) 2)
+	      org-startup-with-inline-images t
 	      org-startup-indented t
 	      org-agenda-block-separator ""
 	      org-fontify-whole-heading-line t
