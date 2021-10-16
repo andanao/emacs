@@ -158,7 +158,7 @@ Can be an integer to determine the exact padding."
    ((outline-1 &override) :foreground magenta)
    ((outline-2 &override) :foreground orange)
    ;;;; org <built-in>
-   (org-ellipsis :foreground orange)
+   (org-ellipsis :foreground orange :height 0.75)
    (org-tag :foreground yellow :bold nil)
    (org-quote :height 2.8 :font serif :foreground fg :background bg)
    (org-todo :foreground yellow :bold 'inherit :font sans)

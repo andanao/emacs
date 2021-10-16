@@ -251,7 +251,7 @@ determine the exact padding."
    ;;;; 
 
    
-   (org-ellipsis :foreground orange)
+   (org-ellipsis :foreground orange :height 0.75)
    (org-tag :foreground yellow :bold nil)
    (org-quote :height 2.8 :font serif :foreground fg :background bg)
    (org-todo :foreground yellow :bold 'inherit :font sans)
