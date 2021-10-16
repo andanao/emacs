@@ -411,6 +411,7 @@ One for writing code and the other for reading articles."
 	      org-image-actual-width (/ (car (window-text-pixel-size)) 2)
 	      org-startup-with-inline-images t
 	      org-startup-indented t
+	      org-startup-folded t
 	      org-agenda-block-separator ""
 	      org-fontify-whole-heading-line t
 	      org-fontify-done-headline t
