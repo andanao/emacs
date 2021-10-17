@@ -72,7 +72,7 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 (setq-default
  cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
  require-final-newline t                ; Newline at end of file
- scroll-margin 5                        ; Add a margin when scrolling vertically
+ scroll-margin 3                        ; Add a margin when scrolling vertically
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message ""             ; Empty the initial *scratch* buffer
@@ -851,6 +851,9 @@ Formatting for scheduled __ : if today otherwise ## :
   (push '("#+END_SRC" . "»") prettify-symbols-alist)
   (push '("#+begin_src" . "«") prettify-symbols-alist)
   (push '("#+end_src" . "»") prettify-symbols-alist)
+  (push '("#+options:" . "⌥") prettify-symbols-alist)
+  (push '("#+RESULTS:" . "🠶") prettify-symbols-alist)
+  (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
@@ -1298,7 +1301,7 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 (global-set-key (kbd "C-x C-g") 'magit-status)
 #+end_src
 
-** Prettify
+** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
 #+begin_src emacs-lisp

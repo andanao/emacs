@@ -26,7 +26,7 @@
 (setq-default
  cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
  require-final-newline t                ; Newline at end of file
- scroll-margin 5                        ; Add a margin when scrolling vertically
+ scroll-margin 3                        ; Add a margin when scrolling vertically
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message ""             ; Empty the initial *scratch* buffer
@@ -549,6 +549,9 @@ One for writing code and the other for reading articles."
   (push '("#+END_SRC" . "»") prettify-symbols-alist)
   (push '("#+begin_src" . "«") prettify-symbols-alist)
   (push '("#+end_src" . "»") prettify-symbols-alist)
+  (push '("#+options:" . "⌥") prettify-symbols-alist)
+  (push '("#+RESULTS:" . "🠶") prettify-symbols-alist)
+  (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
