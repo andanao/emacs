@@ -406,7 +406,6 @@ One for writing code and the other for reading articles."
 
 ** Refresh Theme
 
-Useful for testing out changes to themes, I should probably add a hook to automatically do this whenever the active theme has been updated
 #+begin_src emacs-lisp
 (defun efs/refresh-theme ()
   (interactive)
@@ -415,7 +414,16 @@ Useful for testing out changes to themes, I should probably add a hook to automa
 (efs/leader-keys "tj" 'efs/refresh-theme)
 #+end_src
 
-
+** Auto Refresh Theme
+Check if the current theme matches the file being edited on save, if so refresh the current theme
+#+begin_src emacs-lisp
+(defun efs/refresh-theme-auto()
+  (when (cl-search
+     (symbol-name (car custom-enabled-themes))
+     (file-name-base buffer-file-name)) 
+    (efs/refresh-theme)))
+(add-hook 'after-save-hook #'efs/refresh-theme-auto)
+#+end_src
 
 ** Doom Modeline
 

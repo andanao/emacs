@@ -249,6 +249,13 @@ One for writing code and the other for reading articles."
 )
 (efs/leader-keys "tj" 'efs/refresh-theme)
 
+(defun efs/refresh-theme-auto()
+  (when (cl-search
+     (symbol-name (car custom-enabled-themes))
+     (file-name-base buffer-file-name)) 
+    (efs/refresh-theme)))
+(add-hook 'after-save-hook #'efs/refresh-theme-auto)
+
    (use-package all-the-icons)
 
    ;; Doom modeline config
