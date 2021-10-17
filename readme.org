@@ -432,6 +432,12 @@ Useful for testing out changes to themes, I should probably add a hook to automa
 
    #+end_src
 
+** Set window title
+
+#+begin_src emacs-lisp
+(setq frame-title-format "%b")
+#+end_src
+
 * UI Config 
 ** Which key
 

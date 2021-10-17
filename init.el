@@ -257,6 +257,8 @@ One for writing code and the other for reading articles."
      :init (doom-modeline-mode 1)
    )
 
+(setq frame-title-format "%b")
+
    (use-package which-key
     :defer 0
     :diminish which-key-mode
