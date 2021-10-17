@@ -14,12 +14,6 @@
   :group 'ads-dark-theme
   :type 'boolean)
 
-(defcustom ads-dark-padded-modeline doom-themes-padded-modeline
-  "If non-nil, adds a 4px padding to the mode-line.
-Can be an integer to determine the exact padding."
-  :group 'ads-dark-theme
-  :type '(choice integer boolean))
-
 
 
 (def-doom-theme ads-dark
@@ -69,7 +63,7 @@ Can be an integer to determine the exact padding."
    (vertical-bar   (doom-lighten bg 0.1))
    (selection      base5)
    (builtin        orange)
-   (comments       (if ads-dark-brighter-comments violet base5))
+   (comments       base5)
    (doc-comments   (if ads-dark-brighter-comments
                        (doom-lighten violet 0.1)
                      (doom-lighten base5 0.25)))
@@ -99,22 +93,20 @@ Can be an integer to determine the exact padding."
                                           base3
                                         base2)
                                       0.2))
-   (-modeline-pad
-    (when ads-dark-padded-modeline
-      (if (integerp ads-dark-padded-modeline) ads-dark-padded-modeline 4))))
+   )
 
 
   ;;;; Base theme face overrides
   ((cursor :background magenta)
    (lazy-highlight :background violet :foreground base0 :distant-foreground base0 :bold bold)
-   (line-number :foreground base5 )
-   (line-number-current-line :foreground magenta )
+   ((line-number &override) :foreground base5 :inherit 'fixed-pitch)
+   (line-number-current-line :foreground magenta :inherit 'line-number) ;; No idea why this isn't working
    (mode-line
     :background modeline-bg :foreground modeline-fg
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color modeline-bg)))
+    )
    (mode-line-inactive
     :background modeline-bg-inactive :foreground modeline-fg-alt
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color modeline-bg-inactive)))
+    )
    (isearch :foreground base0 :background green)
 
    ;;;; centaur-tabs
@@ -212,3 +204,4 @@ Can be an integer to determine the exact padding."
   )
 
 ;;; ads-dark-theme.el ends here
+
