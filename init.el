@@ -378,12 +378,14 @@ One for writing code and the other for reading articles."
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 (show-paren-mode t)
 
-     (use-package emojify
-       :hook (after-init . global-emojify-mode)
-       )
-     (add-hook 'after-init-hook #'global-emojify-mode)
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  ;; (setq emojify-emoji-styles '(ascii unicode))
+  )
+(add-hook 'after-init-hook #'global-emojify-mode)
 
-     (efs/leader-keys
+(setq emojify-emoji-styles '(ascii unicode))
+(efs/leader-keys
        ";" '(emojify-insert-emoji :wk "insert emoji")
      )
 
