@@ -1218,19 +1218,31 @@ Return to normal state after C-c C-c
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 #+end_src
 
-** Auto tangle Config Files
- Tangle readme.org file to init.el on save
+** Async Tangling Config
+I don't want to have to wait after saving a file to fontinue working
 
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
+(use-package async
+  :config
+  (defun efs/init-hook ()
+    "If the current buffer is 'emacs-init.org' the code-blocks
+are tangled."
+    (when (equal (buffer-file-name) efs/user-dir-readme)
+      (async-start
+       `(lambda ()
+          (require 'org)
+	    (let ((org-confirm-babel-evaluate nil)))
+          (org-babel-tangle-file ,efs/user-dir-readme))
+       (lambda (result)
+         (message "Tangled file compiled.")))))
+  (add-hook 'after-save-hook 'efs/init-hook))
 
-   (defun efs/org-babel-tangle-config ()
-     (when
-	 (string= buffer-file-name efs/user-dir-readme)
-	 (let ((org-confirm-babel-evaluate nil)))
-	 (org-babel-tangle)))
+;; (use-package dired-async
+;;   :after async
+;;   :config
+;;   (dired-async-mode 1))
+#+end_src
 
-   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
- #+end_src
 ** New org note
 Quick fn to define a new org note
 
