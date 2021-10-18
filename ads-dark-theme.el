@@ -20,7 +20,8 @@
   "A dark, vibrant theme inspired by Doom themes & Textmate's Molokai."
 
   ;; name        gui       256       16
-  ((bg         '("#1c1e1f" "black"   "black"        ))
+  (
+   (bg         '("#1c1e1f" "black"   "black"        ))
    (fg         '("#d6d6d4" "#dfdfdf" "brightwhite"  ))
 
    ;; These are off-color variants of bg/fg, used primarily for `solaire-mode',
@@ -200,7 +201,9 @@
    )
 
   ;;;; Base theme variable overrides
-  ;; ()
+  (
+   (org-block-begin :background bg :height 0.8)
+   )
   )
 
 ;;; ads-dark-theme.el ends here
