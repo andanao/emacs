@@ -662,9 +662,8 @@ Check if the current theme matches the file being edited on save, if so refresh 
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
     #+end_src
-
+    
 ** General
-
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
    #+begin_src emacs-lisp
    (use-package org
@@ -727,7 +726,23 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 
    #+end_src
-  
+** Copy ID to clipboard for linking
+#+begin_src emacs-lisp
+(defun efs/copy-id-to-clipboard()
+  "Copy the ID property value
+to killring, if no ID is there then create a new unique ID.
+This function works only in org-mode buffers.
+The purpose of this function is to easily construct id:-links to
+org-mode items. If its assigned to a key it saves you marking the
+text and copying to the killring."
+  (interactive)
+  (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
+    (setq mytmpid (funcall 'org-id-get-create))
+    (kill-new mytmpid)
+    (message "Copied %s to killring (clipboard)" mytmpid)
+    ))
+(efs/leader-keys "C-l" '(efs/copy-id-to-clipboard :wk "ID to clipboard"))
+#+end_src
 
 ** Org Refile Targets 
 Refile targets dependant on computer id

@@ -471,6 +471,21 @@ One for writing code and the other for reading articles."
      (visual-line-mode 1)
      )
 
+(defun efs/copy-id-to-clipboard()
+  "Copy the ID property value
+to killring, if no ID is there then create a new unique ID.
+This function works only in org-mode buffers.
+The purpose of this function is to easily construct id:-links to
+org-mode items. If its assigned to a key it saves you marking the
+text and copying to the killring."
+  (interactive)
+  (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
+    (setq mytmpid (funcall 'org-id-get-create))
+    (kill-new mytmpid)
+    (message "Copied %s to killring (clipboard)" mytmpid)
+    ))
+(efs/leader-keys "C-l" '(efs/copy-id-to-clipboard :wk "ID to clipboard"))
+
 (setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
 (setq efs/work-task-file (concat efs/user-dir-org "work.org"))
   (if (string= efs/computer-id "personal") 
