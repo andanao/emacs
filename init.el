@@ -434,7 +434,9 @@ One for writing code and the other for reading articles."
 	   org-fontify-done-headline t
 	   org-fontify-quote-and-verse-blocks t
 	   org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-
+	   org-cycle-separator-lines 1
+	   org-blank-before-new-entry '((heading . nil)
+					(plain-list-item . nil))
 	   )
 
      ;:hook (org-mode . efs/org-mode-setup)

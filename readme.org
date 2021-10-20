@@ -688,7 +688,9 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	      
+	      org-cycle-separator-lines 1
+	      org-blank-before-new-entry '((heading . nil)
+					   (plain-list-item . nil))
 	      )
 
 	;:hook (org-mode . efs/org-mode-setup)
