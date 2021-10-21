@@ -168,6 +168,11 @@
 					       (normal-mode)
 					       (call-interactively 'evil-window-right)))
 
+(evil-global-set-key 'normal (kbd "C-w C-e") 'balance-windows)
+(evil-global-set-key 'insert (kbd "C-w C-e") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'balance-windows)))
+
 (use-package undo-tree
   :diminish undo-tree-mode
   :config

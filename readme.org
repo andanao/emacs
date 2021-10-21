@@ -279,6 +279,11 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 					       (normal-mode)
 					       (call-interactively 'evil-window-right)))
 
+(evil-global-set-key 'normal (kbd "C-w C-e") 'balance-windows)
+(evil-global-set-key 'insert (kbd "C-w C-e") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'balance-windows)))
+
 #+end_src
 ** Undo tree visualizer
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
