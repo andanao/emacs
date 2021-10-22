@@ -279,6 +279,11 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 					       (normal-mode)
 					       (call-interactively 'evil-window-right)))
 
+(evil-global-set-key 'normal (kbd "C-w C-e") 'balance-windows)
+(evil-global-set-key 'insert (kbd "C-w C-e") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'balance-windows)))
+
 #+end_src
 ** Undo tree visualizer
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
@@ -687,7 +692,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-fontify-done-headline t
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	      org-cycle-separator-lines 1
+	      org-cycle-separator-lines 0
 	      org-blank-before-new-entry '((heading . nil)
 					   (plain-list-item . nil))
 	      )
@@ -1504,4 +1509,3 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 ** Work
 
     ~(load-file (concat efs/user-dir-org "work.el"))~
-

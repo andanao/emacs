@@ -168,6 +168,11 @@
 					       (normal-mode)
 					       (call-interactively 'evil-window-right)))
 
+(evil-global-set-key 'normal (kbd "C-w C-e") 'balance-windows)
+(evil-global-set-key 'insert (kbd "C-w C-e") (lambda () (interactive)
+					       (normal-mode)
+					       (call-interactively 'balance-windows)))
+
 (use-package undo-tree
   :diminish undo-tree-mode
   :config
@@ -434,7 +439,7 @@ One for writing code and the other for reading articles."
 	   org-fontify-done-headline t
 	   org-fontify-quote-and-verse-blocks t
 	   org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	   org-cycle-separator-lines 1
+	   org-cycle-separator-lines 0
 	   org-blank-before-new-entry '((heading . nil)
 					(plain-list-item . nil))
 	   )
