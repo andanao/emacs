@@ -1509,3 +1509,9 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 ** Work
 
     ~(load-file (concat efs/user-dir-org "work.el"))~
+* Disable Debug on Error
+   If config loaded without issue I don't need it enabled when I'm donig normal things
+   #+begin_src emacs-lisp
+(setq debug-on-error nil)
+   #+end_src
+

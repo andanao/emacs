@@ -965,3 +965,5 @@ are tangled."
 (set-keyboard-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
+(setq debug-on-error nil)
