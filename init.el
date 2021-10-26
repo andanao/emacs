@@ -399,6 +399,7 @@ One for writing code and the other for reading articles."
       ;; (org-indent-mode t)
       (variable-pitch-mode 1)
       (visual-line-mode 1)
+      (setq org-image-actual-width (/ (car (window-text-pixel-size)) 1.5))
       (org-redisplay-inline-images)
       ;; Replace list hyphen with dots
       (font-lock-add-keywords 'org-mode
