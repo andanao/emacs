@@ -677,7 +677,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 )
     #+end_src
     
-** General
+** General Org
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
    #+begin_src emacs-lisp
    (use-package org
@@ -740,6 +740,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 
    #+end_src
+
 ** Copy ID to clipboard for linking
 #+begin_src emacs-lisp
 (defun efs/copy-id-to-clipboard()
@@ -1107,7 +1108,7 @@ Formatting for scheduled __ : if today otherwise ## :
 
    #+end_src
 
-** Org Structure Templates
+** Org Block Structure Templates
    #+begin_src emacs-lisp
    
     (with-eval-after-load 'org
@@ -1120,6 +1121,15 @@ Formatting for scheduled __ : if today otherwise ## :
   
    #+end_src
 
+   
+** Easier Org edit special
+Org edit special is a nice way to edit a code block in its own buffer which allows for company completion
+#+begin_src emacs-lisp
+(evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
+#+end_src
+
+#+RESULTS:
+: org-edit-special
 ** Evil Org 
 Maybe this will be better somewhere else but it works here for now
 [[https://github.com/Somelauw/evil-org-mode/tree/80ef38fb378541937f6ddfe836809e76eda1e355][Evil Org Github]]

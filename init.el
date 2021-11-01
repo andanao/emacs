@@ -749,6 +749,8 @@ text and copying to the killring."
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
       (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
+(evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
+
 (use-package evil-org
   :ensure t
   :after org
