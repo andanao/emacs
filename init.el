@@ -938,6 +938,13 @@ are tangled."
   (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
+(use-package lsp-mode
+  :commands lsp
+  :config
+  (setq lsp-prefer-flymake nil ;; Flymake is outdated
+        lsp-headerline-breadcrumb-mode nil))
+;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
+
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)
