@@ -932,6 +932,12 @@ are tangled."
     (mapc (lambda (x) (define-key map (format "%d" x)
                         `(lambda () (interactive) (company-complete-number ,x))))
           (number-sequence 0 9))))
+
+(use-package flycheck
+  :config
+  (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)
