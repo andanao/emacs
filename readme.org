@@ -741,6 +741,22 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
    #+end_src
 
+** Add IDs headings
+I haven't decided if I want this to be adding them on every save
+#+begin_src emacs-lisp
+(defun efs/org-add-ids-to-headlines-in-file ()
+  "Add ID properties to all headlines in the current file which
+do not already have one."
+  (interactive)
+  (org-map-entries 'org-id-get-create))
+
+
+;; (add-hook 'org-mode-hook
+;; 	  (lambda ()
+;; 	    (add-hook 'before-save-hook
+;; 	    'efs/org-add-ids-to-headlines-in-file nil 'local)))
+#+end_src
+
 ** Copy ID to clipboard for linking
 #+begin_src emacs-lisp
 (defun efs/copy-id-to-clipboard()
@@ -758,6 +774,7 @@ text and copying to the killring."
     ))
 (efs/leader-keys "C-l" '(efs/copy-id-to-clipboard :wk "ID to clipboard"))
 #+end_src
+
 
 ** Org Refile Targets 
 Refile targets dependant on computer id

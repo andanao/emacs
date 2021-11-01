@@ -483,6 +483,18 @@ One for writing code and the other for reading articles."
      (visual-line-mode 1)
      )
 
+(defun efs/org-add-ids-to-headlines-in-file ()
+  "Add ID properties to all headlines in the current file which
+do not already have one."
+  (interactive)
+  (org-map-entries 'org-id-get-create))
+
+
+;; (add-hook 'org-mode-hook
+;; 	  (lambda ()
+;; 	    (add-hook 'before-save-hook
+;; 	    'efs/org-add-ids-to-headlines-in-file nil 'local)))
+
 (defun efs/copy-id-to-clipboard()
   "Copy the ID property value
 to killring, if no ID is there then create a new unique ID.
