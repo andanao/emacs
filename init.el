@@ -754,12 +754,15 @@ text and copying to the killring."
  (setq org-confirm-babel-evaluate nil)
 
 (with-eval-after-load 'org
-;; This is needed as of Org 9.2
-      (require 'org-tempo)
+ ;; This is needed as of Org 9.2
+ (require 'org-tempo)
 
-      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-      (add-to-list 'org-structure-template-alist '("py" . "src python")))
+ (add-to-list 'org-structure-template-alist '("sh" . "src shell\n"))
+ (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n()"))
+ (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
+ (add-to-list 'org-structure-template-alist '("cc" . "src cc\n"))
+ (add-to-list 'org-structure-template-alist '("cp" . "src c++\n"))
+ )
 
 (evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
 
