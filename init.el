@@ -132,11 +132,17 @@
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
+  
   ;; Use visual line motions even outside of visual-line mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
+  ;; Use C-<hjkl> to move around in insert 
+  (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
+  (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
+  (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
+  (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
+   
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -206,7 +212,7 @@
 )
 
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
-(evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
+(evil-global-setkey 'insert (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
 
 (setq custom-theme-directory efs/user-dir-emacs)
@@ -719,7 +725,7 @@ text and copying to the killring."
   (setq visual-fill-column-width 110
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
-	header-line-format " "
+	header-line-format ""
 	)
   (visual-fill-column-mode 1))
 

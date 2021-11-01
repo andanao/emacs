@@ -224,28 +224,36 @@ In my clumsyness I've hit theste  too many times
 
    #+begin_src emacs-lisp
 
-     (use-package evil
-       :init
-       (setq evil-want-integration t)
-       (setq evil-want-keybinding nil)
-       (setq evil-want-C-u-scroll nil)
-       (setq evil-want-C-i-jump nil)
-       (setq evil-want-C-w-delete nil)
-       :config
-       (evil-mode 1)
-       (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll nil)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-want-C-w-delete nil)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  
+  ;; Use visual line motions even outside of visual-line mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-       ;; Use visual line motions even outside of visual-line mode buffers
-       (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-       (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  ;; Use C-<hjkl> to move around in insert 
+  (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
+  (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
+  (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
+  (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
+   
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
 
-       (evil-set-initial-state 'messages-buffer-mode 'normal)
-       (evil-set-initial-state 'dashboard-mode 'normal))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
-     (use-package evil-collection
-       :after evil
-       :config
-       (evil-collection-init))
+
 
    #+end_src
 
@@ -342,7 +350,7 @@ Normally insert enables overtype, but I've never once wanted that
    
 #+begin_src emacs-lisp
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
-(evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
+(evil-global-setkey 'insert (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
 
 #+end_src
@@ -1076,7 +1084,7 @@ Formatting for scheduled __ : if today otherwise ## :
   (setq visual-fill-column-width 110
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
-	header-line-format " "
+	header-line-format ""
 	)
   (visual-fill-column-mode 1))
 
