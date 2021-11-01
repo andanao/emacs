@@ -917,6 +917,21 @@ are tangled."
 
 (add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
 
+(use-package company
+  :bind (("C-." . company-complete))
+  :custom
+  (company-idle-delay 0) ;; I always want completion, give it to me asap
+  (company-dabbrev-downcase nil "Don't downcase returned candidates.")
+  (company-show-numbers t "Numbers are helpful.")
+  (company-tooltip-limit 10 "The more the merrier.")
+  :config
+  (global-company-mode) ;; We want completion everywhere
+
+  ;; use numbers 0-9 to select company completion candidates
+  (let ((map company-active-map))
+    (mapc (lambda (x) (define-key map (format "%d" x)
+                        `(lambda () (interactive) (company-complete-number ,x))))
+          (number-sequence 0 9))))
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)
