@@ -758,10 +758,12 @@ text and copying to the killring."
  (require 'org-tempo)
 
  (add-to-list 'org-structure-template-alist '("sh" . "src shell\n"))
- (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n()"))
+ (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n"))
  (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
- (add-to-list 'org-structure-template-alist '("cc" . "src cc\n"))
- (add-to-list 'org-structure-template-alist '("cp" . "src c++\n"))
+ (add-to-list 'org-structure-template-alist '("cc" . "src C\n"))
+ (add-to-list 'org-structure-template-alist '("cp" . "src C++\n"))
+ (add-to-list 'org-structure-template-alist '("js" . "src js\n"))
+ (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
  )
 
 (evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
