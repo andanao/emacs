@@ -50,8 +50,8 @@
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes
-(defvar efs/default-font-size 120)
-(defvar efs/default-variable-font-size 120)
+(defvar efs/default-font-size 160)
+(defvar efs/default-variable-font-size 160)
 
 ;Set line spacing
 (setq line-spacing .2)
