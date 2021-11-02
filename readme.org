@@ -572,6 +572,10 @@ Check if the current theme matches the file being edited on save, if so refresh 
   (setq browse-kill-ring-highlight-current-entry t)
   )
 (global-set-key (kbd "M-y") 'browse-kill-ring)
+
+;; I like my evil bindings
+(define-key browse-kill-ring-mode-map (kbd "j") 'browse-kill-ring-forward)
+(define-key browse-kill-ring-mode-map (kbd "k") 'browse-kill-ring-previous)
 #+end_src
 
 ** Hydra Text Scaling

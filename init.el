@@ -356,6 +356,10 @@ One for writing code and the other for reading articles."
   )
 (global-set-key (kbd "M-y") 'browse-kill-ring)
 
+;; I like my evil bindings
+(define-key browse-kill-ring-mode-map (kbd "j") 'browse-kill-ring-forward)
+(define-key browse-kill-ring-mode-map (kbd "k") 'browse-kill-ring-previous)
+
 (use-package hydra
   :defer t)
 
