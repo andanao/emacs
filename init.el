@@ -540,8 +540,15 @@ text and copying to the killring."
 (setq  org-appear-autolinks t)
 (setq org-appear-autoentities t)
 (setq org-appear-autosubmarkers t)
-(setq org-appear-autokeywords t) 
-(setq org-appear-delay 0.6)
+(setq org-appear-autokeywords t)
+
+(add-hook 'evil-insert-state-exit-hook 
+	  (lambda ()
+	    (setq org-appear-delay 2)))
+
+(add-hook 'evil-insert-state-entry-hook 
+	  (lambda ()
+	    (setq org-appear-delay .3)))
 
 (setq org-agenda-files (list 
     (concat efs/personal-dir-org "dates.org")
@@ -855,7 +862,7 @@ same directory as the org-buffer and insert a link to this file."
       (evil-normal-state))
   )
 
-(add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
+;; (add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
 
 (use-package async
   :config
