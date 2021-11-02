@@ -1145,7 +1145,7 @@ Formatting for scheduled __ : if today otherwise ## :
 ** Easier Org edit special
 Org edit special is a nice way to edit a code block in its own buffer which allows for company completion
 #+begin_src emacs-lisp
-(evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
+(global-set-key (kbd "C-c C-'") 'org-edit-special)
 #+end_src
 
 #+RESULTS:

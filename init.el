@@ -766,7 +766,7 @@ text and copying to the killring."
  (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
  )
 
-(evil-global-set-key 'normal (kbd "C-c C-'") 'org-edit-special)
+(global-set-key (kbd "C-c C-'") 'org-edit-special)
 
 (use-package evil-org
   :ensure t
