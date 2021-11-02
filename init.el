@@ -845,6 +845,14 @@ same directory as the org-buffer and insert a link to this file."
 
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 
+(defun efs/org-checkbox-next ()
+  (interactive)
+  (when (org-at-item-checkbox-p)
+    (org-toggle-checkbox))
+  (org-next-item))
+
+(add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
+
 (use-package async
   :config
   (defun efs/init-hook ()

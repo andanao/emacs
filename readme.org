@@ -1278,6 +1278,16 @@ Return to normal state after C-c C-c
 #+begin_src emacs-lisp
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 #+end_src
+** Next item in checkilist on C-c C-c
+#+begin_src emacs-lisp
+(defun efs/org-checkbox-next ()
+  (interactive)
+  (when (org-at-item-checkbox-p)
+    (org-toggle-checkbox))
+  (org-next-item))
+
+(add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
+#+end_src
 
 ** Async Tangling Config
 I don't want to have to wait after saving a file to fontinue working
