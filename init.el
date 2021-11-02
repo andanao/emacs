@@ -738,7 +738,7 @@ text and copying to the killring."
   (setq visual-fill-column-width 90
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
-	header-line-format ""
+	;; header-line-format ""
 	)
   (visual-fill-column-mode 1))
 
