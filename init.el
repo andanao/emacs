@@ -735,7 +735,7 @@ text and copying to the killring."
       )
 
 (defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 110
+  (setq visual-fill-column-width 90
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
 	header-line-format ""
