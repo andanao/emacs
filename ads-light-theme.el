@@ -252,7 +252,7 @@ determine the exact padding."
 
    
    (org-ellipsis :foreground orange :height 0.75)
-   (org-tag :foreground yellow :bold nil)
+   (org-tag :foreground yellow :bold nil :height 0.75)
    (org-quote :height 2.8 :font serif :foreground fg :background bg)
    (org-todo :foreground yellow :bold 'inherit :font sans)
    (org-done :inherit '(fixed-pitch org-headline-done))
@@ -290,7 +290,7 @@ determine the exact padding."
 
    (ivy-org :font serif :height 1.2 :weight 'bold)
 
-   (header-line :height 2.0 :background bg)
+   (header-line :height 1.0 :background bg)
    )
 
   ;;;; Base theme variable overrides-
