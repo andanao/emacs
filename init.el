@@ -849,9 +849,11 @@ same directory as the org-buffer and insert a link to this file."
 
 (defun efs/org-checkbox-next ()
   (interactive)
-  (when (org-at-item-checkbox-p)
-    (org-toggle-checkbox))
-  (org-next-item))
+    (when (org-at-item-checkbox-p)
+      (org-toggle-checkbox)
+      (org-next-item)
+      (evil-normal-state))
+  )
 
 (add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
 
