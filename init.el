@@ -151,6 +151,8 @@
   :config
   (evil-collection-init))
 
+(add-hook 'after-save-hook 'evil-normal-state)
+
 (evil-global-set-key 'normal (kbd "C-w C-h") 'evil-window-left)
 (evil-global-set-key 'insert (kbd "C-w C-h") (lambda () (interactive)
 					       (normal-mode)

@@ -256,8 +256,10 @@ In my clumsyness I've hit theste  too many times
 
 
    #+end_src
-
-   
+** Normal mode after save
+#+begin_src emacs-lisp
+(add-hook 'after-save-hook 'evil-normal-state)
+#+end_src
    
 ** Evil Window Control
 I don't want to have to stop pressing ctrl also go back to normal mode if in insert mode
