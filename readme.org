@@ -106,8 +106,8 @@ Setting up font properties
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes
-(defvar efs/default-font-size 120)
-(defvar efs/default-variable-font-size 120)
+(defvar efs/default-font-size 160)
+(defvar efs/default-variable-font-size 160)
 
 ;Set line spacing
 (setq line-spacing .2)
@@ -1100,10 +1100,10 @@ Formatting for scheduled __ : if today otherwise ## :
    #+begin_src emacs-lisp
 
 (defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 110
+  (setq visual-fill-column-width 90
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
-	header-line-format ""
+	;; header-line-format ""
 	)
   (visual-fill-column-mode 1))
 
