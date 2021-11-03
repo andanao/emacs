@@ -977,6 +977,8 @@ are tangled."
 
 (use-package flycheck
   :config
+  
+  (setq flycheck-global-modes '(not org-mode))
   (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
