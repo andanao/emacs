@@ -142,7 +142,11 @@
   (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
   (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
   (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
-   
+
+  ;; gl to end of line
+  (evil-global-set-key 'normal (kbd "gl") 'evil-end-of-visual-line)
+  (evil-global-set-key 'normal (kbd "gL") 'evil-end-of-line)
+  
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
