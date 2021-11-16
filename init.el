@@ -973,12 +973,13 @@ are tangled."
   (company-show-numbers t "Numbers are helpful.")
   (company-tooltip-limit 10 "The more the merrier.")
   :config
-  (global-company-mode) ;; We want completion everywhere
-  (setq company-global-modes '(not org-mode))
+  ;; (global-company-mode) ;; We want completion everywhere
+  ;; (setq company-global-modes '(not org-mode))
   ;; use numbers 0-9 to select company completion candidates
+  (add-hook 'prog-mode-hook 'company-mode) 
   (let ((map company-active-map))
     (mapc (lambda (x) (define-key map (format "%d" x)
-                        `(lambda () (interactive) (company-complete-number ,x))))
+		   `(lambda () (interactive) (company-complete-number ,x))))
           (number-sequence 0 9))))
 
 (use-package flycheck
@@ -986,7 +987,8 @@ are tangled."
   
   (setq flycheck-global-modes '(not org-mode))
   (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+  )
 
 (use-package lsp-mode
   :commands lsp
