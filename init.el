@@ -624,13 +624,13 @@ text and copying to the killring."
 	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task}
  SCHEDULED: %t
- %?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
  %i
  :END:
+ %?\n
  "
 	:kill-buffer t)))
 
@@ -640,13 +640,13 @@ text and copying to the killring."
 	 (file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
  "* TODO %^{Work Task}
  SCHEDULED: %t
- %?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
  %i
  :END:
+ %?\n
  "
    :kill-buffer t)
 ))
@@ -656,13 +656,13 @@ text and copying to the killring."
 	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Tasks")
  "* TODO %^{Personal Task}
  SCHEDULED: %t
- %?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
  %i
  :END:
+ %?\n
  "
    :kill-buffer t)
 )
@@ -706,7 +706,6 @@ text and copying to the killring."
     '("P" "Project" entry 
 	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Projects")
  "* TODO %^{Project Name}
- %?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
@@ -715,6 +714,7 @@ text and copying to the killring."
  :Cost-est:\t%^{Cost estimate}
  %i
  :END:
+ %?\n
    "
    :kill-buffer t)
 )
@@ -723,13 +723,13 @@ text and copying to the killring."
     '("B" "Book" entry 
 	 (file+headline (lambda () (concat efs/personal-dir-org "books.org"))"Endless Pile")
  "* PILE %^{Book Title}
- %?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U 
  :AUTHOR:
  :RECCOMMENDER:
  :END:
+ %?\n
    "
    :kill-buffer t)
 )
@@ -738,13 +738,13 @@ text and copying to the killring."
     '("t" "Quote" entry 
 	 (file (lambda () (concat efs/personal-dir-org "quotes.org")))
  "* %^{Quote or Note}
-%?\n
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U 
  :SOURCE: %^{Source}
  :REF: \t%a
  :END:
+ %?\n
    "
    :kill-buffer t))
 
