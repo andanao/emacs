@@ -305,15 +305,16 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
 
 #+begin_src emacs-lisp
-  (use-package undo-tree
-    :diminish undo-tree-mode
-    :config
-    (progn
-      (global-undo-tree-mode)
-      (setq evil-undo-system 'undo-tree)
-      (setq undo-tree-visualizer-timestamps t)
-      (setq undo-tree-visualizer-diff t)))
+(use-package undo-tree
+  :diminish undo-tree-mode
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq evil-undo-system 'undo-tree)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)))
 
+(evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 #+end_src
 
 ** Remove Line breaks in region

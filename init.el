@@ -196,6 +196,8 @@
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)))
 
+(evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
+
 (defun efs/remove-newlines-in-region ()
   "Removes all newlines in the region."
   (interactive)
