@@ -666,7 +666,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
       (variable-pitch-mode 1)
       (visual-line-mode 1)
       (setq org-image-actual-width (/ (car (window-text-pixel-size)) 1.5))
-      (org-redisplay-inline-images)
+      ;; (org-redisplay-inline-images)
       ;; Replace list hyphen with dots
       (font-lock-add-keywords 'org-mode
 			      '(("^ *\\([-]\\) "
@@ -721,7 +721,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 	;:hook (org-mode . efs/org-mode-setup)
 	(require 'org-habit)
-	(add-to-list 'org-modules 'org-habit)
+	(add-to-list 'org-modules 'org-habit 'org-checklist)
 	(setq org-habit-graph-column 60)
 
 	(setq org-todo-keywords

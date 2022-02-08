@@ -420,7 +420,7 @@ One for writing code and the other for reading articles."
       (variable-pitch-mode 1)
       (visual-line-mode 1)
       (setq org-image-actual-width (/ (car (window-text-pixel-size)) 1.5))
-      (org-redisplay-inline-images)
+      ;; (org-redisplay-inline-images)
       ;; Replace list hyphen with dots
       (font-lock-add-keywords 'org-mode
 			      '(("^ *\\([-]\\) "
@@ -467,7 +467,7 @@ One for writing code and the other for reading articles."
 
      ;:hook (org-mode . efs/org-mode-setup)
      (require 'org-habit)
-     (add-to-list 'org-modules 'org-habit)
+     (add-to-list 'org-modules 'org-habit 'org-checklist)
      (setq org-habit-graph-column 60)
 
      (setq org-todo-keywords
