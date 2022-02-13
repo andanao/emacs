@@ -161,30 +161,30 @@
 
 (evil-global-set-key 'normal (kbd "C-w C-h") 'evil-window-left)
 (evil-global-set-key 'insert (kbd "C-w C-h") (lambda () (interactive)
-					       (normal-mode)
+					       ;; (normal-mode)
 					       (call-interactively 'evil-window-left)))
 
 
 (evil-global-set-key 'normal (kbd "C-w C-j") 'evil-window-down)
 (evil-global-set-key 'insert (kbd "C-w C-j") (lambda () (interactive)
-					       (normal-mode)
+					       ;; (normal-mode)
 					       (call-interactively 'evil-window-down)))
 
 
 (evil-global-set-key 'normal (kbd "C-w C-k") 'evil-window-up)
 (evil-global-set-key 'insert (kbd "C-w C-k") (lambda () (interactive)
-					       (normal-mode)
+					       ;; (normal-mode)
 					       (call-interactively 'evil-window-up)))
 
 
 (evil-global-set-key 'normal (kbd "C-w C-l") 'evil-window-right)
 (evil-global-set-key 'insert (kbd "C-w C-l") (lambda () (interactive)
-					       (normal-mode)
+					       ;; (normal-mode)
 					       (call-interactively 'evil-window-right)))
 
 (evil-global-set-key 'normal (kbd "C-w C-e") 'balance-windows)
 (evil-global-set-key 'insert (kbd "C-w C-e") (lambda () (interactive)
-					       (normal-mode)
+					       ;; (normal-mode)
 					       (call-interactively 'balance-windows)))
 
 (use-package undo-tree
