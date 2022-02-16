@@ -967,38 +967,6 @@ are tangled."
 
 (add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
 
-(use-package company
-  :bind (("C-." . company-complete))
-  :custom
-  (company-idle-delay 0) ;; I always want completion, give it to me asap
-  (company-dabbrev-downcase nil "Don't downcase returned candidates.")
-  (company-show-numbers t "Numbers are helpful.")
-  (company-tooltip-limit 10 "The more the merrier.")
-  :config
-  ;; (global-company-mode) ;; We want completion everywhere
-  ;; (setq company-global-modes '(not org-mode))
-  ;; use numbers 0-9 to select company completion candidates
-  (add-hook 'prog-mode-hook 'company-mode) 
-  (let ((map company-active-map))
-    (mapc (lambda (x) (define-key map (format "%d" x)
-		   `(lambda () (interactive) (company-complete-number ,x))))
-          (number-sequence 0 9))))
-
-(use-package flycheck
-  :config
-  
-  (setq flycheck-global-modes '(not org-mode))
-  (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
-  )
-
-(use-package lsp-mode
-  :commands lsp
-  :config
-  (setq lsp-prefer-flymake nil ;; Flymake is outdated
-        lsp-headerline-breadcrumb-mode nil))
-;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
-
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)

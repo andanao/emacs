@@ -1443,7 +1443,7 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 ** Company mode
 Completion system
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package company
   :bind (("C-." . company-complete))
   :custom
@@ -1466,7 +1466,7 @@ Completion system
 #+RESULTS:
 ** Flycheck
 Flycheck is the newer version of flymake and is needed to make lsp-mode not freak out.
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package flycheck
   :config
   
@@ -1478,7 +1478,7 @@ Flycheck is the newer version of flymake and is needed to make lsp-mode not frea
 
 ** LSP Mode
 Package for interacting with language servers
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 
 (use-package lsp-mode
   :commands lsp
