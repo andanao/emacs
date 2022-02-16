@@ -70,8 +70,9 @@
 
 ;; Disable lines in some modes 
 (dolist (mode '(org-mode-hook
-	    term-mode-hook
-	    eshell-mode-hook))
+		treemacs-mode-hook
+		term-mode-hook
+		eshell-mode-hook))
 	(add-hook mode(lambda () (display-line-numbers-mode 0))))
 
 (column-number-mode)

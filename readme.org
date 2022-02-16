@@ -131,10 +131,10 @@ Setting up font properties
 
    ;; Disable lines in some modes 
    (dolist (mode '(org-mode-hook
-	       term-mode-hook
-	       eshell-mode-hook))
+		   treemacs-mode-hook
+		   term-mode-hook
+		   eshell-mode-hook))
 	   (add-hook mode(lambda () (display-line-numbers-mode 0))))
-
    #+end_src
 
 ** Column Numbers
@@ -1725,6 +1725,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
   :config
   (lsp-metals-treeview-enable t)
   (setq lsp-metals-treeview-show-when-views-received t))
+
 #+end_src
 
 
