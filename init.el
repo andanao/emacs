@@ -13,9 +13,9 @@
                          ;; ("elpa" . "https://elpa.gnu.org/packages/")
 			 ))
 
-(if (not (string= system-type "windows-nt")) (package-initialize))
+(package-initialize)
      
-     (unless package-archive-contents
+(unless package-archive-contents
      (package-refresh-contents))
 
 ;; Initialize use-package on non-Linux platforms
