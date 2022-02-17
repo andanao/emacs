@@ -128,14 +128,12 @@ Setting up font properties
 ** Line Numbers 
    #+begin_src emacs-lisp
    ;; Enable line numbers
-   (global-display-line-numbers-mode t)
+   ;; (global-display-line-numbers-mode nil)
 
    ;; Disable lines in some modes 
-   (dolist (mode '(org-mode-hook
-		   treemacs-mode-hook
-		   term-mode-hook
-		   eshell-mode-hook))
-	   (add-hook mode(lambda () (display-line-numbers-mode 0))))
+   (dolist (mode '(prog-mode-hook
+		   ))
+	   (add-hook mode(lambda () (display-line-numbers-mode 1))))
    #+end_src
 
 ** Column Numbers

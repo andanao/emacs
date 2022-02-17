@@ -68,14 +68,12 @@
 (set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
 
 ;; Enable line numbers
-(global-display-line-numbers-mode t)
+;; (global-display-line-numbers-mode nil)
 
 ;; Disable lines in some modes 
-(dolist (mode '(org-mode-hook
-		treemacs-mode-hook
-		term-mode-hook
-		eshell-mode-hook))
-	(add-hook mode(lambda () (display-line-numbers-mode 0))))
+(dolist (mode '(prog-mode-hook
+		))
+	(add-hook mode(lambda () (display-line-numbers-mode 1))))
 
 (column-number-mode)
 
