@@ -111,6 +111,10 @@
 	   (find-file (concat efs/user-dir-org "work-config.org"))
            :wk "Readme Config")
    
+   "e." '(lambda () (interactive) 
+	   (find-file efs/user-dir-config))
+           :wk ".emacs file")
+   
    "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
            :which-key "ORG init")
    
