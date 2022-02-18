@@ -882,11 +882,11 @@ same directory as the org-buffer and insert a link to this file."
   (defun efs/init-hook ()
     "If the current buffer is 'emacs-init.org' the code-blocks
 are tangled."
-    (when (equal (buffer-file-name) efs/user-dir-readme)
+    (when (string= buffer-file-truename efs/user-dir-readme)
       (async-start
        `(lambda ()
           (require 'org)
-	    (let ((org-confirm-babel-evaluate nil)))
+	  (let ((org-confirm-babel-evaluate nil)))
           (org-babel-tangle-file ,efs/user-dir-readme))
        (lambda (result)
          (message "Tangled file compiled.")))))
