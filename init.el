@@ -98,9 +98,9 @@
    :prefix "SPC"
    :global-prefix "C-SPC")
  (efs/leader-keys
-   "t" '(:ignore t :wk "toggles") 
-   "k" '(:ignore t :wk "kill")
-   "e" '(:ignore t :whch-key "eval")
+   "t" '(:ignore t :wk "toggles")
+   "tl" '(toggle-truncate-lines :wk"toggle truncate")
+   
    "j" '(:ignore t :which-key "org")
    
    "er" '(lambda () (interactive) 
@@ -118,10 +118,12 @@
    "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
            :which-key "ORG init")
    
+   "e" '(:ignore t :whch-key "eval")
    "eb" '(eval-buffer :which-key "eval-buffer")
    "ep" '(eval-last-sexp :which-key "eval-last-sexp")
    "eo" '(org-mode-restart :which-key "org-mode-restart")
    
+   "k" '(:ignore t :wk "kill")
    "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
    "kk" '(kill-this-buffer :which-key "kill-this-buffer")
    "kl"'(delete-window :wk "delete-window")
