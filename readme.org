@@ -1,7 +1,8 @@
 #+title: Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :results none
-* System Setup
+* System .emacs Setup
 Setting default file and directory locations, these are all defined in the default startup .emacs file to work on different computers
+see [[file:.emacs][.emacs]] for an example of what it normally looks like
 ** Emacs Directory
    Define the user emacs directory: efs/user-dir-emacs 
 
@@ -36,7 +37,7 @@ currently:
    #+begin_src emacs-lisp
 (setq debug-on-error t)
    #+end_src
-
+   
 * Package System Setup
 ** Package setup 
    #+begin_src emacs-lisp
