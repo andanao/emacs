@@ -8,9 +8,9 @@
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("org" . "https://orgmode.org/elpa/")
-                         ;; ("elpa" . "https://elpa.gnu.org/packages/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")
 			 ))
 
 (package-initialize)
