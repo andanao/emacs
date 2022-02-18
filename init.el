@@ -886,7 +886,7 @@ same directory as the org-buffer and insert a link to this file."
 (use-package async
   :config
   (defun efs/init-hook ()
-    "If the current buffer is 'emacs-init.org' the code-blocks
+    "If the current buffer is 'readme.org' the code-blocks
 are tangled."
     (when (string= buffer-file-truename efs/user-dir-readme)
       (async-start
