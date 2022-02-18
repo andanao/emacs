@@ -8,9 +8,9 @@
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("org" . "https://orgmode.org/elpa/")
-                         ;; ("elpa" . "https://elpa.gnu.org/packages/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")
 			 ))
 
 (package-initialize)
@@ -188,14 +188,14 @@
 					       ;; (normal-mode)
 					       (call-interactively 'balance-windows)))
 
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (progn
-    (global-undo-tree-mode)
-    (setq evil-undo-system 'undo-tree)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+;; (use-package undo-tree
+;;   :diminish undo-tree-mode
+;;   :config
+;;   (progn
+;;     (global-undo-tree-mode)
+;;     (setq evil-undo-system 'undo-tree)
+;;     (setq undo-tree-visualizer-timestamps t)
+;;     (setq undo-tree-visualizer-diff t)))
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 
@@ -988,10 +988,10 @@ are tangled."
   (use-package all-the-icons-dired
       :hook (dired-mode . all-the-icons-dired-mode))
 
-  (use-package dired-git-info
-      :ensure t
-      ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
-      :bind (:map dired-mode-map (")" . dired-git-info-mode)))
+  ;; (use-package dired-git-info
+  ;;     :ensure t
+  ;;     ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
+  ;;     :bind (:map dired-mode-map (")" . dired-git-info-mode)))
 
 (use-package diredfl
     :ensure t
@@ -1114,10 +1114,10 @@ are tangled."
   :ensure t
 
   :config (treemacs-set-scope-type 'Perspectives))
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
+;; (use-package lsp-treemacs
+;;   :commands lsp-treemacs-errors-list
+;;   :config
+;;   (lsp-metals-treeview-enable t)
+;;   (setq lsp-metals-treeview-show-when-views-received t))
 
 (setq debug-on-error nil)
