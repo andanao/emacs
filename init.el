@@ -113,7 +113,7 @@
    
    "e." '(lambda () (interactive) 
 	   (find-file efs/user-dir-config)
-           :wk "Readme Config")
+           :wk ".emacs Config")
    
    "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
            :which-key "ORG init")
