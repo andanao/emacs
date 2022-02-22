@@ -1097,6 +1097,9 @@ are tangled."
        (treemacs-git-mode 'deferred))
       (`(t . _)
        (treemacs-git-mode 'simple))))
+  (define-key treemacs-mode-map (kbd "C-c C-p C-a") 'treemacs-add-project-to-workspace)
+  (define-key treemacs-mode-map (kbd "C-c C-p C-d") 'treemacs-remove-project-from-workspace)
+  (define-key treemacs-mode-map (kbd "C-SPC C-a") 'treemacs-quit)
   :bind
   (:map global-map
         ("M-0"       . treemacs-select-window)
@@ -1136,8 +1139,5 @@ are tangled."
 
 (efs/leader-keys
     "C-a" '(treemacs :wk "treemacs"))
-(define-key treemacs-mode-map (kbd "C-c C-p C-a") 'treemacs-add-project-to-workspace)
-(define-key treemacs-mode-map (kbd "C-c C-p C-d") 'treemacs-remove-project-from-workspace)
-(define-key treemacs-mode-map (kbd "C-SPC C-a") 'treemacs-quit)
 
 (setq debug-on-error nil)
