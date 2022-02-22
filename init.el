@@ -75,15 +75,15 @@
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
 
-   ;; Enable line numbers
-   ;; (global-display-line-numbers-mode nil)
+;; Enable line numbers
+;; (global-display-line-numbers-mode nil)
 
-   ;; Disable lines in some modes 
-   (dolist (mode '(prog-mode-hook
-		   ))
-	   (add-hook mode(lambda () (display-line-numbers-mode 1))))
+;; Disable lines in some modes 
+(dolist (mode '(prog-mode-hook
+		))
+	(add-hook mode(lambda () (display-line-numbers-mode 1))))
 
- (column-number-mode)
+(column-number-mode)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -95,8 +95,8 @@
 (global-set-key (kbd "C-x C-c") 'nil)
 (global-set-key (kbd "C-x C-z") 'nil)
 
-   ;;Make ESC quit prompts (why wouldn't you want that?)
-   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;;Make ESC quit prompts (why wouldn't you want that?)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (use-package general
  :after evil
@@ -292,66 +292,66 @@ One for writing code and the other for reading articles."
     (efs/refresh-theme)))
 (add-hook 'after-save-hook #'efs/refresh-theme-auto)
 
-   (use-package all-the-icons)
+(use-package all-the-icons)
 
-   ;; Doom modeline config
-   (use-package doom-modeline
-     :ensure t
-     :init (doom-modeline-mode 1)
-   )
+;; Doom modeline config
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+)
 
 (setq frame-title-format "%b")
 
-   (use-package which-key
-    :defer 0
-    :diminish which-key-mode
-    :config
-    (which-key-mode)
-    (setq which-key-idle-delay 0.3))
+(use-package which-key
+ :defer 0
+ :diminish which-key-mode
+ :config
+ (which-key-mode)
+ (setq which-key-idle-delay 0.3))
 
-   (use-package counsel
-     :bind (("C-M-j" . 'counsel-switch-buffer)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history))
-     :custom
-     (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
-     :config
-     (counsel-mode 1))
+(use-package counsel
+  :bind (("C-M-j" . 'counsel-switch-buffer)
+      :map minibuffer-local-map
+      ("C-r" . 'counsel-minibuffer-history))
+  :custom
+  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+  :config
+  (counsel-mode 1))
 
-   (use-package ivy
-    :diminish ;; Hides from the mode line
-    :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
+(use-package ivy
+ :diminish ;; Hides from the mode line
+ :bind (("C-s" . swiper)
+      :map ivy-minibuffer-map
+      ("TAB" . ivy-alt-done)
+      ("C-l" . ivy-alt-done)
+      ("C-j" . ivy-next-line)
+      ("C-k" . ivy-previous-line)
+      :map ivy-switch-buffer-map
+      ("C-k" . ivy-previous-line)
+      ("C-l" . ivy-done)
+      ("C-d" . ivy-switch-buffer-kill)
+      :map ivy-reverse-i-search-map
+      ("C-k" . ivy-previous-line)
+      ("C-d" . ivy-reverse-i-search-kill))
+ :config
+ (ivy-mode 1))
 
-   
-   (use-package ivy-rich
-     :after ivy
-     :init
-     (ivy-rich-mode 1))
 
-   (use-package ivy-prescient
-     :after counsel
-     :custom
-     (ivy-prescient-enable-filtering nil)
-     :config
-      ;; Uncomment the following line to have sorting remembered across sessions!
-     (prescient-persist-mode 1)
-     (ivy-prescient-mode 1))
+(use-package ivy-rich
+  :after ivy
+  :init
+  (ivy-rich-mode 1))
 
-   (use-package helpful
+(use-package ivy-prescient
+  :after counsel
+  :custom
+  (ivy-prescient-enable-filtering nil)
+  :config
+   ;; Uncomment the following line to have sorting remembered across sessions!
+  (prescient-persist-mode 1)
+  (ivy-prescient-mode 1))
+
+(use-package helpful
      :ensure t
      :commands (helpful-callable helpful-variable helpful-command helpful-key)
      :custom
@@ -429,7 +429,7 @@ One for writing code and the other for reading articles."
        ";" '(emojify-insert-emoji :wk "insert emoji")
      )
 
-  (defun efs/org-mode-setup ()
+(defun efs/org-mode-setup ()
       (interactive)
       ;; (org-indent-mode t)
       (variable-pitch-mode 1)
@@ -454,63 +454,63 @@ One for writing code and the other for reading articles."
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
 
-   (use-package org
-	:config
-	(setq org-ellipsis " ▾ "
-	      org-directory efs/user-dir-org
-	      org-agenda-start-with-log-mode t
-	      org-log-done 'time
-	      org-log-into-drawer t
-	      org-pretty-entities t
-	      org-pretty-entities-include-sub-superscripts nil 
-	      org-hidden-keywords '(title) 
-	      org-hide-emphasis-markers t
-	      org-src-preserve-indentation t
-	      org-image-actual-width (/ (car (window-text-pixel-size)) 2)
-	      org-startup-with-inline-images t
-	      org-startup-indented t
-	      org-startup-folded t
-	      org-agenda-block-separator ""
-	      org-fontify-whole-heading-line t
-	      org-fontify-done-headline t
-	      org-fontify-quote-and-verse-blocks t
-	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
-	      org-cycle-separator-lines 0
-	      org-blank-before-new-entry '((heading . nil)
-					   (plain-list-item . nil))
-	      )
+(use-package org
+     :config
+     (setq org-ellipsis " ▾ "
+	   org-directory efs/user-dir-org
+	   org-agenda-start-with-log-mode t
+	   org-log-done 'time
+	   org-log-into-drawer t
+	   org-pretty-entities t
+	   org-pretty-entities-include-sub-superscripts nil 
+	   org-hidden-keywords '(title) 
+	   org-hide-emphasis-markers t
+	   org-src-preserve-indentation t
+	   org-image-actual-width (/ (car (window-text-pixel-size)) 2)
+	   org-startup-with-inline-images t
+	   org-startup-indented t
+	   org-startup-folded t
+	   org-agenda-block-separator ""
+	   org-fontify-whole-heading-line t
+	   org-fontify-done-headline t
+	   org-fontify-quote-and-verse-blocks t
+	   org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
+	   org-cycle-separator-lines 0
+	   org-blank-before-new-entry '((heading . nil)
+					(plain-list-item . nil))
+	   )
 
-	;:hook (org-mode . efs/org-mode-setup)
-	(require 'org-habit)
-	(add-to-list 'org-modules 'org-habit 'org-checklist)
-	(setq org-habit-graph-column 60)
+     ;:hook (org-mode . efs/org-mode-setup)
+     (require 'org-habit)
+     (add-to-list 'org-modules 'org-habit 'org-checklist)
+     (setq org-habit-graph-column 60)
 
-	(setq org-todo-keywords
-	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
-	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
-		      "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+     (setq org-todo-keywords
+       '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
+	 (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
+		   "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
-	;; Save Org buffers after refiling!
-	(advice-add 'org-refile :after 'org-save-all-org-buffers)
+     ;; Save Org buffers after refiling!
+     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-	(setq org-tag-alist
-	  '((:startgroup)
-	     ; Put mutually exclusive tags here
-	     (:endgroup)
-	     ("@errand" . ?E)
-	     ("@home" . ?H)
-	     ("@work" . ?W)
-	     ("agenda" . ?a)
-	     ("planning" . ?p)
-	     ("publish" . ?P)
-	     ("batch" . ?b)
-	     ("note" . ?n)
-	     ("idea" . ?i)))
+     (setq org-tag-alist
+       '((:startgroup)
+	  ; Put mutually exclusive tags here
+	  (:endgroup)
+	  ("@errand" . ?E)
+	  ("@home" . ?H)
+	  ("@work" . ?W)
+	  ("agenda" . ?a)
+	  ("planning" . ?p)
+	  ("publish" . ?P)
+	  ("batch" . ?b)
+	  ("note" . ?n)
+	  ("idea" . ?i)))
 
-	(org-indent-mode t)
-	(variable-pitch-mode 1)
-	(visual-line-mode 1)
-	)
+     (org-indent-mode t)
+     (variable-pitch-mode 1)
+     (visual-line-mode 1)
+     )
 
 (defun efs/org-add-ids-to-headlines-in-file ()
   "Add ID properties to all headlines in the current file which
@@ -539,24 +539,24 @@ text and copying to the killring."
     ))
 (efs/leader-keys "C-l" '(efs/copy-id-to-clipboard :wk "ID to clipboard"))
 
-  (setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
-  (setq efs/work-task-file (concat efs/user-dir-org "work.org"))
-    (if (string= efs/computer-id "personal") 
-	  (setq org-refile-targets
-		(list
-		  '("personal.org" :maxlevel . 1)
-		  '(efs/conf-task-file :maxlevel . 1))))
+(setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
+(setq efs/work-task-file (concat efs/user-dir-org "work.org"))
+  (if (string= efs/computer-id "personal") 
+	(setq org-refile-targets
+	      (list
+		'("personal.org" :maxlevel . 1)
+		'(efs/conf-task-file :maxlevel . 1))))
 
 
-      (if (string= efs/computer-id "work") 
-	  (setq org-refile-targets
-		(list
-		  '(efs/work-task-file :maxlevel . 1)
-		  '(efs/conf-task-file :maxlevel . 1))))
+    (if (string= efs/computer-id "work") 
+	(setq org-refile-targets
+	      (list
+		'(efs/work-task-file :maxlevel . 1)
+		'(efs/conf-task-file :maxlevel . 1))))
 
-	      ;; Save Org buffers after refiling!
-	  ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+	    ;; Save Org buffers after refiling!
+	;; Save Org buffers after refiling!
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (setq org-archive-location "archive.org::datetree/")
 (efs/leader-keys 
@@ -577,22 +577,22 @@ text and copying to the killring."
 	  (lambda ()
 	    (setq org-appear-delay .3)))
 
-  (setq org-agenda-files (list 
-      (concat efs/personal-dir-org "dates.org")
-      (concat efs/personal-dir-org "inbox.org")
-      ;(concat efs/personal-dir-org "conf-tasks.org")
-  ))
+(setq org-agenda-files (list 
+    (concat efs/personal-dir-org "dates.org")
+    (concat efs/personal-dir-org "inbox.org")
+    ;(concat efs/personal-dir-org "conf-tasks.org")
+))
 
-  (if (string= efs/computer-id "work") 
-      (add-to-list 'org-agenda-files  
-	  (concat efs/user-dir-org "work.org")))
+(if (string= efs/computer-id "work") 
+    (add-to-list 'org-agenda-files  
+	(concat efs/user-dir-org "work.org")))
 
-  (if (string= efs/computer-id "personal") 
-      (progn
-	  (add-to-list 'org-agenda-files  
-		(concat efs/personal-dir-org "habits.org"))
-	  (add-to-list 'org-agenda-files
-		(concat efs/personal-dir-org "personal.org"))))
+(if (string= efs/computer-id "personal") 
+    (progn
+	(add-to-list 'org-agenda-files  
+	      (concat efs/personal-dir-org "habits.org"))
+	(add-to-list 'org-agenda-files
+	      (concat efs/personal-dir-org "personal.org"))))
 
 (defun efs/org-agenda-open ()
     (interactive)
@@ -609,9 +609,9 @@ text and copying to the killring."
 (evil-define-key 'motion org-agenda-mode-map
     (kbd "q") 'efs/org-agenda-quit)
 
-   (setq org-agenda-window-setup 'current-window)
-   (setq org-agenda-span 1)
-   (setq org-agenda-persistent-filter t)
+(setq org-agenda-window-setup 'current-window)
+(setq org-agenda-span 1)
+(setq org-agenda-persistent-filter t)
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 
@@ -634,7 +634,7 @@ text and copying to the killring."
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
- (setq diary-file (concat efs/user-dir-org "diary.org"))
+(setq diary-file (concat efs/user-dir-org "diary.org"))
 
 (setq  org-capture-templates   
    (list  '( "c" "Task" entry 
@@ -700,8 +700,8 @@ text and copying to the killring."
    :kill-buffer t)
 )
 
-  (efs/leader-keys
-      "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+(efs/leader-keys
+    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
 
 (add-to-list  'org-capture-templates   
     '("k" "Clipboard Link to Inbox" entry 
@@ -765,10 +765,10 @@ text and copying to the killring."
    "
    :kill-buffer t))
 
-   (use-package org-bullets
-	  :after org
-	  :hook (org-mode . org-bullets-mode)
-	 )
+(use-package org-bullets
+       :after org
+       :hook (org-mode . org-bullets-mode)
+      )
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 90
@@ -781,26 +781,26 @@ text and copying to the killring."
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
-   (with-eval-after-load 'org
-     (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((emacs-lisp . t)
-           (python . t))))
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+        (python . t))))
 
-    (setq org-confirm-babel-evaluate nil)
+ (setq org-confirm-babel-evaluate nil)
 
- (with-eval-after-load 'org
-  ;; This is needed as of Org 9.2
-  (require 'org-tempo)
-  
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell\n"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
-  (add-to-list 'org-structure-template-alist '("cc" . "src C\n"))
-  (add-to-list 'org-structure-template-alist '("cp" . "src C++\n"))
-  (add-to-list 'org-structure-template-alist '("js" . "src js\n"))
-  (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
-  )
+(with-eval-after-load 'org
+ ;; This is needed as of Org 9.2
+ (require 'org-tempo)
+
+ (add-to-list 'org-structure-template-alist '("sh" . "src shell\n"))
+ (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n"))
+ (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
+ (add-to-list 'org-structure-template-alist '("cc" . "src C\n"))
+ (add-to-list 'org-structure-template-alist '("cp" . "src C++\n"))
+ (add-to-list 'org-structure-template-alist '("js" . "src js\n"))
+ (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
+ )
 
 (global-set-key (kbd "C-c C-'") 'org-edit-special)
 
@@ -911,19 +911,19 @@ are tangled."
 ;;   :config
 ;;   (dired-async-mode 1))
 
-  (defun efs/new-org-note ()
-    (interactive)
-    (setq input (read-string "Enter new Filename:\t"))
-    ;; (setq input "test file NaMe")
-    (setq input (replace-regexp-in-string "\s" "-" input))
-    (setq input (downcase input))
-    (setq input (concat efs/user-dir-org input ".org"))
-    (find-file input)
-    (evil-insert-state)
-    )
-  (efs/leader-keys
-    "on" '(efs/new-org-note :wk "new-org-note")
+(defun efs/new-org-note ()
+  (interactive)
+  (setq input (read-string "Enter new Filename:\t"))
+  ;; (setq input "test file NaMe")
+  (setq input (replace-regexp-in-string "\s" "-" input))
+  (setq input (downcase input))
+  (setq input (concat efs/user-dir-org input ".org"))
+  (find-file input)
+  (evil-insert-state)
   )
+(efs/leader-keys
+  "on" '(efs/new-org-note :wk "new-org-note")
+)
 
 (efs/leader-keys
     "C-s" '(lambda () (interactive) (
@@ -982,7 +982,7 @@ are tangled."
 
 (add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
 
-  (use-package dired
+(use-package dired
       :ensure nil
       :commands (dired dired-jump)
       :bind (("C-x C-j" . dired-jump))
@@ -1019,17 +1019,17 @@ are tangled."
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
 
-  (with-eval-after-load 'dired
-  ;; C-c l to launch a file in Windows similar to running
-  ;; start "" filename in the console
-  (defun efs/dired-win-default ()
-    (interactive)
-    (let ((filename (dired-replace-in-string "/"
-                                             "\\"
-                                             (dired-get-filename))))
-					     
-      (w32-shell-execute 1 filename)))
-  (define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
+(with-eval-after-load 'dired
+;; C-c l to launch a file in Windows similar to running
+;; start "" filename in the console
+(defun efs/dired-win-default ()
+  (interactive)
+  (let ((filename (dired-replace-in-string "/"
+                                           "\\"
+                                           (dired-get-filename))))
+
+    (w32-shell-execute 1 filename)))
+(define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -1099,7 +1099,7 @@ are tangled."
        (treemacs-git-mode 'simple))))
   (define-key treemacs-mode-map (kbd "C-c C-p C-a") 'treemacs-add-project-to-workspace)
   (define-key treemacs-mode-map (kbd "C-c C-p C-d") 'treemacs-remove-project-from-workspace)
-  (define-key treemacs-mode-map (kbd "C-SPC C-a") 'treemacs-quit)
+  (define-key treemacs-mode-map (kbd "C-SPC C-t") 'treemacs-quit)
   :bind
   (:map global-map
         ("M-0"       . treemacs-select-window)
@@ -1138,6 +1138,6 @@ are tangled."
   (setq lsp-metals-treeview-show-when-views-received t))
 
 (efs/leader-keys
-    "C-a" '(treemacs :wk "treemacs"))
+    "C-t" '(treemacs :wk "treemacs"))
 
 (setq debug-on-error nil)
