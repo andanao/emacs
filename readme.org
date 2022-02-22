@@ -1126,6 +1126,35 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 
+*** Log entry to archive.org
+Quickly log note to archive under datetree, good CYA if you need it, also nice for seeing progress during a workday
+#+begin_src emacs-lisp
+
+(add-to-list  'org-capture-templates   
+    '("l" "Work Log to Archive" entry 
+	 (file+datetree (lambda () (concat efs/user-dir-org "archive.org")) )
+ "* %^{Subject} %U
+:PROPERTIES:
+:ID:\t%(org-id-new)
+:REF:\t%a
+:FILE:\t%f
+:TASK_CLOCK:\t%K
+:END:
+ \n%?\n
+ "
+   :kill-buffer t)
+)
+
+(defun efs/log-to-archive ()
+    (interactive) 
+    (org-capture nil "l")
+    (evil-insert-state)
+    )
+
+(efs/leader-keys
+    "l" '(efs/log-to-archive :wk "Log to Archive"))
+#+end_src
+
 ** Org Bullets
 
    #+begin_src emacs-lisp

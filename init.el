@@ -765,6 +765,30 @@ text and copying to the killring."
    "
    :kill-buffer t))
 
+(add-to-list  'org-capture-templates   
+    '("l" "Work Log to Archive" entry 
+	 (file+datetree (lambda () (concat efs/user-dir-org "archive.org")) )
+ "* %^{Subject} %U
+:PROPERTIES:
+:ID:\t%(org-id-new)
+:REF:\t%a
+:FILE:\t%f
+:TASK_CLOCK:\t%K
+:END:
+ \n%?\n
+ "
+   :kill-buffer t)
+)
+
+(defun efs/log-to-archive ()
+    (interactive) 
+    (org-capture nil "l")
+    (evil-insert-state)
+    )
+
+(efs/leader-keys
+    "l" '(efs/log-to-archive :wk "Log to Archive"))
+
 (use-package org-bullets
        :after org
        :hook (org-mode . org-bullets-mode)
