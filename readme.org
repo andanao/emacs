@@ -1710,7 +1710,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
        (treemacs-git-mode 'simple))))
   (define-key treemacs-mode-map (kbd "C-c C-p C-a") 'treemacs-add-project-to-workspace)
   (define-key treemacs-mode-map (kbd "C-c C-p C-d") 'treemacs-remove-project-from-workspace)
-  (define-key treemacs-mode-map (kbd "C-SPC C-a") 'treemacs-quit)
+  (define-key treemacs-mode-map (kbd "C-SPC C-t") 'treemacs-quit)
   :bind
   (:map global-map
         ("M-0"       . treemacs-select-window)
@@ -1753,7 +1753,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 
 #+begin_src emacs-lisp
 (efs/leader-keys
-    "C-a" '(treemacs :wk "treemacs"))
+    "C-t" '(treemacs :wk "treemacs"))
 #+end_src
 
 * Load Computer specific config files 
