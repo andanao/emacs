@@ -137,6 +137,9 @@
    "kl"'(delete-window :wk "delete-window")
    ))
 
+(efs/leader-keys
+  "C-<escape>" 'kill-emacs)
+
 (use-package evil
   :init
   (setq evil-want-integration t)
