@@ -1023,9 +1023,6 @@ are tangled."
   (use-package dired-single
       :commands (dired dired-jump))
 
-  (use-package all-the-icons-dired
-      :hook (dired-mode . all-the-icons-dired-mode))
-
   (use-package dired-git-info
       :ensure t
       ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
