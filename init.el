@@ -1155,11 +1155,6 @@ are tangled."
   :ensure t
 
   :config (treemacs-set-scope-type 'Perspectives))
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
 
 (efs/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
