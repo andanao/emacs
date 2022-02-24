@@ -237,12 +237,6 @@ In my clumsyness I've hit theste  too many times
    ))
 
    #+end_src
-** Kill Emacs
-#+begin_src emacs-lisp
-(efs/leader-keys
-  "C-<escape>" 'kill-emacs)
-#+end_src
-
 ** Evil 
 
    #+begin_src emacs-lisp
@@ -285,6 +279,12 @@ In my clumsyness I've hit theste  too many times
 
 
    #+end_src
+** Kill Emacs
+#+begin_src emacs-lisp
+(efs/leader-keys
+  "C-<escape>" 'kill-emacs)
+#+end_src
+
 ** Normal mode after save
 #+begin_src emacs-lisp
 (add-hook 'after-save-hook 'evil-normal-state)
