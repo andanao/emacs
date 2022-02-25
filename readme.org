@@ -237,8 +237,6 @@ In my clumsyness I've hit theste  too many times
    ))
 
    #+end_src
-
-
 ** Evil 
 
    #+begin_src emacs-lisp
@@ -281,6 +279,12 @@ In my clumsyness I've hit theste  too many times
 
 
    #+end_src
+** Kill Emacs
+#+begin_src emacs-lisp
+(efs/leader-keys
+  "C-<escape>" 'kill-emacs)
+#+end_src
+
 ** Normal mode after save
 #+begin_src emacs-lisp
 (add-hook 'after-save-hook 'evil-normal-state)
@@ -1648,9 +1652,6 @@ Package for interacting with language servers
   (use-package dired-single
       :commands (dired dired-jump))
 
-  (use-package all-the-icons-dired
-      :hook (dired-mode . all-the-icons-dired-mode))
-
   (use-package dired-git-info
       :ensure t
       ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
@@ -1706,13 +1707,11 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 ** Treemacs
  
 #+begin_src emacs-lisp
-
 (use-package treemacs
   :ensure t
   :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  ;; :init
+  
   :config
   (progn
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
@@ -1778,35 +1777,53 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 
+#+end_src
+*** Treemacs Evil
+#+begin_src emacs-lisp
 (use-package treemacs-evil
   :after treemacs evil
   :ensure t)
-
+#+end_src
+*** Treemacs Projectile
+#+begin_src emacs-lisp
 (use-package treemacs-projectile
   :after treemacs projectile
   :ensure t)
-
+#+end_src
+*** Treemacs Dired
+#+begin_src emacs-lisp
 (use-package treemacs-icons-dired
   :after treemacs dired
   :ensure t
   :config (treemacs-icons-dired-mode))
+#+end_src
 
+*** Treemacs magit
+#+begin_src emacs-lisp
 (use-package treemacs-magit
   :after treemacs magit
   :ensure t)
+#+end_src
 
+*** Treemacs Persp
+#+begin_src emacs-lisp
 (use-package treemacs-persp
   :after treemacs persp-mode
   :ensure t
 
   :config (treemacs-set-scope-type 'Perspectives))
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
-
 #+end_src
+
+*** LSP Treemacs
+Currently unused
+# #+begin_src emacs-lisp
+# (use-package lsp-treemacs
+#   :commands lsp-treemacs-errors-list
+#   :config
+#   (lsp-metals-treeview-enable t)
+#   (setq lsp-metals-treeview-show-when-views-received t))
+# #+end_src
+
 *** Treemacs Keybindings
 
 #+begin_src emacs-lisp

@@ -172,6 +172,9 @@
   :config
   (evil-collection-init))
 
+(efs/leader-keys
+  "C-<escape>" 'kill-emacs)
+
 (add-hook 'after-save-hook 'evil-normal-state)
 
 (evil-global-set-key 'normal (kbd "C-w C-h") 'evil-window-left)
@@ -1047,9 +1050,6 @@ are tangled."
   (use-package dired-single
       :commands (dired dired-jump))
 
-  (use-package all-the-icons-dired
-      :hook (dired-mode . all-the-icons-dired-mode))
-
   (use-package dired-git-info
       :ensure t
       ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
@@ -1089,9 +1089,8 @@ are tangled."
 (use-package treemacs
   :ensure t
   :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  ;; :init
+  
   :config
   (progn
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
@@ -1179,11 +1178,6 @@ are tangled."
   :ensure t
 
   :config (treemacs-set-scope-type 'Perspectives))
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
 
 (efs/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
