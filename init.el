@@ -54,6 +54,9 @@
   kept-old-versions 5    ; and how many of the old
   )
 
+(defun efs/browse-url-edge (url)
+    (shell-command (concat "start msedge " url)))
+
 (setq mono "Fira Code Retina")
 (setq sans "Cantarell")
 (setq serif "EtBembo")

@@ -107,7 +107,14 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
   )
 
 #+end_src
+* Basic Functions
+** Browse in Edge
+edge sucks but some things only work in edge
+#+begin_src emacs-lisp
+(defun efs/browse-url-edge (url)
+    (shell-command (concat "start msedge " url)))
 
+#+end_src
 
 * Basic UI Config
 
