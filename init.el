@@ -1072,6 +1072,19 @@ are tangled."
   ;    (setq dired-open-extensions '(("pdf" . "feh")
 				   ;; ("mkv" . "mpv"))))
 
+(setq counsel-find-file-extern-extensions 
+        '("xlsx"
+          "xls"
+          "mkv"
+          "mp4"
+          "pdf"
+          "doc"
+          "docx"
+          "ppt"
+          "pptx"
+          "wmv"
+          "mp3"))
+
 (with-eval-after-load 'dired
 ;; C-c l to launch a file in Windows similar to running
 ;; start "" filename in the console

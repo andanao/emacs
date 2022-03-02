@@ -1682,9 +1682,27 @@ Package for interacting with language servers
 				   ;; ("mkv" . "mpv"))))
 
 #+end_src
+** Counsel Find File External Extensions
+When using counsel-find-file tries to open a document if the extension is in this list open using the external program
+
+#+begin_src emacs-lisp
+
+(setq counsel-find-file-extern-extensions 
+        '("xlsx"
+          "xls"
+          "mkv"
+          "mp4"
+          "pdf"
+          "doc"
+          "docx"
+          "ppt"
+          "pptx"
+          "wmv"
+          "mp3"))
+
+#+end_src
 
 
- 
 ** Open in Windows Default 
 Use the default OS program to open the selected file in dired
 
