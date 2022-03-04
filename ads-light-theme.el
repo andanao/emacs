@@ -264,8 +264,8 @@ determine the exact padding."
    
    (org-table     :foreground cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
-   (org-code      :foreground cyan :inherit 'fixed-pitch)
-   (org-verbatim  :font serif :height 1.2 :slant 'italic :foreground base8)
+   (org-code      :foreground cyan :height 0.8 :inherit 'fixed-pitch)
+   (org-verbatim  :font serif :height 1.0 :slant 'italic :foreground base8)
 
    
    (org-special-keyword  :inherit '(font-lock-comment-face fixed-pitch))
