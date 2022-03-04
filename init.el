@@ -1015,6 +1015,13 @@ are tangled."
 (global-set-key (kbd "C-c g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
+(defun efs/git-commit-all ()
+  (interactive)
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
+
+(efs/leader-keys 
+    "gc"'(efs/git-commit-all :wk "git commit all"))
+
 (defun efs/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
   (setq prettify-symbols-alist '(("lambda" . "λ")

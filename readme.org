@@ -1503,6 +1503,20 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 (global-set-key (kbd "C-x C-g") 'magit-status)
 #+end_src
 
+** Windows Git Commands
+
+Windows commands for git becaue magit is almost unusably slow due to windows issues
+
+*** Git commit all
+#+begin_src emacs-lisp
+(defun efs/git-commit-all ()
+  (interactive)
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
+
+(efs/leader-keys 
+    "gc"'(efs/git-commit-all :wk "git commit all"))
+#+end_src
+
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
