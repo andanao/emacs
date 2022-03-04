@@ -168,7 +168,7 @@
    ;;;; 
    ((org-block &override)    :background base1 :inherit 'fixed-pitch)
    ;; (org-block-begin :background bg :height 0.8)
-   (org-block-begin-line :background bg :inherit 'org-code)
+   (org-block-begin-line :background bg :inherit 'org-code :height 0.75)
    
    (org-table     :foreground dark-cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
