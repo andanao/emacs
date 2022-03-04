@@ -1031,6 +1031,14 @@ are tangled."
 (efs/leader-keys 
     "gs"'(efs/git-stage-all :wk "git stage all"))
 
+(defun efs/git-push ()
+  (interactive)
+  (shell-command "git push -u")
+  (message 
+    (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gp"'(efs/git-push :wk "git push"))
+
 (defun efs/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
   (setq prettify-symbols-alist '(("lambda" . "λ")

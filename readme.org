@@ -1533,6 +1533,21 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+end_src
 
 
+*** Git Push
+#+begin_src emacs-lisp
+
+(defun efs/git-push ()
+  (interactive)
+  (shell-command "git push -u")
+  (message 
+    (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gp"'(efs/git-push :wk "git push"))
+
+
+#+end_src
+
+#+RESULTS:
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
