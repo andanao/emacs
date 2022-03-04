@@ -639,6 +639,7 @@ text and copying to the killring."
   (push '("#+options:" . "⌥") prettify-symbols-alist)
   (push '("#+RESULTS:" . "🠶") prettify-symbols-alist)
   (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
+  (push '("emacs-lisp" ."ε" ) prettify-symbols-alist)
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
