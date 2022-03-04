@@ -259,7 +259,8 @@ determine the exact padding."
    (org-list-dt :foreground yellow)
 
    ((org-block &override)    :foreground bg :background "#00000F" :inherit 'fixed-pitch)
-   (org-block-begin :background bg :height 0.8)
+   ;; (org-block-begin :background bg :height 0.8)
+   (org-block-begin-line :background bg)
    
    (org-table     :foreground cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
