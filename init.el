@@ -1022,6 +1022,14 @@ are tangled."
 (efs/leader-keys 
     "gk"'(efs/git-commit-all :wk "git commit all"))
 
+(defun efs/git-stage-all ()
+  (interactive)
+  (shell-command "git stage --all")
+  (message 
+    (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gs"'(efs/git-stage-all :wk "git stage all"))
+
 (defun efs/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
   (setq prettify-symbols-alist '(("lambda" . "λ")

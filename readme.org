@@ -1517,6 +1517,21 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
     "gk"'(efs/git-commit-all :wk "git commit all"))
 #+end_src
 
+*** Git stage all
+
+
+#+begin_src emacs-lisp
+(defun efs/git-stage-all ()
+  (interactive)
+  (shell-command "git stage --all")
+  (message 
+    (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gs"'(efs/git-stage-all :wk "git stage all"))
+
+#+end_src
+
+
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
