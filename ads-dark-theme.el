@@ -153,7 +153,6 @@
    ;;;; org <built-in>
    (org-ellipsis :foreground orange :height 0.75)
    (org-tag :foreground yellow :bold nil :height 0.75)
-   (org-quote :height 2.8 :font serif :foreground fg :background bg)
    (org-todo :foreground yellow :bold 'inherit :font sans)
    (org-done :inherit '(fixed-pitch org-headline-done))
    (org-list-dt :foreground yellow)
@@ -174,8 +173,8 @@
    (org-formula   :inherit 'fixed-pitch)
    (org-code      :foreground dark-cyan :height 0.8 :inherit 'fixed-pitch)
    (org-verbatim  :font serif :height 1.0 :slant 'italic :foreground base8)
+   (org-quote :inherit 'org-verbatim :height 1.2 )
 
-   
    (org-special-keyword  :inherit '(font-lock-comment-face fixed-pitch))
    (org-meta-line  :inherit '(font-lock-comment-face fixed-pitch))
    (org-checkbox   :height 0.8 :inherit 'fixed-pitch)
