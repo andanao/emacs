@@ -1503,7 +1503,7 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 (global-set-key (kbd "C-x C-g") 'magit-status)
 #+end_src
 
-** Windows Git Commands
+** Shell Git Commands
 
 Windows commands for git becaue magit is almost unusably slow due to windows issues
 
