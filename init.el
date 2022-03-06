@@ -1013,6 +1013,7 @@ are tangled."
 ;(use-package evil-magit
 ;   :after magit)
 (global-set-key (kbd "C-c g") 'magit-file-dispatch)
+(global-set-key (kbd "C-c C-g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 (defun efs/git-commit-all ()
