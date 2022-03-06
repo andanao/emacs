@@ -1063,6 +1063,7 @@ are tangled."
       (evil-collection-define-key 'normal 'dired-mode-map
 	"h" 'dired-single-up-directory
 	"l" 'dired-single-buffer)
+      (evil-global-set-key 'normal (kbd "C-x C-d") 'dired)
 
        (setq delete-by-moving-to-trash t)
        (setq-default dired-hide-details-mode t))
