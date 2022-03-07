@@ -1014,6 +1014,7 @@ are tangled."
 ;(use-package evil-magit
 ;   :after magit)
 (global-set-key (kbd "C-c g") 'magit-file-dispatch)
+(global-set-key (kbd "C-c C-g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 (defun efs/git-commit-all ()
@@ -1072,14 +1073,15 @@ are tangled."
       (evil-collection-define-key 'normal 'dired-mode-map
 	"h" 'dired-single-up-directory
 	"l" 'dired-single-buffer)
+      (evil-global-set-key 'normal (kbd "C-x C-d") 'dired)
 
        (setq delete-by-moving-to-trash t)
        (setq-default dired-hide-details-mode t))
 
-  (use-package dired-single
+(use-package dired-single
       :commands (dired dired-jump))
 
-  (use-package dired-git-info
+(use-package dired-git-info
       :ensure t
       ;:hook (dired-mode . (local-set-key ")" 'dired-git-info-mode))
       :bind (:map dired-mode-map (")" . dired-git-info-mode)))
