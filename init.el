@@ -1217,4 +1217,9 @@ are tangled."
 (efs/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 
+(defun efs/treemacs-laptop-mode ()
+  (interactive)
+  (setq treemacs-indentation 1)
+  (setq treemacs-width 25))
+
 (setq debug-on-error nil)

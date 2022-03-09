@@ -1832,6 +1832,15 @@ Currently unused
 (efs/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 #+end_src
+*** Treemacs laptop mode
+change treemacs settings to be easier to use on a small latop monitor
+#+begin_src emacs-lisp
+(defun efs/treemacs-laptop-mode ()
+  (interactive)
+  (setq treemacs-indentation 1)
+  (setq treemacs-width 25))
+
+#+end_src
 
 * Load Computer specific config files 
 
