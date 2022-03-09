@@ -639,6 +639,7 @@ text and copying to the killring."
   (push '("#+options:" . "⌥") prettify-symbols-alist)
   (push '("#+RESULTS:" . "🠶") prettify-symbols-alist)
   (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
+  (push '("emacs-lisp" ."ε" ) prettify-symbols-alist)
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
 
@@ -1030,6 +1031,14 @@ are tangled."
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
 (efs/leader-keys 
     "gs"'(efs/git-stage-all :wk "git stage all"))
+
+(defun efs/git-push ()
+  (interactive)
+  (shell-command "git push -u")
+  (message 
+    (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gp"'(efs/git-push :wk "git push"))
 
 (defun efs/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
