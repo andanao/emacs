@@ -859,7 +859,6 @@ text and copying to the killring."
  (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
  (add-to-list 'org-structure-template-alist '("sql" . "src sql\n"))
  (add-to-list 'org-structure-template-alist '("sq" . "src sql\n"))
- (add-to-list 'org-structure-template-alist '("q" . "src sql\n"))
  )
 
 (global-set-key (kbd "C-c C-'") 'org-edit-special)
