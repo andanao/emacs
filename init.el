@@ -1078,7 +1078,8 @@ are tangled."
       (evil-global-set-key 'normal (kbd "C-x C-d") 'dired)
 
        (setq delete-by-moving-to-trash t)
-       (setq-default dired-hide-details-mode t))
+       (setq-default dired-hide-details-mode t)
+       (setq dired-kill-when-opening-new-dired-buffer t))
 
 (use-package dired-single
       :commands (dired dired-jump))
