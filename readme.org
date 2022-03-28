@@ -1264,9 +1264,6 @@ Org edit special is a nice way to edit a code block in its own buffer which allo
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-c C-'") 'org-edit-special)
 #+end_src
-
-#+RESULTS:
-: org-edit-special
 ** Evil Org 
 Maybe this will be better somewhere else but it works here for now
 [[https://github.com/Somelauw/evil-org-mode/tree/80ef38fb378541937f6ddfe836809e76eda1e355][Evil Org Github]]
@@ -1549,8 +1546,6 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 
 #+end_src
-
-#+RESULTS:
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
@@ -1580,8 +1575,6 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 
 
 #+end_src
-
-#+RESULTS:
 
 ** Company mode
 Completion system
@@ -1645,8 +1638,6 @@ Package for interacting with language servers
 
 
 #+end_src
-
-#+RESULTS:
 *** Git Fetch All
 #+begin_src emacs-lisp
 
@@ -1660,8 +1651,6 @@ Package for interacting with language servers
 
 
 #+end_src
-
-#+RESULTS:
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
@@ -1691,8 +1680,6 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 
 
 #+end_src
-
-#+RESULTS:
 
 ** Company mode
 Completion system
