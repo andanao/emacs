@@ -1081,6 +1081,29 @@ are tangled."
 (efs/leader-keys 
     "gf"'(efs/git-fetch-all :wk "git fetch"))
 
+(defun efs/prog-mode-configure-prettify-symbols-alist ()
+  "Set prettify symbols alist."
+  (setq prettify-symbols-alist '(("lambda" . "λ")
+                                 ("->" . "→")
+                                 ("->>" . "↠")
+                                 ("=>" . "⇒")
+                                 ("map" . "↦")
+                                 ("/=" . "≠")
+                                 ("!=" . "≠")
+                                 ("==" . "≡")
+                                 ("<=" . "≤")
+                                 (">=" . "≥")
+                                 ("=<<" . "=≪")
+                                 (">>=" . "≫=")
+                                 ("<=<" . "↢")
+                                 (">=>" . "↣")
+                                 ("&&" . "∧")
+                                 ("||" . "∨")
+                                 ("not" . "¬")))
+  (prettify-symbols-mode))
+
+(add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
+
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)
