@@ -1065,6 +1065,22 @@ are tangled."
 
 (add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
 
+(defun efs/git-pull ()
+  (interactive)
+  (shell-command "git pull")
+  (message 
+    (concat "Pulling Upstream: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gP"'(efs/git-pull :wk "git pull"))
+
+(defun efs/git-fetch-all ()
+  (interactive)
+  (shell-command "git fetch --all")
+  (message 
+    (concat "fetching all: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gf"'(efs/git-fetch-all :wk "git fetch"))
+
 (use-package dired
       :ensure nil
       :commands (dired dired-jump)

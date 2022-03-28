@@ -1632,6 +1632,36 @@ Package for interacting with language servers
 #+end_src
 
 
+*** Git Pull
+#+begin_src emacs-lisp
+
+(defun efs/git-pull ()
+  (interactive)
+  (shell-command "git pull")
+  (message 
+    (concat "Pulling Upstream: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gP"'(efs/git-pull :wk "git pull"))
+
+
+#+end_src
+
+#+RESULTS:
+*** Git Fetch All
+#+begin_src emacs-lisp
+
+(defun efs/git-fetch-all ()
+  (interactive)
+  (shell-command "git fetch --all")
+  (message 
+    (concat "fetching all: " (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gf"'(efs/git-fetch-all :wk "git fetch"))
+
+
+#+end_src
+
+#+RESULTS:
 * File Management
 ** Dired
 
@@ -1871,3 +1901,6 @@ change treemacs settings to be easier to use on a small latop monitor
 (setq debug-on-error nil)
    #+end_src
 
+
+   
+   
