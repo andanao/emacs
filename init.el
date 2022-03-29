@@ -855,6 +855,7 @@ text and copying to the killring."
  (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
  (add-to-list 'org-structure-template-alist '("ht" . "src html\n"))
  (add-to-list 'org-structure-template-alist '("html" . "src html\n"))
+ (add-to-list 'org-structure-template-alist '("css" . "src css\n"))
  (add-to-list 'org-structure-template-alist '("cc" . "src C\n"))
  (add-to-list 'org-structure-template-alist '("cp" . "src C++\n"))
  (add-to-list 'org-structure-template-alist '("js" . "src js\n"))
