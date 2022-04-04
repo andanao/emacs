@@ -604,8 +604,8 @@ text and copying to the killring."
 
 (defun efs/org-agenda-open ()
     (interactive)
-    (evil-window-split)
-    (evil-window-down 1)
+    ;; (evil-window-split)
+    ;; (evil-window-down 1)
     (org-agenda nil "a"))
 (efs/leader-keys
       "oa"'(efs/org-agenda-open :wk "org-agenda"))
