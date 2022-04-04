@@ -710,7 +710,7 @@ text and copying to the killring."
 )
 
 (efs/leader-keys
-    "C-c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
+    "c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
 
 (add-to-list  'org-capture-templates   
     '("k" "Clipboard Link to Inbox" entry 
