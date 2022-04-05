@@ -1,9 +1,10 @@
 * TODO %^{Task}
- SCHEDULED: %t
- :PROPERTIES:
- :ID:     \t%(org-id-new)
- :CREATED:\t%U
- :REF:\t%a
- %i
- :END:
- %?\n
+SCHEDULED:	%t
+:PROPERTIES:
+  :ID:		%(org-id-new)
+  :CREATED:	%U
+  :REF:		%a
+:END:
+
+%?
+ 
