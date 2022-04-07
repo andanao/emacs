@@ -1553,7 +1553,20 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 #+end_src
 
-#+RESULTS:
+*** Git Fetch
+#+begin_src emacs-lisp
+
+(defun efs/git-fetch ()
+  (interactive)
+  (shell-command "git fetch --all")
+  (message 
+    (concat "Fetching Upstream" (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gf"'(efs/git-fetch :wk "git fetch"))
+
+
+#+end_src
+
 ** Prettify Code
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures

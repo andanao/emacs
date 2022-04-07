@@ -1045,6 +1045,14 @@ are tangled."
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 
+(defun efs/git-fetch ()
+  (interactive)
+  (shell-command "git fetch --all")
+  (message 
+    (concat "Fetching Upstream" (file-name-directory buffer-file-name))))
+(efs/leader-keys 
+    "gf"'(efs/git-fetch :wk "git fetch"))
+
 (defun efs/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
   (setq prettify-symbols-alist '(("lambda" . "λ")
