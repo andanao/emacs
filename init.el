@@ -1038,6 +1038,7 @@ are tangled."
 
 (defun efs/git-commit-all ()
   (interactive)
+  (magit-diff-staged)
   (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
 
 (efs/leader-keys 

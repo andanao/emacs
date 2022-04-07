@@ -1533,6 +1533,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+begin_src emacs-lisp
 (defun efs/git-commit-all ()
   (interactive)
+  (magit-diff-staged)
   (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
 
 (efs/leader-keys 
