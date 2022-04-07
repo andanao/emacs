@@ -300,6 +300,20 @@ One for writing code and the other for reading articles."
     (efs/refresh-theme)))
 (add-hook 'after-save-hook #'efs/refresh-theme-auto)
 
+(defun efs/toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(92 . 80) '(100 . 100)))))
+
+(efs/leader-keys "tr"'(efs/toggle-transparency :wk "toggle transparency"))
+
 (use-package all-the-icons)
 
 ;; Doom modeline config

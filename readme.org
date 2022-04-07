@@ -481,7 +481,22 @@ Check if the current theme matches the file being edited on save, if so refresh 
     (efs/refresh-theme)))
 (add-hook 'after-save-hook #'efs/refresh-theme-auto)
 #+end_src
+** Transparency Toggle
+#+begin_src emacs-lisp
+(defun efs/toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(92 . 80) '(100 . 100)))))
 
+(efs/leader-keys "tr"'(efs/toggle-transparency :wk "toggle transparency")) 
+#+end_src
 ** Doom Modeline
 
    #+begin_src emacs-lisp
