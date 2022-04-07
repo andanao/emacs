@@ -1039,7 +1039,8 @@ are tangled."
 (defun efs/git-commit-all ()
   (interactive)
   (magit-diff-staged)
-  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
 
 (efs/leader-keys 
     "gk"'(efs/git-commit-all :wk "git commit all"))

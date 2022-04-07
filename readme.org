@@ -1534,10 +1534,12 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 (defun efs/git-commit-all ()
   (interactive)
   (magit-diff-staged)
-  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\"")))
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
 
 (efs/leader-keys 
     "gk"'(efs/git-commit-all :wk "git commit all"))
+
 #+end_src
 
 *** Git stage all
