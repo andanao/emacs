@@ -310,7 +310,7 @@ One for writing code and the other for reading articles."
                      ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
                100)
-          '(92 . 80) '(100 . 100)))))
+          '(92 . 92) '(100 . 100)))))
 
 (efs/leader-keys "tr"'(efs/toggle-transparency :wk "toggle transparency"))
 
