@@ -1063,7 +1063,7 @@ are tangled."
      (concat
       "cd "
       (file-name-directory buffer-file-name)
-      "&& git push ")
+      " && git push ")
      ))))
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
