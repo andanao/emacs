@@ -1564,7 +1564,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
   (interactive)
   (message 
     (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
-  (shell-command "git push -u")
+  (message (async-start (shell-command-to-string "git push ")))
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 

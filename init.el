@@ -1057,7 +1057,7 @@ are tangled."
   (interactive)
   (message 
     (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
-  (shell-command "git push -u")
+  (message (async-start (shell-command-to-string "git push ")))
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 
