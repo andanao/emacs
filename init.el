@@ -1057,14 +1057,14 @@ are tangled."
   (interactive)
   (message 
    (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
-  (message
-   (async-start
+  (async-start
+   (message
     (shell-command-to-string
      (concat
       "cd "
       (file-name-directory buffer-file-name)
-      " && git push ")
-     ))))
+      " && git push ")))
+   (message "done")))
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 
