@@ -1056,8 +1056,15 @@ are tangled."
 (defun efs/git-push ()
   (interactive)
   (message 
-    (concat "Pushing Upstream: " (file-name-directory buffer-file-name))))
-  (message (async-start (shell-command-to-string "git push ")))
+   (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
+  (message
+   (async-start
+    (shell-command-to-string
+     (concat
+      "cd "
+      (file-name-directory buffer-file-name)
+      "&& git push ")
+     ))))
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 
