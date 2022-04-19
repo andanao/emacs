@@ -1068,6 +1068,21 @@ are tangled."
 (efs/leader-keys 
     "gp"'(efs/git-push :wk "git push"))
 
+(defun efs/git-pull ()
+  (interactive)
+  (message 
+   (concat "Pulling from Upstream: " (file-name-directory buffer-file-name)))
+  (async-start
+   (message
+    (shell-command-to-string
+     (concat
+      "cd "
+      (file-name-directory buffer-file-name)
+      " && git pull ")))
+   (message "done")))
+(efs/leader-keys 
+    "gP"'(efs/git-pull :wk "git pull"))
+
 (defun efs/git-fetch ()
   (interactive)
   (shell-command "git fetch --all")

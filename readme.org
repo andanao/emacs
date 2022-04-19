@@ -1576,6 +1576,25 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 #+end_src
 
+*** Git Pull
+#+begin_src emacs-lisp
+(defun efs/git-pull ()
+  (interactive)
+  (message 
+   (concat "Pulling from Upstream: " (file-name-directory buffer-file-name)))
+  (async-start
+   (message
+    (shell-command-to-string
+     (concat
+      "cd "
+      (file-name-directory buffer-file-name)
+      " && git pull ")))
+   (message "done")))
+(efs/leader-keys 
+    "gP"'(efs/git-pull :wk "git pull"))
+
+#+end_src
+
 *** Git Fetch
 #+begin_src emacs-lisp
 
