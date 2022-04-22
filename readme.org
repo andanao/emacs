@@ -1571,6 +1571,33 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 #+end_src
 
+*** Git stage commit and push
+Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
+#+begin_src emacs-lisp
+(defun efs/git-stage-commit-push ()
+  (interactive)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (magit-diff-staged)
+  (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
+  (message 
+   (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
+  (async-shell-command "git push")
+  ;; (async-start
+  ;;  (message
+  ;;   (shell-command-to-string
+  ;;    (concat
+  ;;     "cd "
+  ;;     (file-name-directory buffer-file-name)
+  ;;     " && git push ")))
+  ;;  (message "done"))
+
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gl"'(efs/git-stage-commit-push :wk "git commit"))
+
+#+end_src
+
 *** Git commit all
 #+begin_src emacs-lisp
 (defun efs/git-commit-all ()
