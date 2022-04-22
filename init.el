@@ -1051,7 +1051,7 @@ are tangled."
   (message 
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
 (efs/leader-keys 
-    "gs"'(efs/git-stage-all :wk "git stage all"))
+    "gS"'(efs/git-stage-all :wk "git stage all"))
 
 (defun efs/git-push ()
   (interactive)

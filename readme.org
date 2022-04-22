@@ -1552,7 +1552,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
   (message 
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
 (efs/leader-keys 
-    "gs"'(efs/git-stage-all :wk "git stage all"))
+    "gS"'(efs/git-stage-all :wk "git stage all"))
 
 #+end_src
 
