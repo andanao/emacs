@@ -1556,6 +1556,20 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 #+end_src
 
+*** Git commit
+
+#+begin_src emacs-lisp
+(defun efs/git-commit-file ()
+  (interactive)
+  (magit-diff-staged)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gk"'(efs/git-commit-file :wk "git commit"))
+
+#+end_src
 
 *** Git commit all
 #+begin_src emacs-lisp
@@ -1566,7 +1580,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
   (magit-mode-bury-buffer))
 
 (efs/leader-keys 
-    "gk"'(efs/git-commit-all :wk "git commit all"))
+    "gK"'(efs/git-commit-all :wk "git commit all"))
 
 #+end_src
 
