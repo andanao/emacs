@@ -1529,16 +1529,16 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 Windows commands for git becaue magit is almost unusably slow due to windows issues
 
-*** Git commit all
-#+begin_src emacs-lisp
-(defun efs/git-commit-all ()
-  (interactive)
-  (magit-diff-staged)
-  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
-  (magit-mode-bury-buffer))
+*** Git stage 
 
+#+begin_src emacs-lisp
+(defun efs/git-stage ()
+  (interactive)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (message 
+    (concat "Staging file : " buffer-file-name)))
 (efs/leader-keys 
-    "gk"'(efs/git-commit-all :wk "git commit all"))
+    "gs"'(efs/git-stage :wk "git stage file"))
 
 #+end_src
 
@@ -1556,6 +1556,19 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 
 #+end_src
 
+
+*** Git commit all
+#+begin_src emacs-lisp
+(defun efs/git-commit-all ()
+  (interactive)
+  (magit-diff-staged)
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gk"'(efs/git-commit-all :wk "git commit all"))
+
+#+end_src
 
 *** Git Push
 #+begin_src emacs-lisp

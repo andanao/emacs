@@ -1036,14 +1036,13 @@ are tangled."
 (global-set-key (kbd "C-c C-g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
-(defun efs/git-commit-all ()
+(defun efs/git-stage ()
   (interactive)
-  (magit-diff-staged)
-  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
-  (magit-mode-bury-buffer))
-
+  (shell-command (concat "git stage " buffer-file-name) )
+  (message 
+    (concat "Staging file : " buffer-file-name)))
 (efs/leader-keys 
-    "gk"'(efs/git-commit-all :wk "git commit all"))
+    "gs"'(efs/git-stage :wk "git stage file"))
 
 (defun efs/git-stage-all ()
   (interactive)
@@ -1052,6 +1051,15 @@ are tangled."
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
 (efs/leader-keys 
     "gS"'(efs/git-stage-all :wk "git stage all"))
+
+(defun efs/git-commit-all ()
+  (interactive)
+  (magit-diff-staged)
+  (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gk"'(efs/git-commit-all :wk "git commit all"))
 
 (defun efs/git-push ()
   (interactive)
