@@ -107,6 +107,14 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
   )
 
 #+end_src
+** Async shell commands in background
+when calling async shell it's annoying to have stuff pop up int hte 
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+#+end_src
+
+
 * Basic Functions
 ** Browse in Edge
 edge sucks but some things only work in edge
