@@ -32,7 +32,7 @@
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message ""             ; Empty the initial *scratch* buffer
- visible-bell t                         ; set up the visible bell (no annoying beeping sounds)
+ visible-bell nil                         ; set up the visible bell (no annoying beeping sounds)
  )
 
 (blink-cursor-mode 0)                   ; Prefer a still cursor
@@ -53,6 +53,9 @@
   kept-new-versions 20   ; how many of the newest versions to keep
   kept-old-versions 5    ; and how many of the old
   )
+
+(add-to-list 'display-buffer-alist
+  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (defun efs/browse-url-edge (url)
     (shell-command (concat "start msedge " url)))
@@ -1052,6 +1055,29 @@ are tangled."
 (efs/leader-keys 
     "gS"'(efs/git-stage-all :wk "git stage all"))
 
+(defun efs/git-commit-file ()
+  (interactive)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (magit-diff-staged)
+  (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gk"'(efs/git-commit-file :wk "git commit"))
+
+(defun efs/git-stage-commit-push ()
+  (interactive)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (magit-diff-staged)
+  (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
+  ;; (message 
+  ;;  (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
+  (async-shell-command "git push")
+  (magit-mode-bury-buffer))
+
+(efs/leader-keys 
+    "gl"'(efs/git-stage-commit-push :wk "git commit"))
+
 (defun efs/git-commit-all ()
   (interactive)
   (magit-diff-staged)
@@ -1059,7 +1085,7 @@ are tangled."
   (magit-mode-bury-buffer))
 
 (efs/leader-keys 
-    "gk"'(efs/git-commit-all :wk "git commit all"))
+    "gK"'(efs/git-commit-all :wk "git commit all"))
 
 (defun efs/git-push ()
   (interactive)
