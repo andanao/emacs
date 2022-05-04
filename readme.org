@@ -404,7 +404,7 @@ Normally insert enables overtype, but I've never once wanted that
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
-
+(define-key prog-mode-map (kbd "C-;") 'comment-line)
 #+end_src
 
 * Theme Setup
