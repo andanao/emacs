@@ -197,6 +197,16 @@ In my clumsyness I've hit theste  too many times
 (global-set-key (kbd "C-x C-z") 'nil)
 #+end_src
 
+** Unbind Emacs help stuff 
+I don't need to open:
+ - tutorial
+ - hello
+   
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-h t") 'nil)
+(global-set-key (kbd "C-h h") 'nil)
+#+end_src
+
 * Keybinding Config
 ** Global Esc
    #+begin_src emacs-lisp
@@ -1972,7 +1982,6 @@ change treemacs settings to be easier to use on a small latop monitor
   (interactive)
   (setq treemacs-indentation 1)
   (setq treemacs-width 25))
-
 #+end_src
 
 * Load Computer specific config files 
