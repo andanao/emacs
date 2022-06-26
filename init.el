@@ -60,9 +60,9 @@
 (defun efs/browse-url-edge (url)
     (shell-command (concat "start msedge " url)))
 
-(setq mono "Fira Code Retina")
+(setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "EtBembo")
+(setq serif "Ebb")
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes

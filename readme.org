@@ -130,9 +130,9 @@ edge sucks but some things only work in edge
 Setting up font properties
 
 #+begin_src emacs-lisp
-(setq mono "Fira Code Retina")
+(setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "EtBembo")
+(setq serif "Ebb")
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes
