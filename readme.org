@@ -759,7 +759,11 @@ Check if the current theme matches the file being edited on save, if so refresh 
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
     #+end_src
-    
+***  Unbind Cx Cn   
+useful for narrowing headers
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x C-n") 'nil)
+#+end_src
 ** General Org
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
    #+begin_src emacs-lisp
