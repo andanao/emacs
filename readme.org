@@ -356,7 +356,7 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
     (setq evil-undo-system 'undo-tree)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
-    (setq undo-tree-history-directory-alist "~/.undo-tree-history")))
+    (setq undo-tree-history-directory-alist '(("~/.undo-tree-history")))))
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 #+end_src
