@@ -132,7 +132,7 @@ Setting up font properties
 #+begin_src emacs-lisp
 (setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "Ebb")
+(setq serif "Etbb")
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes
