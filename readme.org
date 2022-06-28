@@ -799,7 +799,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(setq org-habit-graph-column 60)
 
 	(setq org-todo-keywords
-	  '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
+	  '((sequence "TODO(t)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
 		      "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
