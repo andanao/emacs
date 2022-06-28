@@ -62,7 +62,7 @@
 
 (setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "Ebb")
+(setq serif "Etbb")
 ;; (setq serif "Garamond")
 
 ;; Set Font sizes
@@ -220,7 +220,8 @@
     (global-undo-tree-mode)
     (setq evil-undo-system 'undo-tree)
     (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+    (setq undo-tree-visualizer-diff t)
+    (setq undo-tree-history-directory-alist "~/.undo-tree-history")))
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 
@@ -250,6 +251,7 @@
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
+(define-key prog-mode-map (kbd "C-;") 'comment-line)
 
 (setq custom-theme-directory efs/user-dir-emacs)
 
