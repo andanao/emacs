@@ -1585,6 +1585,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+begin_src emacs-lisp
 (defun efs/git-stage-commit-push ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
