@@ -127,13 +127,14 @@ edge sucks but some things only work in edge
 * Basic UI Config
 
 ** Font configuration
-Setting up font properties
+Setting up font properties, I like Et bembo, but for some reason can't find where I got Etbembo from on my windows machines
 
 #+begin_src emacs-lisp
-(setq mono "Fira Code Retina")
+(setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "EtBembo")
-;; (setq serif "Garamond")
+(if (string= system-type "gnu/linux")
+    (setq serif "Etbb")
+    (setq serif "EtBembo"))
 
 ;; Set Font sizes
 (defvar efs/default-font-size 160)
@@ -365,7 +366,8 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
     (global-undo-tree-mode)
     (setq evil-undo-system 'undo-tree)
     (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+    (setq undo-tree-visualizer-diff t)
+    (setq undo-tree-history-directory-alist '(("." . "~/.undo-tree-history")))))
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 #+end_src
@@ -417,6 +419,7 @@ Normally insert enables overtype, but I've never once wanted that
 (evil-global-set-key 'normal (kbd "M-;") 'comment-line)
 (evil-global-set-key 'insert (kbd "M-;") 'comment-line)
 (evil-global-set-key 'visual (kbd "M-;") 'comment-line)
+(define-key prog-mode-map (kbd "C-;") 'comment-line)
 #+end_src
 
 * Theme Setup
@@ -1601,6 +1604,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+begin_src emacs-lisp
 (defun efs/git-stage-commit-push ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
@@ -1899,13 +1903,13 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
+          treemacs-follow-mode                   nil
           treemacs-width                         35)
 
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode t)
     (pcase (cons (not (null (executable-find "git")))
