@@ -127,13 +127,14 @@ edge sucks but some things only work in edge
 * Basic UI Config
 
 ** Font configuration
-Setting up font properties
+Setting up font properties, I like Et bembo, but for some reason can't find where I got Etbembo from on my windows machines
 
 #+begin_src emacs-lisp
 (setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "Etbb")
-;; (setq serif "Garamond")
+(if (string= system-type "gnu/linux")
+    (setq serif "Etbb")
+    (setq serif "EtBembo"))
 
 ;; Set Font sizes
 (defvar efs/default-font-size 160)
