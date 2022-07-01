@@ -62,8 +62,9 @@
 
 (setq mono "Fira Code")
 (setq sans "Cantarell")
-(setq serif "Etbb")
-;; (setq serif "Garamond")
+(if (string= system-type "gnu/linux")
+    (setq serif "Etbb")
+    (setq serif "EtBembo"))
 
 ;; Set Font sizes
 (defvar efs/default-font-size 160)
@@ -221,7 +222,7 @@
     (setq evil-undo-system 'undo-tree)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)
-    (setq undo-tree-history-directory-alist "~/.undo-tree-history")))
+    (setq undo-tree-history-directory-alist '(("." . "~/.undo-tree-history")))))
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 
@@ -1069,6 +1070,7 @@ are tangled."
 
 (defun efs/git-stage-commit-push ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
@@ -1261,13 +1263,13 @@ are tangled."
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
+          treemacs-follow-mode                   nil
           treemacs-width                         35)
 
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode t)
     (pcase (cons (not (null (executable-find "git")))
