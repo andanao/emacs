@@ -130,11 +130,14 @@ edge sucks but some things only work in edge
 Setting up font properties, I like Et bembo, but for some reason can't find where I got Etbembo from on my windows machines
 
 #+begin_src emacs-lisp
-(setq mono "Fira Code")
-(setq sans "Cantarell")
 (if (string= system-type "gnu/linux")
-    (setq serif "Etbb")
-    (setq serif "EtBembo"))
+    (setq 
+     serif "Etbb"
+     mono "Fira Code")
+    (setq
+     serif "EtBembo"
+     mono "Fira Code Retina"))
+(setq sans "Cantarell")
 
 ;; Set Font sizes
 (defvar efs/default-font-size 160)
