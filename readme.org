@@ -770,6 +770,27 @@ useful for narrowing headers
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-n") 'nil)
 #+end_src
+*** Narrow Commands
+org-toggle-narrow-to-subree does not work for some reason when I call it, using general, same code but this works
+#+begin_src emacs-lisp
+(defun efs/org-toggle-narrow ()
+  (interactive)
+  (if (buffer-narrowed-p)
+      (widen)
+    (org-narrow-to-subtree)))
+
+(efs/leader-keys
+    "n" '(:ignore t :wk "org Narrow")
+    "C-n" '(efs/org-toggle-narrow :wk "Toggle Narrow")
+    "ns" '(org-narrow-to-subtree :wk "Subtree")
+    "ne" '(org-narrow-to-element :wk "Element")
+    "nb" '(org-narrow-to-block :wk "Block")
+    "nd" '(org-narrow-to-defun :wk "Defun")
+    "nn" '(narrow-to-region :wk "Region")
+    "nw" '(widen :wk "Widen")
+)
+    #+end_src
+
 ** General Org
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
    #+begin_src emacs-lisp
