@@ -1,5 +1,5 @@
-(add-to-list 'load-path efs/user-dir-emacs)
-(add-to-list 'load-path efs/user-dir-org)
+(add-to-list 'load-path ads/user-dir-emacs)
+(add-to-list 'load-path ads/user-dir-org)
 
 (setq debug-on-error t)
 
@@ -57,7 +57,7 @@
 (add-to-list 'display-buffer-alist
   (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-(defun efs/browse-url-edge (url)
+(defun ads/browse-url-edge (url)
     (shell-command (concat "start msedge " url)))
 
 (if (string= system-type "gnu/linux")
@@ -70,20 +70,20 @@
 (setq sans "Cantarell")
 
 ;; Set Font sizes
-(defvar efs/default-font-size 160)
-(defvar efs/default-variable-font-size 160)
+(defvar ads/default-font-size 160)
+(defvar ads/default-variable-font-size 160)
 
 ;Set line spacing
 (setq line-spacing .2)
 
 ;; Set default font
-(set-face-attribute 'default nil :font mono :height efs/default-font-size)
+(set-face-attribute 'default nil :font mono :height ads/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font mono :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font mono :height ads/default-font-size)
 
 ;; Set the variable pitch fa
-(set-face-attribute 'variable-pitch nil :font serif :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font serif :height ads/default-variable-font-size :weight 'regular)
 
 ;; Enable line numbers
 ;; (global-display-line-numbers-mode nil)
@@ -98,7 +98,6 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(desktop-save-mode 1)
 ;(savehist-mode 1)
 ;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
 
@@ -114,29 +113,29 @@
 (use-package general
  :after evil
  :config
- (general-create-definer efs/leader-keys
+ (general-create-definer ads/leader-keys
    :keymaps '(normal insert visual emacs)
    :prefix "SPC"
    :global-prefix "C-SPC")
- (efs/leader-keys
+ (ads/leader-keys
    "t" '(:ignore t :wk "toggles")
    "tl" '(toggle-truncate-lines :wk"toggle truncate")
    
    "j" '(:ignore t :which-key "org")
    
    "er" '(lambda () (interactive) 
-	   (find-file (concat efs/user-dir-readme))
+	   (find-file (concat ads/user-dir-readme))
            :wk "Readme Config")
    
    "ew" '(lambda () (interactive) 
-	   (find-file (concat efs/user-dir-org "work-config.org"))
+	   (find-file (concat ads/user-dir-org "work-config.org"))
            :wk "Readme Config")
    
    "e." '(lambda () (interactive) 
-	   (find-file efs/user-dir-config)
+	   (find-file ads/user-dir-config)
            :wk ".emacs Config")
    
-   "ei" '(lambda () (interactive) (find-file (concat efs/user-dir-emacs "init.el"))
+   "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
            :which-key "ORG init")
    
    "e" '(:ignore t :whch-key "eval")
@@ -185,7 +184,7 @@
   :config
   (evil-collection-init))
 
-(efs/leader-keys
+(ads/leader-keys
   "C-<escape>" 'kill-emacs)
 
 (add-hook 'after-save-hook 'evil-normal-state)
@@ -232,7 +231,7 @@
 
 (evil-global-set-key 'normal (kbd "C-x C-u") 'undo-tree-visualize)
 
-(defun efs/remove-newlines-in-region ()
+(defun ads/remove-newlines-in-region ()
   "Removes all newlines in the region."
   (interactive)
   (save-restriction
@@ -240,7 +239,7 @@
     (goto-char (point-min))
     (while (search-forward "\n" nil t) (replace-match " " nil t))))
 
-(defun efs/format-dir-winstyle ()
+(defun ads/format-dir-winstyle ()
   "Removes all newlines in the region."
   (interactive)
   (save-restriction
@@ -248,11 +247,11 @@
     (goto-char (point-min))
     (while (search-forward "\\" nil t) (replace-match "\\\\" nil t))))
 
-(efs/leader-keys
+(ads/leader-keys
     "r"  '(:ignore t :wk "replace")
     "rr" 'replace-regexp
-    "rn" '(efs/remove-newlines-in-region :wk "remove new lines")
-    "rs" '(efs/format-dir-winstyle :wk "format dir style windows")
+    "rn" '(ads/remove-newlines-in-region :wk "remove new lines")
+    "rs" '(ads/format-dir-winstyle :wk "format dir style windows")
 )
 
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
@@ -263,9 +262,9 @@
 (evil-global-set-key 'visual (kbd "M-;") 'comment-line)
 (define-key prog-mode-map (kbd "C-;") 'comment-line)
 
-(setq custom-theme-directory efs/user-dir-emacs)
+(setq custom-theme-directory ads/user-dir-emacs)
 
-(defvar efs/switch-themes-var
+(defvar ads/switch-themes-var
   (let ((themes-list (list 
 			    'ads-dark
 			    'ads-light
@@ -279,43 +278,43 @@
 
 (use-package doom-themes
     :init 
-(load-theme (car efs/switch-themes-var) t)
+(load-theme (car ads/switch-themes-var) t)
     )
 
-(defun efs/quick-switch-theme ()
+(defun ads/quick-switch-theme ()
   "Switch between to commonly used faces in Emacs.
 One for writing code and the other for reading articles."
   (interactive)
   (dolist (theme custom-enabled-themes)
     (disable-theme theme))
-  (if-let* ((next-theme (cadr efs/switch-themes-var)))
-      (progn (when-let* ((current-theme (car efs/switch-themes-var)))
-               (disable-theme (car efs/switch-themes-var)))
+  (if-let* ((next-theme (cadr ads/switch-themes-var)))
+      (progn (when-let* ((current-theme (car ads/switch-themes-var)))
+               (disable-theme (car ads/switch-themes-var)))
              (load-theme next-theme t)
              (message "Loaded theme: %s" next-theme))
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
-  (setq efs/switch-themes-var (cdr efs/switch-themes-var))
+  (setq ads/switch-themes-var (cdr ads/switch-themes-var))
   )
 
 
-(efs/leader-keys
-    "tt" '(efs/quick-switch-theme :wk "toggle theme"))
+(ads/leader-keys
+    "tt" '(ads/quick-switch-theme :wk "toggle theme"))
 
-(defun efs/refresh-theme ()
+(defun ads/refresh-theme ()
   (interactive)
   (load-theme (car custom-enabled-themes) t)
 )
-(efs/leader-keys "tj" 'efs/refresh-theme)
+(ads/leader-keys "tj" 'ads/refresh-theme)
 
-(defun efs/refresh-theme-auto()
+(defun ads/refresh-theme-auto()
   (when (cl-search
      (symbol-name (car custom-enabled-themes))
      (file-name-base buffer-file-name)) 
-    (efs/refresh-theme)))
-(add-hook 'after-save-hook #'efs/refresh-theme-auto)
+    (ads/refresh-theme)))
+(add-hook 'after-save-hook #'ads/refresh-theme-auto)
 
-(defun efs/toggle-transparency ()
+(defun ads/toggle-transparency ()
    (interactive)
    (let ((alpha (frame-parameter nil 'alpha)))
      (set-frame-parameter
@@ -327,7 +326,7 @@ One for writing code and the other for reading articles."
                100)
           '(92 . 92) '(100 . 100)))))
 
-(efs/leader-keys "tr"'(efs/toggle-transparency :wk "toggle transparency"))
+(ads/leader-keys "tr"'(ads/toggle-transparency :wk "toggle transparency"))
 
 (use-package all-the-icons)
 
@@ -429,7 +428,7 @@ One for writing code and the other for reading articles."
   ("k" text-scale-decrease "out")
   ("f" nil "finished" :exit t))
 
-(efs/leader-keys
+(ads/leader-keys
   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 (defhydra hydra-window-adjust (:timeout 5)
@@ -441,7 +440,7 @@ One for writing code and the other for reading articles."
   ("f" nil "finished" :exit t)
   )
 
-(efs/leader-keys "C-w" '(hydra-window-adjust/body :wk "hydra window adjust"))
+(ads/leader-keys "C-w" '(hydra-window-adjust/body :wk "hydra window adjust"))
 
 (use-package evil-smartparens)
 
@@ -462,11 +461,11 @@ One for writing code and the other for reading articles."
 (add-hook 'after-init-hook #'global-emojify-mode)
 
 (setq emojify-emoji-styles '(ascii unicode))
-(efs/leader-keys
+(ads/leader-keys
        ";" '(emojify-insert-emoji :wk "insert emoji")
      )
 
-(defun efs/org-mode-setup ()
+(defun ads/org-mode-setup ()
       (interactive)
       ;; (org-indent-mode t)
       (variable-pitch-mode 1)
@@ -480,11 +479,11 @@ One for writing code and the other for reading articles."
       )
 
 
-(add-hook 'org-mode-hook 'efs/org-mode-setup)
+(add-hook 'org-mode-hook 'ads/org-mode-setup)
 
-(efs/leader-keys "of" '(efs/org-mode-setup :wk "org mode setup fn"))
+(ads/leader-keys "of" '(ads/org-mode-setup :wk "org mode setup fn"))
 
-(efs/leader-keys
+(ads/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
     "oj" '(org-store-link :wk "org-store-link")
@@ -493,15 +492,15 @@ One for writing code and the other for reading articles."
 
 (global-set-key (kbd "C-x C-n") 'nil)
 
-(defun efs/org-toggle-narrow ()
+(defun ads/org-toggle-narrow ()
   (interactive)
   (if (buffer-narrowed-p)
       (widen)
     (org-narrow-to-subtree)))
 
-(efs/leader-keys
+(ads/leader-keys
     "n" '(:ignore t :wk "org Narrow")
-    "C-n" '(efs/org-toggle-narrow :wk "Toggle Narrow")
+    "C-n" '(ads/org-toggle-narrow :wk "Toggle Narrow")
     "ns" '(org-narrow-to-subtree :wk "Subtree")
     "ne" '(org-narrow-to-element :wk "Element")
     "nb" '(org-narrow-to-block :wk "Block")
@@ -513,7 +512,7 @@ One for writing code and the other for reading articles."
 (use-package org
      :config
      (setq org-ellipsis " ▾ "
-	   org-directory efs/user-dir-org
+	   org-directory ads/user-dir-org
 	   org-agenda-start-with-log-mode t
 	   org-log-done 'time
 	   org-log-into-drawer t
@@ -536,7 +535,7 @@ One for writing code and the other for reading articles."
 					(plain-list-item . nil))
 	   )
 
-     ;:hook (org-mode . efs/org-mode-setup)
+     ;:hook (org-mode . ads/org-mode-setup)
      (require 'org-habit)
      (add-to-list 'org-modules 'org-habit 'org-checklist)
      (setq org-habit-graph-column 60)
@@ -568,7 +567,7 @@ One for writing code and the other for reading articles."
      (visual-line-mode 1)
      )
 
-(defun efs/org-add-ids-to-headlines-in-file ()
+(defun ads/org-add-ids-to-headlines-in-file ()
   "Add ID properties to all headlines in the current file which
 do not already have one."
   (interactive)
@@ -578,9 +577,9 @@ do not already have one."
 ;; (add-hook 'org-mode-hook
 ;; 	  (lambda ()
 ;; 	    (add-hook 'before-save-hook
-;; 	    'efs/org-add-ids-to-headlines-in-file nil 'local)))
+;; 	    'ads/org-add-ids-to-headlines-in-file nil 'local)))
 
-(defun efs/copy-id-to-clipboard()
+(defun ads/copy-id-to-clipboard()
   "Copy the ID property value
 to killring, if no ID is there then create a new unique ID.
 This function works only in org-mode buffers.
@@ -593,29 +592,29 @@ text and copying to the killring."
     (kill-new mytmpid)
     (message "Copied %s to killring (clipboard)" mytmpid)
     ))
-(efs/leader-keys "C-l" '(efs/copy-id-to-clipboard :wk "ID to clipboard"))
+(ads/leader-keys "C-l" '(ads/copy-id-to-clipboard :wk "ID to clipboard"))
 
-(setq efs/conf-task-file (concat efs/personal-dir-org "conf-tasks.org"))
-(setq efs/work-task-file (concat efs/user-dir-org "work.org"))
-  (if (string= efs/computer-id "personal") 
+(setq ads/conf-task-file (concat ads/personal-dir-org "conf-tasks.org"))
+(setq ads/work-task-file (concat ads/user-dir-org "work.org"))
+  (if (string= ads/computer-id "personal") 
 	(setq org-refile-targets
 	      (list
 		'("personal.org" :maxlevel . 1)
-		'(efs/conf-task-file :maxlevel . 1))))
+		'(ads/conf-task-file :maxlevel . 1))))
 
 
-    (if (string= efs/computer-id "work") 
+    (if (string= ads/computer-id "work") 
 	(setq org-refile-targets
 	      (list
-		'(efs/work-task-file :maxlevel . 1)
-		'(efs/conf-task-file :maxlevel . 1))))
+		'(ads/work-task-file :maxlevel . 1)
+		'(ads/conf-task-file :maxlevel . 1))))
 
 	    ;; Save Org buffers after refiling!
 	;; Save Org buffers after refiling!
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (setq org-archive-location "archive.org::datetree/")
-(efs/leader-keys 
+(ads/leader-keys 
     "C-a" '(org-archive-subtree :wk "org-archive-subtree"))
 
 (use-package org-appear)
@@ -634,36 +633,36 @@ text and copying to the killring."
 	    (setq org-appear-delay .3)))
 
 (setq org-agenda-files (list 
-    (concat efs/personal-dir-org "dates.org")
-    (concat efs/personal-dir-org "inbox.org")
-    ;(concat efs/personal-dir-org "conf-tasks.org")
+    (concat ads/personal-dir-org "dates.org")
+    (concat ads/personal-dir-org "inbox.org")
+    ;(concat ads/personal-dir-org "conf-tasks.org")
 ))
 
-(if (string= efs/computer-id "work") 
+(if (string= ads/computer-id "work") 
     (add-to-list 'org-agenda-files  
-	(concat efs/user-dir-org "work.org")))
+	(concat ads/user-dir-org "work.org")))
 
-(if (string= efs/computer-id "personal") 
+(if (string= ads/computer-id "personal") 
     (progn
 	(add-to-list 'org-agenda-files  
-	      (concat efs/personal-dir-org "habits.org"))
+	      (concat ads/personal-dir-org "habits.org"))
 	(add-to-list 'org-agenda-files
-	      (concat efs/personal-dir-org "personal.org"))))
+	      (concat ads/personal-dir-org "personal.org"))))
 
-(defun efs/org-agenda-open ()
+(defun ads/org-agenda-open ()
     (interactive)
     ;; (evil-window-split)
     ;; (evil-window-down 1)
     (org-agenda nil "a"))
-(efs/leader-keys
-      "oa"'(efs/org-agenda-open :wk "org-agenda"))
+(ads/leader-keys
+      "oa"'(ads/org-agenda-open :wk "org-agenda"))
 
-(defun efs/org-agenda-quit ()
+(defun ads/org-agenda-quit ()
     (interactive)
     (org-agenda-quit)
     (delete-window))
 (evil-define-key 'motion org-agenda-mode-map
-    (kbd "q") 'efs/org-agenda-quit)
+    (kbd "q") 'ads/org-agenda-quit)
 
 (setq org-agenda-window-setup 'current-window)
 (setq org-agenda-span 1)
@@ -672,7 +671,7 @@ text and copying to the killring."
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 
-(defun efs/org-prettify-symbols-alist ()
+(defun ads/org-prettify-symbols-alist ()
   ;; I'm not happy with how these look, I'll have to figure out somethings at a future date
   ;; (push '("[ ]" . "☐" ) prettify-symbols-alist)
   ;; (push '("[X]" . "☑" ) prettify-symbols-alist)
@@ -690,13 +689,13 @@ text and copying to the killring."
   (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
   (push '("emacs-lisp" ."ε" ) prettify-symbols-alist)
   (prettify-symbols-mode))
-(add-hook 'org-mode-hook 'efs/org-prettify-symbols-alist)
+(add-hook 'org-mode-hook 'ads/org-prettify-symbols-alist)
 
-(setq diary-file (concat efs/user-dir-org "diary.org"))
+(setq diary-file (concat ads/user-dir-org "diary.org"))
 
 (setq  org-capture-templates   
    (list  '( "c" "Task" entry 
-	(file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+	(file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task}
  SCHEDULED: %t
  :PROPERTIES:
@@ -709,10 +708,10 @@ text and copying to the killring."
  "
 	:kill-buffer t)))
 
-(if (string= efs/computer-id "work") 
+(if (string= ads/computer-id "work") 
 (add-to-list  'org-capture-templates   
     '("w" "Work Task" entry 
-	 (file+headline (lambda () (concat efs/user-dir-org "work.org"))"Tasks")
+	 (file+headline (lambda () (concat ads/user-dir-org "work.org"))"Tasks")
  "* TODO %^{Work Task}
  SCHEDULED: %t
  :PROPERTIES:
@@ -728,7 +727,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("p" "Personal Task" entry 
-	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Tasks")
+	 (file+headline (lambda () (concat ads/personal-dir-org "personal.org"))"Tasks")
  "* TODO %^{Personal Task}
  SCHEDULED: %t
  :PROPERTIES:
@@ -744,7 +743,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("i" "Quick Inbox" entry 
-	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task to inbox}
  SCHEDULED: %t\n
  :PROPERTIES:
@@ -758,12 +757,12 @@ text and copying to the killring."
    :kill-buffer t)
 )
 
-(efs/leader-keys
+(ads/leader-keys
     "c" '(lambda () (interactive) (org-capture nil "i") :wk "Capture to Inbox"))
 
 (add-to-list  'org-capture-templates   
     '("k" "Clipboard Link to Inbox" entry 
-	 (file+headline (lambda () (concat efs/personal-dir-org "inbox.org"))"Inbox")
+	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %(org-cliplink-capture)
  SCHEDULED: %t\n
  :PROPERTIES:
@@ -779,7 +778,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("P" "Project" entry 
-	 (file+headline (lambda () (concat efs/personal-dir-org "personal.org"))"Projects")
+	 (file+headline (lambda () (concat ads/personal-dir-org "personal.org"))"Projects")
  "* TODO %^{Project Name}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
@@ -796,7 +795,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("B" "Book" entry 
-	 (file+headline (lambda () (concat efs/personal-dir-org "books.org"))"Endless Pile")
+	 (file+headline (lambda () (concat ads/personal-dir-org "books.org"))"Endless Pile")
  "* PILE %^{Book Title}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
@@ -811,7 +810,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("t" "Quote" entry 
-	 (file (lambda () (concat efs/personal-dir-org "quotes.org")))
+	 (file (lambda () (concat ads/personal-dir-org "quotes.org")))
  "* %^{Quote or Note}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
@@ -825,7 +824,7 @@ text and copying to the killring."
 
 (add-to-list  'org-capture-templates   
     '("l" "Log to Archive" entry 
-	 (file+datetree (lambda () (concat efs/user-dir-org "archive.org")) )
+	 (file+datetree (lambda () (concat ads/user-dir-org "archive.org")) )
  "* %U
 :PROPERTIES:
 :ID:\t%(org-id-new)
@@ -838,18 +837,18 @@ text and copying to the killring."
    :kill-buffer t)
 )
 
-(defun efs/log-to-archive ()
+(defun ads/log-to-archive ()
     (interactive) 
     (org-capture nil "l")
     (evil-insert-state)
     )
 
-(efs/leader-keys
-    "l" '(efs/log-to-archive :wk "Log to Archive"))
+(ads/leader-keys
+    "l" '(ads/log-to-archive :wk "Log to Archive"))
 
 (add-to-list  'org-capture-templates   
     '("L" "Log to Archive Subject" entry 
-	 (file+datetree (lambda () (concat efs/user-dir-org "archive.org")) )
+	 (file+datetree (lambda () (concat ads/user-dir-org "archive.org")) )
  "* %^{Subject} %U
 :PROPERTIES:
 :ID:\t%(org-id-new)
@@ -862,21 +861,21 @@ text and copying to the killring."
    :kill-buffer t)
 )
 
-(defun efs/log-to-archive-subject ()
+(defun ads/log-to-archive-subject ()
     (interactive) 
     (org-capture nil "L")
     (evil-insert-state)
     )
 
-(efs/leader-keys
-    "L" '(efs/log-to-archive-subject :wk "Log to Archive"))
+(ads/leader-keys
+    "L" '(ads/log-to-archive-subject :wk "Log to Archive"))
 
 (use-package org-bullets
        :after org
        :hook (org-mode . org-bullets-mode)
       )
 
-(defun efs/org-mode-visual-fill ()
+(defun ads/org-mode-visual-fill ()
   (setq visual-fill-column-width 90
 	visual-fill-column-center-text t
 	visual-fill-column-enable-sensible-window-split t
@@ -885,7 +884,7 @@ text and copying to the killring."
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
+  :hook (org-mode . ads/org-mode-visual-fill))
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
@@ -924,14 +923,14 @@ text and copying to the killring."
   (evil-org-agenda-set-keys))
 
 (use-package org-cliplink)
-(efs/leader-keys
+(ads/leader-keys
     "ok" '(org-cliplink :wk "org-cliplink")
 )
 
-(setq efs/user-dir-org-screenshot
-    (concat efs/user-dir-org "images/screenshot/"))
+(setq ads/user-dir-org-screenshot
+    (concat ads/user-dir-org "images/screenshot/"))
 
-(defun efs/org-screenshot ()
+(defun ads/org-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
@@ -939,7 +938,7 @@ same directory as the org-buffer and insert a link to this file."
   (setq org--screenshot-filename
         (concat
          (make-temp-name
-          (concat efs/user-dir-org-screenshot
+          (concat ads/user-dir-org-screenshot
 		    (file-relative-name buffer-file-name)
                     "_"
                     (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
@@ -953,14 +952,14 @@ same directory as the org-buffer and insert a link to this file."
   (org-display-inline-images))
 
 
-(efs/leader-keys 
-    "os" '(efs/org-screenshot :wk "org-screenshot")
+(ads/leader-keys 
+    "os" '(ads/org-screenshot :wk "org-screenshot")
 )
 
-(setq efs/user-dir-org-images
-    (concat efs/user-dir-org "images/"))
+(setq ads/user-dir-org-images
+    (concat ads/user-dir-org "images/"))
 
-(defun efs/org-clip-image ()
+(defun ads/org-clip-image ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
@@ -968,7 +967,7 @@ same directory as the org-buffer and insert a link to this file."
   (setq org--image-filename
         (concat
          (make-temp-name
-          (concat efs/user-dir-org-images
+          (concat ads/user-dir-org-images
 		    (file-relative-name buffer-file-name)
                     "_"
                     (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
@@ -979,20 +978,20 @@ same directory as the org-buffer and insert a link to this file."
   (org-display-inline-images))
 
 
-(efs/leader-keys 
-    "s" '(efs/org-clip-image :wk "org-insert-clipboard-image")
+(ads/leader-keys 
+    "s" '(ads/org-clip-image :wk "org-insert-clipboard-image")
 )
 
-(defun efs/org-find-file ()
-    "Find file in efs/user-dir-org"
+(defun ads/org-find-file ()
+    "Find file in ads/user-dir-org"
     (interactive)
-    (counsel-find-file efs/user-dir-org)
+    (counsel-find-file ads/user-dir-org)
 )
-(efs/leader-keys "f" '(efs/org-find-file :wk "Org Find File"))
+(ads/leader-keys "f" '(ads/org-find-file :wk "Org Find File"))
 
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 
-(defun efs/org-checkbox-next ()
+(defun ads/org-checkbox-next ()
   (interactive)
     (when (org-at-item-checkbox-p)
       (org-toggle-checkbox)
@@ -1000,45 +999,45 @@ same directory as the org-buffer and insert a link to this file."
       (evil-normal-state))
   )
 
-;; (add-hook 'org-ctrl-c-ctrl-c-hook 'efs/org-checkbox-next)
+;; (add-hook 'org-ctrl-c-ctrl-c-hook 'ads/org-checkbox-next)
 
 (use-package async
   :config
-  (defun efs/init-hook ()
+  (defun ads/init-hook ()
     "If the current buffer is 'readme.org' the code-blocks
 are tangled."
-    (when (string= buffer-file-truename efs/user-dir-readme)
+    (when (string= buffer-file-truename ads/user-dir-readme)
       (async-start
        `(lambda ()
           (require 'org)
 	  (let ((org-confirm-babel-evaluate nil)))
-          (org-babel-tangle-file ,efs/user-dir-readme))
+          (org-babel-tangle-file ,ads/user-dir-readme))
        (lambda (result)
          (message "Tangled file compiled.")))))
-  (add-hook 'after-save-hook 'efs/init-hook))
+  (add-hook 'after-save-hook 'ads/init-hook))
 
 ;; (use-package dired-async
 ;;   :after async
 ;;   :config
 ;;   (dired-async-mode 1))
 
-(defun efs/new-org-note ()
+(defun ads/new-org-note ()
   (interactive)
   (setq input (read-string "Enter new Filename:\t"))
   ;; (setq input "test file NaMe")
   (setq input (replace-regexp-in-string "\s" "-" input))
   (setq input (downcase input))
-  (setq input (concat efs/user-dir-org input ".org"))
+  (setq input (concat ads/user-dir-org input ".org"))
   (find-file input)
   (evil-insert-state)
   )
-(efs/leader-keys
-  "on" '(efs/new-org-note :wk "new-org-note")
+(ads/leader-keys
+  "on" '(ads/new-org-note :wk "new-org-note")
 )
 
-(efs/leader-keys
+(ads/leader-keys
     "C-s" '(lambda () (interactive) (
-    find-file (concat efs/user-dir-org "scratch.org"))
+    find-file (concat ads/user-dir-org "scratch.org"))
     :wk "ORG Config")
 )
 
@@ -1071,33 +1070,33 @@ are tangled."
 (global-set-key (kbd "C-c C-g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
-(defun efs/git-stage ()
+(defun ads/git-stage ()
   (interactive)
   (shell-command (concat "git stage " buffer-file-name) )
   (message 
     (concat "Staging file : " buffer-file-name)))
-(efs/leader-keys 
-    "gs"'(efs/git-stage :wk "git stage file"))
+(ads/leader-keys 
+    "gs"'(ads/git-stage :wk "git stage file"))
 
-(defun efs/git-stage-all ()
+(defun ads/git-stage-all ()
   (interactive)
   (shell-command "git stage --all")
   (message 
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
-(efs/leader-keys 
-    "gS"'(efs/git-stage-all :wk "git stage all"))
+(ads/leader-keys 
+    "gS"'(ads/git-stage-all :wk "git stage all"))
 
-(defun efs/git-commit-file ()
+(defun ads/git-commit-file ()
   (interactive)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
   (magit-mode-bury-buffer))
 
-(efs/leader-keys 
-    "gk"'(efs/git-commit-file :wk "git commit"))
+(ads/leader-keys 
+    "gk"'(ads/git-commit-file :wk "git commit"))
 
-(defun efs/git-stage-commit-push ()
+(defun ads/git-stage-commit-push ()
   (interactive)
   (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
@@ -1108,19 +1107,19 @@ are tangled."
   (async-shell-command "git push")
   (magit-mode-bury-buffer))
 
-(efs/leader-keys 
-    "gl"'(efs/git-stage-commit-push :wk "git commit"))
+(ads/leader-keys 
+    "gl"'(ads/git-stage-commit-push :wk "git commit"))
 
-(defun efs/git-commit-all ()
+(defun ads/git-commit-all ()
   (interactive)
   (magit-diff-staged)
   (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
   (magit-mode-bury-buffer))
 
-(efs/leader-keys 
-    "gK"'(efs/git-commit-all :wk "git commit all"))
+(ads/leader-keys 
+    "gK"'(ads/git-commit-all :wk "git commit all"))
 
-(defun efs/git-push ()
+(defun ads/git-push ()
   (interactive)
   (message 
    (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
@@ -1132,10 +1131,10 @@ are tangled."
       (file-name-directory buffer-file-name)
       " && git push ")))
    (message "done")))
-(efs/leader-keys 
-    "gp"'(efs/git-push :wk "git push"))
+(ads/leader-keys 
+    "gp"'(ads/git-push :wk "git push"))
 
-(defun efs/git-pull ()
+(defun ads/git-pull ()
   (interactive)
   (message 
    (concat "Pulling from Upstream: " (file-name-directory buffer-file-name)))
@@ -1147,18 +1146,18 @@ are tangled."
       (file-name-directory buffer-file-name)
       " && git pull ")))
    (message "done")))
-(efs/leader-keys 
-    "gP"'(efs/git-pull :wk "git pull"))
+(ads/leader-keys 
+    "gP"'(ads/git-pull :wk "git pull"))
 
-(defun efs/git-fetch ()
+(defun ads/git-fetch ()
   (interactive)
   (shell-command "git fetch --all")
   (message 
     (concat "Fetching Upstream" (file-name-directory buffer-file-name))))
-(efs/leader-keys 
-    "gf"'(efs/git-fetch :wk "git fetch"))
+(ads/leader-keys 
+    "gf"'(ads/git-fetch :wk "git fetch"))
 
-(defun efs/prog-mode-configure-prettify-symbols-alist ()
+(defun ads/prog-mode-configure-prettify-symbols-alist ()
   "Set prettify symbols alist."
   (setq prettify-symbols-alist '(("lambda" . "λ")
                                  ("->" . "→")
@@ -1179,7 +1178,7 @@ are tangled."
                                  ("not" . "¬")))
   (prettify-symbols-mode))
 
-(add-hook 'prog-mode-hook 'efs/prog-mode-configure-prettify-symbols-alist)
+(add-hook 'prog-mode-hook 'ads/prog-mode-configure-prettify-symbols-alist)
 
 (use-package dired
       :ensure nil
@@ -1233,14 +1232,14 @@ are tangled."
 (with-eval-after-load 'dired
 ;; C-c l to launch a file in Windows similar to running
 ;; start "" filename in the console
-(defun efs/dired-win-default ()
+(defun ads/dired-win-default ()
   (interactive)
   (let ((filename (dired-replace-in-string "/"
                                            "\\"
                                            (dired-get-filename))))
 
     (w32-shell-execute 1 filename)))
-(define-key dired-mode-map (kbd "C-c C-c") 'efs/dired-win-default))
+(define-key dired-mode-map (kbd "C-c C-c") 'ads/dired-win-default))
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -1342,12 +1341,12 @@ are tangled."
 
   :config (treemacs-set-scope-type 'Perspectives))
 
-(efs/leader-keys
+(ads/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 
-(defun efs/treemacs-laptop-mode ()
+(defun ads/treemacs-laptop-mode ()
   (interactive)
   (setq treemacs-indentation 1)
   (setq treemacs-width 25))
 
-(setq debug-on-error nil)
+;; (setq debug-on-error nil)
