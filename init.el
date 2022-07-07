@@ -60,11 +60,14 @@
 (defun efs/browse-url-edge (url)
     (shell-command (concat "start msedge " url)))
 
-(setq mono "Fira Code")
-(setq sans "Cantarell")
 (if (string= system-type "gnu/linux")
-    (setq serif "Etbb")
-    (setq serif "EtBembo"))
+    (setq 
+     serif "Etbb"
+     mono "Fira Code")
+    (setq
+     serif "EtBembo"
+     mono "Fira Code Retina"))
+(setq sans "Cantarell")
 
 ;; Set Font sizes
 (defvar efs/default-font-size 160)
@@ -101,6 +104,9 @@
 
 (global-set-key (kbd "C-x C-c") 'nil)
 (global-set-key (kbd "C-x C-z") 'nil)
+
+(global-set-key (kbd "C-h t") 'nil)
+(global-set-key (kbd "C-h h") 'nil)
 
 ;;Make ESC quit prompts (why wouldn't you want that?)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -252,6 +258,9 @@
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
+(evil-global-set-key 'normal (kbd "M-;") 'comment-line)
+(evil-global-set-key 'insert (kbd "M-;") 'comment-line)
+(evil-global-set-key 'visual (kbd "M-;") 'comment-line)
 (define-key prog-mode-map (kbd "C-;") 'comment-line)
 
 (setq custom-theme-directory efs/user-dir-emacs)
@@ -482,6 +491,25 @@ One for writing code and the other for reading articles."
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
 
+(global-set-key (kbd "C-x C-n") 'nil)
+
+(defun efs/org-toggle-narrow ()
+  (interactive)
+  (if (buffer-narrowed-p)
+      (widen)
+    (org-narrow-to-subtree)))
+
+(efs/leader-keys
+    "n" '(:ignore t :wk "org Narrow")
+    "C-n" '(efs/org-toggle-narrow :wk "Toggle Narrow")
+    "ns" '(org-narrow-to-subtree :wk "Subtree")
+    "ne" '(org-narrow-to-element :wk "Element")
+    "nb" '(org-narrow-to-block :wk "Block")
+    "nd" '(org-narrow-to-defun :wk "Defun")
+    "nn" '(narrow-to-region :wk "Region")
+    "nw" '(widen :wk "Widen")
+)
+
 (use-package org
      :config
      (setq org-ellipsis " ▾ "
@@ -514,7 +542,7 @@ One for writing code and the other for reading articles."
      (setq org-habit-graph-column 60)
 
      (setq org-todo-keywords
-       '((sequence "TODO(t)" "PROGRESS(p)" "|" "DONE(d!)")
+       '((sequence "TODO(t)" "|" "DONE(d!)")
 	 (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)"
 		   "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
@@ -639,6 +667,7 @@ text and copying to the killring."
 
 (setq org-agenda-window-setup 'current-window)
 (setq org-agenda-span 1)
+(setq org-agenda-restore-windows-after-quit t)
 (setq org-agenda-persistent-filter t)
 
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
