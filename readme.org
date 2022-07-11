@@ -68,8 +68,7 @@ currently:
 ** TODO Auto Updates
 
 * Better Defaults
-
-Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]] 
+Setup some default startup parameters
 #+begin_src emacs-lisp
 (setq-default
  cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
@@ -78,7 +77,8 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message ""             ; Empty the initial *scratch* buffer
- visible-bell nil                         ; set up the visible bell (no annoying beeping sounds)
+ visible-bell nil                       ; set up the visible bell (no annoying beeping sounds)
+ inhibit-startup-screen t
  )
 
 (blink-cursor-mode 0)                   ; Prefer a still cursor
@@ -91,8 +91,6 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 (tooltip-mode -1)                       ; Disable tooltips
 (menu-bar-mode -1)                      ; Disable the menu bar
 (set-fringe-mode 10)                    ; Add some breathing room
-
-
 
 #+end_src
 ** Backup Directory
