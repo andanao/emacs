@@ -32,7 +32,8 @@
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message ""             ; Empty the initial *scratch* buffer
- visible-bell nil                         ; set up the visible bell (no annoying beeping sounds)
+ visible-bell nil                       ; set up the visible bell (no annoying beeping sounds)
+ inhibit-startup-screen t
  )
 
 (blink-cursor-mode 0)                   ; Prefer a still cursor
