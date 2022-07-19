@@ -288,11 +288,6 @@ I don't need to open:
   (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
   (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
 
-  ;; beginning and end of line
-  (evil-global-set-key 'normal (kbd "gl") 'evil-end-of-visual-line)
-  (evil-global-set-key 'normal (kbd "gL") 'evil-end-of-line)
-  (evil-global-set-key 'normal (kbd "gh") 'evil-beginning-of-visual-line)
-  (evil-global-set-key 'normal (kbd "gH") 'evil-beginning-of-line)
   
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
