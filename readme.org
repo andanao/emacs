@@ -282,11 +282,11 @@ I don't need to open:
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-  ;; Use C-<hjkl> to move around in insert 
-  (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
-  (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
-  (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
-  (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
+  ;; ;; Use C-<hjkl> to move around in insert 
+  ;; (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
+  ;; (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
+  ;; (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
+  ;; (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
 
   
   (evil-set-initial-state 'messages-buffer-mode 'normal)
