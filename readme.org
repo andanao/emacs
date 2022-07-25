@@ -76,7 +76,7 @@ Setup some default startup parameters
  scroll-margin 3                        ; Add a margin when scrolling vertically
  scroll-conservatively 10               ; Avoid recentering when scrolling far
  help-window-select t                   ; Focus new help windows when opened
- initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ initial-scratch-message "Welcome back"             ; Empty the initial *scratch* buffer
  visible-bell nil                       ; set up the visible bell (no annoying beeping sounds)
  inhibit-startup-screen t
  )
