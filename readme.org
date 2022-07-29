@@ -4,7 +4,7 @@
 Setting default file and directory locations, these are all defined in the default startup .emacs file to work on different computers
 see [[file:.emacs][.emacs]] for an example of what it normally looks like
 ** Emacs Directory
-   Define the user emacs directory: ads/user-dir-emacs 
+   Define the user emacs directory: ads/user-dir-emacs
 
    defined in the default .emacs file used for emacs init to work on various computers
 ** Org Directory
@@ -14,7 +14,7 @@ see [[file:.emacs][.emacs]] for an example of what it normally looks like
    Personal org directory (see all tasks on work computer and shared inbox)
    ads/personal-dir-org
 ** Readme config file
-ads/user-dir-readme - this files full path 
+ads/user-dir-readme - this files full path
 
 ** init.el config file
 ads/user-dir-config
@@ -37,9 +37,9 @@ currently:
    #+begin_src emacs-lisp
 (setq debug-on-error t)
    #+end_src
-   
+
 * Package System Setup
-** Package setup 
+** Package setup
    #+begin_src emacs-lisp
 ;; Initialize package sources
 (require 'package)
@@ -52,7 +52,7 @@ currently:
 			 ))
 
 (package-initialize)
-     
+
 (unless package-archive-contents
      (package-refresh-contents))
 
@@ -106,7 +106,7 @@ Setup some default startup parameters
 
 #+end_src
 ** Async shell commands in background
-when calling async shell it's annoying to have stuff pop up int hte 
+when calling async shell it's annoying to have stuff pop up int hte
 #+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist
   (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
@@ -129,7 +129,7 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
 
 #+begin_src emacs-lisp
 (if (string= system-type "gnu/linux")
-    (setq 
+    (setq
      serif "Etbb"
      mono "Fira Code")
     (setq
@@ -156,12 +156,12 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
 #+end_src
 
 
-** Line Numbers 
+** Line Numbers
    #+begin_src emacs-lisp
    ;; Enable line numbers
    ;; (global-display-line-numbers-mode nil)
 
-   ;; Disable lines in some modes 
+   ;; Disable lines in some modes
    (dolist (mode '(prog-mode-hook
 		   ))
 	   (add-hook mode(lambda () (display-line-numbers-mode 1))))
@@ -173,7 +173,7 @@ Enable column numbers
  (column-number-mode)
 
    #+end_src
-   
+
 ** Rainbow Delimiters
 [[https://github.com/Fanael/rainbow-delimiters][GitHub - Fanael/rainbow-delimiters: Emacs rainbow delimiters mode]]
    #+begin_src emacs-lisp
@@ -192,17 +192,17 @@ Enable column numbers
 ** Unbind Hide/kill emacs session C-x
 
 In my clumsyness I've hit theste  too many times
-   
+
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-c") 'nil)
 (global-set-key (kbd "C-x C-z") 'nil)
 #+end_src
 
-** Unbind Emacs help stuff 
+** Unbind Emacs help stuff
 I don't need to open:
  - tutorial
  - hello
-   
+
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-h t") 'nil)
 (global-set-key (kbd "C-h h") 'nil)
@@ -232,30 +232,29 @@ I don't need to open:
    :global-prefix "C-SPC")
  (ads/leader-keys
    "t" '(:ignore t :wk "toggles")
-   "tl" '(toggle-truncate-lines :wk"toggle truncate")
-   
+
    "j" '(:ignore t :which-key "org")
-   
-   "er" '(lambda () (interactive) 
+
+   "er" '(lambda () (interactive)
 	   (find-file (concat ads/user-dir-readme))
            :wk "Readme Config")
-   
-   "ew" '(lambda () (interactive) 
+
+   "ew" '(lambda () (interactive)
 	   (find-file (concat ads/user-dir-org "work-config.org"))
            :wk "Readme Config")
-   
-   "e." '(lambda () (interactive) 
+
+   "e." '(lambda () (interactive)
 	   (find-file ads/user-dir-config)
            :wk ".emacs Config")
-   
+
    "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
            :which-key "ORG init")
-   
+
    "e" '(:ignore t :whch-key "eval")
    "eb" '(eval-buffer :which-key "eval-buffer")
    "ep" '(eval-last-sexp :which-key "eval-last-sexp")
    "eo" '(org-mode-restart :which-key "org-mode-restart")
-   
+
    "k" '(:ignore t :wk "kill")
    "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
    "kk" '(kill-this-buffer :which-key "kill-this-buffer")
@@ -263,7 +262,7 @@ I don't need to open:
    ))
 
    #+end_src
-** Evil 
+** Evil
 
    #+begin_src emacs-lisp
 
@@ -282,13 +281,13 @@ I don't need to open:
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-  ;; ;; Use C-<hjkl> to move around in insert 
+  ;; ;; Use C-<hjkl> to move around in insert
   ;; (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
   ;; (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
   ;; (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
   ;; (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
 
-  
+
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -300,6 +299,19 @@ I don't need to open:
 
 
    #+end_src
+** Toggle line width
+#+begin_src emacs-lisp
+(defun ads/toggle-lines ()
+  (interactive)
+  (toggle-truncate-lines)
+  ;; (visual-line-mode)
+  (visual-fill-column-mode "toggle")
+  )
+
+(ads/leader-keys
+   "tl" '(ads/toggle-lines :wk"toggle truncate")
+)
+#+end_src
 ** Kill Emacs
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -310,8 +322,13 @@ I don't need to open:
 #+begin_src emacs-lisp
 (add-hook 'after-save-hook 'evil-normal-state)
 #+end_src
+** Fix trailing whitespace on save
+#+begin_src emacs-lisp
+(setq delete-trailing-lines nil)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src
 
-** Evil Buffer control 
+** Evil Buffer control
 #+begin_src emacs-lisp
 (evil-global-set-key 'normal (kbd "C-M-j")  'counsel-switch-buffer)
 #+end_src
@@ -405,8 +422,8 @@ this is always so annoying
 
 
 ** Insert to toggle comment
-Normally insert enables overtype, but I've never once wanted that 
-   
+Normally insert enables overtype, but I've never once wanted that
+
 #+begin_src emacs-lisp
 (evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
@@ -419,7 +436,7 @@ Normally insert enables overtype, but I've never once wanted that
 
 * Theme Setup
 
-   
+
 ** Set Custom Theme Directory
     A little annoying that I have to specify this and it isn't loaded from load path and that each theme file must be named ~foo-theme.el~ but I'm not about to rewrite something minor
 
@@ -431,7 +448,7 @@ Normally insert enables overtype, but I've never once wanted that
 
 #+begin_src emacs-lisp
 (defvar ads/switch-themes-var
-  (let ((themes-list (list 
+  (let ((themes-list (list
 			    'ads-dark
 			    'ads-light
 )))
@@ -446,7 +463,7 @@ Normally insert enables overtype, but I've never once wanted that
 ** Color Theme
  #+begin_src emacs-lisp
 (use-package doom-themes
-    :init 
+    :init
 (load-theme (car ads/switch-themes-var) t)
     )
 
@@ -495,7 +512,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (defun ads/refresh-theme-auto()
   (when (cl-search
      (symbol-name (car custom-enabled-themes))
-     (file-name-base buffer-file-name)) 
+     (file-name-base buffer-file-name))
     (ads/refresh-theme)))
 (add-hook 'after-save-hook #'ads/refresh-theme-auto)
 #+end_src
@@ -513,12 +530,12 @@ Check if the current theme matches the file being edited on save, if so refresh 
                100)
           '(92 . 92) '(100 . 100)))))
 
-(ads/leader-keys "tr"'(ads/toggle-transparency :wk "toggle transparency")) 
+(ads/leader-keys "tr"'(ads/toggle-transparency :wk "toggle transparency"))
 #+end_src
 ** Doom Modeline
 
    #+begin_src emacs-lisp
-   
+
    (use-package all-the-icons)
 
    ;; Doom modeline config
@@ -536,11 +553,11 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (setq frame-title-format "%b")
 #+end_src
 
-* UI Config 
+* UI Config
 ** Which key
 
    #+begin_src emacs-lisp
-   
+
    (use-package which-key
     :defer 0
     :diminish which-key-mode
@@ -568,7 +585,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 ** Ivy
 
    #+begin_src emacs-lisp
-  
+
    (use-package ivy
     :diminish ;; Hides from the mode line
     :bind (("C-s" . swiper)
@@ -587,7 +604,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
     :config
     (ivy-mode 1))
 
-   
+
    (use-package ivy-rich
      :after ivy
      :init
@@ -610,12 +627,12 @@ Check if the current theme matches the file being edited on save, if so refresh 
      (prescient-persist-mode 1)
      (ivy-prescient-mode 1))
     #+end_src
-    
 
-** Helpful 
+
+** Helpful
 
    #+begin_src emacs-lisp
- 
+
    (use-package helpful
      :ensure t
      :commands (helpful-callable helpful-variable helpful-command helpful-key)
@@ -722,7 +739,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
      )
 #+end_src
 
-   
+
 * Org Mode
 ** Org Mode Setup
 
@@ -746,9 +763,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 
 (ads/leader-keys "of" '(ads/org-mode-setup :wk "org mode setup fn"))
    #+end_src
-   
-** Keybindings 
-   
+
+** Keybindings
+
     #+begin_src emacs-lisp
 (ads/leader-keys
     "o" '(:ignore t :wk "org")
@@ -757,7 +774,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
     #+end_src
-***  Unbind Cx Cn   
+***  Unbind Cx Cn
 useful for narrowing headers
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-n") 'nil)
@@ -794,8 +811,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-log-done 'time
 	      org-log-into-drawer t
 	      org-pretty-entities t
-	      org-pretty-entities-include-sub-superscripts nil 
-	      org-hidden-keywords '(title) 
+	      org-pretty-entities-include-sub-superscripts nil
+	      org-hidden-keywords '(title)
 	      org-hide-emphasis-markers t
 	      org-src-preserve-indentation t
 	      org-image-actual-width (/ (car (window-text-pixel-size)) 2)
@@ -882,21 +899,21 @@ text and copying to the killring."
 #+end_src
 
 
-** Org Refile Targets 
+** Org Refile Targets
 Refile targets dependant on computer id
 
 #+begin_src emacs-lisp
 
   (setq ads/conf-task-file (concat ads/personal-dir-org "conf-tasks.org"))
   (setq ads/work-task-file (concat ads/user-dir-org "work.org"))
-    (if (string= ads/computer-id "personal") 
+    (if (string= ads/computer-id "personal")
 	  (setq org-refile-targets
 		(list
 		  '("personal.org" :maxlevel . 1)
 		  '(ads/conf-task-file :maxlevel . 1))))
 
 
-      (if (string= ads/computer-id "work") 
+      (if (string= ads/computer-id "work")
 	  (setq org-refile-targets
 		(list
 		  '(ads/work-task-file :maxlevel . 1)
@@ -907,11 +924,11 @@ Refile targets dependant on computer id
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 #+end_src
 
-** Org Archive  
+** Org Archive
 
 #+begin_src emacs-lisp
 (setq org-archive-location "archive.org::datetree/")
-(ads/leader-keys 
+(ads/leader-keys
     "C-a" '(org-archive-subtree :wk "org-archive-subtree"))
 #+end_src
 
@@ -926,36 +943,36 @@ Make it less of a pain to edit emphasized text in org mode [[https://github.com/
 (setq org-appear-autosubmarkers t)
 (setq org-appear-autokeywords t)
 
-(add-hook 'evil-insert-state-exit-hook 
+(add-hook 'evil-insert-state-exit-hook
 	  (lambda ()
 	    (setq org-appear-delay 2)))
 
-(add-hook 'evil-insert-state-entry-hook 
+(add-hook 'evil-insert-state-entry-hook
 	  (lambda ()
 	    (setq org-appear-delay .3)))
- 
+
 #+end_src
 
 ** Org Agenda
 *** Files
 
-Check computer ID before setting org agenda 
+Check computer ID before setting org agenda
 
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files (list 
+  (setq org-agenda-files (list
       (concat ads/personal-dir-org "dates.org")
       (concat ads/personal-dir-org "inbox.org")
       ;(concat ads/personal-dir-org "conf-tasks.org")
   ))
 
-  (if (string= ads/computer-id "work") 
-      (add-to-list 'org-agenda-files  
+  (if (string= ads/computer-id "work")
+      (add-to-list 'org-agenda-files
 	  (concat ads/user-dir-org "work.org")))
 
-  (if (string= ads/computer-id "personal") 
+  (if (string= ads/computer-id "personal")
       (progn
-	  (add-to-list 'org-agenda-files  
+	  (add-to-list 'org-agenda-files
 		(concat ads/personal-dir-org "habits.org"))
 	  (add-to-list 'org-agenda-files
 		(concat ads/personal-dir-org "personal.org"))))
@@ -986,7 +1003,7 @@ split window and focus down on agenda open
     (kbd "q") 'ads/org-agenda-quit)
 #+end_src
 
-*** Agenda interaction 
+*** Agenda interaction
  Don' move windows and set org span to 1 day
 
  #+begin_src emacs-lisp
@@ -996,7 +1013,7 @@ split window and focus down on agenda open
    (setq org-agenda-persistent-filter t)
  #+end_src
 
-*** Agenda Scheduled Leaders 
+*** Agenda Scheduled Leaders
 Formatting for scheduled __ : if today otherwise ## :
 #+begin_src emacs-lisp
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
@@ -1027,17 +1044,17 @@ Formatting for scheduled __ : if today otherwise ## :
 
 #+end_src
 
-** Org Diary File 
+** Org Diary File
  #+begin_src emacs-lisp
  (setq diary-file (concat ads/user-dir-org "diary.org"))
  #+end_src
 
-** Org Capture  
+** Org Capture
 
-*** Inbox    
+*** Inbox
     #+begin_src emacs-lisp
-(setq  org-capture-templates   
-   (list  '( "c" "Task" entry 
+(setq  org-capture-templates
+   (list  '( "c" "Task" entry
 	(file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task}
  SCHEDULED: %t
@@ -1052,12 +1069,12 @@ Formatting for scheduled __ : if today otherwise ## :
 	:kill-buffer t)))
     #+end_src
 
-*** Work 
+*** Work
 
     #+begin_src emacs-lisp
-(if (string= ads/computer-id "work") 
-(add-to-list  'org-capture-templates   
-    '("w" "Work Task" entry 
+(if (string= ads/computer-id "work")
+(add-to-list  'org-capture-templates
+    '("w" "Work Task" entry
 	 (file+headline (lambda () (concat ads/user-dir-org "work.org"))"Tasks")
  "* TODO %^{Work Task}
  SCHEDULED: %t
@@ -1074,11 +1091,11 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 
-*** Personal 
+*** Personal
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("p" "Personal Task" entry 
+(add-to-list  'org-capture-templates
+    '("p" "Personal Task" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "personal.org"))"Tasks")
  "* TODO %^{Personal Task}
  SCHEDULED: %t
@@ -1097,8 +1114,8 @@ Formatting for scheduled __ : if today otherwise ## :
 *** Quick Inbox
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("i" "Quick Inbox" entry 
+(add-to-list  'org-capture-templates
+    '("i" "Quick Inbox" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task to inbox}
  SCHEDULED: %t\n
@@ -1114,7 +1131,7 @@ Formatting for scheduled __ : if today otherwise ## :
 )
     #+end_src
 
-**** Quick Capture 
+**** Quick Capture
   Quickly capture something to inbox with leader C-c
 
   #+begin_src emacs-lisp
@@ -1126,8 +1143,8 @@ Formatting for scheduled __ : if today otherwise ## :
 *** Clipboard Link
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("k" "Clipboard Link to Inbox" entry 
+(add-to-list  'org-capture-templates
+    '("k" "Clipboard Link to Inbox" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %(org-cliplink-capture)
  SCHEDULED: %t\n
@@ -1146,14 +1163,14 @@ Formatting for scheduled __ : if today otherwise ## :
 *** Project
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("P" "Project" entry 
+(add-to-list  'org-capture-templates
+    '("P" "Project" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "personal.org"))"Projects")
  "* TODO %^{Project Name}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
- :REF:\t%a 
+ :REF:\t%a
  :Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
  :Cost-est:\t%^{Cost estimate}
  %i
@@ -1167,13 +1184,13 @@ Formatting for scheduled __ : if today otherwise ## :
 *** Book
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("B" "Book" entry 
+(add-to-list  'org-capture-templates
+    '("B" "Book" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "books.org"))"Endless Pile")
  "* PILE %^{Book Title}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
- :CREATED:\t%U 
+ :CREATED:\t%U
  :AUTHOR:
  :RECCOMMENDER:
  :END:
@@ -1186,13 +1203,13 @@ Formatting for scheduled __ : if today otherwise ## :
 *** Quote
 
     #+begin_src emacs-lisp
-(add-to-list  'org-capture-templates   
-    '("t" "Quote" entry 
+(add-to-list  'org-capture-templates
+    '("t" "Quote" entry
 	 (file (lambda () (concat ads/personal-dir-org "quotes.org")))
  "* %^{Quote or Note}
  :PROPERTIES:
  :ID:     \t%(org-id-new)
- :CREATED:\t%U 
+ :CREATED:\t%U
  :SOURCE: %^{Source}
  :REF: \t%a
  :END:
@@ -1205,8 +1222,8 @@ Formatting for scheduled __ : if today otherwise ## :
 Quickly log note to archive under datetree, good CYA if you need it, also nice for seeing progress during a workday
 #+begin_src emacs-lisp
 
-(add-to-list  'org-capture-templates   
-    '("l" "Log to Archive" entry 
+(add-to-list  'org-capture-templates
+    '("l" "Log to Archive" entry
 	 (file+datetree (lambda () (concat ads/user-dir-org "archive.org")) )
  "* %U
 :PROPERTIES:
@@ -1221,7 +1238,7 @@ Quickly log note to archive under datetree, good CYA if you need it, also nice f
 )
 
 (defun ads/log-to-archive ()
-    (interactive) 
+    (interactive)
     (org-capture nil "l")
     (evil-insert-state)
     )
@@ -1232,11 +1249,11 @@ Quickly log note to archive under datetree, good CYA if you need it, also nice f
 
 
 *** Log to archive.org with subject
-Quickly log note to archive under datetree, header only timesetamp, intended to just be a quck status of what I'm working on 
+Quickly log note to archive under datetree, header only timesetamp, intended to just be a quck status of what I'm working on
 #+begin_src emacs-lisp
 
-(add-to-list  'org-capture-templates   
-    '("L" "Log to Archive Subject" entry 
+(add-to-list  'org-capture-templates
+    '("L" "Log to Archive Subject" entry
 	 (file+datetree (lambda () (concat ads/user-dir-org "archive.org")) )
  "* %^{Subject} %U
 :PROPERTIES:
@@ -1251,7 +1268,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 )
 
 (defun ads/log-to-archive-subject ()
-    (interactive) 
+    (interactive)
     (org-capture nil "L")
     (evil-insert-state)
     )
@@ -1286,8 +1303,8 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 
    #+end_src
 
-** Babel Languages 
-   
+** Babel Languages
+
    #+begin_src emacs-lisp
    (with-eval-after-load 'org
      (org-babel-do-load-languages
@@ -1304,7 +1321,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
  (with-eval-after-load 'org
   ;; This is needed as of Org 9.2
   (require 'org-tempo)
-  
+
   (add-to-list 'org-structure-template-alist '("sh" . "src shell\n"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp\n"))
   (add-to-list 'org-structure-template-alist '("py" . "src python\n"))
@@ -1317,10 +1334,10 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
   (add-to-list 'org-structure-template-alist '("jj" . "src java\n"))
   (add-to-list 'org-structure-template-alist '("sql" . "src sql\n"))
   (add-to-list 'org-structure-template-alist '("sq" . "src sql\n"))
-  )  
+  )
    #+end_src
 
-   
+
 ** Easier Org edit special
 Org edit special is a nice way to edit a code block in its own buffer which allows for company completion
 #+begin_src emacs-lisp
@@ -1329,7 +1346,7 @@ Org edit special is a nice way to edit a code block in its own buffer which allo
 
 #+RESULTS:
 : org-edit-special
-** Evil Org 
+** Evil Org
 Maybe this will be better somewhere else but it works here for now
 [[https://github.com/Somelauw/evil-org-mode/tree/80ef38fb378541937f6ddfe836809e76eda1e355][Evil Org Github]]
 
@@ -1343,7 +1360,7 @@ Maybe this will be better somewhere else but it works here for now
   (evil-org-agenda-set-keys))
 #+end_src
 
-** Org Cliplink 
+** Org Cliplink
 [[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
    #+begin_src emacs-lisp
 (use-package org-cliplink)
@@ -1392,7 +1409,7 @@ same directory as the org-buffer and insert a link to this file."
                     (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
 
   (shell-command "snippingtool /clip")
-  
+
 
   (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--screenshot-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
 
@@ -1400,7 +1417,7 @@ same directory as the org-buffer and insert a link to this file."
   (org-display-inline-images))
 
 
-(ads/leader-keys 
+(ads/leader-keys
     "os" '(ads/org-screenshot :wk "org-screenshot")
 )
 
@@ -1434,12 +1451,12 @@ same directory as the org-buffer and insert a link to this file."
   (org-display-inline-images))
 
 
-(ads/leader-keys 
+(ads/leader-keys
     "s" '(ads/org-clip-image :wk "org-insert-clipboard-image")
 )
 #+end_src
 
-** Org Find File 
+** Org Find File
 Counsel find file in my org directory
 
 #+begin_src emacs-lisp
@@ -1451,7 +1468,7 @@ Counsel find file in my org directory
 (ads/leader-keys "f" '(ads/org-find-file :wk "Org Find File"))
 #+end_src
 
-** Org Normal on C-c C-c 
+** Org Normal on C-c C-c
 Return to normal state after C-c C-c
 
 #+begin_src emacs-lisp
@@ -1525,7 +1542,7 @@ Quick fn to define a new org note
 )
 #+end_src
 
-* Development 
+* Development
 ** Languages
 
 ** Projectile
@@ -1538,7 +1555,7 @@ Quick fn to define a new org note
 	:bind-keymap
 	("C-c p" . projectile-command-map)
 	:init
-	(when (file-directory-p "c:/Users/Adrian/Documents/GitHub/") 
+	(when (file-directory-p "c:/Users/Adrian/Documents/GitHub/")
 	;; Specify folder where you keep your coding projects
 	    (setq projectile-project-search-path '("c:/Users/Adrian/Documents/GitHub/")))
 	(setq projectile-switch-project-action #'projectile-dired))
@@ -1554,10 +1571,10 @@ Quick fn to define a new org note
 Ooof this is just going to be painful and super slow as long as I'm on windows
 
 #+begin_src emacs-lisp
- 
+
 (use-package magit
   :commands magit-status
-  ;; display the diff from git in the same window (may be worth trying different options as well 
+  ;; display the diff from git in the same window (may be worth trying different options as well
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
@@ -1573,15 +1590,15 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 
 Windows commands for git becaue magit is almost unusably slow due to windows issues
 
-*** Git stage 
+*** Git stage
 
 #+begin_src emacs-lisp
 (defun ads/git-stage ()
   (interactive)
   (shell-command (concat "git stage " buffer-file-name) )
-  (message 
+  (message
     (concat "Staging file : " buffer-file-name)))
-(ads/leader-keys 
+(ads/leader-keys
     "gs"'(ads/git-stage :wk "git stage file"))
 
 #+end_src
@@ -1593,9 +1610,9 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 (defun ads/git-stage-all ()
   (interactive)
   (shell-command "git stage --all")
-  (message 
+  (message
     (concat "Staging all changed files in: " (file-name-directory buffer-file-name))))
-(ads/leader-keys 
+(ads/leader-keys
     "gS"'(ads/git-stage-all :wk "git stage all"))
 
 #+end_src
@@ -1610,7 +1627,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
   (magit-mode-bury-buffer))
 
-(ads/leader-keys 
+(ads/leader-keys
     "gk"'(ads/git-commit-file :wk "git commit"))
 
 #+end_src
@@ -1624,12 +1641,12 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
-  ;; (message 
+  ;; (message
   ;;  (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
   (async-shell-command "git push")
   (magit-mode-bury-buffer))
 
-(ads/leader-keys 
+(ads/leader-keys
     "gl"'(ads/git-stage-commit-push :wk "git commit"))
 
 #+end_src
@@ -1642,7 +1659,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
   (shell-command (concat "git commit -am \"" (read-string "Commit Message:\t") "\""))
   (magit-mode-bury-buffer))
 
-(ads/leader-keys 
+(ads/leader-keys
     "gK"'(ads/git-commit-all :wk "git commit all"))
 
 #+end_src
@@ -1651,7 +1668,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+begin_src emacs-lisp
 (defun ads/git-push ()
   (interactive)
-  (message 
+  (message
    (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
   (async-start
    (message
@@ -1661,7 +1678,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
       (file-name-directory buffer-file-name)
       " && git push ")))
    (message "done")))
-(ads/leader-keys 
+(ads/leader-keys
     "gp"'(ads/git-push :wk "git push"))
 
 #+end_src
@@ -1670,7 +1687,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+begin_src emacs-lisp
 (defun ads/git-pull ()
   (interactive)
-  (message 
+  (message
    (concat "Pulling from Upstream: " (file-name-directory buffer-file-name)))
   (async-start
    (message
@@ -1680,7 +1697,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
       (file-name-directory buffer-file-name)
       " && git pull ")))
    (message "done")))
-(ads/leader-keys 
+(ads/leader-keys
     "gP"'(ads/git-pull :wk "git pull"))
 
 #+end_src
@@ -1691,9 +1708,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 (defun ads/git-fetch ()
   (interactive)
   (shell-command "git fetch --all")
-  (message 
+  (message
     (concat "Fetching Upstream" (file-name-directory buffer-file-name))))
-(ads/leader-keys 
+(ads/leader-keys
     "gf"'(ads/git-fetch :wk "git fetch"))
 
 
@@ -1746,7 +1763,7 @@ Completion system
   ;; (global-company-mode) ;; We want completion everywhere
   ;; (setq company-global-modes '(not org-mode))
   ;; use numbers 0-9 to select company completion candidates
-  (add-hook 'prog-mode-hook 'company-mode) 
+  (add-hook 'prog-mode-hook 'company-mode)
   (let ((map company-active-map))
     (mapc (lambda (x) (define-key map (format "%d" x)
 		   `(lambda () (interactive) (company-complete-number ,x))))
@@ -1760,7 +1777,7 @@ Flycheck is the newer version of flymake and is needed to make lsp-mode not frea
 # #+begin_src emacs-lisp
 (use-package flycheck
   :config
-  
+
   (setq flycheck-global-modes '(not org-mode))
   (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
   ;; (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -1826,7 +1843,7 @@ When using counsel-find-file tries to open a document if the extension is in thi
 
 #+begin_src emacs-lisp
 
-(setq counsel-find-file-extern-extensions 
+(setq counsel-find-file-extern-extensions
         '("xlsx"
           "xls"
           "mkv"
@@ -1842,7 +1859,7 @@ When using counsel-find-file tries to open a document if the extension is in thi
 #+end_src
 
 
-** Open in Windows Default 
+** Open in Windows Default
 Use the default OS program to open the selected file in dired
 
   #+begin_src emacs-lisp
@@ -1854,7 +1871,7 @@ Use the default OS program to open the selected file in dired
     (let ((filename (dired-replace-in-string "/"
                                              "\\"
                                              (dired-get-filename))))
-					     
+
       (w32-shell-execute 1 filename)))
   (define-key dired-mode-map (kbd "C-c C-c") 'ads/dired-win-default))
   #+end_src
@@ -1869,10 +1886,10 @@ Use the default OS program to open the selected file in dired
     "M-a" '(ads/org-attatch-open-windows :wk "org-attatch-open-windows"))
 #+end_src
 
-** UTF-8 
+** UTF-8
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -1883,13 +1900,13 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 
 
 ** Treemacs
- 
+
 #+begin_src emacs-lisp
 (use-package treemacs
   :ensure t
   :defer t
   ;; :init
-  
+
   :config
   (progn
     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
@@ -2017,7 +2034,7 @@ change treemacs settings to be easier to use on a small latop monitor
   (setq treemacs-width 25))
 #+end_src
 
-* Load Computer specific config files 
+* Load Computer specific config files
 
 ** Work
 
