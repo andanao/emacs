@@ -1,0 +1,8 @@
+#+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs.d/early-init.el :results none
+* Package enable at startup
+Disable package.el in favor of straight.el
+#+begin_src emacs-lisp
+
+(setq package-enable-at-startup nil)
+
+#+end_src
