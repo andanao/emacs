@@ -1,5 +1,27 @@
 #+title: Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :results none
+* Straight.el
+Default setup for Straight.el
+#+begin_src emacs-lisp
+;; (defvar bootstrap-version)
+;; (let ((bootstrap-file
+;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+;;       (bootstrap-version 5))
+;;   (unless (file-exists-p bootstrap-file)
+;;     (with-current-buffer
+;;         (url-retrieve-synchronously
+;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;          'silent 'inhibit-cookies)
+;;       (goto-char (point-max))
+;;       (eval-print-last-sexp)))
+;;   (load bootstrap-file nil 'nomessage))
+
+#+end_src
+** Straight settings
+#+begin_src emacs-lisp
+;; (straight-use-package 'use-package)
+#+end_src
+
 * System .emacs Setup
 Setting default file and directory locations, these are all defined in the default startup .emacs file to work on different computers
 see [[file:.emacs][.emacs]] for an example of what it normally looks like
