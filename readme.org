@@ -327,7 +327,7 @@ I don't need to open:
   (interactive)
   (toggle-truncate-lines)
   ;; (visual-line-mode)
-  (visual-fill-column-mode "toggle")
+  ;; (visual-fill-column-mode "toggle")
   )
 
 (ads/leader-keys
@@ -1825,6 +1825,20 @@ Package for interacting with language servers
 ;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
 #+end_src
 
+
+*** Git Restore file
+I did an oopsies restore file to last commit
+
+#+begin_src emacs-lisp
+(defun ads/git-restore-file ()
+  (interactive)
+  (shell-command (concat "git restore " buffer-file-name) )
+  (message
+    (concat "Staging file : " buffer-file-name)))
+(ads/leader-keys
+    "gs"'(ads/git-restore-file :wk "git restore file"))
+
+#+end_src
 
 * File Management
 ** Dired
