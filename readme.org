@@ -1624,6 +1624,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+begin_src emacs-lisp
 (defun ads/git-stage ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (message
     (concat "Staging file : " buffer-file-name)))
@@ -1651,6 +1652,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+begin_src emacs-lisp
 (defun ads/git-commit-file ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
