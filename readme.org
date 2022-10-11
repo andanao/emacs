@@ -1834,7 +1834,7 @@ I did an oopsies restore file to last commit
   (interactive)
   (shell-command (concat "git restore " buffer-file-name) )
   (message
-    (concat "Staging file : " buffer-file-name)))
+    (concat "Restoring file: " buffer-file-name)))
 (ads/leader-keys
     "gr"'(ads/git-restore-file :wk "git restore file"))
 
