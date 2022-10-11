@@ -1836,7 +1836,7 @@ I did an oopsies restore file to last commit
   (message
     (concat "Staging file : " buffer-file-name)))
 (ads/leader-keys
-    "gs"'(ads/git-restore-file :wk "git restore file"))
+    "gr"'(ads/git-restore-file :wk "git restore file"))
 
 #+end_src
 
