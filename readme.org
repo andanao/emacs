@@ -354,7 +354,7 @@ I don't need to open:
   (interactive)
   (toggle-truncate-lines)
   ;; (visual-line-mode)
-  (visual-fill-column-mode "toggle")
+  ;; (visual-fill-column-mode "toggle")
   )
 
 (ads/leader-keys
@@ -1477,27 +1477,34 @@ same directory as the org-buffer and insert a link to this file."
 Same thing as the insert screenshot but works faster and can use with Win-S from clipboard
 
 #+begin_src emacs-lisp
-
-(setq ads/user-dir-org-images
-    (concat ads/user-dir-org "images/"))
-
 (defun ads/org-clip-image ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
   (interactive)
-
-  (setq org--image-filename
-        (concat
-         (make-temp-name
-          (concat ads/user-dir-org-images
-		    (file-relative-name buffer-file-name)
-                    "_"
-                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
-
-  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--image-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
-
-  (insert (concat "[[file:" org--image-filename "]]"))
-  (org-display-inline-images))
+  (setq temp-image-filename
+	  (make-temp-file
+	   (concat
+	    (file-relative-name buffer-file-name)
+	    "_"
+	    (format-time-string "%Y%m%d_%H%M%S_"))
+	   nil
+	   ".png"))
+    (shell-command (concat
+		    "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;"
+		    "if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('"
+		    temp-image-filename
+		    "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+    (org-attach-attach
+     temp-image-filename
+     nil
+     `mv)
+    (insert (concat
+	     "[[file:"
+	     (org-attach-dir)
+	     "/"
+	     (file-name-nondirectory temp-image-filename)
+	     "]]"))
+    (org-display-inline-images))
 
 
 (ads/leader-keys
@@ -1644,6 +1651,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+begin_src emacs-lisp
 (defun ads/git-stage ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (message
     (concat "Staging file : " buffer-file-name)))
@@ -1671,6 +1679,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+begin_src emacs-lisp
 (defun ads/git-commit-file ()
   (interactive)
+  (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
@@ -1845,6 +1854,20 @@ Package for interacting with language servers
 ;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
 #+end_src
 
+
+*** Git Restore file
+I did an oopsies restore file to last commit
+
+#+begin_src emacs-lisp
+(defun ads/git-restore-file ()
+  (interactive)
+  (shell-command (concat "git restore " buffer-file-name) )
+  (message
+    (concat "Restoring file: " buffer-file-name)))
+(ads/leader-keys
+    "gr"'(ads/git-restore-file :wk "git restore file"))
+
+#+end_src
 
 * File Management
 ** Dired
