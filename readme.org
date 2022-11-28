@@ -127,6 +127,16 @@ Setup some default startup parameters
   )
 
 #+end_src
+** Backup Predicate
+#+begin_src emacs-lisp
+(setq backup-enable-predicate
+      (lambda (name)
+        (and (normal-backup-enable-predicate name)
+             (not
+              (let ((method (file-remote-p name 'method)))
+                (when (stringp method)
+                  (member method '("su" "sudo"))))))))
+#+end_src
 ** Async shell commands in background
 when calling async shell it's annoying to have stuff pop up int hte
 #+begin_src emacs-lisp
