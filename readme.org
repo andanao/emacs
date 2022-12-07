@@ -272,6 +272,7 @@ I don't need to open:
 
    #+begin_src emacs-lisp
 
+(define-key global-map (kbd "C-SPC") 'nil)
 (use-package general
  :after evil
  :config
@@ -279,6 +280,7 @@ I don't need to open:
    :keymaps '(normal insert visual emacs)
    :prefix "SPC"
    :global-prefix "C-SPC")
+
  (ads/leader-keys
    "t" '(:ignore t :wk "toggles")
 
