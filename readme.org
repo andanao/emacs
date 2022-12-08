@@ -283,7 +283,6 @@ I don't need to open:
    #+begin_src emacs-lisp
 
 (define-key global-map (kbd "C-SPC") 'nil)
-(define-key ivy-minibuffer-map (kbd "S-SPC") 'nil)
 (use-package general
  :after evil
  :config
@@ -673,6 +672,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
      (ivy-rich-mode 1))
 
 
+(define-key ivy-minibuffer-map (kbd "S-SPC") 'nil) ;
    #+end_src
 
 ** Ivy Prescient
