@@ -7,6 +7,8 @@
 # Backup files
 *~
 
+init.el
+/readme.el
 # Undo-tree save-files
 *.~undo-tree
 scratch.org
@@ -15,8 +17,6 @@ scratch.org
 .#readme.org
 .#scratch.org
 \#*
-*~
-scratch.org
 
 # From Github -----------------------
 # -*- mode: gitignore; -*-
@@ -67,4 +67,3 @@ flycheck_*.el
 
 # network security
 /network-security.data
-scratch.org
