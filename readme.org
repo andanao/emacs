@@ -1,5 +1,5 @@
 #+title: Adrian Danao-Schroeder config
-#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :results none
+#+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
 * Straight.el
 Default setup for Straight.el
 #+begin_src emacs-lisp
