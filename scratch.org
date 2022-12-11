@@ -1,6 +1,0 @@
-#+begin_src emacs-lisp
-(magit-fetch-all nil)
-#+end_src
-
-#+RESULTS:
-: #<process git.exe>
