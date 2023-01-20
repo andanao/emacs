@@ -2163,7 +2163,13 @@ change treemacs settings to be easier to use on a small latop monitor
   (setq treemacs-width 25))
 #+end_src
 * Load Computer specific config files
-
+** Windows
+cause sometimes that's life
+#+begin_src emacs-lisp
+(when
+  (string= system-type "windows-nt")
+  (org-babel-load-file (concat ads/user-dir-emacs "windows.org")))
+#+end_src
 ** Work
 
     ~(load-file (concat ads/user-dir-org "work.el"))~
