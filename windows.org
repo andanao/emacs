@@ -1,0 +1,22 @@
+#+title: Windows Config
+#+PROPERTY: header-args:emacs-lisp :tangle ./windows.el :results none
+I really wish I didn't have to use windows but sometimes you don't have a choice
+
+* Align Emacs theme and system theme
+Set the windows theme color from powershell, doesn't work from regular windows command line for some reason ¯\_(ツ)_/¯
+
+#+begin_src emacs-lisp
+(defun ads/windows-align-emacs-darkmode ()
+  (interactive)
+  (if
+      (string= (car ads/switch-themes-var) "ads-dark")
+      (setq win-theme "0")
+    (setq win-theme "1"))
+  (shell-command
+   (concat
+    "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
+    win-theme
+    " -Type Dword -Force; dir"))
+  (makunbound 'win-theme))
+#+end_src
+
