@@ -304,9 +304,14 @@ I don't need to open:
 	   (find-file (concat ads/user-dir-org "work-config.org"))
            :wk "Readme Config")
 
+   "ek" '(lambda () (interactive)
+	   (find-file (concat ads/user-dir-emacs "windows.org"))
+           :wk ".emacs Config")
+
    "e." '(lambda () (interactive)
 	   (find-file ads/user-dir-config)
            :wk ".emacs Config")
+
 
    "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
            :which-key "ORG init")
@@ -556,7 +561,6 @@ One for writing code and the other for reading articles."
     "tt" '(ads/quick-switch-theme :wk "toggle theme"))
 
 #+end_src
-
 ** Refresh Theme
 
 #+begin_src emacs-lisp
@@ -2158,7 +2162,6 @@ change treemacs settings to be easier to use on a small latop monitor
   (setq treemacs-indentation 1)
   (setq treemacs-width 25))
 #+end_src
-
 * Load Computer specific config files
 
 ** Work
