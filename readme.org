@@ -301,8 +301,8 @@ I don't need to open:
            :wk "Readme Config")
 
    "ew" '(lambda () (interactive)
-	   (find-file (concat ads/user-dir-org "work-config.org"))
-           :wk "Readme Config")
+	   (find-file "c:/_Git/emacs-work/work-config.org")
+           :wk "Work Config")
 
    "ek" '(lambda () (interactive)
 	   (find-file (concat ads/user-dir-emacs "windows.org"))
