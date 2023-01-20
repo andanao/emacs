@@ -14,11 +14,12 @@ You can also set the system to light mode replacing the ~AppsUseLightTheme~ with
       (string= (car ads/switch-themes-var) "ads-dark")
       (setq win-theme "0")
     (setq win-theme "1"))
-  (shell-command
-   (concat
-    "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
-    win-theme
-    " -Type Dword -Force; dir"))
-  (makunbound 'win-theme))
+  (with-temp-buffer
+    (shell-command
+     (concat
+      "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
+      win-theme
+      " -Type Dword -Force; dir")
+     t)))
 #+end_src
 
