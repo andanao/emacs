@@ -2,7 +2,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./windows.el :results none
 I really wish I didn't have to use windows but sometimes you don't have a choice
 
-* Align Emacs theme and system theme
+* Align Emacs and System Theme
 Set the windows theme color from powershell, doesn't work from regular windows command line for some reason ¯\_(ツ)_/¯
 
 You can also set the system to light mode replacing the ~AppsUseLightTheme~ with ~SystemUsesLightTheme~ but I like things not looking like Windows 95
