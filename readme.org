@@ -539,6 +539,8 @@ Normally insert enables overtype, but I've never once wanted that
 
 Toggle between themes, bound to SCP-tt
 
+If on windows toggle app theme as well
+
 #+begin_src emacs-lisp
 (defun ads/quick-switch-theme ()
   "Switch between to commonly used faces in Emacs.
@@ -554,6 +556,9 @@ One for writing code and the other for reading articles."
     ;; Always have the dark mode-line theme
     (mapc #'disable-theme (delq 'smart-mode-line-dark custom-enabled-themes)))
   (setq ads/switch-themes-var (cdr ads/switch-themes-var))
+  (when
+      (string= system-type "windows-nt")
+      (ads/windows-align-emacs-darkmode))
   )
 
 
