@@ -2175,6 +2175,14 @@ cause sometimes that's life
   (string= system-type "windows-nt")
   (org-babel-load-file (concat ads/user-dir-emacs "windows.org")))
 #+end_src
+** Ceres
+my personal computer
+#+begin_src emacs-lisp
+(when
+  (string= system-name "ceres")
+  (org-babel-load-file (concat ads/user-dir-org "python-development-setup.org")))
+#+end_src
+
 ** Work
 
     ~(load-file (concat ads/user-dir-org "work.el"))~
