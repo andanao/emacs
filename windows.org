@@ -2,6 +2,11 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./windows.el :results none
 I really wish I didn't have to use windows but sometimes you don't have a choice
 
+#+begin_src emacs-lisp
+(message (concat "loading " buffer-file-name))
+#+end_src
+
+
 * Align Emacs and System Theme
 Set the windows theme color from powershell, doesn't work from regular windows command line for some reason ¯\_(ツ)_/¯
 
