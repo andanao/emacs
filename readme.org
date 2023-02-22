@@ -1,4 +1,4 @@
-#+title: Adrian Danao-Schroeder config
+#+title:Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
 * Straight.el
 Default setup for Straight.el
@@ -649,6 +649,12 @@ Check if the current theme matches the file being edited on save, if so refresh 
      (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
      :config
      (counsel-mode 1))
+
+(defun counsel-find-file-read-only (fpath)
+  (interactive)
+  (counsel-find-file fpath)
+  (read-only-mode))
+
 
    #+end_src
 
@@ -2188,6 +2194,7 @@ cause sometimes that's life
 (when
   (string= system-type "windows-nt")
   (org-babel-load-file (concat ads/user-dir-emacs "windows.org")))
+
 #+end_src
 ** Ceres
 my personal computer
