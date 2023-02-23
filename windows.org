@@ -42,3 +42,12 @@ Some the files I work with don't have consistent line endings DOS or UNIX
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
 #+end_src
+* Open Attatchment dir externally
+
+#+begin_src emacs-lisp
+(defun org-attatch-open-win-explorer ()
+  (interactive)
+  (setq attatchment-dir (org-attach-dir-get-create))
+  (w32-shell-execute 1 attatchment-dir))
+
+#+end_src
