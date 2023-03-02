@@ -8,6 +8,9 @@ I really wish I didn't have to use windows but sometimes you don't have a choice
 
 
 * Align Emacs and System Theme
+:PROPERTIES:
+:ID:       608313d5-6401-4a00-8aaf-4451531eb4ff
+:END:
 Set the windows theme color from powershell, doesn't work from regular windows command line for some reason ¯\_(ツ)_/¯
 
 You can also set the system to light mode replacing the ~AppsUseLightTheme~ with ~SystemUsesLightTheme~ but I like things not looking like Windows 95
@@ -33,6 +36,9 @@ You can also set the system to light mode replacing the ~AppsUseLightTheme~ with
      t)))
 #+end_src
 * Hide Line Ends
+:PROPERTIES:
+:ID:       eec866e3-4e98-4d61-addb-dd2ca29cdc9d
+:END:
 Some the files I work with don't have consistent line endings DOS or UNIX
 
 #+begin_src emacs-lisp
@@ -43,6 +49,9 @@ Some the files I work with don't have consistent line endings DOS or UNIX
   (aset buffer-display-table ?\^M []))
 #+end_src
 * Open Attatchment dir externally
+:PROPERTIES:
+:ID:       e7315482-1abe-4416-8c59-0de093746f0b
+:END:
 
 #+begin_src emacs-lisp
 (defun org-attatch-open-win-explorer ()
