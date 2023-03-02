@@ -847,7 +847,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (ads/leader-keys
     "o" '(:ignore t :wk "org")
     "oc" '(org-capture :wk "capture")
-    "oj" '(org-id-store-link :wk "org-store-link")
+    "oj" '(org-store-link :wk "org-store-link")
     "oi" '(org-insert-last-stored-link :wk "org-insert-last-stored-link")
 )
     #+end_src
@@ -902,6 +902,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	      org-fontify-quote-and-verse-blocks t
 	      org-bullets-bullet-list '(" ") ;; no bullets, needs org-bullets package
 	      org-cycle-separator-lines 0
+	      org-id-link-to-org-use-id t
 	      org-blank-before-new-entry '((heading . nil)
 					   (plain-list-item . nil))
 	      )
