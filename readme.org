@@ -1,5 +1,12 @@
 #+title:Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
+* Set background
+Please don't blind me with a white background
+
+#+begin_src emacs-lisp
+(set-background-color "#000000")
+#+end_src
+
 * Straight.el
 :PROPERTIES:
 :ID:       33fd1c57-a64e-472d-a868-e8f4703ec14b
