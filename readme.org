@@ -1,6 +1,9 @@
 #+title:Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
 * Straight.el
+:PROPERTIES:
+:ID:       33fd1c57-a64e-472d-a868-e8f4703ec14b
+:END:
 Default setup for Straight.el
 #+begin_src emacs-lisp
 ;; (defvar bootstrap-version)
@@ -18,50 +21,86 @@ Default setup for Straight.el
 
 #+end_src
 ** Straight settings
+:PROPERTIES:
+:ID:       53dec607-ff19-40a1-893f-a0f87f8950b7
+:END:
 #+begin_src emacs-lisp
 ;; (straight-use-package 'use-package)
 #+end_src
 
 * System .emacs Setup
+:PROPERTIES:
+:ID:       60973f19-e31e-470f-919d-dc03dfb4c377
+:END:
 Setting default file and directory locations, these are all defined in the default startup .emacs file to work on different computers
 see [[file:.emacs][.emacs]] for an example of what it normally looks like
 ** Emacs Directory
+:PROPERTIES:
+:ID:       cc2f3d7e-e711-4a85-9ba5-21884140130d
+:END:
    Define the user emacs directory: ads/user-dir-emacs
 
    defined in the default .emacs file used for emacs init to work on various computers
 ** Org Directory
+:PROPERTIES:
+:ID:       d1e20b2b-1bf0-43f6-8b8b-c513a5733019
+:END:
    User org-mode file directory: ads/user-dir-org
    defined in default .emacs config file
 ** Personal Org Directory
+:PROPERTIES:
+:ID:       950777f8-b1a9-4b9b-8e22-abb3002660d5
+:END:
    Personal org directory (see all tasks on work computer and shared inbox)
    ads/personal-dir-org
 ** Readme config file
+:PROPERTIES:
+:ID:       4fe81ff3-5140-458c-9820-69e4211b8f46
+:END:
 ads/user-dir-readme - this files full path
 
 ** init.el config file
+:PROPERTIES:
+:ID:       ebd6d51b-2b48-4d4a-a55f-15ca629ef22e
+:END:
 ads/user-dir-config
 directory for the actual config file used when running
 
 ** Computer id
+:PROPERTIES:
+:ID:       62802298-f2cf-4169-b12e-72c3665012df
+:END:
 set ads/computer-id
 currently:
     work
     Personal
 
 ** Load Path
+:PROPERTIES:
+:ID:       003e6ea1-1e1d-4803-b7e2-e645f3497823
+:END:
    #+begin_src emacs-lisp
 (add-to-list 'load-path ads/user-dir-emacs)
 (add-to-list 'load-path ads/user-dir-org)
    #+end_src
 
 ** Debug on Error
+:PROPERTIES:
+:ID:       60a1ecec-c4e0-4533-a9a0-cd0e9bdaa77b
+:END:
    Nice to load it early, makes troubleshooting a problem easier
    #+begin_src emacs-lisp
 (setq debug-on-error t)
    #+end_src
 
 * Package System Setup
+:PROPERTIES:
+:ID:       6ac5e1b4-df1f-4739-bdc2-4143594beeb4
+:END:
 ** Package setup
+:PROPERTIES:
+:ID:       39c13c97-fa17-4ecd-a7b4-8ea57ea4a3ae
+:END:
    #+begin_src emacs-lisp
 ;; Initialize package sources
 (require 'package)
@@ -88,8 +127,14 @@ currently:
 
 
 ** TODO Auto Updates
+:PROPERTIES:
+:ID:       7aa55287-57c4-4b75-8713-82ed52b308f5
+:END:
 
 * Better Defaults
+:PROPERTIES:
+:ID:       7866fcf1-0c26-43f6-b994-014bd343e8c4
+:END:
 Setup some default startup parameters
 #+begin_src emacs-lisp
 (setq-default
@@ -116,6 +161,9 @@ Setup some default startup parameters
 
 #+end_src
 ** Backup Directory
+:PROPERTIES:
+:ID:       485fda89-e7b6-43ac-9ae0-ebb1de97354f
+:END:
 #+begin_src emacs-lisp
 
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
@@ -128,6 +176,9 @@ Setup some default startup parameters
 
 #+end_src
 ** Backup Predicate
+:PROPERTIES:
+:ID:       c9aee546-fd9e-42ba-9144-a0ada5069db8
+:END:
 #+begin_src emacs-lisp
 (setq backup-enable-predicate
       (lambda (name)
@@ -138,6 +189,9 @@ Setup some default startup parameters
                   (member method '("su" "sudo"))))))))
 #+end_src
 ** Async shell commands in background
+:PROPERTIES:
+:ID:       82f2344e-b691-4478-8123-835245e3cdd6
+:END:
 when calling async shell it's annoying to have stuff pop up int hte
 #+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist
@@ -146,7 +200,13 @@ when calling async shell it's annoying to have stuff pop up int hte
 
 
 * Basic Functions
+:PROPERTIES:
+:ID:       d1c3dfde-0150-4e61-b70b-6415ae331e20
+:END:
 ** Browse in Edge
+:PROPERTIES:
+:ID:       9414698c-d7f5-4491-81a1-d13254cdc236
+:END:
 edge sucks but some things only work in edge
 #+begin_src emacs-lisp
 (defun ads/browse-url-edge (url)
@@ -155,8 +215,14 @@ edge sucks but some things only work in edge
 #+end_src
 
 * Basic UI Config
+:PROPERTIES:
+:ID:       b5b966cb-e846-4885-8ad2-03bf41007266
+:END:
 
 ** Font configuration
+:PROPERTIES:
+:ID:       ff3c9d05-0ace-4053-8503-df43bb36e1e6
+:END:
 Setting up font properties, I like Et bembo, but for some reason can't find where I got Etbembo from on my windows machines
 
 #+begin_src emacs-lisp
@@ -189,6 +255,9 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
 
 
 ** Line Numbers
+:PROPERTIES:
+:ID:       037e1e13-ba3c-4958-a89a-41dfaaea4836
+:END:
    #+begin_src emacs-lisp
    ;; Enable line numbers
    ;; (global-display-line-numbers-mode nil)
@@ -200,6 +269,9 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
    #+end_src
 
 ** Column Numbers
+:PROPERTIES:
+:ID:       6d107725-8de4-485b-8f14-841e62d7cc95
+:END:
 Enable column numbers
    #+begin_src emacs-lisp
  (column-number-mode)
@@ -207,6 +279,9 @@ Enable column numbers
    #+end_src
 
 ** Rainbow Delimiters
+:PROPERTIES:
+:ID:       ec0a1ea5-00cd-4cad-ae8d-10042cf012fb
+:END:
 [[https://github.com/Fanael/rainbow-delimiters][GitHub - Fanael/rainbow-delimiters: Emacs rainbow delimiters mode]]
    #+begin_src emacs-lisp
 (use-package rainbow-delimiters
@@ -215,6 +290,9 @@ Enable column numbers
 
 
 ** Restore session
+:PROPERTIES:
+:ID:       729db0fc-28ae-43f2-88a3-a608e5de9955
+:END:
 
 #+begin_src emacs-lisp
 ;(savehist-mode 1)
@@ -222,6 +300,9 @@ Enable column numbers
 #+end_src
 
 ** Unbind Hide/kill emacs session C-x
+:PROPERTIES:
+:ID:       cc5eb2dd-ff05-4824-8a17-7f00e1f3133c
+:END:
 
 In my clumsyness I've hit theste  too many times
 
@@ -231,6 +312,9 @@ In my clumsyness I've hit theste  too many times
 #+end_src
 
 ** Unbind Emacs help stuff
+:PROPERTIES:
+:ID:       dabe6b5a-0bf4-4563-b1c4-e8721b7903ed
+:END:
 I don't need to open:
  - tutorial
  - hello
@@ -240,6 +324,9 @@ I don't need to open:
 (global-set-key (kbd "C-h h") 'nil)
 #+end_src
 ** Hide Modeline Mode
+:PROPERTIES:
+:ID:       4ff5832a-dfed-4f63-90bb-0d69d374ead6
+:END:
 #+begin_src emacs-lisp
 
 (defvar-local hidden-mode-line-mode nil)
@@ -268,7 +355,13 @@ I don't need to open:
 #+end_src
 
 * Keybinding Config
+:PROPERTIES:
+:ID:       24a46150-655e-4260-8d56-b81586a3ca66
+:END:
 ** Global Esc
+:PROPERTIES:
+:ID:       1d2b0ab1-a87b-4dfb-9d25-d417d941025f
+:END:
    #+begin_src emacs-lisp
    ;;Make ESC quit prompts (why wouldn't you want that?)
    (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -277,6 +370,9 @@ I don't need to open:
 
 
 ** General Leader Keys
+:PROPERTIES:
+:ID:       2fc053bb-1062-4bd2-82fa-7b36ed1273cc
+:END:
 
 
 
@@ -329,6 +425,9 @@ I don't need to open:
 
    #+end_src
 ** Evil
+:PROPERTIES:
+:ID:       4108c640-7fb6-4480-894c-6ab475b076d5
+:END:
 
    #+begin_src emacs-lisp
 
@@ -366,6 +465,9 @@ I don't need to open:
 
    #+end_src
 ** Toggle line width
+:PROPERTIES:
+:ID:       6b3c7584-d563-464f-b076-8ff813606615
+:END:
 #+begin_src emacs-lisp
 (defun ads/toggle-lines ()
   (interactive)
@@ -379,28 +481,43 @@ I don't need to open:
 )
 #+end_src
 ** Kill Emacs
+:PROPERTIES:
+:ID:       50a64057-34d1-4d1f-bfeb-78f84f261e73
+:END:
 #+begin_src emacs-lisp
 (ads/leader-keys
   "C-<escape>" 'kill-emacs)
 #+end_src
 
 ** Normal mode after save
+:PROPERTIES:
+:ID:       5ce816f8-241b-43e7-b7fb-ace111cd7183
+:END:
 #+begin_src emacs-lisp
 (add-hook 'after-save-hook 'evil-normal-state)
 #+end_src
 ** Fix trailing whitespace on save
+:PROPERTIES:
+:ID:       f06e74b1-4560-4ed7-bab7-c83753ddea85
+:END:
 #+begin_src emacs-lisp
 (setq delete-trailing-lines nil)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 
 ** Evil Buffer control
+:PROPERTIES:
+:ID:       a9c37681-3c5b-4267-8711-d11270012bfa
+:END:
 #+begin_src emacs-lisp
 (evil-global-set-key 'normal (kbd "C-M-j")  'counsel-switch-buffer)
 #+end_src
 
 
 ** Evil Window Control
+:PROPERTIES:
+:ID:       ed280cc2-6a41-447f-a6c1-be01a2ac8792
+:END:
 I don't want to have to stop pressing ctrl also go back to normal mode if in insert mode
 
 #+begin_src emacs-lisp
@@ -434,6 +551,9 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 					       (call-interactively 'balance-windows)))
 #+end_src
 ** Undo tree visualizer
+:PROPERTIES:
+:ID:       b1d2bf46-117c-4e9b-8ca3-a1d92ac3cd1c
+:END:
 [[https://elpa.gnu.org/packages/undo-tree.html][GNU ELPA - undo-tree]]
 
 #+begin_src emacs-lisp
@@ -451,6 +571,9 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 #+end_src
 
 ** Remove Line breaks in region
+:PROPERTIES:
+:ID:       8659df8d-ba59-4ebe-a1d6-4229100b8002
+:END:
 #+begin_src emacs-lisp
 (defun ads/remove-newlines-in-region ()
   "Removes all newlines in the region."
@@ -463,6 +586,9 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 #+end_src
 
 ** Fix file dir formatting for win
+:PROPERTIES:
+:ID:       25693cf1-d631-4381-b8ee-5a648c43032f
+:END:
 this is always so annoying
 #+begin_src emacs-lisp
 (defun ads/format-dir-winstyle ()
@@ -477,6 +603,9 @@ this is always so annoying
 
 
 ** Regex Replace Keybindings
+:PROPERTIES:
+:ID:       dd9ec888-4861-436d-976f-c1964fa29869
+:END:
    #+begin_src emacs-lisp
 (ads/leader-keys
     "r"  '(:ignore t :wk "replace")
@@ -488,6 +617,9 @@ this is always so annoying
 
 
 ** Insert to toggle comment
+:PROPERTIES:
+:ID:       9a8815ce-3ad0-4f76-b221-8b225b42c824
+:END:
 Normally insert enables overtype, but I've never once wanted that
 
 #+begin_src emacs-lisp
@@ -501,9 +633,15 @@ Normally insert enables overtype, but I've never once wanted that
 #+end_src
 
 * Theme Setup
+:PROPERTIES:
+:ID:       039faa87-f43b-4708-b607-99a5e9f5bf68
+:END:
 
 
 ** Set Custom Theme Directory
+:PROPERTIES:
+:ID:       ff679a4d-2e88-4003-8598-b00225a4a7cb
+:END:
     A little annoying that I have to specify this and it isn't loaded from load path and that each theme file must be named ~foo-theme.el~ but I'm not about to rewrite something minor
 
     #+begin_src emacs-lisp
@@ -511,6 +649,9 @@ Normally insert enables overtype, but I've never once wanted that
     #+end_src
 
 ** Color theme list
+:PROPERTIES:
+:ID:       4c3f5b1d-9bc3-4e5a-a517-f4305a3a7bea
+:END:
 
 #+begin_src emacs-lisp
 (defvar ads/switch-themes-var
@@ -527,6 +668,9 @@ Normally insert enables overtype, but I've never once wanted that
 #+end_src
 
 ** Color Theme
+:PROPERTIES:
+:ID:       7ccb90ab-82f7-4904-8775-19ad2cf2b24c
+:END:
  #+begin_src emacs-lisp
 (use-package doom-themes
     :init
@@ -536,6 +680,9 @@ Normally insert enables overtype, but I've never once wanted that
  #+end_src
 
 ** Toggle Theme
+:PROPERTIES:
+:ID:       51b77087-f3e9-4a14-b52c-b28371dacb24
+:END:
 
 Toggle between themes, bound to SCP-tt
 
@@ -567,6 +714,9 @@ One for writing code and the other for reading articles."
 
 #+end_src
 ** Refresh Theme
+:PROPERTIES:
+:ID:       a720ba6d-a655-4f6f-bd98-e27cc80edf35
+:END:
 
 #+begin_src emacs-lisp
 (defun ads/refresh-theme ()
@@ -577,6 +727,9 @@ One for writing code and the other for reading articles."
 #+end_src
 
 ** Auto Refresh Theme
+:PROPERTIES:
+:ID:       50787d54-5789-4a17-a0fb-0316aaa92324
+:END:
 Check if the current theme matches the file being edited on save, if so refresh the current theme
 #+begin_src emacs-lisp
 (defun ads/refresh-theme-auto()
@@ -587,6 +740,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (add-hook 'after-save-hook #'ads/refresh-theme-auto)
 #+end_src
 ** Transparency Toggle
+:PROPERTIES:
+:ID:       70847ad0-8fee-4868-aabd-a40ce7255ba2
+:END:
 #+begin_src emacs-lisp
 (defun ads/toggle-transparency ()
    (interactive)
@@ -603,6 +759,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (ads/leader-keys "tr"'(ads/toggle-transparency :wk "toggle transparency"))
 #+end_src
 ** Doom Modeline
+:PROPERTIES:
+:ID:       f3e96ca0-471d-4e4f-9e0a-ff2e64c14920
+:END:
 
    #+begin_src emacs-lisp
 
@@ -618,13 +777,22 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Set window title
+:PROPERTIES:
+:ID:       a17d66ff-9faf-40a6-9aa0-907a98570cf1
+:END:
 
 #+begin_src emacs-lisp
 (setq frame-title-format "%b")
 #+end_src
 
 * UI Config
+:PROPERTIES:
+:ID:       6f1317d8-79b0-42f1-bcf4-9836fed26829
+:END:
 ** Which key
+:PROPERTIES:
+:ID:       189c7e96-efc6-4907-9ed2-9e0555cc5c05
+:END:
 
    #+begin_src emacs-lisp
 
@@ -639,6 +807,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Counsel
+:PROPERTIES:
+:ID:       0d4eb503-1adc-4b16-8991-e5dbf0b6f37d
+:END:
 
    #+begin_src emacs-lisp
    (use-package counsel
@@ -659,6 +830,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Ivy
+:PROPERTIES:
+:ID:       d910fb36-a83f-4ff1-8142-af96ebb5eadf
+:END:
 
    #+begin_src emacs-lisp
 
@@ -691,6 +865,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Ivy Prescient
+:PROPERTIES:
+:ID:       b1423510-12fa-443b-972a-0e76bf21b43b
+:END:
 
  Still not working ¯\_(ツ)_/¯ not sure why though, saying Ivy Prescient is not on melpa
 
@@ -707,6 +884,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 
 
 ** Helpful
+:PROPERTIES:
+:ID:       0f8e08e4-b55e-46fb-b5c3-98552b41abc7
+:END:
 
    #+begin_src emacs-lisp
 
@@ -732,6 +912,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Browse Kill-Ring
+:PROPERTIES:
+:ID:       9ecff51d-7a15-434d-ab68-793779b8e541
+:END:
 
 #+begin_src emacs-lisp
 (use-package browse-kill-ring
@@ -748,6 +931,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 #+end_src
 
 ** Hydra Text Scaling
+:PROPERTIES:
+:ID:       65f9f83a-f029-4b50-b0e6-93b38cdda752
+:END:
 
 
 #+begin_src emacs-lisp
@@ -767,6 +953,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 #+end_src
 
 ** Hydra window adjust
+:PROPERTIES:
+:ID:       2161697f-bc09-4feb-974e-9993e23d24a5
+:END:
 
 #+begin_src emacs-lisp
 (defhydra hydra-window-adjust (:timeout 5)
@@ -782,6 +971,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 #+end_src
 
 ** Smart Parens
+:PROPERTIES:
+:ID:       b6c63915-28b7-48fe-8b51-9c9e2b4c8d03
+:END:
 [[https://github.com/Fuco1/smartparens/tree/fb1ce4b4013fe6f86dde9dd5bd5d4c032ab0d45b][Smartparens Github]]
 [[https://github.com/expez/evil-smartparens][Evil Smartparens]]
 
@@ -800,6 +992,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
 #+end_src
 
 ** Emojify 🎉 :
+:PROPERTIES:
+:ID:       528d1423-8b04-4fbc-b0ce-a0c66cd77e21
+:END:
   I think emojis are 🏆
   Also Using emojis as labels is a great way to quickly identify things
 
@@ -818,7 +1013,13 @@ Check if the current theme matches the file being edited on save, if so refresh 
 
 
 * Org Mode
+:PROPERTIES:
+:ID:       eafc9f46-4818-4c5b-b0b1-d22ee5aa6606
+:END:
 ** Org Mode Setup
+:PROPERTIES:
+:ID:       41a4cac3-ce56-450d-ac93-f56537e1dc41
+:END:
 
 #+begin_src emacs-lisp
 
@@ -842,6 +1043,9 @@ Check if the current theme matches the file being edited on save, if so refresh 
    #+end_src
 
 ** Keybindings
+:PROPERTIES:
+:ID:       9b58268d-cab5-4571-90ad-d041c2662467
+:END:
 
     #+begin_src emacs-lisp
 (ads/leader-keys
@@ -852,11 +1056,17 @@ Check if the current theme matches the file being edited on save, if so refresh 
 )
     #+end_src
 ***  Unbind Cx Cn
+:PROPERTIES:
+:ID:       d8db277a-a0dc-4003-ab2a-6487c79312ed
+:END:
 useful for narrowing headers
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-n") 'nil)
 #+end_src
 *** Narrow Commands
+:PROPERTIES:
+:ID:       9772db6c-da1c-41e0-8b62-13771874a81a
+:END:
 org-toggle-narrow-to-subree does not work for some reason when I call it, using general, same code but this works
 #+begin_src emacs-lisp
 (defun ads/org-toggle-narrow ()
@@ -878,6 +1088,9 @@ org-toggle-narrow-to-subree does not work for some reason when I call it, using 
     #+end_src
 
 ** General Org
+:PROPERTIES:
+:ID:       5d216e58-b81e-4795-a9ca-391807f31b8a
+:END:
 Some general org config stuff, may be worth cleaning up at some point and splitting up all of this into different headings
    #+begin_src emacs-lisp
    (use-package org
@@ -944,6 +1157,9 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
    #+end_src
 
 ** Add IDs headings
+:PROPERTIES:
+:ID:       5883cdaa-6464-4916-98be-d789eaeae569
+:END:
 I haven't decided if I want this to be adding them on every save
 #+begin_src emacs-lisp
 (defun ads/org-add-ids-to-headlines-in-file ()
@@ -953,13 +1169,16 @@ do not already have one."
   (org-map-entries 'org-id-get-create))
 
 
-;; (add-hook 'org-mode-hook
-;; 	  (lambda ()
-;; 	    (add-hook 'before-save-hook
-;; 	    'ads/org-add-ids-to-headlines-in-file nil 'local)))
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (add-hook 'before-save-hook
+	    'ads/org-add-ids-to-headlines-in-file nil 'local)))
 #+end_src
 
 ** Copy ID to clipboard for linking
+:PROPERTIES:
+:ID:       accb5412-6094-4cc7-bad5-fd7a143616bc
+:END:
 #+begin_src emacs-lisp
 (defun ads/copy-id-to-clipboard()
   "Copy the ID property value
@@ -979,6 +1198,9 @@ text and copying to the killring."
 
 
 ** Org Refile Targets
+:PROPERTIES:
+:ID:       9f3b1368-e93c-4879-bc96-a789b11df83b
+:END:
 Refile targets dependant on computer id
 
 #+begin_src emacs-lisp
@@ -1004,6 +1226,9 @@ Refile targets dependant on computer id
 #+end_src
 
 ** Org Archive
+:PROPERTIES:
+:ID:       31de7a32-ffbe-4b6d-b91b-d73691ca757f
+:END:
 
 #+begin_src emacs-lisp
 (setq org-archive-location "archive.org::datetree/")
@@ -1012,6 +1237,9 @@ Refile targets dependant on computer id
 #+end_src
 
 ** Org Appear mode
+:PROPERTIES:
+:ID:       f7f73d42-fd1c-4aba-80fd-13d601681d59
+:END:
 Make it less of a pain to edit emphasized text in org mode [[https://github.com/awth13/org-appear][awth13/org-appear]]
 
 #+begin_src emacs-lisp
@@ -1033,7 +1261,13 @@ Make it less of a pain to edit emphasized text in org mode [[https://github.com/
 #+end_src
 
 ** Org Agenda
+:PROPERTIES:
+:ID:       17b27360-33d4-4ab3-a99e-aae28df32594
+:END:
 *** Files
+:PROPERTIES:
+:ID:       a06b19ba-ada9-478f-87b3-1562ba7c7950
+:END:
 
 Check computer ID before setting org agenda
 
@@ -1058,6 +1292,9 @@ Check computer ID before setting org agenda
 #+end_src
 
 *** Agenda Open
+:PROPERTIES:
+:ID:       3224e335-6e8a-46d7-aa9d-b8627858b7db
+:END:
 split window and focus down on agenda open
 
 #+begin_src emacs-lisp
@@ -1071,6 +1308,9 @@ split window and focus down on agenda open
 #+end_src
 
 *** Agenda Quit
+:PROPERTIES:
+:ID:       9216c1ef-bc96-45e9-8c98-c66f5785ad9d
+:END:
     Close window on quitting agenda
 
 #+begin_src emacs-lisp
@@ -1083,6 +1323,9 @@ split window and focus down on agenda open
 #+end_src
 
 *** Agenda interaction
+:PROPERTIES:
+:ID:       1cec67b3-924c-428b-903d-65c52312f965
+:END:
  Don' move windows and set org span to 1 day
 
  #+begin_src emacs-lisp
@@ -1093,12 +1336,18 @@ split window and focus down on agenda open
  #+end_src
 
 *** Agenda Scheduled Leaders
+:PROPERTIES:
+:ID:       2c830185-8ad2-4f05-a789-d898dd84e4d7
+:END:
 Formatting for scheduled __ : if today otherwise ## :
 #+begin_src emacs-lisp
 (setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
 #+end_src
 
 ** Org Prettify
+:PROPERTIES:
+:ID:       04a30e63-6cb3-4861-8ce0-a1958413bf79
+:END:
 
 #+begin_src emacs-lisp
 (defun ads/org-prettify-symbols-alist ()
@@ -1124,13 +1373,22 @@ Formatting for scheduled __ : if today otherwise ## :
 #+end_src
 
 ** Org Diary File
+:PROPERTIES:
+:ID:       77ec79c8-7f44-4d04-a88c-1e142517346a
+:END:
  #+begin_src emacs-lisp
  (setq diary-file (concat ads/user-dir-org "diary.org"))
  #+end_src
 
 ** Org Capture
+:PROPERTIES:
+:ID:       68e627a6-5f2b-47ce-9560-96e3a36587b3
+:END:
 
 *** Inbox
+:PROPERTIES:
+:ID:       ef8e2515-3d71-468e-8858-0ffb57818f7c
+:END:
     #+begin_src emacs-lisp
 (setq  org-capture-templates
    (list  '( "c" "Task" entry
@@ -1149,6 +1407,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Work
+:PROPERTIES:
+:ID:       04221506-2013-4e86-8b71-cf5cc5e3cb5f
+:END:
 
     #+begin_src emacs-lisp
 (if (string= ads/computer-id "work")
@@ -1171,6 +1432,9 @@ Formatting for scheduled __ : if today otherwise ## :
 
 
 *** Personal
+:PROPERTIES:
+:ID:       8557ae23-d7a1-4ba1-b615-4ea1cd48d01f
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1191,6 +1455,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Quick Inbox
+:PROPERTIES:
+:ID:       8837a3cc-d913-4fe0-8711-7b9a199189ef
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1211,6 +1478,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 **** Quick Capture
+:PROPERTIES:
+:ID:       62230ea9-b8d5-4068-8d27-da2e46cdc74c
+:END:
   Quickly capture something to inbox with leader C-c
 
   #+begin_src emacs-lisp
@@ -1220,6 +1490,9 @@ Formatting for scheduled __ : if today otherwise ## :
 
 
 *** Clipboard Link
+:PROPERTIES:
+:ID:       dabbdfbe-663c-444e-adac-d4ee65e18a4e
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1240,6 +1513,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Project
+:PROPERTIES:
+:ID:       9041890b-3d1c-4fb6-9741-b2dcc6fe0486
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1261,6 +1537,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Book
+:PROPERTIES:
+:ID:       68c8db3a-dc71-4e4e-a863-9f6f560b14f7
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1280,6 +1559,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Quote
+:PROPERTIES:
+:ID:       87068617-9a5f-47fc-a86e-7827282ef5fa
+:END:
 
     #+begin_src emacs-lisp
 (add-to-list  'org-capture-templates
@@ -1298,6 +1580,9 @@ Formatting for scheduled __ : if today otherwise ## :
     #+end_src
 
 *** Log to archive.org
+:PROPERTIES:
+:ID:       f6bc56e3-a90b-4a7f-97d9-919af0944f76
+:END:
 Quickly log note to archive under datetree, good CYA if you need it, also nice for seeing progress during a workday
 #+begin_src emacs-lisp
 
@@ -1328,6 +1613,9 @@ Quickly log note to archive under datetree, good CYA if you need it, also nice f
 
 
 *** Log to archive.org with subject
+:PROPERTIES:
+:ID:       e3a42354-2e98-49cd-a40c-293bcb403ebf
+:END:
 Quickly log note to archive under datetree, header only timesetamp, intended to just be a quck status of what I'm working on
 #+begin_src emacs-lisp
 
@@ -1357,6 +1645,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 #+end_src
 
 ** Org Bullets
+:PROPERTIES:
+:ID:       45da6f97-0e96-4878-b715-6e80e4ad03c3
+:END:
 
    #+begin_src emacs-lisp
    (use-package org-bullets
@@ -1366,6 +1657,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
    #+end_src
 
 ** Org Visual fill
+:PROPERTIES:
+:ID:       44644d98-931f-40a9-a16a-6fdc72e92290
+:END:
 
    #+begin_src emacs-lisp
 
@@ -1383,6 +1677,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
    #+end_src
 
 ** Babel Languages
+:PROPERTIES:
+:ID:       c407e836-27d5-474a-9737-4bf6ac47ef08
+:END:
 
    #+begin_src emacs-lisp
    (with-eval-after-load 'org
@@ -1396,6 +1693,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
    #+end_src
 
 ** Org Block Structure Templates
+:PROPERTIES:
+:ID:       579dd98a-1c2c-4431-9772-e3be34ce95ba
+:END:
    #+begin_src emacs-lisp
  (with-eval-after-load 'org
   ;; This is needed as of Org 9.2
@@ -1418,6 +1718,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 
 
 ** Easier Org edit special
+:PROPERTIES:
+:ID:       a290b90e-1883-4e65-a64b-9ceb90f25b39
+:END:
 Org edit special is a nice way to edit a code block in its own buffer which allows for company completion
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-c C-'") 'org-edit-special)
@@ -1426,6 +1729,9 @@ Org edit special is a nice way to edit a code block in its own buffer which allo
 #+RESULTS:
 : org-edit-special
 ** Evil Org
+:PROPERTIES:
+:ID:       82b389c0-63cc-45e2-914b-3d8e9184d030
+:END:
 Maybe this will be better somewhere else but it works here for now
 [[https://github.com/Somelauw/evil-org-mode/tree/80ef38fb378541937f6ddfe836809e76eda1e355][Evil Org Github]]
 
@@ -1440,6 +1746,9 @@ Maybe this will be better somewhere else but it works here for now
 #+end_src
 
 ** Org Cliplink
+:PROPERTIES:
+:ID:       30ec75d7-5ba2-4178-931b-8922b752d648
+:END:
 [[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
    #+begin_src emacs-lisp
 (use-package org-cliplink)
@@ -1450,6 +1759,9 @@ Maybe this will be better somewhere else but it works here for now
    #+end_src
 
 ** Replace Link
+:PROPERTIES:
+:ID:       cdd6dadb-ef06-4592-a037-e3cbe3988499
+:END:
 
 #+begin_src emacs-lisp
 
@@ -1469,6 +1781,9 @@ Maybe this will be better somewhere else but it works here for now
 #+end_src
 
 ** Insert Screenshot
+:PROPERTIES:
+:ID:       b0330f2c-d38c-4a6c-a493-55553bc98641
+:END:
 
 Most code taken from: [[https://www.sastibe.de/2018/11/take-screenshots-straight-into-org-files-in-emacs-on-win10/][Take Screenshots Straight into Org Files in Emacs on Win10]]
 
@@ -1517,6 +1832,9 @@ same directory as the org-buffer and insert a link to this file."
 #+end_src
 
 ** Insert Image from clipboard
+:PROPERTIES:
+:ID:       feff49dd-2bd1-455f-8115-3d538b4afc51
+:END:
 
 Same thing as the insert screenshot but works faster and can use with Win-S from clipboard
 
@@ -1557,6 +1875,9 @@ same directory as the org-buffer and insert a link to this file."
 #+end_src
 
 ** Org Find File
+:PROPERTIES:
+:ID:       149ef038-9043-408f-8ed3-314f617dd41d
+:END:
 Counsel find file in my org directory
 
 #+begin_src emacs-lisp
@@ -1569,12 +1890,18 @@ Counsel find file in my org directory
 #+end_src
 
 ** Org Normal on C-c C-c
+:PROPERTIES:
+:ID:       cc2372e6-b60c-4c47-b018-806d74169aa8
+:END:
 Return to normal state after C-c C-c
 
 #+begin_src emacs-lisp
 (add-hook 'org-ctrl-c-ctrl-c-hook 'evil-normal-state)
 #+end_src
 ** Next item in checkilist on C-c C-c
+:PROPERTIES:
+:ID:       df33ffb8-d8c2-49dc-a5c9-8e75242ed545
+:END:
 #+begin_src emacs-lisp
 (defun ads/org-checkbox-next ()
   (interactive)
@@ -1588,6 +1915,9 @@ Return to normal state after C-c C-c
 #+end_src
 
 ** Async Tangling Config
+:PROPERTIES:
+:ID:       8c2ecbd5-e3ab-4ab1-9fbd-afa756b0186f
+:END:
 I don't want to have to wait after saving a file to fontinue working
 
 #+begin_src emacs-lisp
@@ -1613,6 +1943,9 @@ are tangled."
 #+end_src
 
 ** New org note
+:PROPERTIES:
+:ID:       45f7ea74-ad43-412a-bb9f-26be256468f6
+:END:
 Quick fn to define a new org note
 
 #+begin_src emacs-lisp
@@ -1632,6 +1965,9 @@ Quick fn to define a new org note
 #+end_src
 
 ** Open Scratch.org
+:PROPERTIES:
+:ID:       7e1e64e3-0008-41ce-acb3-996197f4a7ac
+:END:
 ~leader C-s~ Open and go to scratch.org
 
 #+begin_src emacs-lisp
@@ -1643,9 +1979,18 @@ Quick fn to define a new org note
 #+end_src
 
 * Development
+:PROPERTIES:
+:ID:       ebf36f61-23a4-4e94-924d-e762fc41edc5
+:END:
 ** Languages
+:PROPERTIES:
+:ID:       3da3b099-ebd8-407c-b50c-bec8941f22e9
+:END:
 
 ** Projectile
+:PROPERTIES:
+:ID:       a6b932af-21aa-442d-aeb7-92d9ebce11c3
+:END:
 
 #+begin_src emacs-lisp
 (use-package projectile
@@ -1667,6 +2012,9 @@ Quick fn to define a new org note
 #+end_src
 
 ** Magit
+:PROPERTIES:
+:ID:       2c610a98-2a7b-493b-a6dd-e65385d54cc5
+:END:
 
 Ooof this is just going to be painful and super slow as long as I'm on windows
 
@@ -1687,10 +2035,16 @@ Ooof this is just going to be painful and super slow as long as I'm on windows
 #+end_src
 
 ** Shell Git Commands
+:PROPERTIES:
+:ID:       f7903f70-8796-4d48-aae3-4ff36a14b161
+:END:
 
 Windows commands for git becaue magit is almost unusably slow due to windows issues
 
 *** Git stage
+:PROPERTIES:
+:ID:       963747b4-5501-42d0-8cec-ef5cfd040460
+:END:
 
 #+begin_src emacs-lisp
 (defun ads/git-stage ()
@@ -1705,6 +2059,9 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+end_src
 
 *** Git stage all
+:PROPERTIES:
+:ID:       8bbb723b-59f4-4e99-96f5-1fb169ea50e0
+:END:
 
 
 #+begin_src emacs-lisp
@@ -1719,6 +2076,9 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+end_src
 
 *** Git commit
+:PROPERTIES:
+:ID:       4c5499fe-3c97-4a6a-bf80-848d72eed53d
+:END:
 
 #+begin_src emacs-lisp
 (defun ads/git-commit-file ()
@@ -1735,6 +2095,9 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 #+end_src
 
 *** Git stage commit and push
+:PROPERTIES:
+:ID:       395fd074-493c-421e-a6a2-38342b440ce3
+:END:
 Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+begin_src emacs-lisp
 (defun ads/git-stage-commit-push ()
@@ -1754,6 +2117,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+end_src
 
 *** Git commit all
+:PROPERTIES:
+:ID:       ab98f544-4379-49ab-af5e-c073353e7628
+:END:
 #+begin_src emacs-lisp
 (defun ads/git-commit-all ()
   (interactive)
@@ -1767,6 +2133,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+end_src
 
 *** Git Push
+:PROPERTIES:
+:ID:       38fa7d31-4ff2-43ec-b453-72796cae0a3b
+:END:
 #+begin_src emacs-lisp
 (defun ads/git-push ()
   (interactive)
@@ -1786,6 +2155,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+end_src
 
 *** Git Pull
+:PROPERTIES:
+:ID:       fa0ab85e-edde-4b65-b8ff-8d99ebe2d007
+:END:
 #+begin_src emacs-lisp
 (defun ads/git-pull ()
   (interactive)
@@ -1805,6 +2177,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+end_src
 
 *** Git Fetch
+:PROPERTIES:
+:ID:       19d91f2e-8de8-4c64-8b4e-065ed50e0b21
+:END:
 #+begin_src emacs-lisp
 
 (defun ads/git-fetch ()
@@ -1819,6 +2194,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 #+end_src
 
 ** Prettify Code
+:PROPERTIES:
+:ID:       c14d9424-2259-408e-ad97-6b41cd9152c7
+:END:
 
 Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveiro/cunene: My dot emacs]], most of this will probably go away once I update to EMACS 28 and can use ligatures
 #+begin_src emacs-lisp
@@ -1851,6 +2229,9 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 #+RESULTS:
 
 ** Company mode
+:PROPERTIES:
+:ID:       fd1e14f3-8601-4004-ae7d-406c0bfa44cb
+:END:
 Completion system
 
 # #+begin_src emacs-lisp
@@ -1875,6 +2256,9 @@ Completion system
 
 #+RESULTS:
 ** Flycheck
+:PROPERTIES:
+:ID:       e5809ac7-ee74-4f36-a0a7-23fa0aec5ded
+:END:
 Flycheck is the newer version of flymake and is needed to make lsp-mode not freak out.
 # #+begin_src emacs-lisp
 (use-package flycheck
@@ -1887,6 +2271,9 @@ Flycheck is the newer version of flymake and is needed to make lsp-mode not frea
 #+end_src
 
 ** LSP Mode
+:PROPERTIES:
+:ID:       9a30a422-6935-455a-bef0-2df67456057f
+:END:
 Package for interacting with language servers
 # #+begin_src emacs-lisp
 
@@ -1900,6 +2287,9 @@ Package for interacting with language servers
 
 
 *** Git Restore file
+:PROPERTIES:
+:ID:       8522eb91-a6ea-446a-8f71-8ba7c1ddfb97
+:END:
 I did an oopsies restore file to last commit
 
 #+begin_src emacs-lisp
@@ -1914,6 +2304,9 @@ I did an oopsies restore file to last commit
 
 #+end_src
 * Anki
+:PROPERTIES:
+:ID:       d282f285-e32d-4396-899d-cbc0089dc754
+:END:
 
 #+begin_src emacs-lisp
 (use-package anki-connect)
@@ -1954,7 +2347,13 @@ I did an oopsies restore file to last commit
   )
 #+end_src
 * File Management
+:PROPERTIES:
+:ID:       521c9aec-b628-4b0e-8742-f886747a9775
+:END:
 ** Dired
+:PROPERTIES:
+:ID:       85cd3f56-c224-4917-bdf7-5c4aba24238d
+:END:
 
 #+begin_src emacs-lisp
 (use-package dired
@@ -1995,6 +2394,9 @@ I did an oopsies restore file to last commit
 
 #+end_src
 ** Counsel Find File External Extensions
+:PROPERTIES:
+:ID:       5c8dd674-a667-4dcc-921b-ee7f564c3cdc
+:END:
 When using counsel-find-file tries to open a document if the extension is in this list open using the external program
 
 #+begin_src emacs-lisp
@@ -2016,6 +2418,9 @@ When using counsel-find-file tries to open a document if the extension is in thi
 
 
 ** Open in Windows Default
+:PROPERTIES:
+:ID:       15445347-9a36-4bc7-bbd6-c52bdd8a359e
+:END:
 Use the default OS program to open the selected file in dired
 
   #+begin_src emacs-lisp
@@ -2032,6 +2437,9 @@ Use the default OS program to open the selected file in dired
   (define-key dired-mode-map (kbd "C-c C-c") 'ads/dired-win-default))
   #+end_src
 ** Open Org Attatch dir in windows explorer
+:PROPERTIES:
+:ID:       162e4eab-4a11-40c1-91dc-e28185f6b8cf
+:END:
 #+begin_src emacs-lisp
 (defun ads/org-attatch-open-windows ()
   (interactive)
@@ -2043,6 +2451,9 @@ Use the default OS program to open the selected file in dired
 #+end_src
 
 ** UTF-8
+:PROPERTIES:
+:ID:       aa91c89c-73fa-4afb-acaa-03068030d7e3
+:END:
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 
 #+BEGIN_SRC emacs-lisp
@@ -2056,6 +2467,9 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 
 
 ** Treemacs
+:PROPERTIES:
+:ID:       a1aa630c-24f4-48a5-a9d5-22d0ae0570d0
+:END:
 
 #+begin_src emacs-lisp
 (use-package treemacs
@@ -2130,18 +2544,27 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 
 #+end_src
 *** Treemacs Evil
+:PROPERTIES:
+:ID:       f584e52f-52ff-4d60-a4bf-ad5d9c9f671b
+:END:
 #+begin_src emacs-lisp
 (use-package treemacs-evil
   :after treemacs evil
   :ensure t)
 #+end_src
 *** Treemacs Projectile
+:PROPERTIES:
+:ID:       9c9034f2-3cda-4932-ade5-91a25fac0d4f
+:END:
 #+begin_src emacs-lisp
 (use-package treemacs-projectile
   :after treemacs projectile
   :ensure t)
 #+end_src
 *** Treemacs Dired
+:PROPERTIES:
+:ID:       6f3f2536-c67f-4c28-bc26-429b81907f58
+:END:
 #+begin_src emacs-lisp
 (use-package treemacs-icons-dired
   :after treemacs dired
@@ -2150,6 +2573,9 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 #+end_src
 
 *** Treemacs magit
+:PROPERTIES:
+:ID:       f2123174-2150-4221-b83f-350da0dd4635
+:END:
 #+begin_src emacs-lisp
 (use-package treemacs-magit
   :after treemacs magit
@@ -2157,6 +2583,9 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 #+end_src
 
 *** Treemacs Persp
+:PROPERTIES:
+:ID:       8b2d91e8-6fdb-4e4d-b977-f4bbc2ac21c9
+:END:
 #+begin_src emacs-lisp
 (use-package treemacs-persp
   :after treemacs persp-mode
@@ -2166,6 +2595,9 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 #+end_src
 
 *** LSP Treemacs
+:PROPERTIES:
+:ID:       e1264771-acf9-47ad-92d8-ca917fe7d43f
+:END:
 Currently unused
 # #+begin_src emacs-lisp
 # (use-package lsp-treemacs
@@ -2176,12 +2608,18 @@ Currently unused
 # #+end_src
 
 *** Treemacs Keybindings
+:PROPERTIES:
+:ID:       b54889f6-8e3a-4c3b-9320-f7c14efd0c9a
+:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 #+end_src
 *** Treemacs laptop mode
+:PROPERTIES:
+:ID:       3cc9b81b-2ea7-4c49-994a-d641b5a5b4a7
+:END:
 change treemacs settings to be easier to use on a small latop monitor
 #+begin_src emacs-lisp
 (defun ads/treemacs-laptop-mode ()
@@ -2190,7 +2628,13 @@ change treemacs settings to be easier to use on a small latop monitor
   (setq treemacs-width 25))
 #+end_src
 * Load Computer specific config files
+:PROPERTIES:
+:ID:       8a057818-c467-4db1-b364-10d6812c293a
+:END:
 ** Windows
+:PROPERTIES:
+:ID:       f7a31363-3650-4a18-a457-b43add41f64c
+:END:
 cause sometimes that's life
 #+begin_src emacs-lisp
 (when
@@ -2199,6 +2643,9 @@ cause sometimes that's life
 
 #+end_src
 ** Ceres
+:PROPERTIES:
+:ID:       310ba1e2-a249-49b4-9ca0-fa6a33eb39fc
+:END:
 my personal computer
 #+begin_src emacs-lisp
 (when
@@ -2207,9 +2654,15 @@ my personal computer
 #+end_src
 
 ** Work
+:PROPERTIES:
+:ID:       2f377e19-7f7a-4180-86c8-e3f8ed6529fd
+:END:
 
     ~(load-file (concat ads/user-dir-org "work.el"))~
 * Disable Debug on Error
+:PROPERTIES:
+:ID:       8983e335-165e-428e-bf7d-3af415999cfb
+:END:
    If config loaded without issue I don't need it enabled in normal usage
    I've moved this to the end of my .emacs after all config files have been loaded
    #+begin_src emacs-lisp
