@@ -908,6 +908,7 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 
 	;:hook (org-mode . ads/org-mode-setup)
 	(require 'org-habit)
+	(require 'org-attach)
 	(add-to-list 'org-modules 'org-habit 'org-checklist)
 	(setq org-habit-graph-column 60)
 
