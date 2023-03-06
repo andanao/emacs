@@ -1,6 +1,9 @@
 #+title:Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
 * Set background
+:PROPERTIES:
+:ID:       00a82b29-af7d-4613-a1d2-90530cdd8d8c
+:END:
 Please don't blind me with a white background
 
 #+begin_src emacs-lisp
@@ -406,10 +409,6 @@ I don't need to open:
    "ew" '(lambda () (interactive)
 	   (find-file "c:/_Git/emacs-work/work-config.org")
            :wk "Work Config")
-
-   "ek" '(lambda () (interactive)
-	   (find-file (concat ads/user-dir-emacs "windows.org"))
-           :wk ".emacs Config")
 
    "e." '(lambda () (interactive)
 	   (find-file ads/user-dir-config)
