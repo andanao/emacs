@@ -60,7 +60,7 @@ determine the exact padding."
    (teal       '("#009B7C" "color-36"  "brightgreen"  ))
    (violet     '("#8700AF" "color-91"  "brightmagenta"))
 
-   (bg-blue    '("#DEEAF8" "color-189"   "blue"         )) 
+   (bg-blue    '("#DEEAF8" "color-189"   "blue"         ))
    (dark-blue  bg-blue)
    (bg-cyan    '("#D5FAFF" "color-195"   "cyan"         ))
    (dark-cyan  bg-cyan)
@@ -248,9 +248,9 @@ determine the exact padding."
    (rainbow-delimiters-depth-5-face :foreground violet)
    (rainbow-delimiters-depth-6-face :foreground dark-cyan)
    (rainbow-delimiters-depth-7-face :foreground red)
-   ;;;; 
+   ;;;;
 
-   
+
    (org-ellipsis :foreground orange :height 0.75)
    (org-tag :foreground yellow :bold nil :height 0.75)
    (org-todo :foreground yellow :bold 'inherit :font sans)
@@ -260,21 +260,21 @@ determine the exact padding."
    ((org-block &override)    :foreground fg :background bg-alt :inherit 'fixed-pitch)
    ;; (org-block-begin :background bg :height 0.8)
    (org-block-begin-line :background bg :inherit 'org-code :height 0.75)
-   
+
    (org-table     :foreground cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
    (org-code      :foreground cyan :height 0.8 :inherit 'fixed-pitch)
    (org-verbatim  :font serif :height 1.0 :slant 'italic :foreground base8)
    (org-quote :inherit 'org-verbatim :height 1.2 )
-   
+
    (org-special-keyword  :inherit '(font-lock-comment-face fixed-pitch))
    (org-meta-line  :inherit '(font-lock-comment-face fixed-pitch))
    (org-checkbox   :height 0.8 :inherit 'fixed-pitch)
    (org-checkbox-statistics-todo :foreground orange :inherit 'org-checkbox)
    (org-checkbox-statistics-done :foreground base5 :inherit 'org-checkbox)
    (line-number    :inherit 'fixed-pitch)
-   (line-number-current-line  :inherit 'fixed-pitch)
-   (org-document-title :height 3.0) 
+   (line-number-current-line  :inherit 'line-number)
+   (org-document-title :height 3.0)
    (org-level-1 :height 1.8 :foreground base8 )
    (org-level-2 :height 1.6 :foreground base8 )
    (org-level-3 :height 1.4 :foreground base8 )
