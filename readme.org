@@ -414,7 +414,6 @@ I don't need to open:
 	   (find-file ads/user-dir-config)
            :wk ".emacs Config")
 
-
    "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
            :which-key "ORG init")
 
@@ -1179,6 +1178,52 @@ do not already have one."
 	  (lambda ()
 	    (add-hook 'before-save-hook
 	    'ads/org-add-ids-to-headlines-in-file nil 'local)))
+#+end_src
+** Hide :PROPERTIES: Drawer
+:PROPERTIES:
+:ID:       481e6876-b812-4f7c-aa37-58ecc98c5532
+:END:
+
+[[https://stackoverflow.com/questions/17478260/completely-hide-the-properties-drawer-in-org-mode][emacs - Completely hide the :PROPERTIES: drawer in org-mode - Stack Overflow]]
+
+#+begin_src emacs-lisp
+(defun org-cycle-hide-drawers (state)
+  "Re-hide all drawers after a visibility state change."
+  (when (and (derived-mode-p 'org-mode)
+             (not (memq state '(overview folded contents))))
+    (save-excursion
+      (let* ((globalp (memq state '(contents all)))
+             (beg (if globalp
+                    (point-min)
+                    (point)))
+             (end (if globalp
+                    (point-max)
+                    (if (eq state 'children)
+                      (save-excursion
+                        (outline-next-heading)
+                        (point))
+                      (org-end-of-subtree t)))))
+        (goto-char beg)
+        (while (re-search-forward org-drawer-regexp end t)
+          (save-excursion
+            (beginning-of-line 1)
+            (when (looking-at org-drawer-regexp)
+              (let* ((start (1- (match-beginning 0)))
+                     (limit
+                       (save-excursion
+                         (outline-next-heading)
+                           (point)))
+                     (msg (format
+                            (concat
+                              "org-cycle-hide-drawers:  "
+                              "`:END:`"
+                              " line missing at position %s")
+                            (1+ start))))
+                (if (re-search-forward "^[ \t]*:END:" limit t)
+                  (outline-flag-region start (point-at-eol) t)
+                  (user-error msg))))))))))
+
+(org-cycle-hide-drawers 'all)
 #+end_src
 
 ** Copy ID to clipboard for linking
