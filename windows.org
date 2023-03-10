@@ -20,6 +20,14 @@ Set the windows theme color from powershell, doesn't work from regular windows c
 You can also set the system to light mode replacing the ~AppsUseLightTheme~ with ~SystemUsesLightTheme~ but I like things not looking like Windows 95
 
 #+begin_src emacs-lisp
+(setq win-theme "0")
+(with-temp-buffer
+    (shell-command
+     (concat
+      "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
+      win-theme
+      " -Type Dword -Force; dir")
+     t))
 (if
     (string= (car ads/switch-themes-var) "ads-dark")
     (setq win-theme "0")
