@@ -2028,6 +2028,14 @@ Quick fn to define a new org note
 :PROPERTIES:
 :ID:       3da3b099-ebd8-407c-b50c-bec8941f22e9
 :END:
+** Auto Mode alist
+:PROPERTIES:
+:ID:       4568bcdd-6bd4-4527-b116-03ed20c1d2c9
+:END:
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.keymap\\'" . c-or-c++-mode))
+#+end_src
 
 ** Projectile
 :PROPERTIES:
@@ -2058,7 +2066,7 @@ Quick fn to define a new org note
 :ID:       2c610a98-2a7b-493b-a6dd-e65385d54cc5
 :END:
 
-Ooof this is just going to be painful and super slow as long as I'm on windows
+Painful and super slow on windows, a large reason why I often use the <leader> git commands defined later
 
 #+begin_src emacs-lisp
 
