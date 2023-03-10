@@ -1,6 +1,9 @@
 #+title:Adrian Danao-Schroeder config
 #+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
 * Set background
+:PROPERTIES:
+:ID:       5234d029-e9f9-4471-bb50-d1f70161c88a
+:END:
 Please don't blind me with a white background
 
 #+begin_src emacs-lisp
@@ -487,15 +490,6 @@ I don't need to open:
    "tl" '(ads/toggle-lines :wk"toggle truncate")
 )
 #+end_src
-** Kill Emacs
-:PROPERTIES:
-:ID:       50a64057-34d1-4d1f-bfeb-78f84f261e73
-:END:
-#+begin_src emacs-lisp
-(ads/leader-keys
-  "C-<escape>" 'kill-emacs)
-#+end_src
-
 ** Normal mode after save
 :PROPERTIES:
 :ID:       5ce816f8-241b-43e7-b7fb-ace111cd7183
