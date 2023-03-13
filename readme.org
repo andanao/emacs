@@ -417,6 +417,13 @@ I don't need to open:
    "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
            :which-key "ORG init")
 
+   "ez" '(lambda () (interactive)
+	   (find-file (concat ads/git-dir "zmk-config/config/corne.keymap"))
+           :wk "ZMK Config")
+   "eZ" '(lambda () (interactive)
+	   (counsel-find-file (concat ads/git-dir "zmk-config/"))
+           :wk "ZMK Config")
+
    "e" '(:ignore t :whch-key "eval")
    "eb" '(eval-buffer :which-key "eval-buffer")
    "ep" '(eval-last-sexp :which-key "eval-last-sexp")
