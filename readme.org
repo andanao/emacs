@@ -155,6 +155,7 @@ Setup some default startup parameters
  help-window-select t                   ; Focus new help windows when opened
  initial-scratch-message "Welcome back"             ; Empty the initial *scratch* buffer
  visible-bell nil                       ; set up the visible bell (no annoying beeping sounds)
+ inhibit-startup-echo-area-message t
  inhibit-startup-screen t
  )
 
@@ -1221,7 +1222,7 @@ do not already have one."
                   (outline-flag-region start (point-at-eol) t)
                   (user-error msg))))))))))
 
-(org-cycle-hide-drawers 'all)
+;;(org-cycle-hide-drawers 'overview)
 #+end_src
 
 ** Copy ID to clipboard for linking
