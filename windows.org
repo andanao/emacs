@@ -91,5 +91,5 @@ Use the default OS program to open the selected file in dired
                                              (dired-get-filename))))
 
       (w32-shell-execute 1 filename)))
-  (define-key dired-mode-map (kbd "i") 'ads/dired-win-default))
+  (define-key dired-mode-map (kbd "C-i") 'ads/dired-win-default))
   #+end_src
