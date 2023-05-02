@@ -60,15 +60,36 @@ Some the files I work with don't have consistent line endings DOS or UNIX
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
 #+end_src
-* Open Attatchment dir externally
+* Open Org Attatch dir in windows explorer
 :PROPERTIES:
-:ID:       e7315482-1abe-4416-8c59-0de093746f0b
+:ID:       162e4eab-4a11-40c1-91dc-e28185f6b8cf
 :END:
-
 #+begin_src emacs-lisp
 (defun org-attatch-open-win-explorer ()
   (interactive)
-  (setq attatchment-dir (org-attach-dir-get-create))
-  (w32-shell-execute 1 attatchment-dir))
+  (w32-shell-execute 1 (org-attach-dir-get-create))
+  )
 
+(ads/leader-keys
+  "M-a" '(org-attatch-open-win-explorer :wk "org-attatch-open-windows"))
 #+end_src
+
+* Open in Windows Default
+:PROPERTIES:
+:ID:       15445347-9a36-4bc7-bbd6-c52bdd8a359e
+:END:
+Use the default OS program to open the selected file in dired
+
+  #+begin_src emacs-lisp
+  (with-eval-after-load 'dired
+  ;; C-c l to launch a file in Windows similar to running
+  ;; start "" filename in the console
+  (defun ads/dired-win-default ()
+    (interactive)
+    (let ((filename (dired-replace-in-string "/"
+                                             "\\"
+                                             (dired-get-filename))))
+
+      (w32-shell-execute 1 filename)))
+  (define-key dired-mode-map (kbd "i") 'ads/dired-win-default))
+  #+end_src
