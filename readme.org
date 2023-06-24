@@ -240,7 +240,7 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
 (if (string= system-type "gnu/linux")
     (setq
      serif "Etbb"
-     mono "Fira Code")
+     mono "Fira Code Nerd Font")
     (setq
      serif "EtBembo"
      mono "Fira Code Retina"))
