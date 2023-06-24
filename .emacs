@@ -1,18 +1,18 @@
 ;; example .emacs file from ubuntu with emacs 28
-(setq efs/user-dir-emacs "~/git/emacs/")
+(setq ads/user-dir-emacs "~/git/emacs/")
 
-(setq efs/user-dir-org "~/git/Org/")
+(setq ads/user-dir-org "~/git/Org/")
 
-(setq efs/personal-dir-org  efs/user-dir-org)
+(setq ads/personal-dir-org  ads/user-dir-org)
 
-(setq efs/user-dir-readme (concat efs/user-dir-emacs "readme.org"))
+(setq ads/user-dir-readme (concat ads/user-dir-emacs "readme.org"))
 
-(setq efs/user-dir-config "~/.emacs")
+(setq ads/user-dir-config "~/.emacs")
 
-(setq efs/computer-id "xps-ubuntu")
+(setq ads/computer-id "xps-ubuntu")
 
 (setq debug-on-error t)
-(load-file (concat efs/user-dir-emacs "init.el"))
+(load-file (concat ads/user-dir-emacs "init.el"))
 
 (setq debug-on-error nil)
 (custom-set-variables
