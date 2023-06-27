@@ -2091,6 +2091,26 @@ Painful and super slow on windows, a large reason why I often use the <leader> g
 (global-set-key (kbd "C-c C-g") 'magit-file-dispatch)
 (global-set-key (kbd "C-x C-g") 'magit-status)
 #+end_src
+*** Magit Diff Paths
+:PROPERTIES:
+:ID:       f3cc7764-a14d-47b6-ab9d-28bf38489d44
+:END:
+Might be worth submitting a PR for this, seems like it would be a helpful thing to have
+#+begin_src emacs-lisp
+(defun magit-diff-paths-buffer-file (a)
+  "Show changes between buffer file and another file on disk"
+  (interactive (list (read-file-name "File to compare" nil nil t)
+		     ))
+  (message a)
+  (magit-diff-setup-buffer nil "--no-index"
+                           nil (list (magit-convert-filename-for-git
+                                      (expand-file-name a))
+                                     (magit-convert-filename-for-git
+                                      (expand-file-name buffer-file-name))))
+    )
+
+#+end_src
+
 
 ** Shell Git Commands
 :PROPERTIES:
@@ -2250,6 +2270,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
 
 
 #+end_src
+
 
 ** Prettify Code
 :PROPERTIES:
