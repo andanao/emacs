@@ -164,11 +164,11 @@
    (rainbow-delimiters-depth-5-face :foreground violet)
    (rainbow-delimiters-depth-6-face :foreground dark-cyan)
    (rainbow-delimiters-depth-7-face :foreground red)
-   ;;;; 
+   ;;;;
    ((org-block &override)    :background base1 :inherit 'fixed-pitch)
    ;; (org-block-begin :background bg :height 0.8)
    (org-block-begin-line :background bg :inherit 'org-code :height 0.75)
-   
+
    (org-table     :foreground dark-cyan :inherit 'fixed-pitch :background bg)
    (org-formula   :inherit 'fixed-pitch)
    (org-code      :foreground dark-cyan :height 0.8 :inherit 'fixed-pitch)
@@ -180,9 +180,9 @@
    (org-checkbox   :height 0.8 :inherit 'fixed-pitch)
    (org-checkbox-statistics-todo :foreground orange :inherit 'org-checkbox)
    (org-checkbox-statistics-done :foreground base5 :inherit 'org-checkbox)
-   (line-number    :inherit 'fixed-pitch)
-   (line-number-current-line  :inherit 'fixed-pitch)
-   (org-document-title :height 3.0) 
+   (line-number  :height 0.8  :inherit 'fixed-pitch)
+   (line-number-current-line  :inherit 'line-number)
+   (org-document-title :height 3.0)
    (org-level-1 :height 1.8 :foreground base8 )
    (org-level-2 :height 1.6 :foreground base8 )
    (org-level-3 :height 1.4 :foreground base8 )
