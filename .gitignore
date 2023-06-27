@@ -8,6 +8,7 @@
 *~
 
 init.el
+windows.el
 /readme.el
 # Undo-tree save-files
 *.~undo-tree
