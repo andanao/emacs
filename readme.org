@@ -1155,6 +1155,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
+
+	(put 'narrow-to-region 'disabled nil)
 	)
 
 
