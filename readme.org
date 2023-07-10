@@ -1155,6 +1155,8 @@ Some general org config stuff, may be worth cleaning up at some point and splitt
 	(org-indent-mode t)
 	(variable-pitch-mode 1)
 	(visual-line-mode 1)
+
+	(put 'narrow-to-region 'disabled nil)
 	)
 
 
@@ -2561,15 +2563,15 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
-          treemacs-follow-mode                   nil
           treemacs-width                         35)
 
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     ;;(treemacs-resize-icons 44)
 
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
+    (treemacs-filewatch-mode             t  )
+    (treemacs-fringe-indicator-mode      t  )
+
     (pcase (cons (not (null (executable-find "git")))
                  (not (null treemacs-python-executable)))
       (`(t . t)
@@ -2688,15 +2690,17 @@ cause sometimes that's life
   (org-babel-load-file (concat ads/user-dir-emacs "windows.org")))
 
 #+end_src
-** Ceres
+** Personal Linux
 :PROPERTIES:
 :ID:       310ba1e2-a249-49b4-9ca0-fa6a33eb39fc
 :END:
-my personal computer
+Load my ~deimos~ config stuff
 #+begin_src emacs-lisp
 (when
-  (string= system-name "ceres")
-  (org-babel-load-file (concat ads/user-dir-org "python-development-setup.org")))
+  (string= system-name "deimos")
+  (org-babel-load-file (concat ads/user-dir-emacs "linux.org"))
+  (org-babel-load-file (concat ads/user-dir-org "python-development-setup.org")
+))
 #+end_src
 
 ** Work
