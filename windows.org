@@ -93,3 +93,13 @@ Use the default OS program to open the selected file in dired
       (w32-shell-execute 1 filename)))
   (define-key dired-mode-map (kbd "C-i") 'ads/dired-win-default))
   #+end_src
+* Open git ~.bashrc~
+:PROPERTIES:
+:ID:       5ee16149-be0c-4ee8-b2b6-78f8fc549044
+:END:
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "eb" '(lambda () (interactive)
+	   (find-file "c:/Users/adanaos/.bashrc")
+           :wk "git .bashrc"))
+#+end_src
