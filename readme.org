@@ -214,6 +214,30 @@ when calling async shell it's annoying to have stuff pop up int hte
 :PROPERTIES:
 :ID:       d1c3dfde-0150-4e61-b70b-6415ae331e20
 :END:
+** Read only directories
+:PROPERTIES:
+:ID:       497e1eaa-946f-47cb-83b9-71f031125e11
+:END:
+some directories I want to files to be opened in read-only mode because they are usually used for reference rather than
+#+begin_src emacs-lisp
+
+(defun find-file-read-only-directories ()
+"""
+start buffer in read only mode if file in a child directory
+ of in any of the directores defined in read-only-directories
+"""
+  (dolist (read-only-directory read-only-directories)
+  ;; (print read-only-directory)
+  (when
+      (string-search read-only-directory buffer-file-name)
+      (read-only-mode)
+      ;; (print "open normally")
+    )
+  ))
+
+(add-hook 'find-file-hook 'find-file-read-only-directories)
+
+#+end_src
 ** Browse in Edge
 :PROPERTIES:
 :ID:       9414698c-d7f5-4491-81a1-d13254cdc236
