@@ -2235,6 +2235,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
   (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
+  (delete-other-windows)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
   ;; (message
   ;;  (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
