@@ -2715,17 +2715,71 @@ Currently unused
 (ads/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 #+end_src
-*** Treemacs laptop mode
+*** Treemacs Laptop Mode
 :PROPERTIES:
-:ID:       3cc9b81b-2ea7-4c49-994a-d641b5a5b4a7
+:ID:       73337d62-ab74-425b-b41f-623378c45250
 :END:
-change treemacs settings to be easier to use on a small latop monitor
+
 #+begin_src emacs-lisp
-(defun ads/treemacs-laptop-mode ()
+
+(defun treemacs-laptop-mode-toggle ()
   (interactive)
-  (setq treemacs-indentation 1)
-  (setq treemacs-width 25))
+  (if treemacs-laptop-mode-status
+      (treemacs-laptop-mode-off)
+      (treemacs-laptop-mode-on)
+      )
+  ;; (setq treemacs-laptop-mode-status (not ads/treemacs-laptop-mode-status))
+  )
+
+(defun treemacs-laptop-mode-on  ()
+  (interactive)
+  (setq treemacs-laptop-mode-status t)
+  (setq treemacs-width                  25
+	treemacs-indentation             1
+	treemacs-default-visit-action    'treemacs-visit-node-close-treemacs	     )
+  (message "treemacs-laptop-mode-on")
+  )
+
+(defun treemacs-laptop-mode-off ()
+  (interactive)
+  (setq treemacs-laptop-mode-status nil)
+  (setq treemacs-width                  35
+	treemacs-indentation             2
+	treemacs-default-visit-action    'treemacs-visit-node-no-split
+	)
+  (message "treemacs-laptop-mode-off")
+  )
+
+(if (> (frame-width) 200)
+    (treemacs-laptop-mode-off)
+    (treemacs-laptop-mode-on)
+    )
+
+;; (print ads/treemacs-laptop-mode-status)
 #+end_src
+
+#+RESULTS:
+: treemacs-laptop-mode-on
+
+
+#+begin_src emacs-lisp
+(display-monitor-attributes-list)
+#+end_src
+
+#+RESULTS:
+| (geometry 0 0 1920 1080)    | (workarea 0 0 1920 1050)    | (mm-size 527 296) | (name . \\.\DISPLAY2) | (frames)                                       |
+| (geometry 1920 0 1920 1080) | (workarea 1920 0 1920 1050) | (mm-size 344 194) | (name . \\.\DISPLAY1) | (frames #<frame scratch.org 00000284c9e6c570>) |
+
+
+#+begin_src emacs-lisp
+(if (> (frame-width) 200)
+    (setq treemacs-laptop-mode-status nil)
+    (setq treemacs-laptop-mode-status t)
+    )
+(print treemacs-laptop-mode-status)
+#+end_src
+
+#+RESULTS:
 * Load Computer specific config files
 :PROPERTIES:
 :ID:       8a057818-c467-4db1-b364-10d6812c293a
