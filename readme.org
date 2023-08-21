@@ -536,7 +536,8 @@ I don't need to open:
   (interactive)
   (toggle-truncate-lines)
   ;; (visual-line-mode)
-  (visual-fill-column-mode `toggle)
+  (when (eq major-mode 'org-mode)
+      (visual-fill-column-mode `toggle))
   )
 
 (ads/leader-keys
