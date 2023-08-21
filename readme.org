@@ -537,8 +537,7 @@ I don't need to open:
   (toggle-truncate-lines)
   ;; (visual-line-mode)
   (when (eq major-mode 'org-mode)
-      (visual-fill-column-mode `toggle))
-  )
+    (visual-fill-column-mode `toggle)))
 
 (ads/leader-keys
    "tl" '(ads/toggle-lines :wk"toggle truncate")
