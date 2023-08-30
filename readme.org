@@ -1070,6 +1070,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 :PROPERTIES:
 :ID:       eafc9f46-4818-4c5b-b0b1-d22ee5aa6606
 :END:
+Org mode is wonderful, not sure how I would live without this for notekeeping and todos anymore.  For me it's become a hill I'd threaten to quit over.
 ** Org Mode Setup
 :PROPERTIES:
 :ID:       41a4cac3-ce56-450d-ac93-f56537e1dc41
@@ -1881,7 +1882,22 @@ Maybe this will be better somewhere else but it works here for now
           (insert description)))))
 
 #+end_src
+** Org Transclusion
+:PROPERTIES:
+:ID:       e500befc-3c77-4cb6-b143-a6b8436559ee
+:END:
 
+This package seems like a godsend, I do need to spend some time looking into it.
+[[https://nobiot.github.io/org-transclusion/][Org-transclusion User Manual]]
+
+#+begin_src emacs-lisp
+(use-package org-transclusion
+  :after org
+  ;; :init
+
+  )
+
+#+end_src
 ** Insert Screenshot
 :PROPERTIES:
 :ID:       b0330f2c-d38c-4a6c-a493-55553bc98641
