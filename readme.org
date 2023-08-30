@@ -4,7 +4,7 @@
 :PROPERTIES:
 :ID:       5234d029-e9f9-4471-bb50-d1f70161c88a
 :END:
-Please don't blind me with a white background
+So the white startup screen doesn't blind me
 
 #+begin_src emacs-lisp
 (set-background-color "#000000")
