@@ -2228,7 +2228,7 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 :PROPERTIES:
 :ID:       395fd074-493c-421e-a6a2-38342b440ce3
 :END:
-Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
+Useful I'm only writng code for me and I'm lazy AF and testing somewhere else.. it's my git lazy
 #+begin_src emacs-lisp
 (defun ads/git-stage-commit-push ()
   (interactive)
