@@ -238,16 +238,6 @@ start buffer in read only mode if file in a child directory
 (add-hook 'find-file-hook 'find-file-read-only-directories)
 
 #+end_src
-** Browse in Edge
-:PROPERTIES:
-:ID:       9414698c-d7f5-4491-81a1-d13254cdc236
-:END:
-edge sucks but some things only work in edge
-#+begin_src emacs-lisp
-(defun ads/browse-url-edge (url)
-    (shell-command (concat "start msedge " url)))
-
-#+end_src
 ** F Strings
 :PROPERTIES:
 :ID:       8b205958-67cf-4b2d-99c0-f0dfc132b3da

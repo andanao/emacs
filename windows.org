@@ -11,6 +11,16 @@ I really wish I didn't have to use windows but sometimes you don't have a choice
 #+end_src
 
 
+* Browse in Edge
+:PROPERTIES:
+:ID:       9414698c-d7f5-4491-81a1-d13254cdc236
+:END:
+edge sucks but some things only work in edge
+#+begin_src emacs-lisp
+(defun ads/browse-url-edge (url)
+    (shell-command (concat "start msedge " url)))
+
+#+end_src
 * Align Emacs and System Theme
 :PROPERTIES:
 :ID:       608313d5-6401-4a00-8aaf-4451531eb4ff
