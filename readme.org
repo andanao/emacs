@@ -4,7 +4,7 @@
 :PROPERTIES:
 :ID:       5234d029-e9f9-4471-bb50-d1f70161c88a
 :END:
-Please don't blind me with a white background
+So the white startup screen doesn't blind me
 
 #+begin_src emacs-lisp
 (set-background-color "#000000")
@@ -214,17 +214,57 @@ when calling async shell it's annoying to have stuff pop up int hte
 :PROPERTIES:
 :ID:       d1c3dfde-0150-4e61-b70b-6415ae331e20
 :END:
-** Browse in Edge
+** Read only directories
 :PROPERTIES:
-:ID:       9414698c-d7f5-4491-81a1-d13254cdc236
+:ID:       497e1eaa-946f-47cb-83b9-71f031125e11
 :END:
-edge sucks but some things only work in edge
+some directories I want to files to be opened in read-only mode because they are usually used for reference rather than
 #+begin_src emacs-lisp
-(defun ads/browse-url-edge (url)
-    (shell-command (concat "start msedge " url)))
+(setq read-only-directories '( ) )
+(defun find-file-read-only-directories ()
+"""
+start buffer in read only mode if file in a child directory
+ of in any of the directores defined in read-only-directories
+"""
+  (dolist (read-only-directory read-only-directories)
+  ;; (print read-only-directory)
+  (when
+      (string-search read-only-directory buffer-file-name)
+      (read-only-mode)
+      ;; (print "open normally")
+    )
+  ))
+
+(add-hook 'find-file-hook 'find-file-read-only-directories)
 
 #+end_src
+** F Strings
+:PROPERTIES:
+:ID:       8b205958-67cf-4b2d-99c0-f0dfc132b3da
+:END:
+Python F strings are a great way to format strings while being able to see what's going on inside code taken from John Kitchin's [[https://kitchingroup.cheme.cmu.edu/blog/2018/05/14/f-strings-in-emacs-lisp/][f-strings in emacs-lisp]]
+#+begin_src emacs-lisp
+(defmacro f-string (fmt)
+  "Like `s-format' but with format fields in it.
+FMT is a string to be expanded against the current lexical
+environment. It is like what is used in `s-lex-format', but has
+an expanded syntax to allow format-strings. For example:
+${user-full-name 20s} will be expanded to the current value of
+the variable `user-full-name' in a field 20 characters wide.
+  (let ((f (sqrt 5)))  (f-string \"${f 1.2f}\"))
+  will render as: 2.24
+This function is inspired by the f-strings in Python 3.6, which I
+enjoy using a lot.
+"
+  (let* ((matches (s-match-strings-all"${\\(?3:\\(?1:[^} ]+\\) *\\(?2:[^}]*\\)\\)}" fmt))
+         (agetter (cl-loop for (m0 m1 m2 m3) in matches
+                        collect `(cons ,m3  (format (format "%%%s" (if (string= ,m2 "")
+                                                                      (if s-lex-value-as-lisp "S" "s")
+                                                                   ,m2))
+                                                  (symbol-value (intern ,m1)))))))
 
+    `(s-format ,fmt 'aget (list ,@agetter))))
+#+end_src
 * Basic UI Config
 :PROPERTIES:
 :ID:       b5b966cb-e846-4885-8ad2-03bf41007266
@@ -486,8 +526,8 @@ I don't need to open:
   (interactive)
   (toggle-truncate-lines)
   ;; (visual-line-mode)
-  ;; (visual-fill-column-mode "toggle")
-  )
+  (when (eq major-mode 'org-mode)
+    (visual-fill-column-mode `toggle)))
 
 (ads/leader-keys
    "tl" '(ads/toggle-lines :wk"toggle truncate")
@@ -1020,6 +1060,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
 :PROPERTIES:
 :ID:       eafc9f46-4818-4c5b-b0b1-d22ee5aa6606
 :END:
+Org mode is wonderful, not sure how I would live without this for notekeeping and todos anymore.  For me it's become a hill I'd threaten to quit over.
 ** Org Mode Setup
 :PROPERTIES:
 :ID:       41a4cac3-ce56-450d-ac93-f56537e1dc41
@@ -1831,7 +1872,22 @@ Maybe this will be better somewhere else but it works here for now
           (insert description)))))
 
 #+end_src
+** Org Transclusion
+:PROPERTIES:
+:ID:       e500befc-3c77-4cb6-b143-a6b8436559ee
+:END:
 
+This package seems like a godsend, I do need to spend some time looking into it.
+[[https://nobiot.github.io/org-transclusion/][Org-transclusion User Manual]]
+
+#+begin_src emacs-lisp
+(use-package org-transclusion
+  :after org
+  ;; :init
+
+  )
+
+#+end_src
 ** Insert Screenshot
 :PROPERTIES:
 :ID:       b0330f2c-d38c-4a6c-a493-55553bc98641
@@ -2178,13 +2234,14 @@ Windows commands for git becaue magit is almost unusably slow due to windows iss
 :PROPERTIES:
 :ID:       395fd074-493c-421e-a6a2-38342b440ce3
 :END:
-Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
+Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..  ~git lazy~
 #+begin_src emacs-lisp
 (defun ads/git-stage-commit-push ()
   (interactive)
   (save-buffer)
   (shell-command (concat "git stage " buffer-file-name) )
   (magit-diff-staged)
+  (delete-other-windows)
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
   ;; (message
   ;;  (concat "Pushing Upstream: " (file-name-directory buffer-file-name)))
@@ -2192,7 +2249,9 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else..
   (magit-mode-bury-buffer))
 
 (ads/leader-keys
+    ; gl - Git Lazy
     "gl"'(ads/git-stage-commit-push :wk "git commit"))
+
 
 #+end_src
 
@@ -2684,17 +2743,71 @@ Currently unused
 (ads/leader-keys
     "C-t" '(treemacs :wk "treemacs"))
 #+end_src
-*** Treemacs laptop mode
+*** Treemacs Laptop Mode
 :PROPERTIES:
-:ID:       3cc9b81b-2ea7-4c49-994a-d641b5a5b4a7
+:ID:       73337d62-ab74-425b-b41f-623378c45250
 :END:
-change treemacs settings to be easier to use on a small latop monitor
+
 #+begin_src emacs-lisp
-(defun ads/treemacs-laptop-mode ()
+
+(defun treemacs-laptop-mode-toggle ()
   (interactive)
-  (setq treemacs-indentation 1)
-  (setq treemacs-width 25))
+  (if treemacs-laptop-mode-status
+      (treemacs-laptop-mode-off)
+      (treemacs-laptop-mode-on)
+      )
+  ;; (setq treemacs-laptop-mode-status (not ads/treemacs-laptop-mode-status))
+  )
+
+(defun treemacs-laptop-mode-on  ()
+  (interactive)
+  (setq treemacs-laptop-mode-status t)
+  (setq treemacs-width                  25
+	treemacs-indentation             1
+	treemacs-default-visit-action    'treemacs-visit-node-close-treemacs	     )
+  (message "treemacs-laptop-mode-on")
+  )
+
+(defun treemacs-laptop-mode-off ()
+  (interactive)
+  (setq treemacs-laptop-mode-status nil)
+  (setq treemacs-width                  35
+	treemacs-indentation             2
+	treemacs-default-visit-action    'treemacs-visit-node-no-split
+	)
+  (message "treemacs-laptop-mode-off")
+  )
+
+(if (> (frame-width) 200)
+    (treemacs-laptop-mode-off)
+    (treemacs-laptop-mode-on)
+    )
+
+;; (print ads/treemacs-laptop-mode-status)
 #+end_src
+
+#+RESULTS:
+: treemacs-laptop-mode-on
+
+
+#+begin_src emacs-lisp
+(display-monitor-attributes-list)
+#+end_src
+
+#+RESULTS:
+| (geometry 0 0 1920 1080)    | (workarea 0 0 1920 1050)    | (mm-size 527 296) | (name . \\.\DISPLAY2) | (frames)                                       |
+| (geometry 1920 0 1920 1080) | (workarea 1920 0 1920 1050) | (mm-size 344 194) | (name . \\.\DISPLAY1) | (frames #<frame scratch.org 00000284c9e6c570>) |
+
+
+#+begin_src emacs-lisp
+(if (> (frame-width) 200)
+    (setq treemacs-laptop-mode-status nil)
+    (setq treemacs-laptop-mode-status t)
+    )
+(print treemacs-laptop-mode-status)
+#+end_src
+
+#+RESULTS:
 * Load Computer specific config files
 :PROPERTIES:
 :ID:       8a057818-c467-4db1-b364-10d6812c293a
