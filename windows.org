@@ -103,6 +103,19 @@ Use the default OS program to open the selected file in dired
       (w32-shell-execute 1 filename)))
   (define-key dired-mode-map (kbd "C-i") 'ads/dired-win-default))
   #+end_src
+* Exec ~.bat~ in new cmd window
+:PROPERTIES:
+:ID:       6fc24ef9-f0d9-47de-90a7-0ee8c7f3a4d1
+:END:
+Often emacs and windows don't always play nice together and causes emacs to lock up, this executes a ~.bat~ script in a new window, which seems to fix the problems I have.
+
+#+begin_src emacs-lisp
+(defun win/cmd-exec-bat-new-window (input-str)
+  (let ((cmd-str (concat "start cmd /k " input-str)))
+    (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
+
+#+end_src
+
 * Open git ~.bashrc~
 :PROPERTIES:
 :ID:       5ee16149-be0c-4ee8-b2b6-78f8fc549044
