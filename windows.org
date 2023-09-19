@@ -109,6 +109,7 @@ Use the default OS program to open the selected file in dired
 :END:
 Often emacs and windows don't always play nice together and causes emacs to lock up, this executes a ~.bat~ script in a new window, which seems to fix the problems I have.
 
+This version keeps it as a sub process, if you need to fix that you can save the ~start-process~ to a variable and ~(set-process-query-on-exit-flag start-process-variable nil)~
 #+begin_src emacs-lisp
 (defun win/cmd-exec-bat-new-window (input-str)
   (let ((cmd-str (concat "start cmd /k " input-str)))
