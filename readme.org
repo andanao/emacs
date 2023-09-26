@@ -448,7 +448,7 @@ I don't need to open:
            :wk "Readme Config")
 
    "ew" '(lambda () (interactive)
-	   (find-file "c:/_Git/emacs-work/work-config.org")
+	   (find-file "c:/users/adanaos/git/emacs-work/work-config.org")
            :wk "Work Config")
 
    "e." '(lambda () (interactive)
