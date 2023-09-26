@@ -9,8 +9,15 @@ I really wish I didn't have to use windows but sometimes you don't have a choice
 	   (find-file (concat ads/user-dir-emacs "windows.org"))
            :wk ".emacs Config"))
 #+end_src
-
-
+* Mute Sounds
+:PROPERTIES:
+:ID:       3940296a-fc99-43fa-8c5d-2186173fea65
+:END:
+the windows error sound is horrible
+#+begin_src emacs-lisp
+(set-message-beep 'silent)
+(setq ring-bell-function 'ignore)
+#+end_src
 * Browse in Edge
 :PROPERTIES:
 :ID:       9414698c-d7f5-4491-81a1-d13254cdc236
