@@ -2486,6 +2486,26 @@ I did an oopsies restore file to last commit
   (anki-editor-reset-cloze-number)
   )
 #+end_src
+* Hugo
+:PROPERTIES:
+:ID:       fdf0561b-d53a-460e-803e-a5c20c39e083
+:END:
+** ox-hugo
+:PROPERTIES:
+:ID:       833d89d2-50e6-4cef-892d-da7bd02459d1
+:END:
+# #+begin_src emacs-lisp
+(use-package ox-hugo
+  :ensure t   ;Auto-install the package from Melpa
+  :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
+  :after ox
+  (setq
+     org-hugo-base-dir "~/git/hugo-site/content/"
+   )
+  )
+
+#+end_src
+
 * File Management
 :PROPERTIES:
 :ID:       521c9aec-b628-4b0e-8742-f886747a9775
