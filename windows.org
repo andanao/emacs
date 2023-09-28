@@ -24,7 +24,7 @@ the windows error sound is horrible
 :END:
 edge sucks but some things only work in edge
 #+begin_src emacs-lisp
-(defun ads/browse-url-edge (url)
+(defun win/browse-url-edge (url)
     (shell-command (concat "start msedge " url)))
 
 #+end_src
