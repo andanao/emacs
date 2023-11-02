@@ -71,7 +71,7 @@ You can also set the system to light mode replacing the ~AppsUseLightTheme~ with
 Some the files I work with don't have consistent line endings DOS or UNIX
 
 #+begin_src emacs-lisp
-(defun hide-dos-eol ()
+(defun win/hide-dos-eol ()
   "Do not show ^M in files containing mixed UNIX and DOS line endings."
   (interactive)
   (setq buffer-display-table (make-display-table))
