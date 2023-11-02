@@ -1045,7 +1045,8 @@ Check if the current theme matches the file being edited on save, if so refresh 
 #+begin_src emacs-lisp
 (use-package emojify
   :hook (after-init . global-emojify-mode)
-  ;; (setq emojify-emoji-styles '(ascii unicode))
+  :config
+  (setq emojify-emoji-styles '(unicode))
   )
 (add-hook 'after-init-hook #'global-emojify-mode)
 
