@@ -283,7 +283,7 @@ Setting up font properties, I like Et bembo, but for some reason can't find wher
      mono "Fira Code Nerd Font")
     (setq
      serif "EtBembo"
-     mono "Fira Code Retina"))
+     mono "FiraCode Nerd Font"))
 (setq sans "Cantarell")
 
 ;; Set Font sizes
