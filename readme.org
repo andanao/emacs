@@ -470,6 +470,15 @@ I don't need to open:
    ))
 
    #+end_src
+** Register keybinding
+:PROPERTIES:
+:ID:       0165a65e-9d88-46bb-9993-03ec9893a577
+:END:
+I don't use mark so much because of Evil's visual mode, but the register functionality with space is very useful
+#+begin_src emacs-lisp
+(define-key global-map (kbd "C-SPC C-SPC") 'jump-to-register)
+(define-key global-map (kbd "C-SPC C-;") 'point-to-register)
+#+end_src
 ** Evil
 :PROPERTIES:
 :ID:       4108c640-7fb6-4480-894c-6ab475b076d5
