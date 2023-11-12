@@ -817,6 +817,7 @@ Check if the current theme matches the file being edited on save, if so refresh 
      :init (doom-modeline-mode 1)
    )
 
+(set-face-attribute 'doom-modeline nil :font mono)
 
    #+end_src
 
@@ -2027,7 +2028,7 @@ Return to normal state after C-c C-c
 :PROPERTIES:
 :ID:       8c2ecbd5-e3ab-4ab1-9fbd-afa756b0186f
 :END:
-I don't want to have to wait after saving a file to fontinue working
+I don't want to have to wait after saving a file to continue working
 
 #+begin_src emacs-lisp
 (use-package async
