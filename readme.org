@@ -340,16 +340,6 @@ Enable column numbers
    #+end_src
 
 
-** Restore session
-:PROPERTIES:
-:ID:       729db0fc-28ae-43f2-88a3-a608e5de9955
-:END:
-
-#+begin_src emacs-lisp
-;(savehist-mode 1)
-;(add-to-list 'savehist-additional-variables 'kill-ring) ;; for example
-#+end_src
-
 ** Unbind Hide/kill emacs session C-x
 :PROPERTIES:
 :ID:       cc5eb2dd-ff05-4824-8a17-7f00e1f3133c
