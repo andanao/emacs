@@ -359,11 +359,14 @@ In my clumsyness I've hit theste  too many times
 I don't need to open:
  - tutorial
  - hello
+ - help for help
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-h t") 'nil)
 (global-set-key (kbd "C-h h") 'nil)
+(global-set-key (kbd "C-h C-h") 'nil)
 #+end_src
+
 ** Hide Modeline Mode
 :PROPERTIES:
 :ID:       4ff5832a-dfed-4f63-90bb-0d69d374ead6
