@@ -134,3 +134,17 @@ This version keeps it as a sub process, if you need to fix that you can save the
 	   (find-file "c:/Users/adanaos/.bashrc")
            :wk "git .bashrc"))
 #+end_src
+* AHK
+:PROPERTIES:
+:ID:       1788e7f1-6c96-4a3c-809a-0e4d1f656416
+:END:
+I use AHK a lot to make the experience of using windows less painful
+#+begin_src emacs-lisp
+(use-package ahk-mode
+  :ensure t
+  :bind (:map ahk-mode-map
+	      ("C-c C-c" . ahk-run-script)
+	      ("C-c C-k" . nil)
+	      )
+  )
+#+end_src
