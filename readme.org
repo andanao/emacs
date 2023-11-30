@@ -2335,8 +2335,27 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else.. 
 
 
 #+end_src
+*** Git Typo Squash
+:PROPERTIES:
+:ID:       d370c036-e9dc-456d-a238-e7c7f3135bde
+:END:
+Squash commit if last commit is typo.  Unfortunately a workflow on certain machines I work with files can only be transferred over git, to avoid many 'typo' commits in the log, squash commits if the last commit message contained the word typo
+#+begin_src emacs-lisp
+(defun ads/git-typo-squash ()
+  (interactive)
+  (let
+    ((last-commit-msg (shell-command-to-string "git log -1 --pretty=%B")))
+    (when
+      (string-match-p "typo" last-commit-msg)
+      (async-shell-command (concat
+		      "git reset --soft HEAD~1 &&"
+		      "git commit -m \"" last-commit-msg "\"&&"
+		      "git push -f")))))
 
-
+(ads/leader-keys
+  ; gj - git typo
+  "gj" '(ads/git-typo-squash :wk "git typo squash"))
+#+end_src
 ** Prettify Code
 :PROPERTIES:
 :ID:       c14d9424-2259-408e-ad97-6b41cd9152c7
