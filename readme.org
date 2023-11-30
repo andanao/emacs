@@ -2339,7 +2339,7 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else.. 
 :PROPERTIES:
 :ID:       d370c036-e9dc-456d-a238-e7c7f3135bde
 :END:
-Squash commit if last commit is typo.  Unfortunately a workflow on certain machines I work with files can only be transferred over git, to avoid many 'typo' commits in the log, squash commits if the last commit message contained the word typo
+Squash commit if last commit is typo.  Unfortunately a workflow on certain machines I work with files can only be transferred over git, to avoid many 'typo' commits in the log, squash commits if the last commit message contained the word typo.
 #+begin_src emacs-lisp
 (defun ads/git-typo-squash ()
   (interactive)
@@ -2349,6 +2349,7 @@ Squash commit if last commit is typo.  Unfortunately a workflow on certain machi
       (string-match-p "typo" last-commit-msg)
       (async-shell-command (concat
 		      "git reset --soft HEAD~1 &&"
+		      "git stage" buffer-file-name "&&"
 		      "git commit -m \"" last-commit-msg "\"&&"
 		      "git push -f")))))
 
