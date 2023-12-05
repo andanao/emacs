@@ -657,20 +657,16 @@ this is always so annoying
    #+end_src
 
 
-** Insert to toggle comment
+** Toggle comment
 :PROPERTIES:
 :ID:       9a8815ce-3ad0-4f76-b221-8b225b42c824
 :END:
 Normally insert enables overtype, but I've never once wanted that
 
 #+begin_src emacs-lisp
-(evil-global-set-key 'normal (kbd "<insert>") 'comment-line)
-(evil-global-set-key 'insert (kbd "<insert>") 'comment-line)
-(evil-global-set-key 'visual (kbd "<insert>") 'comment-line)
 (evil-global-set-key 'normal (kbd "M-;") 'comment-line)
 (evil-global-set-key 'insert (kbd "M-;") 'comment-line)
 (evil-global-set-key 'visual (kbd "M-;") 'comment-line)
-(define-key prog-mode-map (kbd "C-;") 'comment-line)
 #+end_src
 
 * Theme Setup
