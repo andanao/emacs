@@ -591,6 +591,13 @@ I don't want to have to stop pressing ctrl also go back to normal mode if in ins
 					       ;; (normal-mode)
 					       (call-interactively 'balance-windows)))
 #+end_src
+** Tear Off Window
+:PROPERTIES:
+:ID:       e9d07e76-f0f5-4616-a9bb-9440ce6dfd3b
+:END:
+#+begin_src emacs-lisp
+(evil-global-set-key 'normal (kbd "C-w C-n") 'tear-off-window)
+#+end_src
 ** Undo tree visualizer
 :PROPERTIES:
 :ID:       b1d2bf46-117c-4e9b-8ca3-a1d92ac3cd1c
@@ -2336,12 +2343,15 @@ Squash commit if last commit is typo.  Unfortunately a workflow on certain machi
   (interactive)
   (let
     ((last-commit-msg (shell-command-to-string "git log -1 --pretty=%B")))
-    (when
+    (if
       (string-match-p "typo" last-commit-msg)
       (async-shell-command (concat
 		      "git reset --soft HEAD~1 &&"
-		      "git stage" buffer-file-name "&&"
+		      "git add" buffer-file-name "&&"
 		      "git commit -m \"" last-commit-msg "\"&&"
+		      "git push -f"))
+      (async-shell-command (concat
+		      "git commit -m \"typo\"&&"
 		      "git push -f")))))
 
 (ads/leader-keys
