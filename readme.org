@@ -136,11 +136,6 @@ currently:
    #+end_src
 
 
-** TODO Auto Updates
-:PROPERTIES:
-:ID:       7aa55287-57c4-4b75-8713-82ed52b308f5
-:END:
-
 * Better Defaults
 :PROPERTIES:
 :ID:       7866fcf1-0c26-43f6-b994-014bd343e8c4
