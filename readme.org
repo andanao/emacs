@@ -1757,6 +1757,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 :END:
 
    #+begin_src emacs-lisp
+(setq fill-column 90)
 
 (defun ads/org-mode-visual-fill ()
   (setq visual-fill-column-width 90
