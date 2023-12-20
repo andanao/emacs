@@ -1786,6 +1786,9 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 
     (setq org-confirm-babel-evaluate nil)
 
+(setq org-babel-default-header-args:python
+	     '((:results . "output")
+	       ))
    #+end_src
 
 ** Org Block Structure Templates
