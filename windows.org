@@ -77,6 +77,13 @@ Some the files I work with don't have consistent line endings DOS or UNIX
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
 #+end_src
+* Delete Emacs frame
+:PROPERTIES:
+:ID:       49d4dacb-9256-47d5-b251-42a4fbf4540c
+:END:
+#+begin_src emacs-lisp
+(evil-global-set-key 'normal (kbd "C-w d") 'delete-frame)
+#+end_src
 * Open Org Attatch dir in windows explorer
 :PROPERTIES:
 :ID:       162e4eab-4a11-40c1-91dc-e28185f6b8cf
@@ -124,6 +131,7 @@ This version keeps it as a sub process, if you need to fix that you can save the
 
 #+end_src
 
+
 * Open git ~.bashrc~
 :PROPERTIES:
 :ID:       5ee16149-be0c-4ee8-b2b6-78f8fc549044
@@ -148,3 +156,4 @@ I use AHK a lot to make the experience of using windows less painful
 	      )
   )
 #+end_src
+
