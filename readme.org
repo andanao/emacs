@@ -1456,12 +1456,15 @@ Formatting for scheduled __ : if today otherwise ## :
   (push '("#+end_quote" . "”") prettify-symbols-alist)
   (push '("#+BEGIN_SRC" . "«") prettify-symbols-alist)
   (push '("#+END_SRC" . "»") prettify-symbols-alist)
+  (push '("#+begin_example" . "«") prettify-symbols-alist)
+  (push '("#+end_example" . "»") prettify-symbols-alist)
   (push '("#+begin_src" . "«") prettify-symbols-alist)
   (push '("#+end_src" . "»") prettify-symbols-alist)
   (push '("#+options:" . "⌥") prettify-symbols-alist)
   (push '("#+RESULTS:" . "🠶") prettify-symbols-alist)
   (push '(":PROPERTIES:" ."⚙" ) prettify-symbols-alist)
   (push '("emacs-lisp" ."ε" ) prettify-symbols-alist)
+
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook 'ads/org-prettify-symbols-alist)
 
