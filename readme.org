@@ -1819,17 +1819,6 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
    #+end_src
 
 
-** Easier Org edit special
-:PROPERTIES:
-:ID:       a290b90e-1883-4e65-a64b-9ceb90f25b39
-:END:
-Org edit special is a nice way to edit a code block in its own buffer which allows for company completion
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-c C-'") 'org-edit-special)
-#+end_src
-
-#+RESULTS:
-: org-edit-special
 ** Evil Org
 :PROPERTIES:
 :ID:       82b389c0-63cc-45e2-914b-3d8e9184d030
