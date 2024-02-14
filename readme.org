@@ -1886,57 +1886,6 @@ This package seems like a godsend, I do need to spend some time looking into it.
   )
 
 #+end_src
-** Insert Screenshot
-:PROPERTIES:
-:ID:       b0330f2c-d38c-4a6c-a493-55553bc98641
-:END:
-
-Most code taken from: [[https://www.sastibe.de/2018/11/take-screenshots-straight-into-org-files-in-emacs-on-win10/][Take Screenshots Straight into Org Files in Emacs on Win10]]
-
-at some point it may be worth taking a look at integrating this with
-[[https://github.com/abo-abo/org-download][org-download]]
-
-Set up my default save directory: (it may be worth adding an alt one for things that shouldn't be up on github)
-#+begin_src emacs-lisp
-(setq ads/user-dir-org-screenshot
-    (concat ads/user-dir-org "images/screenshot/"))
-#+end_src
-
-Steps
-1. set file save location to org-screenshot-filename
-2. shell command to the snipping tool
-3. save clipboard image as org-screenshot-filename
-4. insert image inline with org
-
-#+begin_src emacs-lisp
-(defun ads/org-screenshot ()
-  "Take a screenshot into a time stamped unique-named file in the
-same directory as the org-buffer and insert a link to this file."
-  (interactive)
-
-  (setq org--screenshot-filename
-        (concat
-         (make-temp-name
-          (concat ads/user-dir-org-screenshot
-		    (file-relative-name buffer-file-name)
-                    "_"
-                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
-
-  (shell-command "snippingtool /clip")
-
-
-  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" org--screenshot-filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
-
-  (insert (concat "[[file:" org--screenshot-filename "]]"))
-  (org-display-inline-images))
-
-
-(ads/leader-keys
-    "os" '(ads/org-screenshot :wk "org-screenshot")
-)
-
-#+end_src
-
 ** Insert Image from clipboard
 :PROPERTIES:
 :ID:       feff49dd-2bd1-455f-8115-3d538b4afc51
