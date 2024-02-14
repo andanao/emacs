@@ -2024,7 +2024,7 @@ Return to normal state after C-c C-c
   (interactive)
     (when (org-at-item-checkbox-p)
       (org-toggle-checkbox)
-      (org-next-item)
+      (re-search-forward "\\[ \\]")
       (evil-normal-state))
   )
 
