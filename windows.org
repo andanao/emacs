@@ -156,4 +156,12 @@ I use AHK a lot to make the experience of using windows less painful
 	      )
   )
 #+end_src
-
+** Window Spy
+:PROPERTIES:
+:ID:       b3329a59-4d1c-4a00-9a68-6507163daa35
+:END:
+#+begin_src emacs-lisp
+(defun ahk-launch-window-spy ()
+  (interactive)
+  (w32-shell-execute 1 "C:/Users/adanaos/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/AutoHotkey Window Spy.lnk"))
+#+end_src

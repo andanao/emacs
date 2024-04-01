@@ -2032,7 +2032,6 @@ Quick fn to define a new org note
     :wk "ORG Config")
 )
 #+end_src
-
 * Development
 :PROPERTIES:
 :ID:       ebf36f61-23a4-4e94-924d-e762fc41edc5
