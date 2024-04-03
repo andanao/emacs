@@ -2722,10 +2722,10 @@ Currently unused
   (message "treemacs-laptop-mode-off")
   )
 
-(if (> (frame-width) 200)
-    (treemacs-laptop-mode-off)
-    (treemacs-laptop-mode-on)
-    )
+;; (if (> (frame-width) 200)
+;;     (treemacs-laptop-mode-off)
+;;     (treemacs-laptop-mode-on)
+;;     )
 
 ;; (print ads/treemacs-laptop-mode-status)
 #+end_src
