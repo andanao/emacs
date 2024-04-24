@@ -246,7 +246,7 @@ determine the exact padding."
    (rainbow-delimiters-depth-3-face :foreground green)
    (rainbow-delimiters-depth-4-face :foreground cyan)
    (rainbow-delimiters-depth-5-face :foreground violet)
-   (rainbow-delimiters-depth-6-face :foreground dark-cyan)
+   (rainbow-delimiters-depth-6-face :foreground teal)
    (rainbow-delimiters-depth-7-face :foreground red)
    ;;;;
 
