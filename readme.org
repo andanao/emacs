@@ -1128,7 +1128,7 @@ org-toggle-narrow-to-subree does not work for some reason when I call it, using 
     "ns" '(org-narrow-to-subtree :wk "Subtree")
     "ne" '(org-narrow-to-element :wk "Element")
     "nb" '(org-narrow-to-block :wk "Block")
-    "nd" '(org-narrow-to-defun :wk "Defun")
+    "nd" '(narrow-to-defun :wk "Defun")
     "nn" '(narrow-to-region :wk "Region")
     "nw" '(widen :wk "Widen")
 )
