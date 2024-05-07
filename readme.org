@@ -10,34 +10,6 @@ So the white startup screen doesn't blind me
 (set-background-color "#000000")
 #+end_src
 
-* Straight.el
-:PROPERTIES:
-:ID:       33fd1c57-a64e-472d-a868-e8f4703ec14b
-:END:
-Default setup for Straight.el
-#+begin_src emacs-lisp
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-;;       (bootstrap-version 5))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;         (url-retrieve-synchronously
-;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-;;          'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
-
-#+end_src
-** Straight settings
-:PROPERTIES:
-:ID:       53dec607-ff19-40a1-893f-a0f87f8950b7
-:END:
-#+begin_src emacs-lisp
-;; (straight-use-package 'use-package)
-#+end_src
-
 * System .emacs Setup
 :PROPERTIES:
 :ID:       60973f19-e31e-470f-919d-dc03dfb4c377
