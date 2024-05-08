@@ -2300,65 +2300,10 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 #+end_src
 
 #+RESULTS:
-
-** Company mode
 :PROPERTIES:
-:ID:       fd1e14f3-8601-4004-ae7d-406c0bfa44cb
 :END:
-Completion system
-
-# #+begin_src emacs-lisp
-(use-package company
-  :bind (("C-." . company-complete))
-  :custom
-  (company-idle-delay 0) ;; I always want completion, give it to me asap
-  (company-dabbrev-downcase nil "Don't downcase returned candidates.")
-  (company-show-numbers t "Numbers are helpful.")
-  (company-tooltip-limit 10 "The more the merrier.")
-  :config
-  ;; (global-company-mode) ;; We want completion everywhere
-  ;; (setq company-global-modes '(not org-mode))
-  ;; use numbers 0-9 to select company completion candidates
-  (add-hook 'prog-mode-hook 'company-mode)
-  (let ((map company-active-map))
-    (mapc (lambda (x) (define-key map (format "%d" x)
-		   `(lambda () (interactive) (company-complete-number ,x))))
-          (number-sequence 0 9))))
 
 #+end_src
-
-#+RESULTS:
-** Flycheck
-:PROPERTIES:
-:ID:       e5809ac7-ee74-4f36-a0a7-23fa0aec5ded
-:END:
-Flycheck is the newer version of flymake and is needed to make lsp-mode not freak out.
-# #+begin_src emacs-lisp
-(use-package flycheck
-  :config
-
-  (setq flycheck-global-modes '(not org-mode))
-  (add-hook 'prog-mode-hook 'flycheck-mode) ;; always lint my code
-  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
-  )
-#+end_src
-
-** LSP Mode
-:PROPERTIES:
-:ID:       9a30a422-6935-455a-bef0-2df67456057f
-:END:
-Package for interacting with language servers
-# #+begin_src emacs-lisp
-
-(use-package lsp-mode
-  :commands lsp
-  :config
-  (setq lsp-prefer-flymake nil ;; Flymake is outdated
-        lsp-headerline-breadcrumb-mode nil))
-;; I don't like the symbols on the header a-la-vscode, remove this if you like them.
-#+end_src
-
-
 * Anki
 :PROPERTIES:
 :ID:       d282f285-e32d-4396-899d-cbc0089dc754
