@@ -2300,9 +2300,15 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 #+end_src
 
 #+RESULTS:
+** Docker
 :PROPERTIES:
+:ID:       e32ea12e-675a-45cb-b7b5-3f23972ce755
 :END:
+#+begin_src emacs-lisp
 
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
 #+end_src
 * Anki
 :PROPERTIES:
