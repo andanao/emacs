@@ -2249,6 +2249,23 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else.. 
 
 
 #+end_src
+*** Git Restore file
+:PROPERTIES:
+:ID:       8522eb91-a6ea-446a-8f71-8ba7c1ddfb97
+:END:
+I did an oopsies restore file to last commit
+
+#+begin_src emacs-lisp
+(defun ads/git-restore-file ()
+  (interactive)
+  (shell-command (concat "git restore " buffer-file-name) )
+  (message
+    (concat "Restoring file: " buffer-file-name))
+  (revert-buffer))
+(ads/leader-keys
+    "gr"'(ads/git-restore-file :wk "git restore file"))
+
+#+end_src
 ** Prettify Code
 :PROPERTIES:
 :ID:       c14d9424-2259-408e-ad97-6b41cd9152c7
@@ -2342,23 +2359,6 @@ Package for interacting with language servers
 #+end_src
 
 
-*** Git Restore file
-:PROPERTIES:
-:ID:       8522eb91-a6ea-446a-8f71-8ba7c1ddfb97
-:END:
-I did an oopsies restore file to last commit
-
-#+begin_src emacs-lisp
-(defun ads/git-restore-file ()
-  (interactive)
-  (shell-command (concat "git restore " buffer-file-name) )
-  (message
-    (concat "Restoring file: " buffer-file-name))
-  (revert-buffer))
-(ads/leader-keys
-    "gr"'(ads/git-restore-file :wk "git restore file"))
-
-#+end_src
 * Anki
 :PROPERTIES:
 :ID:       d282f285-e32d-4396-899d-cbc0089dc754
