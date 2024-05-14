@@ -2310,6 +2310,16 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
   :ensure t
   :bind ("C-c d" . docker))
 #+end_src
+** Protobuf
+:PROPERTIES:
+:ID:       2dbb9123-3699-42e6-aa58-aaabe04b05fe
+:END:
+
+#+begin_src emacs-lisp
+
+(use-package protobuf-mode)
+
+#+end_src
 * Anki
 :PROPERTIES:
 :ID:       d282f285-e32d-4396-899d-cbc0089dc754
