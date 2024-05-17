@@ -21,3 +21,11 @@ I use various computers with different Operatings sytems.  In the ideal world I 
 :PROPERTIES:
 :ID:       ea21a472-b661-41ca-8300-69a70340a9b3
 :END:
+* Inspiration
+:PROPERTIES:
+:ID:       f0cfd0e1-7503-4873-ad8b-661ec4f54108
+:END:
+
+- [[https://github.com/SystemCrafters/crafted-emacs][Crafted Emacs]]
+- [[https://github.com/rougier][Nicolas Rougier]] particularly [[https://github.com/rougier/nano-emacs?tab=readme-ov-file][NANO]] but everything he touches is gold
+- [[https://github.com/minad/org-modern][Org Modern]]
