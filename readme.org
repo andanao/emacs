@@ -2,6 +2,7 @@
 
 The entire config is defined in [[file:emacs.org][emacs.org]] and tangled into individual files using ~org-babel-tangle~ on save
 
+Custom variables and functions unique to my personal config all start with ~ads/~
 * Org
 :PROPERTIES:
 :ID:       86ff43ac-a6a2-4dfe-94dd-70682394f401
