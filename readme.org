@@ -1,6 +1,6 @@
-#+title:My Emacs config
+#+title:Emacs config
 
-This is my
+The entire config is defined in [[file:emacs.org][emacs.org]] and tangled into individual files using ~org-babel-tangle~ on save
 
 * Org
 :PROPERTIES:
