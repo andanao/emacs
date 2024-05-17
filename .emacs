@@ -9,7 +9,7 @@
 
 (setq ads/user-dir-config "~/.emacs")
 
-(setq ads/computer-id "xps-ubuntu")
+(setq ads/computer-id "work")
 
 (setq debug-on-error t)
 (load-file (concat ads/user-dir-emacs "init.el"))
