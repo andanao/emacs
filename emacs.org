@@ -1,0 +1,54 @@
+* Early Init
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ./early-init.el :results none
+:ID:       a70010ba-7c49-4804-afef-c818bc0225ec
+:END:
+
+Prevent package.el from loading packages prior init-file loading
+
+#+begin_src emacs-lisp
+
+(setq package-enable-at-startup nil)
+
+#+end_src
+
+** Projectile
+:PROPERTIES:
+:ID:       7f4ae56b-c7d2-40ea-93d6-96d59546c39b
+:END:
+
+See the [[https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started][Projectile readme]] for more info
+
+#+begin_src emacs-lisp
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+#+end_src
+
+
+* Init.
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ./init.el :results none
+:ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
+:END:
+
+
+Blindness prevention
+
+#+begin_src emacs-lisp
+(set-background-color "#000000")
+#+end_src
