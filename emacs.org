@@ -7,20 +7,18 @@
 Prevent package.el from loading packages prior init-file loading
 
 #+begin_src emacs-lisp
-
+(setq debug-on-error t)
 (setq package-enable-at-startup nil)
-
 #+end_src
 
-** Projectile
+** Straight
 :PROPERTIES:
 :ID:       7f4ae56b-c7d2-40ea-93d6-96d59546c39b
 :END:
 
-See the [[https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started][Projectile readme]] for more info
+See the [[https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started][Straight readme]] for more info and troubleshooting help
 
 #+begin_src emacs-lisp
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -36,19 +34,41 @@ See the [[https://github.com/radian-software/straight.el?tab=readme-ov-file#gett
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
 #+end_src
 
 
-* Init.
+* Init
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ./init.el :results none
 :ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
 :END:
 
-
-Blindness prevention
-
 #+begin_src emacs-lisp
-(set-background-color "#000000")
+(set-background-color "#000000")        ;; Prevent blindness
+
+(setq
+ cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
+ large-file-warning-threshold 100000000 ;; 100Mb
+ inhibit-startup-screen t               ;; I'd rather a blank slate
+ help-window-select t                   ;; Focus new help windows when opened
+ )
+
+(blink-cursor-mode 0)                   ;; Prefer a still cursor
+(fset 'yes-or-no-p 'y-or-n-p)           ;; Replace yes/no prompts with y/n
+(global-subword-mode 1)                 ;; Iterate through CamelCase words
+(put 'downcase-region 'disabled nil)    ;; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ;; Enable upcase-region
+(scroll-bar-mode -1)                    ;; Disable the visible scrollbar
+(tool-bar-mode -1)                      ;; Disablet the toolbar
+(tooltip-mode -1)                       ;; Disable tooltips
+(menu-bar-mode -1)                      ;; Disable the menu bar
+
+#+end_src
+
+** Disable debug on error
+:PROPERTIES:
+:ID:       81b9c124-7565-4621-9d9f-bbacfdfa1ff8
+:END:
+#+begin_src emacs-lisp
+(setq debug-on-error t)
 #+end_src
