@@ -648,6 +648,20 @@ Normally insert enables overtype, but I've never once wanted that
 (evil-global-set-key 'visual (kbd "M-;") 'comment-line)
 #+end_src
 
+
+** Toggl time tracking
+:PROPERTIES:
+:ID:       2494c76c-687e-4b3d-9e59-f469712a44a1
+:END:
+
+#+begin_src emacs-lisp
+(defun ads/toggl-config ()
+    (interactive)
+    (find-file "c:/Users/adanaos/AppData/Local/labs/toggl-cli/config/QzpcdXNlcnNcYWRhbmFvc1xnaXQ=.toml"))
+(ads/leader-keys "et" '(ads/toggl-config :wk "Open toggl config"))
+
+
+#+end_src
 * Theme Setup
 :PROPERTIES:
 :ID:       039faa87-f43b-4708-b607-99a5e9f5bf68
@@ -1967,6 +1981,19 @@ are tangled."
 ;;   :after async
 ;;   :config
 ;;   (dired-async-mode 1))
+#+end_src
+** Tangle emacs refactor on save
+:PROPERTIES:
+:ID:       3beef06b-4713-4951-ac8e-291a0ef76617
+:END:
+
+#+begin_src emacs-lisp
+(add-hook 'after-save-hook
+	  (lambda ()
+	    (let ((refactor-file "c:/Users/adanaos/git/emacs-refactor/emacs.org"))
+	    (when (string= buffer-file-truename refactor-file)
+	      (org-babel-tangle refactor-file))
+	    )))
 #+end_src
 
 ** New org note
