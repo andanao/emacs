@@ -654,7 +654,23 @@ Normally insert enables overtype, but I've never once wanted that
 :ID:       2494c76c-687e-4b3d-9e59-f469712a44a1
 :END:
 
+not the best way to do it but I don't want to build a new system, I've made a list of branches under ~toggl-cli-directory~
+
 #+begin_src emacs-lisp
+(setq ads/toggl-cli-directory (concat ads/git-dir "/toggl-cli"))
+
+(defun ads/toggl-get-saved-timers ()
+  (setq ads/toggl-saved-timers
+    (delete "*"
+      (delete "main"
+        (string-split
+          (shell-command-to-string
+	   (concat
+            "cd " ads/toggl-cli-directory " && git branch --list")))))))
+
+(ads/toggl-get-saved-timers)
+
+
 (defun ads/toggl-config ()
     (interactive)
     (find-file "c:/Users/adanaos/AppData/Local/labs/toggl-cli/config/QzpcdXNlcnNcYWRhbmFvc1xnaXQ=.toml"))
