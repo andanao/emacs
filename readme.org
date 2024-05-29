@@ -707,11 +707,11 @@ I don't want to build something myself, I'm using the rust toggl cli to do this,
 
 (ads/leader-keys
     "j" '(:ignore t :wk "Toggl")
-    "et" '(ads/toggl-config :wk "Toggl config")
-    "jt" '(ads/toggl-config :wk "Toggl config")
-    "jj" '(ads/toggl-start-interactive :wk "Toggl start")
-    "js" '(ads/toggl-stop :wk "Toggl stop")
-    "jr" '(ads/toggl-resume :wk "Toggl resume")
+    "et" '(ads/toggl-config :wk "config")
+    "jt" '(ads/toggl-config :wk "config")
+    "jj" '(ads/toggl-start-interactive :wk "start")
+    "js" '(ads/toggl-stop :wk "stop")
+    "jr" '(ads/toggl-resume :wk "resume")
 )
 
 #+end_src
