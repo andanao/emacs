@@ -654,9 +654,10 @@ Normally insert enables overtype, but I've never once wanted that
 :ID:       2494c76c-687e-4b3d-9e59-f469712a44a1
 :END:
 
-not the best way to do it but I don't want to build a new system, I've made a list of branches under ~toggl-cli-directory~
+I don't want to build something myself, I'm using the rust toggl cli to do this, I've made a list of branches under ~toggl-cli-directory~ and maintain a config file that ends up symlinked with anytihng under the ~AppData/labs/toggl-cli/config/~ dir to the main config file.
 
 #+begin_src emacs-lisp
+
 (setq ads/toggl-cli-directory (concat ads/git-dir "/toggl-cli"))
 
 (defun ads/toggl-get-saved-timers ()
@@ -670,12 +671,48 @@ not the best way to do it but I don't want to build a new system, I've made a li
 
 (ads/toggl-get-saved-timers)
 
+(defun ads/toggl-start-interactive ()
+  (interactive)
+  (let
+    ((timer-type (completing-read "" ads/toggl-saved-timers)))
+    (async-shell-command
+      (concat
+         "cd " ads/toggl-cli-directory
+         " && git checkout " timer-type
+         " && toggl start"))
+    (message (concat "Toggl started: " timer-type))))
+
+(defun ads/toggl--command (command)
+  (async-shell-command
+    (concat
+      "cd " ads/toggl-cli-directory
+      " && toggl " command))
+  )
+
+(defun ads/toggl-stop ()
+  (interactive)
+  (ads/toggl--command "stop")
+  )
+
+(defun ads/toggl-resume ()
+  (interactive)
+  (ads/toggl--command "continue")
+  )
+
 
 (defun ads/toggl-config ()
     (interactive)
-    (find-file "c:/Users/adanaos/AppData/Local/labs/toggl-cli/config/QzpcdXNlcnNcYWRhbmFvc1xnaXQ=.toml"))
-(ads/leader-keys "et" '(ads/toggl-config :wk "Open toggl config"))
+    (find-file
+     "c:/Users/adanaos/AppData/Local/labs/toggl-cli/config/QzpcdXNlcnNcYWRhbmFvc1xnaXQ=.toml"))
 
+(ads/leader-keys
+    "j" '(:ignore t :wk "Toggl")
+    "et" '(ads/toggl-config :wk "Toggl config")
+    "jt" '(ads/toggl-config :wk "Toggl config")
+    "jj" '(ads/toggl-start-interactive :wk "Toggl start")
+    "js" '(ads/toggl-stop :wk "Toggl stop")
+    "jr" '(ads/toggl-resume :wk "Toggl resume")
+)
 
 #+end_src
 * Theme Setup
