@@ -5,9 +5,8 @@ I really wish I didn't have to use windows but sometimes you don't have a choice
 #+begin_src emacs-lisp
 (message (concat "loading " buffer-file-name))
 (ads/leader-keys
-  "eW" '(lambda () (interactive)
-	   (find-file (concat ads/user-dir-emacs "windows.org"))
-           :wk ".emacs Config"))
+  "eW" '((lambda () (interactive) (find-file (concat ads/user-dir-emacs "windows.org")))
+           :wk "Windows Config"))
 #+end_src
 * Mute Sounds
 :PROPERTIES:
