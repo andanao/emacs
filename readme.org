@@ -403,29 +403,17 @@ I don't need to open:
 
    "j" '(:ignore t :which-key "org")
 
-   "er" '(lambda () (interactive)
-	   (find-file (concat ads/user-dir-readme))
+   "er" '((lambda () (interactive) (find-file (concat ads/user-dir-readme)))
            :wk "Readme Config")
 
-   "ew" '(lambda () (interactive)
-	   (find-file "c:/users/adanaos/git/emacs-work/work-config.org")
-           :wk "Work Config")
 
-   "e." '(lambda () (interactive)
-	   (find-file ads/user-dir-config)
+   "e." '((lambda () (interactive) (find-file ads/user-dir-config))
            :wk ".emacs Config")
 
-   "ei" '(lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el"))
+   "ei" '((lambda () (interactive) (find-file (concat ads/user-dir-emacs "init.el")))
            :which-key "ORG init")
 
-   "ez" '(lambda () (interactive)
-	   (find-file (concat ads/git-dir "zmk-config/config/corne.keymap"))
-           :wk "ZMK Config")
-   "eZ" '(lambda () (interactive)
-	   (counsel-find-file (concat ads/git-dir "zmk-config/"))
-           :wk "ZMK Config")
-
-   "e" '(:ignore t :whch-key "eval")
+   "e" '(:ignore t :which-key "eval")
    "eb" '(eval-buffer :which-key "eval-buffer")
    "ep" '(eval-last-sexp :which-key "eval-last-sexp")
    "eo" '(org-mode-restart :which-key "org-mode-restart")
