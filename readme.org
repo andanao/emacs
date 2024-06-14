@@ -1843,6 +1843,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
   (add-to-list 'org-structure-template-alist '("sql" . "src sql\n"))
   (add-to-list 'org-structure-template-alist '("sq" . "src sql\n"))
   (add-to-list 'org-structure-template-alist '("json" . "src json\n"))
+  (add-to-list 'org-structure-template-alist '("rs" . "src rust\n"))
   )
    #+end_src
 
