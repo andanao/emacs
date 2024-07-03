@@ -164,3 +164,16 @@ I use AHK a lot to make the experience of using windows less painful
   (interactive)
   (w32-shell-execute 1 "C:/Users/adanaos/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/AutoHotkey Window Spy.lnk"))
 #+end_src
+* Alerts
+:PROPERTIES:
+:ID:       552a551d-044f-4ed4-bd16-279ebb6397b4
+:END:
+#+begin_src emacs-lisp
+(use-package alert
+  :commands (alert)
+  :config (setq alert-default-style 'toast))
+
+(use-package alert-toast
+  :after alert)
+(require 'alert-toast)
+#+end_src
