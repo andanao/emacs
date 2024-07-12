@@ -1061,6 +1061,10 @@ Check if the current theme matches the file being edited on save, if so refresh 
 (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
 (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 (show-paren-mode t)
+
+
+(use-package evil-smartparens)
+(add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
 #+end_src
 
 ** Emojify 🎉 :
