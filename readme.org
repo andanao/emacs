@@ -2394,6 +2394,17 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
 (use-package protobuf-mode)
 
 #+end_src
+
+** Kmonad
+:PROPERTIES:
+:ID:       1a6cdb25-9991-4265-8411-0d377c9801b3
+:END:
+#+begin_src emacs-lisp
+;; (package-vc-install
+ ;; '(kbd-mode . (:url "https://github.com/kmonad/kbd-mode"
+		 ;; :last-release   )))
+#+end_src
+
 * Anki
 :PROPERTIES:
 :ID:       d282f285-e32d-4396-899d-cbc0089dc754
