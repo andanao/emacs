@@ -953,8 +953,14 @@ Check if the current theme matches the file being edited on save, if so refresh 
      (prescient-persist-mode 1)
      (ivy-prescient-mode 1))
     #+end_src
+** Bookmarks
+:PROPERTIES:
+:ID:       782698d3-b578-4986-acf8-5050af7695a2
+:END:
 
-
+#+begin_src emacs-lisp
+(evil-global-set-key 'normal (kbd "C-x C-b") 'bookmark-jump)
+#+end_src
 ** Helpful
 :PROPERTIES:
 :ID:       0f8e08e4-b55e-46fb-b5c3-98552b41abc7
