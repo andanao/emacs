@@ -177,3 +177,17 @@ I use AHK a lot to make the experience of using windows less painful
   :after alert)
 (require 'alert-toast)
 #+end_src
+* Set Taskbar Autohide
+:PROPERTIES:
+:ID:       ec619bc9-bf4a-4cfc-af02-a4c18c8965af
+:END:
+
+Autohide the taskbar in windows because windows 11 won't always allow small icons, to set the taskbar to always show set ~Settings;$v[8]=2~
+
+#+begin_src emacs-lisp
+(defun win/taskbar-autohide ()
+  (shell-command
+   "powershell -command \"&{$p='HKCU:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StuckRects3\\';$v=(Get-ItemProperty -Path $p).Settings;$v[8]=3;&Set-ItemProperty -Path $p -Name Settings -Value $v;&Stop-Process -f -ProcessName explorer}\""))
+
+#+end_src
+
