@@ -37,13 +37,12 @@ You can also set the system to light mode replacing the ~AppsUseLightTheme~ with
 
 #+begin_src emacs-lisp
 (setq win-theme "0")
-(with-temp-buffer
-    (shell-command
+(async-shell-command
      (concat
       "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
       win-theme
-      " -Type Dword -Force; dir")
-     t))
+      " -Type Dword -Force; dir"))
+
 (if
     (string= (car ads/switch-themes-var) "ads-dark")
     (setq win-theme "0")
@@ -54,14 +53,13 @@ You can also set the system to light mode replacing the ~AppsUseLightTheme~ with
   (if
       (string= (car ads/switch-themes-var) "ads-dark")
       (setq win-theme "0")
-    (setq win-theme "1"))
-  (with-temp-buffer
-    (shell-command
+      (setq win-theme "1"))
+  (async-shell-command
      (concat
       "powershell; New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
       win-theme
       " -Type Dword -Force; dir")
-     t)))
+     ))
 #+end_src
 * Hide Line Ends
 :PROPERTIES:
@@ -186,8 +184,9 @@ Autohide the taskbar in windows because windows 11 won't always allow small icon
 
 #+begin_src emacs-lisp
 (defun win/taskbar-autohide ()
-  (shell-command
+  (async-shell-command
    "powershell -command \"&{$p='HKCU:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StuckRects3\\';$v=(Get-ItemProperty -Path $p).Settings;$v[8]=3;&Set-ItemProperty -Path $p -Name Settings -Value $v;&Stop-Process -f -ProcessName explorer}\""))
 
 #+end_src
+
 
