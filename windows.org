@@ -184,6 +184,7 @@ Autohide the taskbar in windows because windows 11 won't always allow small icon
 
 #+begin_src emacs-lisp
 (defun win/taskbar-autohide ()
+  (interactive)
   (async-shell-command
    "powershell -command \"&{$p='HKCU:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StuckRects3\\';$v=(Get-ItemProperty -Path $p).Settings;$v[8]=3;&Set-ItemProperty -Path $p -Name Settings -Value $v;&Stop-Process -f -ProcessName explorer}\""))
 
