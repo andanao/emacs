@@ -2409,8 +2409,8 @@ Inspiration taken from [[https://github.com/mcraveiro/cunene/][GitHub - mcraveir
        (setq-default dired-hide-details-mode t)
        (setq dired-kill-when-opening-new-dired-buffer t))
 
-(use-package dired-single
-      :commands (dired dired-jump))
+;;(use-package dired-single
+;;      :commands (dired dired-jump))
 
 (use-package dired-git-info
       :ensure t

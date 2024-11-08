@@ -6,10 +6,7 @@
 
 # Backup files
 *~
-
-init.el
-windows.el
-/readme.el
+**.el
 # Undo-tree save-files
 *.~undo-tree
 scratch.org
