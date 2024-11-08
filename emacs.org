@@ -4,13 +4,10 @@
 :ID:       a70010ba-7c49-4804-afef-c818bc0225ec
 :END:
 
-Prevent package.el from loading packages prior init-file loading.
-
 Enable debug on error at startup to automatically get debugging with init.
 
 #+begin_src emacs-lisp
-;; (setq debug-on-error t)
-(setq package-enable-at-startup nil)
+(setq debug-on-error t)
 #+end_src
 ** [[https://github.com/progfolio/elpaca][Elpaca]] package management
 :PROPERTIES:
@@ -25,15 +22,14 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
 ;;; Bootstrap elpaca
 (setq package-enable-at-startup nil)
 
-(defvar elpaca-installer-version 0.7)
+(defvar elpaca-installer-version 0.8)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil
-                              :files (:defaults (:exclude "extensions"))
+                              :ref nil :depth 1
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
-
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
@@ -43,16 +39,18 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
     (make-directory repo t)
     (when (< emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (call-process "git" nil buffer t "clone"
-                                       (plist-get order :repo) repo)))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                  ,@(when-let* ((depth (plist-get order :depth)))
+                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                  ,(plist-get order :repo) ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
             (progn (message "%s" (buffer-string)) (kill-buffer buffer))
           (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
@@ -63,14 +61,6 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-
-;; Enable :elpaca use-package keyword.
-(elpaca elpaca-use-package
-        (elpaca-use-package-mode))
-
-;; Wait for elpaca
-(elpaca-wait)
-
 ;; If on Windows, disable symlinks
 ;; (Symlinks require admin permissions before Windows 11)
 (when (member system-type '(windows-nt ms-dos))
@@ -79,8 +69,42 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
 ;;; _
 (provide 'early-init)
 #+end_src
+** UI Changes
+:PROPERTIES:
+:ID:       9c4cb38a-f09c-4e67-9b73-a58bdc8d69bc
+:END:
 
+Changes to the UI to inhibit unused elements be used should speed up start up times by a bit
+#+begin_src emacs-lisp
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+#+end_src
 
+Remove server instruction clients, on closing an emacs frame when emacs server is running
+#+begin_src emacs-lisp
+(setq server-client-instructions nil)
+#+end_src
+
+Implicitly resizing the Emacs frame adds to init time. Fonts larger than the system default can cause frame resizing, which adds to startup time.
+#+begin_src emacs-lisp
+(setq frame-inhibit-implied-resize t)
+#+end_src
+
+Silence the bell
+#+begin_src emacs-lisp
+(setq ring-bell-function #'ignore
+      inhibit-startup-screen t)
+#+end_src
+** Provide Early init
+:PROPERTIES:
+:ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
+:END:
+
+#+begin_src emacs-lisp
+(provide 'early-init)
+;;; early-init.el ends here
+#+end_src
 
 * Init
 :PROPERTIES:
@@ -89,7 +113,7 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
 :END:
 
 #+begin_src emacs-lisp
-;; (set-background-color "#000000")        ;; Prevent blindness
+(set-background-color "#000000")        ;; Prevent blind white bg
 
 (setq
  cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
@@ -109,11 +133,38 @@ On my corp computer, I had to manually clone elpaca into my ~user-emacs-director
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
 #+end_src
+** Auto tangle files
+:PROPERTIES:
+:ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
+:END:
+
+Automatically tangle my configuration files.  Since I have multiple ones for individual computers that I have to use which may need different configuration settings.
+#+begin_src emacs-lisp
+(setq org-babel-auto-tangle-file-list
+      (list
+       buffer-file-name ;; by default only tangle this file
+       ))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun org-babel-auto-tangle-files ()
+  ;; Automatically tangle files in ~org-babel-auto-tangle-file-list~ when one of them is saved
+  (when (member buffer-file-name org-babel-auto-tangle-file-list)
+    (org-babel-tangle-file buffer-file-name)))
+#+end_src
+
+Add hook to after save hook when on org mode
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook
+  (lambda () (add-hook 'after-save-hook #'org-babel-auto-tangle-files)))
+#+end_src
+
 
 ** Disable debug on error
 :PROPERTIES:
 :ID:       81b9c124-7565-4621-9d9f-bbacfdfa1ff8
 :END:
 #+begin_src emacs-lisp
-(setq debug-on-error t)
+(setq debug-on-error nil)
 #+end_src
+
