@@ -3,14 +3,7 @@
 The entire config is defined in [[file:emacs.org][emacs.org]] and tangled into individual files using ~org-babel-tangle~ on save
 
 Custom variables and functions unique to my personal config all start with ~ads/~
-* Org
-:PROPERTIES:
-:ID:       86ff43ac-a6a2-4dfe-94dd-70682394f401
-:END:
-* Themes
-:PROPERTIES:
-:ID:       fa6e5507-bc9a-456f-943f-8d4a92d3ed53
-:END:
+
 * OS specific Configs
 :PROPERTIES:
 :ID:       1468100f-9941-4349-81fc-7772237602c5
@@ -18,10 +11,6 @@ Custom variables and functions unique to my personal config all start with ~ads/
 
 I use various computers with different Operatings sytems.  In the ideal world I would only use Linux, but work requires windows, OSX is useful for Adobe CC products.
 
-* Computer specific configs
-:PROPERTIES:
-:ID:       ea21a472-b661-41ca-8300-69a70340a9b3
-:END:
 * Inspiration
 :PROPERTIES:
 :ID:       f0cfd0e1-7503-4873-ad8b-661ec4f54108
@@ -30,3 +19,4 @@ I use various computers with different Operatings sytems.  In the ideal world I 
 - [[https://github.com/SystemCrafters/crafted-emacs][Crafted Emacs]]
 - [[https://github.com/rougier][Nicolas Rougier]] particularly [[https://github.com/rougier/nano-emacs?tab=readme-ov-file][NANO]] but everything he touches is gold
 - [[https://github.com/minad/org-modern][Org Modern]]
+- Progfolio's [[https://github.com/progfolio/.emacs.d/tree/master][.emacs.d]]
