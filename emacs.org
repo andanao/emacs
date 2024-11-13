@@ -14,7 +14,9 @@ Enable debug on error at startup to automatically get debugging with init.
 :ID:       3190cd0f-37bc-476e-a322-dccf9af20846
 :END:
 
-The EMACS ~~~ directory is not the same on windows as it is on Linux, I keep my git directory on windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange, and to avoid unecessary headaches I avoid manually setting the emacs home directory.
+The EMACS ~~~ directory is not the same on windows as it is on Linux, I keep my git directory on
+windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange, and to avoid
+unecessary headaches I avoid manually setting the emacs home directory.
 #+begin_src emacs-lisp
 (if (member system-type '(windows-nt ms-dos))
     (setq ads/git-dir (concat "c:/users/" user-login-name "/git/"))
@@ -172,6 +174,7 @@ Silence the bell
 #+begin_src emacs-lisp
 ;; (set-background-color "#000000")        ;; Prevent blind white bg
 (load-theme 'modus-vivendi)
+(load-theme 'modus-operandi)
 
 (setq
  cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
