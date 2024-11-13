@@ -7,14 +7,71 @@
 Enable debug on error at startup to automatically get debugging with init.
 
 #+begin_src emacs-lisp
-(setq debug-on-error t)
+;; (setq debug-on-error t)
 #+end_src
+** Set git directory
+:PROPERTIES:
+:ID:       3190cd0f-37bc-476e-a322-dccf9af20846
+:END:
+
+The EMACS ~~~ directory is not the same on windows as it is on Linux, I keep my git directory on windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange, and to avoid unecessary headaches I avoid manually setting the emacs home directory.
+#+begin_src emacs-lisp
+(if (member system-type '(windows-nt ms-dos))
+    (setq ads/git-dir (concat "c:/users/" user-login-name "/git/"))
+    (setq ads/git-dir (expand-file-name "~/git/")))
+#+end_src
+
+** Garbage Collection
+:PROPERTIES:
+:ID:       ecc6265b-6f3e-4637-8d8c-5f91724e9db7
+:END:
+(lifted from [[https://github.com/progfolio/.emacs.d?tab=readme-ov-file#garbage-collection][progfolio's init]])
+
+=gc-cons-threshold= (800 KB) and =gc-cons-percentage= (0.1) control when the Emacs garbage collector can kick in.
+Temporarily turning these off during init should decrease startup time.
+Resetting them afterward will ensure that normal operations don't suffer from a large GC periods.
+
+The following is a table shows values from popular Emacs configurations.
+
+| Distribution | gc-cons-threshold |
+|--------------+-------------------|
+| Default      |            800000 |
+| Doom         |          16777216 |
+| Spacemacs    |         100000000 |
+
+#+begin_src emacs-lisp :lexical t
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 1)
+
+(defun +gc-after-focus-change ()
+  "Run GC when frame loses focus."
+  (run-with-idle-timer
+   5 nil
+   (lambda () (unless (frame-focus-state) (garbage-collect)))))
+#+end_src
+
+#+begin_src emacs-lisp :lexical t
+(defun +reset-init-values ()
+  (run-with-idle-timer
+   1 nil
+   (lambda ()
+     (setq ;;file-name-handler-alist default-file-name-handler-alist
+           gc-cons-percentage 0.1
+           gc-cons-threshold 100000000)
+     (message "gc-cons-threshold & file-name-handler-alist restored")
+     (when (boundp 'after-focus-change-function)
+       (add-function :after after-focus-change-function #'+gc-after-focus-change)))))
+
+;; (with-eval-after-load 'elpaca
+  ;; (add-hook 'elpaca-after-init-hook '+reset-init-values))
+#+end_src
+
 ** [[https://github.com/progfolio/elpaca][Elpaca]] package management
 :PROPERTIES:
 :ID:       1d7a180b-e95e-4d1a-85ed-3a339174eefa
 :END:
 
-Improved package manager over use-package and straight.el
+Improved package manager over use-package and straight.el nice for getting a reproducible configuration
 
 On my corp computer, I had to manually clone elpaca into my ~user-emacs-directory~
 
@@ -113,7 +170,8 @@ Silence the bell
 :END:
 
 #+begin_src emacs-lisp
-(set-background-color "#000000")        ;; Prevent blind white bg
+;; (set-background-color "#000000")        ;; Prevent blind white bg
+(load-theme 'modus-vivendi)
 
 (setq
  cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
@@ -139,10 +197,11 @@ Silence the bell
 :END:
 
 Automatically tangle my configuration files.  Since I have multiple ones for individual computers that I have to use which may need different configuration settings.
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :noweb yes
 (setq org-babel-auto-tangle-file-list
       (list
-       buffer-file-name ;; by default only tangle this file
+       "c:/Users/adanaos/git/emacs-new/emacs.org"
        ))
 #+end_src
 
@@ -156,7 +215,7 @@ Automatically tangle my configuration files.  Since I have multiple ones for ind
 Add hook to after save hook when on org mode
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook
-  (lambda () (add-hook 'after-save-hook #'org-babel-auto-tangle-files)))
+  (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
 #+end_src
 
 
