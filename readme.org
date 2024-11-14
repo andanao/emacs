@@ -434,6 +434,9 @@ I don't need to open:
    "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
    "kk" '(kill-this-buffer :which-key "kill-this-buffer")
    "kl"'(delete-window :wk "delete-window")
+
+
+
    ))
 
    #+end_src
@@ -445,6 +448,13 @@ I don't use mark so much because of Evil's visual mode, but the register functio
 #+begin_src emacs-lisp
 (define-key global-map (kbd "C-SPC C-SPC") 'jump-to-register)
 (define-key global-map (kbd "C-SPC C-;") 'point-to-register)
+#+end_src
+** Bookmarks
+:PROPERTIES:
+:ID:       c54c63c8-13a7-4265-96c4-0bdde31bc410
+:END:
+#+begin_src emacs-lisp
+(define-key global-map (kbd "C-x C-b") 'bookmark-jump)
 #+end_src
 ** Evil
 :PROPERTIES:
@@ -467,12 +477,6 @@ I don't use mark so much because of Evil's visual mode, but the register functio
   ;; Use visual line motions even outside of visual-line mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  ;; ;; Use C-<hjkl> to move around in insert
-  ;; (evil-global-set-key 'insert (kbd "C-h") 'evil-backward-char)
-  ;; (evil-global-set-key 'insert (kbd "C-l") 'evil-forward-char)
-  ;; (evil-global-set-key 'insert (kbd "C-k") 'evil-previous-line)
-  ;; (evil-global-set-key 'insert (kbd "C-j") 'evil-next-line)
 
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
