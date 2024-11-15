@@ -1788,6 +1788,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
   (add-to-list 'org-structure-template-alist '("cc" . "src C\n"))
   (add-to-list 'org-structure-template-alist '("cp" . "src C++\n"))
   (add-to-list 'org-structure-template-alist '("cpp" . "src C++\n"))
+  (add-to-list 'org-structure-template-alist '("rs" . "src rust\n"))
   (add-to-list 'org-structure-template-alist '("yaml" . "src yaml\n"))
   (add-to-list 'org-structure-template-alist '("toml" . "src toml\n"))
   (add-to-list 'org-structure-template-alist '("js" . "src js\n"))
