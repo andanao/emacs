@@ -2181,6 +2181,27 @@ Useful I'm only writng code for me and I'm lazy AF and testing somewhere else.. 
 
 #+end_src
 
+*** Git stage commit --amend and push-f
+:PROPERTIES:
+:ID:       395fd074-493c-421e-a6a2-38342b440ce3
+:END:
+Useful I'm only writing code that I can't test on my local compuyter and has to be synced via get, keeps the logs a bit cleaner. me and I'm lazy AF and testing somewhere else..  ~git lazy~
+#+begin_src emacs-lisp
+(defun ads/git-stage-commit-amend-push ()
+  (interactive)
+  (save-buffer)
+  (message "Adding changes to last commit")
+  (async-shell-command
+    (concat "git stage " buffer-file-name
+	    "&& git commit --amend --no-edit"
+	    "&& git push -f")))
+
+(ads/leader-keys
+    ; go - Git Oops
+    "go"'(ads/git-stage-commit-amend-push :wk "git commit"))
+
+#+end_src
+
 *** Git commit all
 :PROPERTIES:
 :ID:       ab98f544-4379-49ab-af5e-c073353e7628
