@@ -2715,6 +2715,32 @@ Load my ~deimos~ config stuff
 :END:
 
     ~(load-file (concat ads/user-dir-org "work.el"))~
+* Auto tangle files
+:PROPERTIES:
+:ID:       60c0d70c-1753-4e60-ad6d-79c56cd22e48
+:END:
+
+Automatically tangle my configuration files.  Since I have multiple ones for individual computers that I have to use which may need different configuration settings.
+
+#+begin_src emacs-lisp :noweb yes
+(setq org-babel-auto-tangle-file-list
+      (list
+       "c:/Users/adanaos/git/emacs-new/emacs.org"
+       ))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun org-babel-auto-tangle-files ()
+  ;; Automatically tangle files in ~org-babel-auto-tangle-file-list~ when one of them is saved
+  (when (member buffer-file-name org-babel-auto-tangle-file-list)
+    (org-babel-tangle-file buffer-file-name)))
+#+end_src
+
+Add hook to after save hook when on org mode
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook
+  (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
+#+end_src
 * Disable Debug on Error
 :PROPERTIES:
 :ID:       8983e335-165e-428e-bf7d-3af415999cfb
