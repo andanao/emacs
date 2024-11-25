@@ -1,5 +1,5 @@
 #+title:Adrian Danao-Schroeder config
-#+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :results none
+#+PROPERTY: header-args:emacs-lisp :tangle ./readme.el :comments link :results none
 * Set background
 :PROPERTIES:
 :ID:       5234d029-e9f9-4471-bb50-d1f70161c88a
@@ -1473,7 +1473,6 @@ Formatting for scheduled __ : if today otherwise ## :
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
- %i
  :END:
  %?\n
  "
@@ -1543,7 +1542,6 @@ Formatting for scheduled __ : if today otherwise ## :
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
- %i
  :END:
  "
    :immediate-finish t
