@@ -1400,10 +1400,11 @@ split window and focus down on agenda open
  Don' move windows and set org span to 1 day
 
  #+begin_src emacs-lisp
-   (setq org-agenda-window-setup 'current-window)
-   (setq org-agenda-span 1)
-   (setq org-agenda-restore-windows-after-quit t)
-   (setq org-agenda-persistent-filter t)
+(setq org-agenda-window-setup 'current-window
+      org-agenda-span 1
+      org-agenda-restore-windows-after-quit t
+      org-agenda-persistent-filter t
+      org-agenda-skip-function-global '(org-agenda-skip-entry-if 'todo 'done))
  #+end_src
 
 *** Agenda Scheduled Leaders
@@ -1412,7 +1413,7 @@ split window and focus down on agenda open
 :END:
 Formatting for scheduled __ : if today otherwise ## :
 #+begin_src emacs-lisp
-(setq org-agenda-scheduled-leaders '("__ :" "%02d :"))
+(setq org-agenda-scheduled-leaders '(":" "%2d :"))
 #+end_src
 
 ** Org Prettify
