@@ -1413,7 +1413,7 @@ split window and focus down on agenda open
 :END:
 Formatting for scheduled __ : if today otherwise ## :
 #+begin_src emacs-lisp
-(setq org-agenda-scheduled-leaders '(":" "%2d :"))
+(setq org-agenda-scheduled-leaders '("" "%2d :"))
 #+end_src
 
 ** Org Prettify
@@ -1496,7 +1496,6 @@ Formatting for scheduled __ : if today otherwise ## :
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
- %i
  :END:
  %?\n
  "
@@ -1520,7 +1519,6 @@ Formatting for scheduled __ : if today otherwise ## :
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
- %i
  :END:
  %?\n
  "
@@ -1538,7 +1536,7 @@ Formatting for scheduled __ : if today otherwise ## :
     '("i" "Quick Inbox" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %^{Task to inbox}
- SCHEDULED: %t\n
+ SCHEDULED: %t
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
@@ -1572,12 +1570,11 @@ Formatting for scheduled __ : if today otherwise ## :
     '("k" "Clipboard Link to Inbox" entry
 	 (file+headline (lambda () (concat ads/personal-dir-org "inbox.org"))"Inbox")
  "* TODO %(org-cliplink-capture)
- SCHEDULED: %t\n
+ SCHEDULED: %t
  :PROPERTIES:
  :ID:     \t%(org-id-new)
  :CREATED:\t%U
  :REF:\t%a
- %i
  :END:
  "
    :immediate-finish t
@@ -1601,7 +1598,6 @@ Formatting for scheduled __ : if today otherwise ## :
  :REF:\t%a
  :Effort: \t%^{effort|1:00|2:00|4:00|8:00|16:00}
  :Cost-est:\t%^{Cost estimate}
- %i
  :END:
  %?\n
    "
@@ -1716,6 +1712,7 @@ Quickly log note to archive under datetree, header only timesetamp, intended to 
 (ads/leader-keys
     "L" '(ads/log-to-archive-subject :wk "Log to Archive"))
 #+end_src
+
 
 ** Org Bullets
 :PROPERTIES:
