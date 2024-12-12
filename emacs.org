@@ -7,7 +7,9 @@
 Enable debug on error at startup to automatically get debugging with init.
 
 #+begin_src emacs-lisp
-;; (setq debug-on-error t)
+(setq debug-on-error t)
+(add-hook 'after-init-hook '(lambda () (setq debug-on-error nil)))
+(add-hook 'after-init-hook '(lambda () (find-file "c:/Users/adanaos/git/emacs-new/emacs.org")))
 #+end_src
 ** Set git directory
 :PROPERTIES:
@@ -129,7 +131,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 #+begin_src emacs-lisp
 ;; (set-background-color "#000000")        ;; Prevent blind white bg
 (load-theme 'modus-vivendi)
-(load-theme 'modus-operandi)
+;; (load-theme 'modus-operandi)
 
 (setq
  cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
@@ -149,7 +151,14 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
 #+end_src
-** Auto tangle files
+** Custom Variables
+:PROPERTIES:
+:ID:       ea86272e-ba14-4256-8720-812ba9a21f8f
+:END:
+
+Custom config variable setting
+
+*** Auto tangle files
 :PROPERTIES:
 :ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
 :END:
@@ -175,13 +184,90 @@ Add hook to after save hook when on org mode
 (add-hook 'org-mode-hook
   (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
 #+end_src
-
-
-** Disable debug on error
+** Theme
 :PROPERTIES:
-:ID:       81b9c124-7565-4621-9d9f-bbacfdfa1ff8
+:ID:       402191ad-8c44-4671-a645-325322eecff4
+:END:
+This is just temporary
+
+#+begin_src emacs-lisp
+(if (string= system-type "gnu/linux")
+  (setq serif "Etbb")
+  (setq serif "EtBembo"))
+
+(setq
+ mono "FiraCode Nerd Font"
+ sans "Cantarell")
+
+;; Set Font sizes
+(defvar default-font-size 160)
+(defvar default-variable-font-size 160)
+
+;Set line spacing
+(setq line-spacing .2)
+
+;; Set default font
+(set-face-attribute 'default nil :font mono :height default-font-size)
+(set-face-attribute 'fixed-pitch nil :font mono :height default-font-size)
+
+;; Set the variable pitch fa
+(set-face-attribute 'variable-pitch nil :font serif :height default-variable-font-size :weight 'regular)
+
+(use-package miasma-theme
+  :config
+  (load-theme 'miasma t))
+#+end_src
+** Packages
+:PROPERTIES:
+:ID:       d3911478-ab2b-442c-b962-80339f2aff80
+:END:
+*** evil
+:PROPERTIES:
+:ID:       0be2adc9-9670-4f89-a088-70e65229c37a
 :END:
 #+begin_src emacs-lisp
-(setq debug-on-error nil)
+(use-package evil
+  ;; :demand t
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding  nil
+        evil-want-C-u-scroll  nil
+        evil-want-C-i-jump    nil
+        evil-want-C-w-delete  nil)
+  :config
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  ;; set back normal mouse behaviour
+  (define-key evil-motion-state-map [down-mouse-1] nil)
+  (add-hook 'after-save-hook 'evil-normal-state)
+  (evil-mode)
+  )
 #+end_src
 
+**** Collection
+:PROPERTIES:
+:ID:       33566ddf-dc6f-4d3f-9e24-4d8622b7c0f1
+:END:
+
+A collection of evil bindings not fully set in the default package
+
+ #+begin_src emacs-lisp
+(use-package evil-collection
+  :after (evil)
+  :init (setq evil-collection-setup-minibuffer t)
+  :config
+  (evil-collection-init))
+#+end_src
+**** Anzu
+:PROPERTIES:
+:ID:       17726ce4-36da-4522-8c36-d1908afc9d53
+:END:
+Show match counts in modeline
+#+begin_src emacs-lisp
+(use-package evil-anzu
+  :after (evil anzu))
+#+end_src
