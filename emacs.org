@@ -68,66 +68,6 @@ The following is a table shows values from popular Emacs configurations.
   ;; (add-hook 'elpaca-after-init-hook '+reset-init-values))
 #+end_src
 
-** [[https://github.com/progfolio/elpaca][Elpaca]] package management
-:PROPERTIES:
-:ID:       1d7a180b-e95e-4d1a-85ed-3a339174eefa
-:END:
-
-Improved package manager over use-package and straight.el nice for getting a reproducible configuration
-
-On my corp computer, I had to manually clone elpaca into my ~user-emacs-directory~
-
-#+begin_src emacs-lisp
-;;; Bootstrap elpaca
-(setq package-enable-at-startup nil)
-
-(defvar elpaca-installer-version 0.8)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
-                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                  ,@(when-let* ((depth (plist-get order :depth)))
-                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                  ,(plist-get order :repo) ,repo))))
-                  ((zerop (call-process "git" nil buffer t "checkout"
-                                        (or (plist-get order :ref) "--"))))
-                  (emacs (concat invocation-directory invocation-name))
-                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                  ((require 'elpaca))
-                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-
-;; If on Windows, disable symlinks
-;; (Symlinks require admin permissions before Windows 11)
-(when (member system-type '(windows-nt ms-dos))
-  (elpaca-no-symlink-mode))
-
-;;; _
-(provide 'early-init)
-#+end_src
 ** UI Changes
 :PROPERTIES:
 :ID:       9c4cb38a-f09c-4e67-9b73-a58bdc8d69bc
@@ -155,6 +95,21 @@ Silence the bell
 (setq ring-bell-function #'ignore
       inhibit-startup-screen t)
 #+end_src
+** Package Usage
+:PROPERTIES:
+:ID:       d42c037e-17f1-44bb-a1f1-15eeece7ce47
+:END:
+On corporate machines I've been unable to get elpaca/straight working, for linux I plan to use the Nix [[https://github.com/nix-community/emacs-overlay][emacs-overlay]]
+
+#+begin_src emacs-lisp
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("gnu"  . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+			 ))
+
+(setq use-package-always-ensure t)
+#+end_src
+
 ** Provide Early init
 :PROPERTIES:
 :ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
