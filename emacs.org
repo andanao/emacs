@@ -7,6 +7,7 @@
 Enable debug on error at startup to automatically get debugging with init.
 
 #+begin_src emacs-lisp
+;; -*- lexical-binding: t; -*-
 (setq debug-on-error t)
 (add-hook 'after-init-hook '(lambda () (setq debug-on-error nil)))
 (add-hook 'after-init-hook '(lambda () (find-file "c:/Users/adanaos/git/emacs-new/emacs.org")))
@@ -112,6 +113,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (setq use-package-always-ensure t)
 #+end_src
 
+
 ** Provide Early init
 :PROPERTIES:
 :ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
@@ -124,7 +126,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 * Init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./init.el :results none
+:header-args: emacs-lisp :tangle ./init.el :results none :noweb yes
 :ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
 :END:
 
@@ -221,6 +223,109 @@ This is just temporary
 :PROPERTIES:
 :ID:       d3911478-ab2b-442c-b962-80339f2aff80
 :END:
+*** general
+:PROPERTIES:
+:ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
+:END:
+
+[[https://github.com/noctuid/general.el#about][general.el]] provides a more convenient method for binding keys in emacs. I use it to set all of my key bindings
+
+#+begin_src emacs-lisp :lexical t :noweb yes
+(use-package general
+  :demand t
+  :config
+  (general-override-mode)
+  (general-auto-unbind-keys)
+  <<general-config>>)
+#+end_src
+
+**** General config
+:PROPERTIES:
+:header-args: :noweb-ref general-config
+:ID:       c3286a06-0321-49f6-8183-a37c497ddd7f
+:END:
+
+#+begin_src emacs-lisp :lexical t
+(general-define-key
+ :keymaps 'override
+ :states '(insert normal hybrid motion visual operator emacs)
+ :prefix-map '+prefix-map
+ :prefix-command '+prefix-map
+ :prefix "SPC"
+ :global-prefix "C-SPC")
+
+(general-create-definer ads/leader-keys
+  :keymaps 'override
+  :states '(insert normal hybrid motion visual operator)
+  :wk-full-keys nil
+  :prefix "SPC"
+  :global-prefix "C-SPC")
+#+end_src
+
+#+begin_src emacs-lisp :lexical t
+(ads/leader-keys
+  "!"   'shell-command
+  )
+#+end_src
+***** eval ~e~
+:PROPERTIES:
+:ID:       d0130836-0a5e-459d-b066-e9507c58e947
+:END:
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "e" '(:ignore t :which-key "eval")
+  "eb" 'eval-buffer
+  "ed" 'eval-defun
+  "ee" 'eval-expression
+  "ep" 'pp-eval-last-sexp
+  )
+#+end_src
+
+***** quit ~q~
+:PROPERTIES:
+:ID:       982cc7d7-252b-4953-82e1-a62a2468eced
+:END:
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "q" '(:ignore t :which-key "quit")
+  "qQ" 'save-buffers-kill-emacs
+  "qE" 'kill-emacs
+  )
+#+end_src
+
+***** narrow ~n~
+:PROPERTIES:
+:ID:       5688c1b1-21e6-4f74-b4dd-a95cb23fcc5a
+:END:
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "n" '(:ignore t :which-key "narrow")
+  "nd" 'narrow-to-defun
+  "np" 'narrow-to-page
+  "nr" 'narrow-to-region
+  "ns" 'org-narrow-to-subtree
+  "ne" 'org-narrow-to-element
+  "nb" 'org-narrow-to-block
+  "nw" 'widen
+  )
+#+end_src
+***** windows ~f~
+:PROPERTIES:
+:ID:       f3e626e0-21a7-4e18-8c9a-414a56ba67e2
+:END:
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "f" '(:ignore t :which-key "narrow")
+  "f=" 'balance-windows
+  "f_" 'split-window-vertically
+  )
+
+#+end_src
+
+
 *** evil
 :PROPERTIES:
 :ID:       0be2adc9-9670-4f89-a088-70e65229c37a
