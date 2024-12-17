@@ -202,8 +202,8 @@ This is just temporary
  sans "Cantarell")
 
 ;; Set Font sizes
-(defvar default-font-size 160)
-(defvar default-variable-font-size 160)
+(defvar default-font-size 140)
+(defvar default-variable-font-size 140)
 
 ;Set line spacing
 (setq line-spacing .2)
@@ -215,9 +215,7 @@ This is just temporary
 ;; Set the variable pitch fa
 (set-face-attribute 'variable-pitch nil :font serif :height default-variable-font-size :weight 'regular)
 
-(use-package miasma-theme
-  :config
-  (load-theme 'miasma t))
+(load-theme 'modus-vivendi)
 #+end_src
 ** Packages
 :PROPERTIES:
@@ -279,8 +277,10 @@ This is just temporary
   "ed" 'eval-defun
   "ee" 'eval-expression
   "ep" 'pp-eval-last-sexp
+  "es" 'eval-last-sexp
   )
 #+end_src
+
 
 ***** quit ~q~
 :PROPERTIES:
@@ -312,20 +312,60 @@ This is just temporary
   "nw" 'widen
   )
 #+end_src
-***** windows ~f~
+***** windows, buffers, frames ~f~
 :PROPERTIES:
 :ID:       f3e626e0-21a7-4e18-8c9a-414a56ba67e2
 :END:
 #+begin_src emacs-lisp
 (ads/leader-keys
   "f" '(:ignore t :which-key "narrow")
+
+  "fQ" 'delete-frame
+  "fN" 'tear-off-window
+  "fR" 'set-frame-name
+  "fr" 'select-frame-by-name
+
   "f=" 'balance-windows
   "f_" 'split-window-vertically
+
+  "fF" 'delete-window
+  "fd" 'kill-current-buffer
+  "fD" 'kill-buffer-and-window
+
+  "fh" 'evil-window-left
+  "fj" 'evil-window-down
+  "fk" 'evil-window-up
+  "fl" 'evil-window-right
+
+  "fH" 'evil-window-move-far-left
+  "fJ" 'evil-window-move-very-bottom
+  "fK" 'evil-window-move-very-top
+  "fL" 'evil-window-move-far-right
   )
-
 #+end_src
+***** TODO config ~c~
+:PROPERTIES:
+:ID:       5e426a49-7743-40e0-a9b2-132889805206
+:END:
 
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "c" '(:ignore t :which-key "config")
 
+  "cc" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs-new/emacs.org"))
+	 :which-key "open config")
+  "cI" '((lambda () (interactive) (load-file user-init-file))
+	 :which-key "load init")
+  )
+#+end_src
+***** TODO Toggles
+:PROPERTIES:
+:ID:       14e88ab3-068e-48b0-b6f7-2edfd3e02491
+:END:
+***** TODO Regex
+:PROPERTIES:
+:ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
+:END:
 *** evil
 :PROPERTIES:
 :ID:       0be2adc9-9670-4f89-a088-70e65229c37a
