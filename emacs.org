@@ -193,7 +193,8 @@ Add hook to after save hook when on org mode
 This is just temporary
 
 #+begin_src emacs-lisp
-(if (string= system-type "gnu/linux")
+(if
+(string= system-type "gnu/linux")
   (setq serif "Etbb")
   (setq serif "EtBembo"))
 
@@ -221,14 +222,36 @@ This is just temporary
 :PROPERTIES:
 :ID:       d3911478-ab2b-442c-b962-80339f2aff80
 :END:
+*** corfu
+
+   #+begin_src emacs-lisp
+(use-package corfu
+  :ensure t
+  :hook (after-init . global-corfu-mode)
+  :bind (:map corfu-map ("<tab>" . corfu-complete))
+  :config
+  (setq tab-always-indent 'complete)
+  (setq corfu-preview-current nil)
+  (setq corfu-min-width 20)
+
+  (setq corfu-popupinfo-delay '(1.25 . 0.5))
+  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
+   #+end_src
+
 *** evil
 :PROPERTIES:
 :ID:       0be2adc9-9670-4f89-a088-70e65229c37a
 :END:
 #+begin_src emacs-lisp
-(use-package evil
+(use-package evil			;
   :demand t
   :preface (setq evil-want-keybinding nil)
+  :after 'general
   :init
   (setq evil-want-integration t
         evil-want-keybinding  nil
@@ -238,7 +261,7 @@ This is just temporary
 	evil-complete-all-buffers nil
 	)
   :config
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (general-define-key :states 'insert "C-g" 'evil-normal-state)
 
   ;; Use visual line motions even outside of visual-line mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
@@ -247,8 +270,14 @@ This is just temporary
   ;; set back normal mouse behaviour
   (define-key evil-motion-state-map [down-mouse-1] nil)
   (add-hook 'after-save-hook 'evil-normal-state)
-  (evil-mode)
-  )
+  (evil-mode))
+   
+(general-define-key
+  :states '(normal insert)
+  "C-w C-h" 'evil-window-left
+  "C-w C-j" 'evil-window-down
+  "C-w C-k" 'evil-window-up
+  "C-w C-l" 'evil-window-right)
 #+end_src
 
 *** evil-anzu
@@ -260,6 +289,7 @@ Show match counts in modeline
 (use-package evil-anzu
   :after (evil anzu))
 #+end_src
+
 *** evil-collection
 :PROPERTIES:
 :ID:       33566ddf-dc6f-4d3f-9e24-4d8622b7c0f1
@@ -274,6 +304,7 @@ A collection of evil bindings not fully set in the default package
   :config
   (evil-collection-init))
 #+end_src
+
 *** general
 :PROPERTIES:
 :ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
@@ -314,10 +345,36 @@ A collection of evil bindings not fully set in the default package
 #+end_src
 
 #+begin_src emacs-lisp :lexical t
-(ads/leader-keys
-  "!"   'shell-command
-  )
+(defun ads/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+
+  
+(general-define-key
+ :states '(normal hybrid motion visual operator emacs)
+ '"C-g" 'ads/keyboard-quit-dwim)
 #+end_src
+
 ***** eval ~e~
 :PROPERTIES:
 :ID:       d0130836-0a5e-459d-b066-e9507c58e947
@@ -333,7 +390,6 @@ A collection of evil bindings not fully set in the default package
   "es" 'eval-last-sexp
   )
 #+end_src
-
 
 ***** quit ~q~
 :PROPERTIES:
@@ -365,37 +421,39 @@ A collection of evil bindings not fully set in the default package
   "nw" 'widen
   )
 #+end_src
-***** windows, buffers, frames ~f~
+
+***** windows, buffers, frames ~j~
 :PROPERTIES:
 :ID:       f3e626e0-21a7-4e18-8c9a-414a56ba67e2
 :END:
 #+begin_src emacs-lisp
 (ads/leader-keys
-  "f" '(:ignore t :which-key "narrow")
+  "j" '(:ignore t :which-key "frames")
 
-  "fQ" 'delete-frame
-  "fN" 'tear-off-window
-  "fR" 'set-frame-name
-  "fr" 'select-frame-by-name
+  "jQ" 'delete-frame
+  "jN" 'tear-off-window
+  "jR" 'set-frame-name
+  "jr" 'select-frame-by-name
 
-  "f=" 'balance-windows
-  "f_" 'split-window-vertically
+  "j=" 'balance-windows
+  "j_" 'split-window-vertically
 
-  "fF" 'delete-window
-  "fd" 'kill-current-buffer
-  "fD" 'kill-buffer-and-window
+  "jF" 'delete-window
+  "jd" 'kill-current-buffer
+  "jD" 'kill-buffer-and-window
 
-  "fh" 'evil-window-left
-  "fj" 'evil-window-down
-  "fk" 'evil-window-up
-  "fl" 'evil-window-right
+  "jh" 'evil-window-left
+  "jj" 'evil-window-down
+  "jk" 'evil-window-up
+  "jl" 'evil-window-right
 
-  "fH" 'evil-window-move-far-left
-  "fJ" 'evil-window-move-very-bottom
-  "fK" 'evil-window-move-very-top
-  "fL" 'evil-window-move-far-right
+  "jH" 'evil-window-move-far-left
+  "jJ" 'evil-window-move-very-bottom
+  "jK" 'evil-window-move-very-top
+  "jL" 'evil-window-move-far-right
   )
 #+end_src
+
 ***** TODO config ~c~
 :PROPERTIES:
 :ID:       5e426a49-7743-40e0-a9b2-132889805206
@@ -407,10 +465,14 @@ A collection of evil bindings not fully set in the default package
 
   "cc" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs-new/emacs.org"))
 	 :which-key "open config")
+  "co" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs/readme.org"))
+	 :which-key "open config")
+
   "cI" '((lambda () (interactive) (load-file user-init-file))
 	 :which-key "load init")
   )
 #+end_src
+
 ***** TODO Toggles
 :PROPERTIES:
 :ID:       14e88ab3-068e-48b0-b6f7-2edfd3e02491
@@ -419,6 +481,27 @@ A collection of evil bindings not fully set in the default package
 :PROPERTIES:
 :ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
 :END:
+*** helpful
+:PROPERTIES:
+:ID:       2a3f7dcc-51ca-472d-b073-31cea58b42a5
+:END:
+
+#+begin_src emacs-lisp
+(use-package helpful
+  :demand t
+  )
+
+(general-define-key
+  :states '(normal insert)
+  "C-h C-v" 'describe-variable
+  "C-h C-f" 'describe-function
+  "C-h C-b" 'describe-bindings
+  "C-h C-c" 'describe-key-briefly
+  "C-h C-k" 'describe-key
+  "C-h C-e" 'view-echo-area-messages
+  "C-h C-j" 'describe-face)
+#+end_src
+
 *** magit
 :PROPERTIES:
 :ID:       d5db3894-eba8-4dd6-bfd3-05bf339454f7
@@ -434,6 +517,7 @@ A collection of evil bindings not fully set in the default package
   :states '(normal insert)
   "C-x C-g" 'magit-status)
 #+end_src
+
 *** marginalia
 :PROPERTIES:
 :ID:       6dd61ba5-dc71-4883-b215-4f26d461da3e
@@ -445,6 +529,34 @@ A collection of evil bindings not fully set in the default package
   :demand t
   :hook (after-init . marginalia-mode))
 #+end_src
+
+*** nerd-icons
+
+Remember run ~nerd-icons-install-fonts~ to get the font files.  Then
+restart Emacs to see the effect.
+
+   #+begin_src emacs-lisp
+(use-package nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+(use-package nerd-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+   #+end_src
+
 *** orderless
 :PROPERTIES:
 :ID:       d5725e1b-f4e7-4efa-9234-4434c5ef71db
@@ -457,6 +569,21 @@ A collection of evil bindings not fully set in the default package
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
+
+*** rainbow-delimiters
+
+   #+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+   #+end_src
+
+*** rainbow-mode
+
+   #+begin_src emacs-lisp
+(use-package rainbow-mode
+  :commands (rainbow-mode))
+   #+end_src
+
 *** vertico
 :PROPERTIES:
 :ID:       c5d608cf-1635-4b53-9ca7-3d998922de20
@@ -490,23 +617,3 @@ which-key is is included in EMACS 30
   (which-key-idle-delay 0.2))
 #+end_src
 
-*** helpful
-:PROPERTIES:
-:ID:       2a3f7dcc-51ca-472d-b073-31cea58b42a5
-:END:
-
-#+begin_src emacs-lisp
-(use-package helpful
-  :demand t
-  )
-
-(general-define-key
-  :states '(normal insert)
-  "C-h C-v" 'describe-variable
-  "C-h C-f" 'describe-function
-  "C-h C-b" 'describe-bindings
-  "C-h C-c" 'describe-key-briefly
-  "C-h C-k" 'describe-key
-  "C-h C-e" 'view-echo-area-messages
-  "C-h C-j" 'describe-face)
-#+end_src
