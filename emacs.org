@@ -1,6 +1,8 @@
+#+TITLE: Emacs Literate Configuration
+
 * Early Init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./early-init.el :results none
+:header-args: emacs-lisp :tangle ./early-init.el :results none :noweb yes :comments link
 :ID:       a70010ba-7c49-4804-afef-c818bc0225ec
 :END:
 
@@ -98,6 +100,8 @@ Silence the bell
 (setq ring-bell-function #'ignore
       inhibit-startup-screen t)
 #+end_src
+
+
 ** Package Usage
 :PROPERTIES:
 :ID:       d42c037e-17f1-44bb-a1f1-15eeece7ce47
@@ -126,7 +130,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 * Init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./init.el :results none :noweb yes
+:header-args: emacs-lisp :tangle ./init.el :results none :noweb yes :comments link
 :ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
 :END:
 
@@ -151,8 +155,8 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (tool-bar-mode -1)                      ;; Disablet the toolbar
 (tooltip-mode -1)                       ;; Disable tooltips
 (menu-bar-mode -1)                      ;; Disable the menu bar
-
 #+end_src
+
 ** Custom Variables
 :PROPERTIES:
 :ID:       ea86272e-ba14-4256-8720-812ba9a21f8f
