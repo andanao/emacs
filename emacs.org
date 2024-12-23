@@ -2,7 +2,7 @@
 
 * Early Init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./early-init.el :results none :noweb yes :comments link
+:header-args: emacs-lisp :tangle early-init.el :results none :noweb yes :comments link
 :ID:       a70010ba-7c49-4804-afef-c818bc0225ec
 :END:
 
@@ -14,6 +14,7 @@ Enable debug on error at startup to automatically get debugging with init.
 (add-hook 'after-init-hook '(lambda () (setq debug-on-error nil)))
 (add-hook 'after-init-hook '(lambda () (find-file "c:/Users/adanaos/git/emacs-new/emacs.org")))
 #+end_src
+
 ** Set git directory
 :PROPERTIES:
 :ID:       3190cd0f-37bc-476e-a322-dccf9af20846
@@ -83,6 +84,13 @@ Changes to the UI to inhibit unused elements be used should speed up start up ti
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+
+(scroll-bar-mode -1)                    ;; Disable the visible scrollbar
+(tool-bar-mode -1)                      ;; Disablet the toolbar
+(tooltip-mode -1)                       ;; Disable tooltips
+(menu-bar-mode -1)                      ;; Disable the menu bar
+
+(setq inhibit-startup-screen t)
 #+end_src
 
 Remove server instruction clients, on closing an emacs frame when emacs server is running
@@ -117,7 +125,6 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (setq use-package-always-ensure t)
 #+end_src
 
-
 ** Provide Early init
 :PROPERTIES:
 :ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
@@ -130,19 +137,16 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 * Init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./init.el :results none :noweb yes :comments link
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
 :END:
 
 #+begin_src emacs-lisp
-;; (set-background-color "#000000")        ;; Prevent blind white bg
 (load-theme 'modus-vivendi)
-;; (load-theme 'modus-operandi)
 
 (setq
  cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
  large-file-warning-threshold 100000000 ;; 100Mb
- inhibit-startup-screen t               ;; I'd rather a blank slate
  help-window-select t                   ;; Focus new help windows when opened
  )
 
@@ -151,25 +155,14 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (global-subword-mode 1)                 ;; Iterate through CamelCase words
 (put 'downcase-region 'disabled nil)    ;; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ;; Enable upcase-region
-(scroll-bar-mode -1)                    ;; Disable the visible scrollbar
-(tool-bar-mode -1)                      ;; Disablet the toolbar
-(tooltip-mode -1)                       ;; Disable tooltips
-(menu-bar-mode -1)                      ;; Disable the menu bar
 #+end_src
 
-** Custom Variables
-:PROPERTIES:
-:ID:       ea86272e-ba14-4256-8720-812ba9a21f8f
-:END:
-
-Custom config variable setting
-
-*** Auto tangle files
+** Auto tangle files
 :PROPERTIES:
 :ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
 :END:
 
-Automatically tangle my configuration files.  Since I have multiple ones for individual computers that I have to use which may need different configuration settings.
+Automatically tangle my configuration files on save.  
 
 #+begin_src emacs-lisp :noweb yes
 (setq org-babel-auto-tangle-file-list
@@ -190,126 +183,9 @@ Add hook to after save hook when on org mode
 (add-hook 'org-mode-hook
   (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
 #+end_src
-** Theme
-:PROPERTIES:
-:ID:       402191ad-8c44-4671-a645-325322eecff4
-:END:
-This is just temporary
 
-#+begin_src emacs-lisp
-(if
-(string= system-type "gnu/linux")
-  (setq serif "Etbb")
-  (setq serif "EtBembo"))
 
-(setq
- mono "FiraCode Nerd Font"
- sans "Cantarell")
-
-;; Set Font sizes
-(defvar default-font-size 140)
-(defvar default-variable-font-size 140)
-
-;Set line spacing
-(setq line-spacing .2)
-
-;; Set default font
-(set-face-attribute 'default nil :font mono :height default-font-size)
-(set-face-attribute 'fixed-pitch nil :font mono :height default-font-size)
-
-;; Set the variable pitch fa
-(set-face-attribute 'variable-pitch nil :font serif :height default-variable-font-size :weight 'regular)
-
-(load-theme 'modus-vivendi)
-#+end_src
-** Packages
-:PROPERTIES:
-:ID:       d3911478-ab2b-442c-b962-80339f2aff80
-:END:
-*** corfu
-
-   #+begin_src emacs-lisp
-(use-package corfu
-  :ensure t
-  :hook (after-init . global-corfu-mode)
-  :bind (:map corfu-map ("<tab>" . corfu-complete))
-  :config
-  (setq tab-always-indent 'complete)
-  (setq corfu-preview-current nil)
-  (setq corfu-min-width 20)
-
-  (setq corfu-popupinfo-delay '(1.25 . 0.5))
-  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
-
-  ;; Sort by input history (no need to modify `corfu-sort-function').
-  (with-eval-after-load 'savehist
-    (corfu-history-mode 1)
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
-   #+end_src
-
-*** evil
-:PROPERTIES:
-:ID:       0be2adc9-9670-4f89-a088-70e65229c37a
-:END:
-#+begin_src emacs-lisp
-(use-package evil			;
-  :demand t
-  :preface (setq evil-want-keybinding nil)
-  :after 'general
-  :init
-  (setq evil-want-integration t
-        evil-want-keybinding  nil
-        evil-want-C-u-scroll  nil
-        evil-want-C-i-jump    nil
-        evil-want-C-w-delete  nil
-	evil-complete-all-buffers nil
-	)
-  :config
-  (general-define-key :states 'insert "C-g" 'evil-normal-state)
-
-  ;; Use visual line motions even outside of visual-line mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  ;; set back normal mouse behaviour
-  (define-key evil-motion-state-map [down-mouse-1] nil)
-  (add-hook 'after-save-hook 'evil-normal-state)
-  (evil-mode))
-   
-(general-define-key
-  :states '(normal insert)
-  "C-w C-h" 'evil-window-left
-  "C-w C-j" 'evil-window-down
-  "C-w C-k" 'evil-window-up
-  "C-w C-l" 'evil-window-right)
-#+end_src
-
-*** evil-anzu
-:PROPERTIES:
-:ID:       17726ce4-36da-4522-8c36-d1908afc9d53
-:END:
-Show match counts in modeline
-#+begin_src emacs-lisp
-(use-package evil-anzu
-  :after (evil anzu))
-#+end_src
-
-*** evil-collection
-:PROPERTIES:
-:ID:       33566ddf-dc6f-4d3f-9e24-4d8622b7c0f1
-:END:
-
-A collection of evil bindings not fully set in the default package
-
- #+begin_src emacs-lisp
-(use-package evil-collection
-  :after (evil)
-  :init (setq evil-collection-setup-minibuffer t)
-  :config
-  (evil-collection-init))
-#+end_src
-
-*** general
+** General
 :PROPERTIES:
 :ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
 :END:
@@ -335,8 +211,6 @@ A collection of evil bindings not fully set in the default package
 (general-define-key
  :keymaps 'override
  :states '(insert normal hybrid motion visual operator emacs)
- :prefix-map '+prefix-map
- :prefix-command '+prefix-map
  :prefix "SPC"
  :global-prefix "C-SPC")
 
@@ -373,7 +247,7 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-  
+
 (general-define-key
  :states '(normal hybrid motion visual operator emacs)
  '"C-g" 'ads/keyboard-quit-dwim)
@@ -470,21 +344,121 @@ The DWIM behaviour of this command is as follows:
   "cc" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs-new/emacs.org"))
 	 :which-key "open config")
   "co" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs/readme.org"))
-	 :which-key "open config")
-
+	 :which-key "old config")
   "cI" '((lambda () (interactive) (load-file user-init-file))
 	 :which-key "load init")
   )
 #+end_src
 
-***** TODO Toggles
+***** Toggles ~t~
 :PROPERTIES:
 :ID:       14e88ab3-068e-48b0-b6f7-2edfd3e02491
 :END:
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+    "t" '(:ignore t :which-key "toggles")
+    "tt" 'modus-themes-toggle
+)
+#+end_src
+
+
 ***** TODO Regex
 :PROPERTIES:
 :ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
 :END:
+** Packages
+:PROPERTIES:
+:ID:       b211eefc-821f-4ac5-9944-8625a31d6448
+:END:
+*** corfu
+:PROPERTIES:
+:ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
+:END:
+
+   #+begin_src emacs-lisp
+(use-package corfu
+  :ensure t
+  :hook (after-init . global-corfu-mode)
+  :bind (:map corfu-map ("<tab>" . corfu-complete))
+  :config
+  (setq tab-always-indent 'complete)
+  (setq corfu-preview-current nil)
+  (setq corfu-min-width 20)
+
+  (setq corfu-popupinfo-delay '(1.25 . 0.5))
+  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
+   #+end_src
+
+*** evil
+:PROPERTIES:
+:ID:       0be2adc9-9670-4f89-a088-70e65229c37a
+:END:
+#+begin_src emacs-lisp
+(use-package evil			;
+  :demand t
+  :preface (setq evil-want-keybinding nil)
+  ;; :after 'general
+  :hook (after-init . evil-mode)
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding  nil
+        evil-want-C-u-scroll  nil
+        evil-want-C-i-jump    nil
+        evil-want-C-w-delete  nil
+	evil-complete-all-buffers nil
+	)
+  :config
+  (general-define-key :states 'insert "C-g" 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  ;; set back normal mouse behaviour
+  (define-key evil-motion-state-map [down-mouse-1] nil)
+  (add-hook 'after-save-hook 'evil-normal-state)
+  ;; (evil-mode)
+  )
+
+(general-define-key
+  :states '(normal insert)
+  "C-w C-h" 'evil-window-left
+  "C-w C-j" 'evil-window-down
+  "C-w C-k" 'evil-window-up
+  "C-w C-l" 'evil-window-right)
+#+end_src
+
+*** evil-anzu
+:PROPERTIES:
+:ID:       17726ce4-36da-4522-8c36-d1908afc9d53
+:END:
+Show match counts in modeline
+#+begin_src emacs-lisp
+(use-package evil-anzu
+  :after (evil anzu))
+#+end_src
+
+*** evil-collection
+:PROPERTIES:
+:ID:       33566ddf-dc6f-4d3f-9e24-4d8622b7c0f1
+:END:
+
+A collection of evil bindings not fully set in the default package
+
+ #+begin_src emacs-lisp
+(use-package evil-collection
+  :after (evil)
+  :init (setq evil-collection-setup-minibuffer t)
+  :config
+  (evil-collection-init))
+#+end_src
+
 *** helpful
 :PROPERTIES:
 :ID:       2a3f7dcc-51ca-472d-b073-31cea58b42a5
@@ -535,6 +509,9 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 *** nerd-icons
+:PROPERTIES:
+:ID:       3f5c1a1c-bd1c-4927-9230-699352ce079b
+:END:
 
 Remember run ~nerd-icons-install-fonts~ to get the font files.  Then
 restart Emacs to see the effect.
@@ -561,6 +538,103 @@ restart Emacs to see the effect.
   (dired-mode . nerd-icons-dired-mode))
    #+end_src
 
+   
+*** org
+
+#+begin_src emacs-lisp
+(use-package org 
+  :custom
+  (org-ellipsis " ·")
+  (org-log-done 'time)
+  (org-pretty-entities t)
+  (org-pretty-entities-include-sub-superscripts nil)
+  (org-hidden-keywords '(title))
+  (org-hide-emphasis-markers t)
+  (org-image-actual-width 0.75)
+  (org-startup-with-inline-images t)
+  (org-agenda-block-separator "")
+  (org-fontify-whole-heading-line t)
+  (org-fontify-done-headline t)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-cycle-separator-lines 0)
+  (org-id-link-to-org-use-id t)
+  (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  )
+#+end_src
+
+*** org-babel
+
+**** Tangling
+
+#+begin_src emacs-lisp :lexical t
+(require 'org-tempo)
+(require 'ob-tangle)
+
+(customize-set-variable 'org-src-window-setup 'current-window)
+(customize-set-variable 'org-src-preserve-indentation t)
+
+(setq org-confirm-babel-evaluate nil)
+
+<<org-babel-config>>
+#+end_src
+
+**** config
+:PROPERTIES:
+:header-args: :noweb-ref org-babel-config
+:END:
+
+***** Structured Templates
+
+#+begin_src emacs-lisp :lexical t
+(dolist
+    (template
+     '(
+       ("el" . "src emacs-lisp")
+       ("py" . "src python")
+       ("sh" . "src shell")
+       ("rs" . "src rust")
+       ("html" . "src html")
+       ("css" . "src css")
+       ("cc" . "src C")
+       ("cpp" . "src C++")
+       ("cs" . "src C#")
+       ("yaml" . "src yaml")
+       ("toml" . "src toml")
+       ("js" . "src javascript")
+       ("jo" . "src json")
+       ("ja" . "src java")
+       ("sql" . "src sql")
+       ))
+  (add-to-list 'org-structure-template-alist template))
+#+end_src
+
+***** Languages
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org
+     (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((emacs-lisp . t)
+           (python . t))))
+
+    (setq org-confirm-babel-evaluate nil)
+
+(setq org-babel-default-header-args:python
+	     '((:results . "output")
+	       ))
+#+end_src
+
+*** org-modern
+
+#+begin_src emacs-lisp
+(use-package org-modern :after (org)
+  :custom
+  (org-modern-fold-stars
+   '(("▶" . "▼")))
+  :config
+  (global-org-modern-mode))
+#+end_src
+
 *** orderless
 :PROPERTIES:
 :ID:       d5725e1b-f4e7-4efa-9234-4434c5ef71db
@@ -575,6 +649,9 @@ restart Emacs to see the effect.
 #+end_src
 
 *** rainbow-delimiters
+:PROPERTIES:
+:ID:       1854a60e-9eba-431d-a345-1f28b290e672
+:END:
 
    #+begin_src emacs-lisp
 (use-package rainbow-delimiters
@@ -582,6 +659,9 @@ restart Emacs to see the effect.
    #+end_src
 
 *** rainbow-mode
+:PROPERTIES:
+:ID:       4fa34d65-816c-410a-85e2-9ad40f903dc9
+:END:
 
    #+begin_src emacs-lisp
 (use-package rainbow-mode
@@ -618,6 +698,35 @@ which-key is is included in EMACS 30
   (which-key-side-window-location 'bottom)
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-side-window-max-width 0.33)
-  (which-key-idle-delay 0.2))
+  (which-key-idle-delay 0.3))
+#+end_src
+
+** Theme
+:PROPERTIES:
+:ID:       402191ad-8c44-4671-a645-325322eecff4
+:END:
+
+#+begin_src emacs-lisp
+(if (string= system-type "gnu/linux")
+  (setq serif "Etbb")
+  (setq serif "EtBembo"))
+
+(setq
+ mono "FiraCode Nerd Font"
+ sans "Cantarell")
+
+;; Set Font sizes
+(defvar default-font-size 140)
+(defvar default-variable-font-size default-font-size)
+
+;; Set default font
+(set-face-attribute 'default nil :font mono :height default-font-size)
+(set-face-attribute 'fixed-pitch nil :font mono :height default-font-size)
+
+;; Set the variable pitch fa
+(set-face-attribute 'variable-pitch nil :font serif :height default-variable-font-size :weight 'regular)
+
+(customize-set-variable 'fill-column 100)
+(customize-set-variable 'line-spacing 0.2)
 #+end_src
 
