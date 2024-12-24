@@ -747,21 +747,22 @@ which-key is is included in EMACS 30
 
 ;; Set Font sizes
 (defvar default-font-size 140)
-(defvar default-variable-font-size 150)
 
 ;; Set default font
-(set-face-attribute 'default nil
+(set-face-attribute 'default nil	
 		    :font mono
+		    :family mono
 		    :height default-font-size)
+
 (set-face-attribute 'fixed-pitch nil :inherit 'default)
 
 (set-face-attribute 'variable-pitch nil
 		    :font serif
-		    :height default-variable-font-size
+		    :height 1.1
 		    :weight 'regular)
 
 (customize-set-variable 'fill-column 100)
-(customize-set-variable 'line-spacing 0.2)
+(customize-set-variable 'line-spacing 0.25)
 #+end_src
 
 *** Org
