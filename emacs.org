@@ -1,5 +1,7 @@
 #+TITLE: Emacs Literate Configuration
 
+This is my full emacs configuration written in org mode and automatically tangled out on save.
+
 * Early Init
 :PROPERTIES:
 :header-args: emacs-lisp :tangle early-init.el :results none :noweb yes :comments link
@@ -15,7 +17,7 @@ Enable debug on error at startup to automatically get debugging with init.
 (add-hook 'after-init-hook '(lambda () (find-file "c:/Users/adanaos/git/emacs-new/emacs.org")))
 #+end_src
 
-** Set git directory
+** Set directory variables
 :PROPERTIES:
 :ID:       3190cd0f-37bc-476e-a322-dccf9af20846
 :END:
@@ -23,10 +25,17 @@ Enable debug on error at startup to automatically get debugging with init.
 The EMACS ~~~ directory is not the same on windows as it is on Linux, I keep my git directory on
 windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange, and to avoid
 unecessary headaches I avoid manually setting the emacs home directory.
+
 #+begin_src emacs-lisp
 (if (member system-type '(windows-nt ms-dos))
-    (setq ads/git-dir (concat "c:/users/" user-login-name "/git/"))
-    (setq ads/git-dir (expand-file-name "~/git/")))
+    (setq git-directory (concat "c:/users/" user-login-name "/git/"))
+    (setq git-directory (expand-file-name "~/git/")))
+#+end_src
+
+I keep my org directory in the same place 
+
+#+begin_src emacs-lisp
+(setq org-directory (concat git-directory "org/"))
 #+end_src
 
 ** Garbage Collection
@@ -145,16 +154,20 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (load-theme 'modus-vivendi)
 
 (setq
- cursor-in-non-selected-windows nil     ;; Hide the cursor in inactive windows
+ cursor-in-non-selected-windows nil
  large-file-warning-threshold 100000000 ;; 100Mb
- help-window-select t                   ;; Focus new help windows when opened
- )
+ help-window-select t)
 
-(blink-cursor-mode 0)                   ;; Prefer a still cursor
+(blink-cursor-mode 0)
 (fset 'yes-or-no-p 'y-or-n-p)           ;; Replace yes/no prompts with y/n
 (global-subword-mode 1)                 ;; Iterate through CamelCase words
 (put 'downcase-region 'disabled nil)    ;; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ;; Enable upcase-region
+
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
+(when (file-exists-p custom-file)
+  (load custom-file nil t))
 #+end_src
 
 ** Auto tangle files
@@ -222,6 +235,15 @@ Add hook to after save hook when on org mode
   :global-prefix "C-SPC")
 #+end_src
 
+These keybingings live directly under leader with no sub menu
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "C-SPC" 'bookmark-jump
+  "C-j" 'jump-to-register
+  "C-;" 'point-to-register
+  )
+#+end_src
+
 #+begin_src emacs-lisp :lexical t
 (defun ads/keyboard-quit-dwim ()
   "Do-What-I-Mean behaviour for a general `keyboard-quit'.
@@ -246,7 +268,6 @@ The DWIM behaviour of this command is as follows:
     (abort-recursive-edit))
    (t
     (keyboard-quit))))
-
 
 (general-define-key
  :states '(normal hybrid motion visual operator emacs)
@@ -394,6 +415,17 @@ The DWIM behaviour of this command is as follows:
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
+
+*** TODO bookmark+
+
+[[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[https://github.com/emacsmirror/bookmark-plus][git]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
+on MELPA
+#+begin_src emacs-lisp
+(use-package bookmark+
+  :vc (:url "https://github.com/emacsmirror/bookmark-plus"
+       :branch "master"
+       ))
+#+end_src
 
 *** evil
 :PROPERTIES:
@@ -563,15 +595,14 @@ restart Emacs to see the effect.
 #+end_src
 
 *** org-babel
-
-**** Tangling
-
+    
 #+begin_src emacs-lisp :lexical t
 (require 'org-tempo)
 (require 'ob-tangle)
 
 (customize-set-variable 'org-src-window-setup 'current-window)
 (customize-set-variable 'org-src-preserve-indentation t)
+(customize-set-variable 'org-edit-src-content-indentation 0)
 
 (setq org-confirm-babel-evaluate nil)
 
@@ -630,7 +661,7 @@ restart Emacs to see the effect.
 (use-package org-modern :after (org)
   :custom
   (org-modern-fold-stars
-   '(("▶" . "▼")))
+   '(("▸" . "▾")))
   :config
   (global-org-modern-mode))
 #+end_src
@@ -675,7 +706,6 @@ restart Emacs to see the effect.
 
 #+begin_src emacs-lisp
 (use-package vertico
-  :ensure t
   :demand t
   :hook (after-init . vertico-mode))
 #+end_src
@@ -717,16 +747,39 @@ which-key is is included in EMACS 30
 
 ;; Set Font sizes
 (defvar default-font-size 140)
-(defvar default-variable-font-size default-font-size)
+(defvar default-variable-font-size 150)
 
 ;; Set default font
-(set-face-attribute 'default nil :font mono :height default-font-size)
-(set-face-attribute 'fixed-pitch nil :font mono :height default-font-size)
+(set-face-attribute 'default nil
+		    :font mono
+		    :height default-font-size)
+(set-face-attribute 'fixed-pitch nil :inherit 'default)
 
-;; Set the variable pitch fa
-(set-face-attribute 'variable-pitch nil :font serif :height default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil
+		    :font serif
+		    :height default-variable-font-size
+		    :weight 'regular)
 
 (customize-set-variable 'fill-column 100)
 (customize-set-variable 'line-spacing 0.2)
+#+end_src
+
+*** Org
+
+#+begin_src emacs-lisp
+;(set-face-attribute 'org-document-title nil :height 1.5 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-1 nil :height 1.35 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-2 nil :height 1.3 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-3 nil :height 1.25 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-4 nil :height 1.2 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-5 nil :height 1.15 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-6 nil :height 1.1 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-7 nil :height 1.1 :inherit 'variable-pitch)
+;(set-face-attribute 'org-level-8 nil :height 1.1 :inherit 'variable-pitch)
+;(set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+;(set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+;(set-face-attribute 'org-block-end-line nil :height 0.8 :inherit 'fixed-pitch)
+;(set-face-attribute 'org-block-start-line nil :height 0.8 :inherit 'fixed-pitch :underline t)
+;(set-face-attribute 'org-table nil :inherit 'fixed-pitch)
 #+end_src
 
