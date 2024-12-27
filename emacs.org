@@ -466,6 +466,25 @@ The DWIM behaviour of this command is as follows:
 :PROPERTIES:
 :ID:       b211eefc-821f-4ac5-9944-8625a31d6448
 :END:
+*** bookmark+
+:PROPERTIES:
+:ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
+:END:
+[[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
+on MELPA
+
+#+begin_src emacs-lisp
+(use-package bookmark+
+  :vc (:url "https://github.com/emacsmirror/bookmark-plus"
+       :branch "master"))
+(ads/leader-keys
+  "SPC" 'bookmark-jump
+  "b" '(:ignore t :which-key "bookmark")
+  "bs" 'bookmark-set
+  "br" 'bookmark-rename
+  )
+#+end_src
+
 *** corfu
 :PROPERTIES:
 :ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
@@ -490,25 +509,14 @@ The DWIM behaviour of this command is as follows:
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
 
-*** bookmark+
-:PROPERTIES:
-:ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
-:END:
-[[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
-on MELPA
+*** doom-modeline 
 
 #+begin_src emacs-lisp
-(use-package bookmark+
-  :vc (:url "https://github.com/emacsmirror/bookmark-plus"
-       :branch "master"))
-(ads/leader-keys
-  "SPC" 'bookmark-jump
-  "b" '(:ignore t :which-key "bookmark")
-  "bs" 'bookmark-set
-  "br" 'bookmark-rename
+(use-package doom-modeline
+  :demand t
+  :init (doom-modeline-mode 1)
   )
 #+end_src
-
 *** evil
 :PROPERTIES:
 :ID:       0be2adc9-9670-4f89-a088-70e65229c37a
