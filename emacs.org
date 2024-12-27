@@ -711,6 +711,20 @@ restart Emacs to see the effect.
   :config
   (global-org-modern-mode))
 #+end_src
+*** org-tidy
+[[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
+
+#+begin_src emacs-lisp
+(use-package org-tidy
+  :ensure t
+  :custom
+  (org-tidy-properties-style 'invisible)
+  :hook
+  (org-mode . org-tidy-mode))
+(ads/leader-keys
+  "ot" 'org-tidy-untidy-buffer
+  "oT" 'org-tidy-toggle)
+#+end_src
 
 *** orderless
 :PROPERTIES:
