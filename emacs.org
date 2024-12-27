@@ -675,6 +675,26 @@ restart Emacs to see the effect.
   (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   )
 #+end_src
+*** org-appear
+
+#+begin_src emacs-lisp
+(use-package org-appear
+  :hook  (org-mode . org-tidy-mode)
+  :custom
+  (org-appear-autolinks t)
+  (org-appear-autoentities t)
+  (org-appear-autosubmarkers t)
+  (org-appear-autokeywords t)
+  :config
+  (add-hook 'evil-insert-state-exit-hook
+	    (lambda ()
+	      (setq org-appear-delay 2)))
+
+  (add-hook 'evil-insert-state-entry-hook
+	    (lambda ()
+	      (setq org-appear-delay .3)))
+  )
+#+end_src
 
 *** org-babel
     
