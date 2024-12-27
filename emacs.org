@@ -151,7 +151,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 :END:
 
 #+begin_src emacs-lisp
-(load-theme 'modus-vivendi)
+(set-background-color "#000000") ;; don't blind me at startup
 
 (setq
  cursor-in-non-selected-windows nil
@@ -168,6 +168,52 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 (when (file-exists-p custom-file)
   (load custom-file nil t))
+#+end_src
+
+** Theme
+:PROPERTIES:
+:ID:       402191ad-8c44-4671-a645-325322eecff4
+:END:
+*** fonts
+#+begin_src emacs-lisp
+(if (string= system-type "gnu/linux")
+  (setq serif "Etbb")
+  (setq serif "EtBembo"))
+
+(setq
+ mono "FiraCode Nerd Font"
+ sans "Cantarell")
+
+;; Set Font sizes
+(defvar default-font-size 140)
+
+;; Set default font
+(set-face-attribute 'default nil	
+		    :font mono
+		    :family mono
+		    :height default-font-size)
+
+(set-face-attribute 'fixed-pitch nil :inherit 'default)
+
+(set-face-attribute 'variable-pitch nil
+		    :font serif
+		    :height 1.1
+		    :weight 'regular)
+
+(customize-set-variable 'fill-column 100)
+(customize-set-variable 'line-spacing 0.25)
+
+#+end_src
+*** modus
+
+#+begin_src emacs-lisp
+(use-package modus-themes)
+
+(setq modus-themes-common-palette-overrides
+  '((bg-prose-block-contents bg-main)
+    (bg-prose-block-delimiter bg-main)))
+
+(load-theme 'modus-vivendi)
 #+end_src
 
 ** Auto tangle files
@@ -729,58 +775,5 @@ which-key is is included in EMACS 30
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.3))
-#+end_src
-
-** Theme
-:PROPERTIES:
-:ID:       402191ad-8c44-4671-a645-325322eecff4
-:END:
-
-#+begin_src emacs-lisp
-(if (string= system-type "gnu/linux")
-  (setq serif "Etbb")
-  (setq serif "EtBembo"))
-
-(setq
- mono "FiraCode Nerd Font"
- sans "Cantarell")
-
-;; Set Font sizes
-(defvar default-font-size 140)
-
-;; Set default font
-(set-face-attribute 'default nil	
-		    :font mono
-		    :family mono
-		    :height default-font-size)
-
-(set-face-attribute 'fixed-pitch nil :inherit 'default)
-
-(set-face-attribute 'variable-pitch nil
-		    :font serif
-		    :height 1.1
-		    :weight 'regular)
-
-(customize-set-variable 'fill-column 100)
-(customize-set-variable 'line-spacing 0.25)
-#+end_src
-
-*** Org
-
-#+begin_src emacs-lisp
-;(set-face-attribute 'org-document-title nil :height 1.5 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-1 nil :height 1.35 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-2 nil :height 1.3 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-3 nil :height 1.25 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-4 nil :height 1.2 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-5 nil :height 1.15 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-6 nil :height 1.1 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-7 nil :height 1.1 :inherit 'variable-pitch)
-;(set-face-attribute 'org-level-8 nil :height 1.1 :inherit 'variable-pitch)
-;(set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-;(set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-;(set-face-attribute 'org-block-end-line nil :height 0.8 :inherit 'fixed-pitch)
-;(set-face-attribute 'org-block-start-line nil :height 0.8 :inherit 'fixed-pitch :underline t)
-;(set-face-attribute 'org-table nil :inherit 'fixed-pitch)
 #+end_src
 
