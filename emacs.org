@@ -209,18 +209,29 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 #+begin_src emacs-lisp
 (use-package modus-themes)
 
+(setq modus-themes-headings
+  '((1 . (light 1.35))
+    (2 . (light 1.30))
+    (3 . (light 1.25))
+    (4 . (light 1.20))
+    (5 . (light 1.15))
+    (t . (light 1.10))
+    ))
+
 (setq modus-themes-common-palette-overrides
   '((bg-prose-block-contents bg-main)
-    (bg-prose-block-delimiter bg-main)))
+    (bg-prose-block-delimiter bg-main)
+    (fg-heading-0 fg-main)
+    (fg-heading-1 fg-main)
+    (fg-heading-2 fg-main)
+    (fg-heading-3 fg-main)
+    (fg-heading-4 fg-main)
+    (fg-heading-5 fg-main)
+    (fg-heading-6 fg-main)
+    (fg-heading-7 fg-main)
+    (fg-heading-8 fg-main)
+			      ))
 
-(setq modus-themes-headings
-  '((1 . (1.35))
-    (2 . (1.30))
-    (3 . (1.25))
-    (4 . (1.20))
-    (5 . (1.15))
-    (t . (1.10))
-    ))
 
 (load-theme 'modus-vivendi)
 #+end_src
@@ -722,7 +733,15 @@ restart Emacs to see the effect.
 (use-package org-modern :after (org)
   :custom
   (org-modern-fold-stars
-   '(("▸" . "▾")))
+   '(("▸" . "▾")
+     ("▹" . "▿")
+     ("▸" . "▾")
+     ("▹" . "▿")
+     ("▸" . "▾")
+     ("▹" . "▿")
+     ("▸" . "▾")
+     ("▹" . "▿")
+     ))
   :config
   (global-org-modern-mode))
 #+end_src
