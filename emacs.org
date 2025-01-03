@@ -255,6 +255,10 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-7 fg-main)
     (fg-heading-8 fg-main)))
 
+(custom-set-faces
+ '(mode-line ((t (:box nil))))
+ '(mode-line-inactive ((t (:box nil)))))
+
 (load-theme 'modus-vivendi)
 #+end_src
 
@@ -537,11 +541,7 @@ on MELPA
   :init (doom-modeline-mode 1)
   :custom
   (doom-modeline-hud t)
-  (doom-modeline-height 28)
-  :config
-  ;; remove box around mode line
-  (set-face-attribute 'mode-line nil :box nil)
-  (set-face-attribute 'mode-line-inactive nil :box nil))
+  (doom-modeline-height 28))
 #+end_src
 
 *** evil
