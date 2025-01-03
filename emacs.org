@@ -204,7 +204,9 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
-*** modus
+*** modus-themes
+I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
+particularly like the light ~modus-operandi~ theme.
 
 #+begin_src emacs-lisp
 (use-package modus-themes)
@@ -229,9 +231,24 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
     (fg-heading-5 fg-main)
     (fg-heading-6 fg-main)
     (fg-heading-7 fg-main)
-    (fg-heading-8 fg-main)
-			      ))
+    (fg-heading-8 fg-main)))
 
+(load-theme 'modus-vivendi)
+#+end_src
+*** frames
+
+Set frame padding to have some breathing room
+#+begin_src emacs-lisp
+(defun ads/set-frame-padding (pad)
+  (modify-all-frames-parameters
+   `((right-divider-width . ,pad)
+     (internal-border-width . ,pad)))
+  )
+(ads/set-frame-padding 40)
+#+end_src
+
+Remove all window borders
+#+begin_src emacs-lisp
 (defun modus-themes-invisible-dividers (&rest _)
   "Make window dividers for THEME invisible."
   (let ((bg (face-background 'default)))
@@ -242,8 +259,6 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
      `(window-divider-last-pixel ((t :background ,bg :foreground ,bg))))))
 
 (add-hook 'modus-themes-after-load-theme-hook 'modus-themes-invisible-dividers)
-
-(load-theme 'modus-vivendi)
 #+end_src
 
 ** Auto tangle files
