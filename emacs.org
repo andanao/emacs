@@ -32,7 +32,7 @@ unecessary headaches I avoid manually setting the emacs home directory.
     (setq git-directory (expand-file-name "~/git/")))
 #+end_src
 
-I keep my org directory in the same place 
+I keep my org directory in the same place
 
 #+begin_src emacs-lisp
 (setq org-directory (concat git-directory "org/"))
@@ -188,7 +188,7 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (defvar default-font-size 140)
 
 ;; Set default font
-(set-face-attribute 'default nil	
+(set-face-attribute 'default nil
 		    :font mono
 		    :family mono
 		    :height default-font-size)
@@ -204,6 +204,28 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
+*** frames
+
+Set frame padding to have some breathing room
+#+begin_src emacs-lisp
+(modify-all-frames-parameters
+   `((right-divider-width . 20)
+     (internal-border-width . 20)))
+#+end_src
+
+Remove all window borders
+#+begin_src emacs-lisp
+(defun modus-themes-invisible-dividers (&rest _)
+  "Make window dividers for THEME invisible."
+  (let ((bg (face-background 'default)))
+    (custom-set-faces
+     `(fringe ((t :background ,bg :foreground ,bg)))
+     `(window-divider ((t :background ,bg :foreground ,bg)))
+     `(window-divider-first-pixel ((t :background ,bg :foreground ,bg)))
+     `(window-divider-last-pixel ((t :background ,bg :foreground ,bg))))))
+
+(add-hook 'modus-themes-after-load-theme-hook 'modus-themes-invisible-dividers)
+#+end_src
 *** modus-themes
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
@@ -235,38 +257,13 @@ particularly like the light ~modus-operandi~ theme.
 
 (load-theme 'modus-vivendi)
 #+end_src
-*** frames
-
-Set frame padding to have some breathing room
-#+begin_src emacs-lisp
-(defun ads/set-frame-padding (pad)
-  (modify-all-frames-parameters
-   `((right-divider-width . ,pad)
-     (internal-border-width . ,pad)))
-  )
-(ads/set-frame-padding 40)
-#+end_src
-
-Remove all window borders
-#+begin_src emacs-lisp
-(defun modus-themes-invisible-dividers (&rest _)
-  "Make window dividers for THEME invisible."
-  (let ((bg (face-background 'default)))
-    (custom-set-faces
-     `(fringe ((t :background ,bg :foreground ,bg)))
-     `(window-divider ((t :background ,bg :foreground ,bg)))
-     `(window-divider-first-pixel ((t :background ,bg :foreground ,bg)))
-     `(window-divider-last-pixel ((t :background ,bg :foreground ,bg))))))
-
-(add-hook 'modus-themes-after-load-theme-hook 'modus-themes-invisible-dividers)
-#+end_src
 
 ** Auto tangle files
 :PROPERTIES:
 :ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
 :END:
 
-Automatically tangle my configuration files on save.  
+Automatically tangle my configuration files on save.
 
 #+begin_src emacs-lisp :noweb yes
 (setq org-babel-auto-tangle-file-list
@@ -294,7 +291,8 @@ Add hook to after save hook when on org mode
 :ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
 :END:
 
-[[https://github.com/noctuid/general.el#about][general.el]] provides a more convenient method for binding keys in emacs. I use it to set all of my key bindings
+[[https://github.com/noctuid/general.el#about][general.el]] provides a more convenient method for binding keys in emacs. I use it to set all of my
+key bindings
 
 #+begin_src emacs-lisp :lexical t :noweb yes
 (use-package general
@@ -327,7 +325,7 @@ Add hook to after save hook when on org mode
 #+end_src
 
 These keybingings live directly under leader with no sub menu
-for bookmarks see [[id:6298ee0c-0bd9-41c3-88bb-d9d0159c14b7][bookmark+]] 
+for bookmarks see [[id:6298ee0c-0bd9-41c3-88bb-d9d0159c14b7][bookmark+]]
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -457,17 +455,16 @@ The DWIM behaviour of this command is as follows:
 :ID:       5e426a49-7743-40e0-a9b2-132889805206
 :END:
 
-,#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp
 (ads/leader-keys
   "c" '(:ignore t :which-key "config")
-
   "cc" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs-new/emacs.org"))
 	 :which-key "open config")
   "co" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs/readme.org"))
 	 :which-key "old config")
   "cI" '((lambda () (interactive) (load-file user-init-file))
-	 :which-key "load init")
-  )
+	 :which-key "load init"))
 #+end_src
 
 ***** Toggles ~t~
@@ -479,7 +476,7 @@ The DWIM behaviour of this command is as follows:
 (ads/leader-keys
     "t" '(:ignore t :which-key "toggles")
     "tt" 'modus-themes-toggle
-)
+    "tl" 'toggle-truncate-lines)
 #+end_src
 
 
@@ -532,6 +529,19 @@ on MELPA
   "bs" 'bookmark-set
   "br" 'bookmark-rename
   )
+#+end_src
+*** doom-modeline
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :demand t
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-hud t)
+  (doom-modeline-height 28)
+  :config
+  ;; remove box around mode line
+  (set-face-attribute 'mode-line nil :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box nil))
 #+end_src
 
 *** evil
@@ -630,9 +640,6 @@ A collection of evil bindings not fully set in the default package
   :after (general)
   :config
   (transient-bind-q-to-quit))
-(general-define-key
-  :states '(normal insert)
-  "C-x C-g" 'magit-status)
 #+end_src
 
 *** marginalia
@@ -677,11 +684,11 @@ restart Emacs to see the effect.
   (dired-mode . nerd-icons-dired-mode))
    #+end_src
 
-   
+
 *** org
 
 #+begin_src emacs-lisp
-(use-package org 
+(use-package org
   :custom
   (org-ellipsis " ·")
   (org-log-done 'time)
@@ -723,7 +730,7 @@ restart Emacs to see the effect.
 #+end_src
 
 *** org-babel
-    
+
 #+begin_src emacs-lisp :lexical t
 (require 'org-tempo)
 (require 'ob-tangle)
@@ -880,4 +887,3 @@ which-key is is included in EMACS 30
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.3))
 #+end_src
-
