@@ -193,10 +193,14 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 		    :family mono
 		    :height default-font-size)
 
-(set-face-attribute 'fixed-pitch nil :inherit 'default)
+(set-face-attribute 'fixed-pitch nil
+		    :font mono
+		    :family mono
+		    :height default-font-size)
 
 (set-face-attribute 'variable-pitch nil
 		    :font serif
+		    :family serif
 		    :height 1.1
 		    :weight 'regular)
 
@@ -234,7 +238,8 @@ particularly like the light ~modus-operandi~ theme.
 (use-package modus-themes)
 
 (setq modus-themes-headings
-  '((1 . (light 1.35))
+  '((0 . (light 2.00))
+    (1 . (light 1.35))
     (2 . (light 1.30))
     (3 . (light 1.25))
     (4 . (light 1.20))
@@ -254,6 +259,8 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-6 fg-main)
     (fg-heading-7 fg-main)
     (fg-heading-8 fg-main)))
+
+(setq modus-themes-mixed-fonts t)
 
 (custom-set-faces
  '(mode-line ((t (:box nil))))
