@@ -210,26 +210,13 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 *** frames
 
-Set frame padding to have some breathing room
+Set frame padding to have some breathing room, making the dividers invisible is done with ~ads/modus-tweaks~
 #+begin_src emacs-lisp
 (modify-all-frames-parameters
    `((right-divider-width . 20)
      (internal-border-width . 20)))
 #+end_src
 
-Remove all window borders
-#+begin_src emacs-lisp
-(defun modus-themes-invisible-dividers (&rest _)
-  "Make window dividers for THEME invisible."
-  (let ((bg (face-background 'default)))
-    (custom-set-faces
-     `(fringe ((t :background ,bg :foreground ,bg)))
-     `(window-divider ((t :background ,bg :foreground ,bg)))
-     `(window-divider-first-pixel ((t :background ,bg :foreground ,bg)))
-     `(window-divider-last-pixel ((t :background ,bg :foreground ,bg))))))
-
-(add-hook 'modus-themes-after-load-theme-hook 'modus-themes-invisible-dividers)
-#+end_src
 *** modus-themes
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
@@ -238,13 +225,13 @@ particularly like the light ~modus-operandi~ theme.
 (use-package modus-themes)
 
 (setq modus-themes-headings
-  '((0 . (light 2.00))
-    (1 . (light 1.35))
-    (2 . (light 1.30))
-    (3 . (light 1.25))
-    (4 . (light 1.20))
-    (5 . (light 1.15))
-    (t . (light 1.10))
+  '((0 . (regular 2.00))
+    (1 . (regular 1.35))
+    (2 . (regular 1.30))
+    (3 . (regular 1.25))
+    (4 . (regular 1.20))
+    (5 . (regular 1.15))
+    (t . (regular 1.10))
     ))
 
 (setq modus-themes-common-palette-overrides
@@ -262,12 +249,25 @@ particularly like the light ~modus-operandi~ theme.
 
 (setq modus-themes-mixed-fonts t)
 
-(custom-set-faces
- '(mode-line ((t (:box nil))))
- '(mode-line-inactive ((t (:box nil)))))
+(defun ads/modus-tweaks ()
+  (modus-themes-with-colors
+    (custom-set-faces
+     ;; Make frame dividers invisible
+     `(fringe ((t :background ,bg-main :foreground ,bg-main)))
+     `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-first-pixel ((t :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-last-pixel ((t :background ,bg-main :foreground ,bg-main)))
+     ;; Hide the ellipsis
+     `(org-ellipsis((,c :inherit org-hide)))
+     ;; Add "padding" to the mode lines
+     `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
+     `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
+
+(add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
 
 (load-theme 'modus-vivendi)
 #+end_src
+
 
 ** Auto tangle files
 :PROPERTIES:
@@ -548,8 +548,9 @@ on MELPA
   :init (doom-modeline-mode 1)
   :custom
   (doom-modeline-hud t)
-  (doom-modeline-height 28))
+  (doom-modeline-height 24))
 #+end_src
+
 
 *** evil
 :PROPERTIES:
@@ -597,7 +598,9 @@ on MELPA
 Show match counts in modeline
 #+begin_src emacs-lisp
 (use-package evil-anzu
-  :after (evil anzu))
+  :after (evil)
+  :config
+  (global-anzu-mode))
 #+end_src
 
 *** evil-collection
@@ -691,7 +694,7 @@ restart Emacs to see the effect.
   (dired-mode . nerd-icons-dired-mode))
    #+end_src
 
-
+   
 *** org
 
 #+begin_src emacs-lisp
@@ -712,6 +715,8 @@ restart Emacs to see the effect.
   (org-cycle-separator-lines 0)
   (org-id-link-to-org-use-id t)
   (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  :config
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
   )
 #+end_src
 *** org-appear
@@ -804,13 +809,13 @@ restart Emacs to see the effect.
   :custom
   (org-modern-fold-stars
    '(("▸" . "▾")
-     ("▹" . "▿")
-     ("▸" . "▾")
-     ("▹" . "▿")
-     ("▸" . "▾")
-     ("▹" . "▿")
-     ("▸" . "▾")
-     ("▹" . "▿")
+     ("  ▸"  .  "  ▾")
+     ("    ▸"  .  "    ▾")
+     ("      ▸"  .  "      ▾")
+     ("        ▸"  .  "        ▾")
+     ("          ▸"  .  "          ▾")
+     ("            ▸"  .  "            ▾")
+     ("              ▸"  .  "              ▾")
      ))
   :config
   (global-org-modern-mode))
