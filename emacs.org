@@ -179,6 +179,10 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 
+I want to have line numbers whenever I'm in programming modes
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
+#+end_src
 ** Theme
 :PROPERTIES:
 :ID:       402191ad-8c44-4671-a645-325322eecff4
@@ -270,8 +274,13 @@ particularly like the light ~modus-operandi~ theme.
      `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider-first-pixel ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider-last-pixel ((t :background ,bg-main :foreground ,bg-main)))
+     ;; line numbers
+     `(line-number ((,c :background ,bg-main)))
+     `(line-number-current-line ((,c :background ,bg-main)))
+     ;; modus prose
+     `(modus-themes-prose-verbatim ((,c :foreground nil)))
      ;; Hide the ellipsis
-     `(org-ellipsis((,c :inherit org-hide)))
+     `(org-ellipsis ((,c :inherit org-hide)))
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
