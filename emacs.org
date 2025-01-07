@@ -889,7 +889,12 @@ restart Emacs to see the effect.
 (use-package rainbow-mode
   :commands (rainbow-mode))
    #+end_src
-
+*** save-hist
+#+begin_src emacs-lisp
+(use-package savehist
+  :config
+  (savehist-mode 1))
+#+end_src
 *** vertico
 :PROPERTIES:
 :ID:       c5d608cf-1635-4b53-9ca7-3d998922de20
