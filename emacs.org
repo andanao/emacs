@@ -889,6 +889,25 @@ restart Emacs to see the effect.
 (use-package rainbow-mode
   :commands (rainbow-mode))
    #+end_src
+*** read-only-directories
+Some directories I want to files to be opened in read-only mode because they are usually used for
+reference
+
+#+begin_src emacs-lisp
+(defcustom read-only-directories '( )
+  "list of directories or files that will be opened in read only mode")
+
+(defun find-file-read-only-directories ()
+"""
+start buffer in read only mode if file in a child directory
+ of in any of the directores defined in read-only-directories
+"""
+  (dolist (read-only-directory read-only-directories)
+    (when (string-search read-only-directory buffer-file-name)
+      (read-only-mode))))
+
+(add-hook 'find-file-hook 'find-file-read-only-directories)
+#+end_src
 *** save-hist
 #+begin_src emacs-lisp
 (use-package savehist
