@@ -527,6 +527,18 @@ on MELPA
   "br" 'bookmark-rename
   )
 #+end_src
+*** consult
+
+#+begin_src emacs-lisp
+(use-package consult
+  )
+(ads/leader-keys
+  "C-SPC" 'consult-buffer
+  "SPC" 'consult-buffer
+  "C-j" 'consult-register
+  "C-;" 'consult-register-store
+  )
+#+end_src
 *** corfu
 :PROPERTIES:
 :ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
@@ -550,18 +562,6 @@ on MELPA
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
-*** consult
-
-#+begin_src emacs-lisp
-(use-package consult
-  )
-(ads/leader-keys
-  "C-SPC" 'consult-buffer
-  "SPC" 'consult-buffer
-  "C-j" 'consult-register
-  "C-;" 'consult-register-store
-  )
-#+end_src
 *** doom-modeline
 #+begin_src emacs-lisp
 (use-package doom-modeline
@@ -716,6 +716,19 @@ restart Emacs to see the effect.
    #+end_src
 
 
+*** orderless
+:PROPERTIES:
+:ID:       d5725e1b-f4e7-4efa-9234-4434c5ef71db
+:END:
+
+#+begin_src emacs-lisp
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+#+end_src
+
 *** org
 
 #+begin_src emacs-lisp
@@ -854,19 +867,6 @@ restart Emacs to see the effect.
 (ads/leader-keys
   "ot" 'org-tidy-untidy-buffer
   "oT" 'org-tidy-toggle)
-#+end_src
-
-*** orderless
-:PROPERTIES:
-:ID:       d5725e1b-f4e7-4efa-9234-4434c5ef71db
-:END:
-
-#+begin_src emacs-lisp
-(use-package orderless
-  :ensure t
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
 *** rainbow-delimiters
