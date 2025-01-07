@@ -222,7 +222,11 @@ I used to maintain my own theme, but I wanted a change and modus themes are nice
 particularly like the light ~modus-operandi~ theme.
 
 #+begin_src emacs-lisp
-(use-package modus-themes)
+(use-package modus-themes
+  :custom
+  (modus-themes-mixed-fonts t)
+  (modus-themes-bold-constructs t)
+  )
 
 (setq modus-themes-headings
   '((0 . (regular 2.00))
@@ -247,8 +251,15 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-7 fg-main)
     (fg-heading-8 fg-main)))
 
-(setq modus-themes-mixed-fonts t)
 
+
+
+
+
+#+end_src
+
+
+#+begin_src emacs-lisp
 (defun ads/modus-tweaks ()
   (modus-themes-with-colors
     (custom-set-faces
@@ -262,12 +273,12 @@ particularly like the light ~modus-operandi~ theme.
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
-
-(add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
-
-(load-theme 'modus-vivendi)
 #+end_src
 
+#+begin_src emacs-lisp
+(add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
+(load-theme 'modus-vivendi)
+#+end_src
 
 ** Auto tangle files
 :PROPERTIES:
