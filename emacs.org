@@ -28,7 +28,7 @@ unecessary headaches I avoid manually setting the emacs home directory.
 
 #+begin_src emacs-lisp
 (if (member system-type '(windows-nt ms-dos))
-    (setq git-directory (concat "c:/users/" user-login-name "/git/"))
+    (setq git-directory (concat "Users/" user-login-name "/git/"))
     (setq git-directory (expand-file-name "~/git/")))
 #+end_src
 
