@@ -357,17 +357,6 @@ key bindings
   :global-prefix "C-SPC")
 #+end_src
 
-These keybingings live directly under leader with no sub menu
-for bookmarks see [[id:6298ee0c-0bd9-41c3-88bb-d9d0159c14b7][bookmark+]]
-
-#+begin_src emacs-lisp
-(ads/leader-keys
-  "C-SPC" 'bookmark-jump
-  "C-j" 'jump-to-register
-  "C-;" 'point-to-register
-  )
-#+end_src
-
 #+begin_src emacs-lisp :lexical t
 (defun ads/keyboard-quit-dwim ()
   "Do-What-I-Mean behaviour for a general `keyboard-quit'.
@@ -521,6 +510,23 @@ The DWIM behaviour of this command is as follows:
 :PROPERTIES:
 :ID:       b211eefc-821f-4ac5-9944-8625a31d6448
 :END:
+*** bookmark+
+:PROPERTIES:
+:ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
+:END:
+[[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
+on MELPA
+
+#+begin_src emacs-lisp
+(use-package bookmark+
+  :vc (:url "https://github.com/emacsmirror/bookmark-plus"
+       :branch "master"))
+(ads/leader-keys
+  "b" '(:ignore t :which-key "bookmark")
+  "bs" 'bookmark-set
+  "br" 'bookmark-rename
+  )
+#+end_src
 *** corfu
 :PROPERTIES:
 :ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
@@ -544,23 +550,16 @@ The DWIM behaviour of this command is as follows:
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
-
-*** bookmark+
-:PROPERTIES:
-:ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
-:END:
-[[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
-on MELPA
+*** consult
 
 #+begin_src emacs-lisp
-(use-package bookmark+
-  :vc (:url "https://github.com/emacsmirror/bookmark-plus"
-       :branch "master"))
+(use-package consult
+  )
 (ads/leader-keys
-  "SPC" 'bookmark-jump
-  "b" '(:ignore t :which-key "bookmark")
-  "bs" 'bookmark-set
-  "br" 'bookmark-rename
+  "C-SPC" 'consult-buffer
+  "SPC" 'consult-buffer
+  "C-j" 'consult-register
+  "C-;" 'consult-register-store
   )
 #+end_src
 *** doom-modeline
