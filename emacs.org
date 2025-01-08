@@ -300,6 +300,7 @@ particularly like the light ~modus-operandi~ theme.
 
 #+begin_src emacs-lisp
 (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
+(add-hook 'after-init-hook 'ads/modus-tweaks)
 (load-theme 'modus-vivendi)
 #+end_src
 
