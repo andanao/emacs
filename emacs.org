@@ -519,7 +519,12 @@ The DWIM behaviour of this command is as follows:
 :ID:       b211eefc-821f-4ac5-9944-8625a31d6448
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
-
+*** async
+#+begin_src emacs-lisp
+(use-package async
+  :config
+  (async-bytecomp-package-mode 1))
+#+end_src
 *** bookmark+
 :PROPERTIES:
 :ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
@@ -699,7 +704,7 @@ A collection of evil bindings not fully set in the default package
     (save-buffer)
     (magit-stage-buffer-file)
     (magit-commit-create)
-    (magit-push-current-to-upstream))
+    (magit-insert-unpushed-to-upstream))
   (defun ads/git-amend ()
     (interactive)
     (save-buffer)
