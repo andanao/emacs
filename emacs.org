@@ -282,6 +282,14 @@ particularly like the light ~modus-operandi~ theme.
     (t . (regular 1.10))
     ))
 
+(setq modus-operandi-palette-overrides
+    '((bg-mode-line-active bg-dim)
+      (bg-mode-line-inactive bg-main)))
+
+(setq modus-vivendi-palette-overrides
+      '((bg-mode-line-active bg-dim)
+	(bg-mode-line-inactive bg-main)))
+
 (setq modus-themes-common-palette-overrides
   '((bg-prose-block-contents bg-main)
     (bg-prose-block-delimiter bg-main)
@@ -293,8 +301,9 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-5 fg-main)
     (fg-heading-6 fg-main)
     (fg-heading-7 fg-main)
-    (fg-heading-8 fg-main)))
+    (fg-heading-8 fg-main)
 #+end_src
+
 *** modus-tweaks
 #+begin_src emacs-lisp
 (defun ads/modus-tweaks ()
