@@ -713,10 +713,10 @@ A collection of evil bindings not fully set in the default package
 
   (ads/leader-keys
    "g" '(:ignore t :wk "git")
+   "gd" 'magit-dispatch
    "gg" 'magit-status
    "gk" 'magit-commit
    "gl" 'ads/git-lazy
-   "gm" 'magit-dispatch
    "go" 'ads/git-amend
    "gp" 'magit-push
    "gs" 'magit-stage-buffer-file
