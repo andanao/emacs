@@ -558,6 +558,13 @@ on MELPA
   "C-;" 'consult-register-store
   )
 #+end_src
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  :major-modes '(org-mode)
+  :keymaps '(org-mode-map)
+  "/" 'consult-org-heading)
+#+end_src
 *** corfu
 :PROPERTIES:
 :ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
@@ -958,7 +965,6 @@ start buffer in read only mode if file in a child directory
 (add-hook 'find-file-hook 'find-file-read-only-directories)
 #+end_src
 *** recentf
-
 #+begin_src emacs-lisp
 (use-package recentf
   :custom
@@ -993,7 +999,7 @@ start buffer in read only mode if file in a child directory
 :ID:       08d7fa94-ab28-4d15-afce-157dad2a79df
 :END:
 
-which-key is is included in EMACS 30
+=which-key= is is included in EMACS 30
 
 #+begin_src emacs-lisp
 (use-package which-key
