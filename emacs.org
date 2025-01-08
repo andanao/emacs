@@ -599,6 +599,17 @@ on MELPA
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
+*** display-time-mode
+#+begin_src emacs-lisp
+(setq display-time-24hr-format t)
+(display-time-mode)
+#+end_src
+*** display-battery-mode
+
+#+begin_src emacs-lisp
+(display-battery-mode)
+#+end_src
+
 *** doom-modeline
 :PROPERTIES:
 :ID:       52e5ace2-d473-4238-b34a-102a1c287fe2
@@ -608,11 +619,18 @@ on MELPA
   :demand t
   :init (doom-modeline-mode 1)
   :custom
+  (doom-modeline-height 24)
   (doom-modeline-hud t)
-  (doom-modeline-height 24))
+  (doom-modeline-icon t)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-percent-position nil)
+  (doom-modeline-time-icon nil)
+  :config
+  (setq
+   line-number-mode nil
+   column-number-mode nil)
+  )
 #+end_src
-
-
 *** evil
 :PROPERTIES:
 :ID:       0be2adc9-9670-4f89-a088-70e65229c37a
