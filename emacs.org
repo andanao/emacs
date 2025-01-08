@@ -295,7 +295,7 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-7 fg-main)
     (fg-heading-8 fg-main)))
 #+end_src
-
+*** modus-tweaks
 #+begin_src emacs-lisp
 (defun ads/modus-tweaks ()
   (modus-themes-with-colors
@@ -306,12 +306,14 @@ particularly like the light ~modus-operandi~ theme.
      `(window-divider-first-pixel ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider-last-pixel ((t :background ,bg-main :foreground ,bg-main)))
      ;; line numbers
-     `(line-number ((,c :background ,bg-main)))
+     `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :background ,bg-main)))
-     ;; modus prose
+     ;; org mode
      `(modus-themes-prose-verbatim ((,c :foreground nil)))
-     ;; Hide the ellipsis
+     `(prose-done ((,c :foreground ,fg-dim)))
+     `(org-done ((,c :foreground ,fg-dim)))
      `(org-ellipsis ((,c :inherit org-hide)))
+     `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
@@ -696,7 +698,6 @@ A collection of evil bindings not fully set in the default package
 
 #+begin_src emacs-lisp
 (use-package magit
-  :defer t
   :config
   (transient-bind-q-to-quit)
   (defun ads/git-lazy ()
