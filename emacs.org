@@ -525,6 +525,7 @@ The DWIM behaviour of this command is as follows:
 :PROPERTIES:
 :ID:       b211eefc-821f-4ac5-9944-8625a31d6448
 :END:
+
 *** bookmark+
 :PROPERTIES:
 :ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
@@ -547,24 +548,24 @@ on MELPA
 :ID:       839a64ba-d135-425e-b370-7e25307f438d
 :END:
 
+[[https://github.com/minad/consult][Consult]] has quickly become one of my favorite emacs packages, it makes moving around emacs feel like magic
+
 #+begin_src emacs-lisp
 (use-package consult
-  :after 'org
+  :demand t
+  :after '(recentf)
   )
 (ads/leader-keys
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
   "C-j" 'consult-register
   "C-;" 'consult-register-store
+  "r" 'consult-recent-file
+  "/" 'consult-line
+  "C-b" 'consult-bookmark
   )
 #+end_src
 
-#+begin_src emacs-lisp
-(ads/leader-keys
-  :major-modes '(org-mode)
-  :keymaps '(org-mode-map)
-  "/" 'consult-org-heading)
-#+end_src
 *** corfu
 :PROPERTIES:
 :ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
@@ -765,6 +766,7 @@ restart Emacs to see the effect.
 
 #+begin_src emacs-lisp
 (use-package org
+  :after 'consult
   :custom
   (org-ellipsis " ·")
   (org-log-done 'time)
@@ -787,6 +789,15 @@ restart Emacs to see the effect.
                       (kbd "<tab>") 'org-cycle
                       (kbd "<backtab>") 'org-shifttab)
   )
+#+end_src
+**** org keybindings
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  :major-modes '(org-mode)
+  :keymaps '(org-mode-map)
+  "oo" 'consult-outline
+  "oh" 'consult-org-heading)
 #+end_src
 *** org-appear
 :PROPERTIES:
