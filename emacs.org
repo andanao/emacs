@@ -704,8 +704,7 @@ A collection of evil bindings not fully set in the default package
     (interactive)
     (save-buffer)
     (magit-stage-buffer-file)
-    (magit-commit-create)
-    (vc-push))
+    (magit-commit-create))
   (defun ads/git-amend ()
     (interactive)
     (save-buffer)
@@ -720,6 +719,7 @@ A collection of evil bindings not fully set in the default package
    "gl" 'ads/git-lazy
    "go" 'ads/git-amend
    "gp" 'magit-push
+   "gP" 'vc-push
    "gs" 'magit-stage-buffer-file
    "gS" 'magit-stage
    "gu" 'magit-unstage-buffer-file
