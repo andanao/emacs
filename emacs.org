@@ -1,8 +1,6 @@
 #+TITLE: Emacs Literate Configuration
-
-This is my full emacs configuration written in org mode and automatically tangled out on save.
-
-* Early Init
+My emacs configuration, written in org mode and automatically tangled on save.
+* early-init
 :PROPERTIES:
 :header-args: emacs-lisp :tangle early-init.el :results none :noweb yes :comments link
 :ID:       a70010ba-7c49-4804-afef-c818bc0225ec
@@ -144,22 +142,14 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 ;;; early-init.el ends here
 #+end_src
 
-* Init
+* Emacs Settings
 :PROPERTIES:
+:ID:       0aff3214-fa20-4b4b-a126-71dabcf68edb
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
-:ID:       85eade92-0a0e-402a-92ab-b25354dd8a09
 :END:
 
 #+begin_src emacs-lisp
 (set-background-color "#000000") ;; don't blind me at startup
-#+end_src
-
-** Emacs Settings
-:PROPERTIES:
-:ID:       0aff3214-fa20-4b4b-a126-71dabcf68edb
-:END:
-
-#+begin_src emacs-lisp
 (setq
  cursor-in-non-selected-windows nil
  large-file-warning-threshold 100000000 ;; 100Mb
@@ -186,11 +176,40 @@ I want to have line numbers whenever I'm in programming modes
 #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
 #+end_src
-** Theme
+** auto tangle files
+:PROPERTIES:
+:ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
+:END:
+
+Automatically tangle my configuration files on save.
+
+#+begin_src emacs-lisp
+(setq org-babel-auto-tangle-file-list
+      (list
+       "c:/Users/adanaos/git/emacs-new/emacs.org"
+       ))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun org-babel-auto-tangle-files ()
+  ;; Automatically tangle files in ~org-babel-auto-tangle-file-list~ when one of them is saved
+  (when (member buffer-file-name org-babel-auto-tangle-file-list)
+    (org-babel-tangle-file buffer-file-name)))
+#+end_src
+
+Add hook to after save hook when on org mode
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook
+  (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
+#+end_src
+
+* Theme
 :PROPERTIES:
 :ID:       402191ad-8c44-4671-a645-325322eecff4
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
-*** fonts
+** fonts
 :PROPERTIES:
 :ID:       6546ad25-1737-4c16-a2d6-13de6b120226
 :END:
@@ -227,7 +246,7 @@ I want to have line numbers whenever I'm in programming modes
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
-*** frames
+** frames
 :PROPERTIES:
 :ID:       1ef9c8c4-0e3a-4b62-bbff-0b4fe37ba750
 :END:
@@ -239,7 +258,7 @@ Set frame padding to have some breathing room, making the dividers invisible is 
      (internal-border-width . 20)))
 #+end_src
 
-*** modus-themes
+** modus-themes
 :PROPERTIES:
 :ID:       85514d94-c0ee-4f09-8198-1b673a363a33
 :END:
@@ -304,37 +323,10 @@ particularly like the light ~modus-operandi~ theme.
 (load-theme 'modus-vivendi)
 #+end_src
 
-** Auto tangle files
-:PROPERTIES:
-:ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
-:END:
-
-Automatically tangle my configuration files on save.
-
-#+begin_src emacs-lisp :noweb yes
-(setq org-babel-auto-tangle-file-list
-      (list
-       "c:/Users/adanaos/git/emacs-new/emacs.org"
-       ))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun org-babel-auto-tangle-files ()
-  ;; Automatically tangle files in ~org-babel-auto-tangle-file-list~ when one of them is saved
-  (when (member buffer-file-name org-babel-auto-tangle-file-list)
-    (org-babel-tangle-file buffer-file-name)))
-#+end_src
-
-Add hook to after save hook when on org mode
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook
-  (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
-#+end_src
-
-
-** General
+* General.el
 :PROPERTIES:
 :ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
 [[https://github.com/noctuid/general.el#about][general.el]] provides a more convenient method for binding keys in emacs. I use it to set all of my
@@ -522,9 +514,10 @@ The DWIM behaviour of this command is as follows:
 :PROPERTIES:
 :ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
 :END:
-** Packages
+* Packages
 :PROPERTIES:
 :ID:       b211eefc-821f-4ac5-9944-8625a31d6448
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
 *** bookmark+
@@ -767,7 +760,6 @@ restart Emacs to see the effect.
 
 #+begin_src emacs-lisp
 (use-package org
-  :after 'consult
   :custom
   (org-ellipsis " ·")
   (org-log-done 'time)
@@ -791,6 +783,7 @@ restart Emacs to see the effect.
                       (kbd "<backtab>") 'org-shifttab)
   )
 #+end_src
+
 **** org keybindings
 
 #+begin_src emacs-lisp
