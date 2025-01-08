@@ -155,6 +155,9 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 #+end_src
 
 ** Emacs Settings
+:PROPERTIES:
+:ID:       0aff3214-fa20-4b4b-a126-71dabcf68edb
+:END:
 
 #+begin_src emacs-lisp
 (setq
@@ -188,6 +191,9 @@ I want to have line numbers whenever I'm in programming modes
 :ID:       402191ad-8c44-4671-a645-325322eecff4
 :END:
 *** fonts
+:PROPERTIES:
+:ID:       6546ad25-1737-4c16-a2d6-13de6b120226
+:END:
 #+begin_src emacs-lisp
 (if (string= system-type "gnu/linux")
   (setq serif "Etbb")
@@ -222,6 +228,9 @@ I want to have line numbers whenever I'm in programming modes
 #+end_src
 
 *** frames
+:PROPERTIES:
+:ID:       1ef9c8c4-0e3a-4b62-bbff-0b4fe37ba750
+:END:
 
 Set frame padding to have some breathing room, making the dividers invisible is done with ~ads/modus-tweaks~
 #+begin_src emacs-lisp
@@ -231,6 +240,9 @@ Set frame padding to have some breathing room, making the dividers invisible is 
 #+end_src
 
 *** modus-themes
+:PROPERTIES:
+:ID:       85514d94-c0ee-4f09-8198-1b673a363a33
+:END:
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
 
@@ -462,6 +474,9 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 ***** kill ~k~
+:PROPERTIES:
+:ID:       8647cae1-fd22-43ec-ace7-e5f2ad3f0419
+:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -528,9 +543,13 @@ on MELPA
   )
 #+end_src
 *** consult
+:PROPERTIES:
+:ID:       839a64ba-d135-425e-b370-7e25307f438d
+:END:
 
 #+begin_src emacs-lisp
 (use-package consult
+  :after 'org
   )
 (ads/leader-keys
   "C-SPC" 'consult-buffer
@@ -563,6 +582,9 @@ on MELPA
     (add-to-list 'savehist-additional-variables 'corfu-history)))
    #+end_src
 *** doom-modeline
+:PROPERTIES:
+:ID:       52e5ace2-d473-4238-b34a-102a1c287fe2
+:END:
 #+begin_src emacs-lisp
 (use-package doom-modeline
   :demand t
@@ -730,6 +752,9 @@ restart Emacs to see the effect.
 #+end_src
 
 *** org
+:PROPERTIES:
+:ID:       fc7ed585-01d0-4b4b-97e2-1eabd86f1ce8
+:END:
 
 #+begin_src emacs-lisp
 (use-package org
@@ -751,9 +776,15 @@ restart Emacs to see the effect.
   (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   :config
   (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (general-define-key :states '(normal) :keymaps 'org-mode-map
+                      (kbd "<tab>") 'org-cycle
+                      (kbd "<backtab>") 'org-shifttab)
   )
 #+end_src
 *** org-appear
+:PROPERTIES:
+:ID:       8116b3e3-81fd-49aa-a0ff-f833c0304405
+:END:
 
 #+begin_src emacs-lisp
 (use-package org-appear
@@ -776,6 +807,9 @@ restart Emacs to see the effect.
 #+end_src
 
 *** org-babel
+:PROPERTIES:
+:ID:       159ea42a-2961-4b22-8454-2b5cad050279
+:END:
 
 #+begin_src emacs-lisp :lexical t
 (require 'org-tempo)
@@ -793,9 +827,13 @@ restart Emacs to see the effect.
 **** config
 :PROPERTIES:
 :header-args: :noweb-ref org-babel-config
+:ID:       1acbb772-0882-4bc7-b686-8af4c42cafe4
 :END:
 
 ***** Structured Templates
+:PROPERTIES:
+:ID:       a119e8c0-9502-4298-a455-2f3f2aab2f5c
+:END:
 
 #+begin_src emacs-lisp :lexical t
 (dolist
@@ -821,6 +859,9 @@ restart Emacs to see the effect.
 #+end_src
 
 ***** Languages
+:PROPERTIES:
+:ID:       087ccdb5-1687-4b80-8c0c-82d6f0ad1853
+:END:
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
@@ -837,6 +878,9 @@ restart Emacs to see the effect.
 #+end_src
 
 *** org-modern
+:PROPERTIES:
+:ID:       8ca06b78-1618-4366-8032-1aa4d85a8cd1
+:END:
 
 #+begin_src emacs-lisp
 (use-package org-modern :after (org)
@@ -855,6 +899,9 @@ restart Emacs to see the effect.
   (global-org-modern-mode))
 #+end_src
 *** org-tidy
+:PROPERTIES:
+:ID:       416c980e-16ee-49eb-a50c-bb1464855c52
+:END:
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
 #+begin_src emacs-lisp
@@ -889,6 +936,9 @@ restart Emacs to see the effect.
   :commands (rainbow-mode))
    #+end_src
 *** read-only-directories
+:PROPERTIES:
+:ID:       f042ad4d-9bea-45da-a918-2335f8359d8c
+:END:
 Some directories I want to files to be opened in read-only mode because they are usually used for
 reference
 
@@ -907,7 +957,21 @@ start buffer in read only mode if file in a child directory
 
 (add-hook 'find-file-hook 'find-file-read-only-directories)
 #+end_src
+*** recentf
+
+#+begin_src emacs-lisp
+(use-package recentf
+  :custom
+  (recentf-max-menu-items 1000 "Offer more recent files in menu")
+  (recentf-max-saved-items 1000 "Save more recent files")
+  :config
+  (recentf-mode)
+  )
+#+end_src
 *** save-hist
+:PROPERTIES:
+:ID:       f8c320b5-16aa-4bfd-946e-0eea50ded5e3
+:END:
 #+begin_src emacs-lisp
 (use-package savehist
   :config
