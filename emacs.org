@@ -692,7 +692,6 @@ A collection of evil bindings not fully set in the default package
 #+begin_src emacs-lisp
 (use-package magit
   :defer t
-  :after (general)
   :config
   (transient-bind-q-to-quit))
 #+end_src
@@ -807,15 +806,12 @@ restart Emacs to see the effect.
   (org-appear-autosubmarkers t)
   (org-appear-autokeywords t)
   :config
-
   (add-hook 'evil-insert-state-exit-hook
 	    (lambda ()
 	      (setq org-appear-delay 2)))
-
   (add-hook 'evil-insert-state-entry-hook
 	    (lambda ()
-	      (setq org-appear-delay .3)))
-  )
+	      (setq org-appear-delay .3))))
 #+end_src
 
 *** org-babel
@@ -924,6 +920,7 @@ restart Emacs to see the effect.
   :hook
   (org-mode . org-tidy-mode))
 (ads/leader-keys
+  :keymaps 'org-mode-map
   "ot" 'org-tidy-untidy-buffer
   "oT" 'org-tidy-toggle)
 #+end_src
