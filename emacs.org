@@ -693,7 +693,31 @@ A collection of evil bindings not fully set in the default package
 (use-package magit
   :defer t
   :config
-  (transient-bind-q-to-quit))
+  (transient-bind-q-to-quit)
+  (defun ads/git-lazy ()
+    (interactive)
+    (save-buffer)
+    (magit-stage-buffer-file)
+    (magit-commit-create)
+    (magit-push-current-to-upstream))
+  (defun ads/git-amend ()
+    (interactive)
+    (save-buffer)
+    (magit-stage-buffer-file)
+    (magit-commit-amend "--no-edit"))
+
+  (ads/leader-keys
+   "g" '(:ignore t :wk "git")
+   "gc" 'magit-commit
+   "gg" 'magit-status
+   "gl" 'ads/git-lazy
+   "gm" 'magit-dispatch
+   "go" 'ads/git-amend
+   "gp" 'magit-push
+   "gs" 'magit-stage-buffer-file
+   "gS" 'magit-stage
+   "gu" 'magit-unstage-buffer-file
+   "gU" 'magit-unstage))
 #+end_src
 
 *** marginalia
