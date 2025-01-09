@@ -565,6 +565,17 @@ on MELPA
   "br" 'bookmark-rename
   )
 #+end_src
+*** cape
+[[https://github.com/minad/cape][CAPE]] (Completion At Point Extensions)
+
+#+begin_src emacs-lisp
+(use-package cape
+  :bind ("M-p" . cape-prefix-map)
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block))
+#+end_src
 *** consult
 :PROPERTIES:
 :ID:       839a64ba-d135-425e-b370-7e25307f438d
