@@ -992,6 +992,40 @@ restart Emacs to see the effect.
   (global-org-modern-mode)
   )
 #+end_src
+*** TODO org-roam
+[[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
+like system with links between individual notes.  It is extremely powerful but
+has a bit of a learning cuve to learn your way around and how best to work with it
+
+- [ ] Siloed systems
+  - [ ] Personal
+  - [ ] Work
+- [ ] Agenda
+- [ ] Tags
+- [ ] Filing system?
+
+#+begin_src emacs-lisp
+(setq org-directory "~/org")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory org-directory)
+  (org-roam-completion-everywhere t)
+  :config
+  (org-roam-db-autosync-mode)
+  (org-roam-setup)
+  (ads/leader-keys
+   "f" '(:ignore t :wk "roam")
+   "ft" 'org-roam-buffer-toggle
+   "ff" 'org-roam-node-find
+   "fi" 'org-roam-node-insert
+   "fa" 'org-roam-alias-add))
+#+end_src
+
 *** org-tidy
 :PROPERTIES:
 :ID:       416c980e-16ee-49eb-a50c-bb1464855c52
