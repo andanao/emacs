@@ -1133,6 +1133,13 @@ start buffer in read only mode if file in a child directory
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.3))
 #+end_src
+* Computer specific configs
+
+#+begin_src emacs-lisp
+(when (string= "HYBD-QufXNBp9Y9" system-name)
+  (load-file "ms-windows.el"))
+#+end_src
+
 * Windows
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
@@ -1230,6 +1237,8 @@ start-process-variable nil)~
     (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
 
 #+end_src
+** Provide ~ms-windows.el~
 
-
-
+#+begin_src emacs-lisp
+(provide 'ms-windows.el)
+#+end_src
