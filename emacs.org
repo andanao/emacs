@@ -12,7 +12,6 @@ Enable debug on error at startup to automatically get debugging with init.
 ;; -*- lexical-binding: t; -*-
 (setq debug-on-error t)
 (add-hook 'after-init-hook '(lambda () (setq debug-on-error nil)))
-(add-hook 'after-init-hook '(lambda () (find-file "c:/Users/adanaos/git/emacs-new/emacs.org")))
 #+end_src
 
 ** Set directory variables
@@ -25,9 +24,7 @@ windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange,
 unecessary headaches I avoid manually setting the emacs home directory.
 
 #+begin_src emacs-lisp
-(if (member system-type '(windows-nt ms-dos))
-    (setq git-directory (concat "Users/" user-login-name "/git/"))
-    (setq git-directory (expand-file-name "~/git/")))
+(setq git-directory (expand-file-name "~/git/"))
 #+end_src
 
 I keep my org directory in the same place
@@ -54,7 +51,7 @@ The following is a table shows values from popular Emacs configurations.
 | Doom         |          16777216 |
 | Spacemacs    |         100000000 |
 
-#+begin_src emacs-lisp :lexical t
+#+begin_src emacs-lisp
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1)
 
@@ -65,7 +62,7 @@ The following is a table shows values from popular Emacs configurations.
    (lambda () (unless (frame-focus-state) (garbage-collect)))))
 #+end_src
 
-#+begin_src emacs-lisp :lexical t
+#+begin_src emacs-lisp
 (defun +reset-init-values ()
   (run-with-idle-timer
    1 nil
@@ -77,8 +74,7 @@ The following is a table shows values from popular Emacs configurations.
      (when (boundp 'after-focus-change-function)
        (add-function :after after-focus-change-function #'+gc-after-focus-change)))))
 
-;; (with-eval-after-load 'elpaca
-  ;; (add-hook 'elpaca-after-init-hook '+reset-init-values))
+(add-hook 'after-init-hook '+reset-init-values)
 #+end_src
 
 ** UI Changes
@@ -124,10 +120,10 @@ Silence the bell
 On corporate machines I've been unable to get elpaca/straight working, for linux I plan to use the Nix [[https://github.com/nix-community/emacs-overlay][emacs-overlay]]
 
 #+begin_src emacs-lisp
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("gnu"  . "https://elpa.gnu.org/packages/")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-			 ))
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu"  . "https://elpa.gnu.org/packages/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (setq use-package-always-ensure t)
 #+end_src
