@@ -582,10 +582,10 @@ on MELPA
 #+begin_src emacs-lisp
 (use-package consult
   :demand t
-  :after '(recentf)
   :config
   (general-define-key
    :states '(normal hybrid motion visual operator emacs)
+   '"M-y" 'consult-yank-pop
    '"C-s" 'consult-line))
 (ads/leader-keys
   "C-SPC" 'consult-buffer
