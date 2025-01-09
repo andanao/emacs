@@ -587,16 +587,17 @@ on MELPA
 (use-package consult
   :demand t
   :after '(recentf)
-  )
+  :config
+  (general-define-key
+   :states '(normal hybrid motion visual operator emacs)
+   '"C-s" 'consult-line))
 (ads/leader-keys
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
   "C-j" 'consult-register
   "C-;" 'consult-register-store
   "r" 'consult-recent-file
-  "/" 'consult-line
-  "C-b" 'consult-bookmark
-  )
+  "C-b" 'consult-bookmark)
 #+end_src
 
 *** corfu
