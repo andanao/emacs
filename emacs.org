@@ -242,7 +242,6 @@ Add hook to after save hook when on org mode
 		    :height 1.1
 		    :weight 'regular)
 
-(customize-set-variable 'fill-column 100)
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
@@ -534,6 +533,11 @@ The DWIM behaviour of this command is as follows:
 (use-package async
   :config
   (async-bytecomp-package-mode 1))
+#+end_src
+*** auto-fill
+#+begin_src emacs-lisp
+(customize-set-variable 'fill-column 80)
+(add-hook 'text-mode-hook 'auto-fill-mode)
 #+end_src
 *** bookmark+
 :PROPERTIES:
