@@ -1133,3 +1133,103 @@ start buffer in read only mode if file in a child directory
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.3))
 #+end_src
+* Windows
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
+:END:
+Work forces me to use windows as much as I'd rather not
+
+#+begin_src emacs-lisp
+(set-message-beep 'silent)
+#+end_src
+
+** AHK
+:PROPERTIES:
+:ID:       1788e7f1-6c96-4a3c-809a-0e4d1f656416
+:END:
+I use AHK a lot to make the experience of using windows less painful
+#+begin_src emacs-lisp
+(use-package ahk-mode
+  :ensure t
+  :bind (:map ahk-mode-map
+	      ("C-c C-c" . ahk-run-script)
+	      ("C-c C-k" . nil)
+	      )
+  )
+#+end_src
+*** Window Spy
+:PROPERTIES:
+:ID:       b3329a59-4d1c-4a00-9a68-6507163daa35
+:END:
+#+begin_src emacs-lisp
+(defun ahk-launch-window-spy ()
+  (interactive)
+  (w32-shell-execute 1 "C:/Users/adanaos/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/AutoHotkey Window Spy.lnk"))
+#+end_src
+** Align windows theme with emacs
+#+begin_src emacs-lisp
+;; win/theme
+;;   0 - dark
+;;   1 - light
+(setq win/theme "0")
+
+(add-to-list 'display-buffer-alist
+  (cons "win/theme-toggle" (cons #'display-buffer-no-window nil)))
+(defun win/theme-align-with-emacs ()
+  ;;check if light or dark theme in emacs
+  (if (string= (modus-themes--current-theme) "modus-vivendi")
+      (setq win/theme "0")
+      (setq win/theme "1"))
+  (async-shell-command
+     (concat
+      "powershell New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
+      win/theme
+      " -Type Dword -Force")
+     "win/theme-toggle"
+     ))
+
+
+(add-hook 'modus-themes-after-load-theme-hook 'win/theme-align-with-emacs)
+#+end_src
+** Browse in Edge
+Some things only work in edge on my work computer
+#+begin_src emacs-lisp
+(defun win/browse-url-edge (url)
+    (shell-command (concat "start msedge " url)))
+#+end_src
+
+** Hide DOS EOL
+Some the files I work with don't have consistent line endings DOS or UNIX
+
+#+begin_src emacs-lisp
+(defun win/hide-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
+#+end_src
+
+
+** Org-attatch dir in windows explorer
+#+begin_src emacs-lisp
+(defun org-attatch-open-win-explorer ()
+  (interactive)
+  (w32-shell-execute 1 (org-attach-dir-get-create)))
+#+end_src
+** Exec ~.bat~ in new cmd window
+Often emacs and windows don't always play nice together and causes emacs to lock
+up, this executes a ~.bat~ script in a new window, which seems to fix the problems
+I have.
+
+This version keeps it as a sub process, if you need to fix that you can save the
+~start-process~ to a variable and ~(set-process-query-on-exit-flag
+start-process-variable nil)~
+#+begin_src emacs-lisp
+(defun win/cmd-exec-bat-new-window (input-str)
+  (let ((cmd-str (concat "start cmd /k " input-str)))
+    (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
+
+#+end_src
+
+
+
