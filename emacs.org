@@ -269,8 +269,7 @@ particularly like the light ~modus-operandi~ theme.
 (use-package modus-themes
   :custom
   (modus-themes-mixed-fonts t)
-  (modus-themes-bold-constructs t)
-  )
+  (modus-themes-bold-constructs t))
 
 (setq modus-themes-headings
   '((0 . (regular 2.00))
@@ -301,7 +300,7 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-5 fg-main)
     (fg-heading-6 fg-main)
     (fg-heading-7 fg-main)
-    (fg-heading-8 fg-main)
+    (fg-heading-8 fg-main)))
 #+end_src
 
 *** modus-tweaks
@@ -628,8 +627,7 @@ on MELPA
   :config
   (setq
    line-number-mode nil
-   column-number-mode nil)
-  )
+   column-number-mode nil))
 #+end_src
 *** evil
 :PROPERTIES:
@@ -850,6 +848,7 @@ restart Emacs to see the effect.
 (ads/leader-keys
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
+  "od" 'org-id-get-create
   "oo" 'consult-outline
   "oh" 'consult-org-heading)
 #+end_src
@@ -952,7 +951,8 @@ restart Emacs to see the effect.
 :END:
 
 #+begin_src emacs-lisp
-(use-package org-modern :after (org)
+(use-package org-modern
+  :after (org)
   :custom
   (org-modern-fold-stars
    '(("▸ " . "▾ ")
@@ -965,7 +965,8 @@ restart Emacs to see the effect.
      ("              ▸ " . "              ▾ ")
      ))
   :config
-  (global-org-modern-mode))
+  (global-org-modern-mode)
+  )
 #+end_src
 *** org-tidy
 :PROPERTIES:
