@@ -883,13 +883,13 @@ restart Emacs to see the effect.
 
 #+begin_src emacs-lisp
 (use-package org-appear
-  :hook  (org-mode . org-tidy-mode)
   :custom
   (org-appear-autolinks t)
   (org-appear-autoentities t)
   (org-appear-autosubmarkers t)
   (org-appear-autokeywords t)
   :config
+  (add-hook 'org-mode-hook 'org-appear-mode)
   (add-hook 'evil-insert-state-exit-hook
 	    (lambda ()
 	      (setq org-appear-delay 2)))
