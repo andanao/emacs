@@ -539,6 +539,15 @@ The DWIM behaviour of this command is as follows:
 (customize-set-variable 'fill-column 80)
 (add-hook 'text-mode-hook 'auto-fill-mode)
 #+end_src
+*** auto-revert
+
+#+begin_src emacs-lisp
+(use-package autorevert
+  :custom
+  (auto-revert-interval 0.01 "Instantaneously revert")
+  :config
+  (global-auto-revert-mode t))
+#+end_src
 *** bookmark+
 :PROPERTIES:
 :ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
