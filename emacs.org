@@ -1134,11 +1134,17 @@ start buffer in read only mode if file in a child directory
   (which-key-idle-delay 0.3))
 #+end_src
 * Computer specific configs
+:PROPERTIES:
+:header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
+:END:
+
+
 
 #+begin_src emacs-lisp
-(when (string= "HYBD-QufXNBp9Y9" system-name)
+(when (string= "windows-nt" system-name)
   (load-file "ms-windows.el"))
 #+end_src
+
 
 * Windows
 :PROPERTIES:
