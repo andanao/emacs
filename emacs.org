@@ -1102,6 +1102,26 @@ start buffer in read only mode if file in a child directory
   :config
   (savehist-mode 1))
 #+end_src
+** ultra-scroll
+Scroll Emacs like Lightining.
+
+[[https://github.com/jdtsmith/ultra-scroll][ultra-scroll]] provides a better version of ~pixel-scroll-prescision-mode~ which
+works much smoother on both Windows and Linux.
+
+#+begin_src emacs-lisp
+(use-package ultra-scroll
+  :vc (ultra-scroll
+       :url "https://github.com/jdtsmith/ultra-scroll"
+       :main-file "ultra-scroll.el"
+       :branch "main"
+       :rev :newest)
+  :init
+  (setq scroll-conservatively 101
+        scroll-margin 0)
+  :config
+  (ultra-scroll-mode 1))
+#+end_src
+
 ** vertico
 :PROPERTIES:
 :ID:       c5d608cf-1635-4b53-9ca7-3d998922de20
