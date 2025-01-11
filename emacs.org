@@ -1160,12 +1160,19 @@ works much smoother on both Windows and Linux.
 
 
 
+
+Load windows only configuration
 #+begin_src emacs-lisp
-(when (string= "windows-nt" system-name)
+(when (string= "windows-nt" system-type)
   (load-file "ms-windows.el"))
 #+end_src
 
-
+Load work configuration
+#+begin_src emacs-lisp
+(when (string= "HYBD-QufXNBp9Y9" system-name)
+  (print "(load-file ~/git/emacs-work/config.el)")
+  )
+#+end_src
 * Windows
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
