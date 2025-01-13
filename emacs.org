@@ -736,7 +736,27 @@ A collection of evil bindings not fully set in the default package
   "C-h C-e" 'view-echo-area-messages
   "C-h C-j" 'describe-face)
 #+end_src
+** insert-variable-value
+Sometimes when I'm writing code I want to be able to directly insert the value
+of a variable in to the buffer I am editing.  There's probably a way to do this
+if I look through the manual closely but this works for now.
 
+#+begin_src emacs-lisp
+(defun insert-any-variable-value (var)
+  "Insert the value of any variable VAR at point."
+  (interactive
+   (list (intern (completing-read
+		  "Insert variable value: "
+                  (let (vars)
+                    (mapatoms (lambda (sym)
+				(when (boundp sym)
+				  (push (symbol-name sym) vars))))
+                    vars)))))
+  (insert (format "%S" (symbol-value var))))
+
+(ads/leader-keys
+  "C-v" 'insert-any-variable-value)
+#+end_src
 ** magit
 :PROPERTIES:
 :ID:       d5db3894-eba8-4dd6-bfd3-05bf339454f7
