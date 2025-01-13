@@ -856,6 +856,7 @@ restart Emacs to see the effect.
 #+begin_src emacs-lisp
 (use-package org
   :custom
+  (org-directory "~/org")
   (org-ellipsis " ·")
   (org-log-done 'time)
   (org-pretty-entities t)
@@ -1009,28 +1010,21 @@ restart Emacs to see the effect.
   (global-org-modern-mode)
   )
 #+end_src
-** TODO org-roam
+** org-roam
 [[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
 like system with links between individual notes.  It is extremely powerful but
-has a bit of a learning cuve to learn your way around and how best to work with it
+has a bit of a learning cuve to learn your way around and how best to work with
+it.
 
-- [ ] Siloed systems
-  - [ ] Personal
-  - [ ] Work
-- [ ] Agenda
-- [ ] Tags
-- [ ] Filing system?
-
-#+begin_src emacs-lisp
-(setq org-directory "~/org")
-#+end_src
+Given that I use org-roam for personal and work at the same time on work
+computers I have ~~/org/personal~ and ~~/org/work~
 
 #+begin_src emacs-lisp
 (use-package org-roam
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory org-directory)
+  (org-roam-directory "~/org")
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode)
@@ -1040,7 +1034,8 @@ has a bit of a learning cuve to learn your way around and how best to work with 
    "ft" 'org-roam-buffer-toggle
    "ff" 'org-roam-node-find
    "fi" 'org-roam-node-insert
-   "fa" 'org-roam-alias-add))
+   "fa" 'org-roam-alias-add
+   "fD" 'org-roam-db-sync))
 #+end_src
 
 ** org-tidy
