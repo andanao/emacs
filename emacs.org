@@ -1170,7 +1170,7 @@ Load windows only configuration
 Load work configuration
 #+begin_src emacs-lisp
 (when (string= "HYBD-QufXNBp9Y9" system-name)
-  (print "(load-file ~/git/emacs-work/config.el)")
+  (load-file (concat git-directory "emacs-work/work.el"))
   )
 #+end_src
 * Windows
