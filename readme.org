@@ -1317,6 +1317,23 @@ start-process-variable nil)~
     (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
 
 #+end_src
+** Dired open in windows default
+#+begin_src emacs-lisp
+(defun ads/dired-win-default ()
+    (interactive)
+    (let ((filename (dired-replace-in-string "/"
+                                             "\\"
+                                             (dired-get-filename))))
+
+      (w32-shell-execute 1 filename)))
+
+(general-define-key
+ :keymaps 'dired-mode-map
+ "<tab>" 'ads/dired-win-default)
+
+#+end_src
+
+#+RESULTS:
 ** Provide ~ms-windows.el~
 
 #+begin_src emacs-lisp
