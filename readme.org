@@ -139,7 +139,14 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
 
 (setq use-package-always-ensure t)
 #+end_src
-
+** Backup files
+Set these so emacs doesn't litter files everywhere.  At some point I might check
+out [[https://github.com/emacscollective/no-littering][no-littering]] but this works for now
+#+begin_src emacs-li
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+(setq projectile-known-projects-file (expand-file-name "tmp/projectile-bookmarks.eld" user-emacs-directory)
+      lsp-session-file (expand-file-name "tmp/.lsp-session-v1" user-emacs-directory))
+#+end_src
 ** Provide Early init
 :PROPERTIES:
 :ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
