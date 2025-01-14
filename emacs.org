@@ -557,9 +557,9 @@ on MELPA
        :branch "master"))
 (ads/leader-keys
   "b" '(:ignore t :which-key "bookmark")
+  "bb" 'consult-bookmark
   "bs" 'bookmark-set
-  "br" 'bookmark-rename
-  )
+  "br" 'bookmark-rename)
 #+end_src
 ** cape
 [[https://github.com/minad/cape][CAPE]] (Completion At Point Extensions)
@@ -1011,6 +1011,9 @@ restart Emacs to see the effect.
   )
 #+end_src
 ** org-roam
+:PROPERTIES:
+:ID:       141269e3-551b-49e0-a4df-93f41c58b678
+:END:
 [[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
 like system with links between individual notes.  It is extremely powerful but
 has a bit of a learning cuve to learn your way around and how best to work with
@@ -1195,7 +1198,7 @@ Load windows only configuration
 
 Load work configuration when on appropriate system:
 #+begin_src emacs-lisp
-(when (string= "HYBD-QufXNBp9Y9" system-name)
+(when (string= "HYBD-QUFXNBP9Y9" system-name)
   (load-file (concat git-directory "emacs-work/work.el")))
 #+end_src
 * Windows
