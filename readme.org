@@ -822,7 +822,12 @@ if I look through the manual closely but this works for now.
   :demand t
   :hook (after-init . marginalia-mode))
 #+end_src
-
+** markdown
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :config
+  (add-hook 'markdown-mode-hook 'variable-pitch-mode))
+#+end_src
 ** nerd-icons
 :PROPERTIES:
 :ID:       3f5c1a1c-bd1c-4927-9230-699352ce079b
