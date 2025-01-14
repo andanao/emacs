@@ -2,8 +2,8 @@
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
-Windows specific configuration is saved to ~windows.el~ and loaded on the
-appropriate machines.
+[[Windows]] specific configuration settings are saved to ~windows.el~ and loaded on
+the appropriate machines
 
 The following projects and configurations have provided a source of inspiration
 for my setup:
@@ -1223,6 +1223,7 @@ Load work configuration when on appropriate system:
 * Windows
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
+:ID:       62c6e8d8-dc0b-482c-b92c-653a1c3f860f
 :END:
 Work forces me to use windows as much as I'd rather not
 
@@ -1297,12 +1298,6 @@ Some the files I work with don't have consistent line endings DOS or UNIX
 #+end_src
 
 
-** Org-attatch dir in windows explorer
-#+begin_src emacs-lisp
-(defun org-attatch-open-win-explorer ()
-  (interactive)
-  (w32-shell-execute 1 (org-attach-dir-get-create)))
-#+end_src
 ** Exec ~.bat~ in new cmd window
 Often emacs and windows don't always play nice together and causes emacs to lock
 up, this executes a ~.bat~ script in a new window, which seems to fix the problems
@@ -1316,6 +1311,12 @@ start-process-variable nil)~
   (let ((cmd-str (concat "start cmd /k " input-str)))
     (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
 
+#+end_src
+** Org-attatch dir in windows explorer
+#+begin_src emacs-lisp
+(defun org-attatch-open-win-explorer ()
+  (interactive)
+  (w32-shell-execute 1 (org-attach-dir-get-create)))
 #+end_src
 ** Dired open in windows default
 #+begin_src emacs-lisp
