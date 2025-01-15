@@ -642,10 +642,12 @@ on MELPA
    #+end_src
 ** display-time-mode
 #+begin_src emacs-lisp
-(setq display-time-24hr-format t)
+(setq display-time-24hr-format t
+      display-time-day-and-date t
+      display-time-default-load-average nil)
 (display-time-mode)
 #+end_src
-** display-battery-mode
+** display-battery
 
 #+begin_src emacs-lisp
 (display-battery-mode)
