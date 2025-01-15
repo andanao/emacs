@@ -871,7 +871,16 @@ restart Emacs to see the effect.
   :hook
   (dired-mode . nerd-icons-dired-mode))
    #+end_src
+** nov (epub)
+Major mode for reading EPUB files in Emacs
 
+#+begin_src emacs-lisp
+(use-package nov
+  :custom
+  (nov-text-width 80)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+#+end_src
 
 ** orderless
 :PROPERTIES:
