@@ -322,6 +322,8 @@ particularly like the light ~modus-operandi~ theme.
 (defun ads/modus-tweaks ()
   (modus-themes-with-colors
     (custom-set-faces
+     ;; cursor
+     `(cursor ((t :background ,red-intense)))
      ;; Make frame dividers invisible
      `(fringe ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
