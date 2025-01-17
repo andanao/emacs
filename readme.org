@@ -1125,7 +1125,22 @@ computers I have ~~/org/personal~ and ~~/org/work~
   "ot" 'org-tidy-untidy-buffer
   "oT" 'org-tidy-toggle)
 #+end_src
+** projectile
+[[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
+#+begin_src emacs-lisp
+(use-package projectile
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode))
+
+(ads/leader-keys
+   "p" '(:ignore t :wk "projects")
+   "pf" 'projectile-find-file-dwim
+   "pp" 'projectile-switch-project
+   "pj" 'projectile-next-project-buffer
+   "pk" 'projectile-previous-project-buffer)
+#+end_src
 ** rainbow-delimiters
 :PROPERTIES:
 :ID:       1854a60e-9eba-431d-a345-1f28b290e672
