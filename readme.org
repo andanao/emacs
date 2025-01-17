@@ -1154,12 +1154,15 @@ computers I have ~~/org/personal~ and ~~/org/work~
 (use-package projectile
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode))
+  (projectile-mode)
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
 
 (ads/leader-keys
    "p" '(:ignore t :wk "projects")
    "pf" 'projectile-find-file-dwim
-   "pp" 'projectile-switch-project
+   "pp" 'consult-project-buffer
+   "pP" 'projectile-switch-project
    "pj" 'projectile-next-project-buffer
    "pk" 'projectile-previous-project-buffer)
 #+end_src
