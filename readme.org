@@ -330,6 +330,8 @@ particularly like the light ~modus-operandi~ theme.
     (custom-set-faces
      ;; cursor
      `(cursor ((t :background ,red-intense)))
+     ;; link
+     `(link ((t :foreground ,fg-main :underline ,fg-main)))
      ;; Make frame dividers invisible
      `(fringe ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
@@ -339,6 +341,9 @@ particularly like the light ~modus-operandi~ theme.
      `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :background ,bg-main)))
      ;; org mode
+     `(org-checkbox ((,c :foreground ,fg-main)))
+     `(org-table ((,c :foreground ,fg-main)))
+     `(org-document-info ((,c :foreground ,fg-main)))
      `(modus-themes-prose-verbatim ((,c :foreground nil)))
      `(prose-done ((,c :foreground ,fg-dim)))
      `(org-done ((,c :foreground ,fg-dim)))
