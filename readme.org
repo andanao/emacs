@@ -945,11 +945,18 @@ Major mode for reading EPUB files in Emacs
  :states  '(motion) :keymaps 'org-mode-map
  (kbd "RET") 'org-open-at-point)
 
+(defun ads/consult-org-heading ()
+  (interactive)
+  (widen)
+  (consult-org-heading)
+  (org-narrow-to-subtree))
+
 (ads/leader-keys
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
   "od" 'org-id-get-create
-  "oo" 'consult-outline
+  "oo" 'ads/consult-headline
+  "of" 'consult-outline
   "oh" 'consult-org-heading)
 #+end_src
 ** org-appear
