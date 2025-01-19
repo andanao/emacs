@@ -205,7 +205,7 @@ Automatically tangle my configuration files on save.
 
 #+begin_src emacs-lisp
 (setq org-babel-auto-tangle-file-list
-      '(ads/config-file))
+      (list ads/config-file))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -367,15 +367,8 @@ key bindings
   :demand t
   :config
   (general-override-mode)
-  (general-auto-unbind-keys)
-  <<general-config>>)
+  (general-auto-unbind-keys))
 #+end_src
-
-**** General config
-:PROPERTIES:
-:header-args: :noweb-ref general-config
-:ID:       c3286a06-0321-49f6-8183-a37c497ddd7f
-:END:
 
 #+begin_src emacs-lisp :lexical t
 (general-define-key
@@ -422,7 +415,7 @@ The DWIM behaviour of this command is as follows:
  '"C-g" 'ads/keyboard-quit-dwim)
 #+end_src
 
-***** eval ~e~
+** eval ~e~
 :PROPERTIES:
 :ID:       d0130836-0a5e-459d-b066-e9507c58e947
 :END:
@@ -438,7 +431,7 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 
-***** quit ~q~
+** quit ~q~
 :PROPERTIES:
 :ID:       982cc7d7-252b-4953-82e1-a62a2468eced
 :END:
@@ -451,7 +444,7 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 
-***** narrow ~n~
+** narrow ~n~
 :PROPERTIES:
 :ID:       5688c1b1-21e6-4f74-b4dd-a95cb23fcc5a
 :END:
@@ -469,7 +462,7 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 
-***** windows, buffers, frames ~j~
+** windows, buffers, frames ~j~
 :PROPERTIES:
 :ID:       f3e626e0-21a7-4e18-8c9a-414a56ba67e2
 :END:
@@ -496,7 +489,7 @@ The DWIM behaviour of this command is as follows:
   "jL" 'evil-window-move-far-right
   )
 #+end_src
-***** kill ~k~
+** kill ~k~
 :PROPERTIES:
 :ID:       8647cae1-fd22-43ec-ace7-e5f2ad3f0419
 :END:
@@ -510,7 +503,7 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 
-***** config ~c~
+** config ~c~
 :PROPERTIES:
 :ID:       5e426a49-7743-40e0-a9b2-132889805206
 :END:
@@ -525,7 +518,7 @@ The DWIM behaviour of this command is as follows:
 	 :which-key "load init"))
 #+end_src
 
-***** Toggles ~t~
+** Toggles ~t~
 :PROPERTIES:
 :ID:       14e88ab3-068e-48b0-b6f7-2edfd3e02491
 :END:
@@ -538,7 +531,7 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 
-***** TODO Regex
+** TODO Regex
 :PROPERTIES:
 :ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
 :END:
