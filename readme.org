@@ -882,6 +882,12 @@ restart Emacs to see the effect.
   :hook
   (dired-mode . nerd-icons-dired-mode))
    #+end_src
+** nix
+#+begin_src emacs-lisp
+(use-package nix-mode
+  :config
+  (global-nix-prettify-mode))
+#+end_src
 ** nov (epub)
 Major mode for reading EPUB files in Emacs
 
