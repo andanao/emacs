@@ -231,13 +231,10 @@ Add hook to after save hook when on org mode
 :ID:       6546ad25-1737-4c16-a2d6-13de6b120226
 :END:
 #+begin_src emacs-lisp
-(if (string= system-type "gnu/linux")
-  (setq serif "Etbb")
-  (setq serif "EtBembo"))
-
 (setq
  mono "FiraCode Nerd Font"
- sans "Cantarell")
+ sans "Cantarell"
+ serif "EtBembo")
 
 ;; Set Font sizes
 (defvar default-font-size 140)
