@@ -1323,8 +1323,33 @@ Work forces me to use windows as much as I'd rather not
 
 #+begin_src emacs-lisp
 (set-message-beep 'silent)
+(setq win/.emacs.d (concat "C:\\Users\\" user-login-name "\\.emacs.d\\"))
 #+end_src
 
+** Copy files to ~.emacs.d~ on tangle
+Windows doesn't allow symlinks unless you are an admin which is a pain.  In
+order to keep the init files working properly copy the config files to
+~C:\Users\username\AppData\Roaming\.emacs.d\~ after tangle
+
+#+begin_src emacs-lisp
+(defun win/copy-config-files-to-.emacs.d ()
+    (when (string= buffer-file-name ads/config-file)
+      (dolist (filename
+	       '("early-init.el"
+		 "init.el"
+		 "ms-windows.el"))
+	 (let ((target-filename (concat win/.emacs.d filename)))
+	   (delete-file target-filename)
+	   (copy-file filename target-filename)))
+      (message "Copied config files to win/.emacs.d")))
+(add-hook 'org-babel-tangle-finished-hook 'win/copy-config-files-to-.emacs.d)
+#+end_src
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "cW" '((lambda () (interactive) (find-file win/.emacs.d))
+	 :wk "Dired .emacs.d"))
+#+end_src
 ** AHK
 :PROPERTIES:
 :ID:       1788e7f1-6c96-4a3c-809a-0e4d1f656416
