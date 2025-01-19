@@ -935,6 +935,8 @@ Major mode for reading EPUB files in Emacs
 #+end_src
 *** org keybindings
 
+
+
 #+begin_src emacs-lisp
 (general-define-key
  :states '(normal) :keymaps 'org-mode-map
@@ -946,11 +948,21 @@ Major mode for reading EPUB files in Emacs
  (kbd "RET") 'org-open-at-point)
 
 (defun ads/consult-org-heading ()
+  "Widen buffer, consult heading then narrow to subtree"
   (interactive)
   (widen)
   (consult-org-heading)
   (org-narrow-to-subtree))
 
+(defun ads/org-scratch ()
+  "Open ~/scratch.org"
+  (interactive)
+  (find-file "~/scratch.org"))
+(ads/leader-keys "C-s" 'ads/org-scratch)
+#+end_src
+
+
+#+begin_src emacs-lisp
 (ads/leader-keys
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
