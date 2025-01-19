@@ -45,6 +45,10 @@ I keep my org directory in the same place
 (setq org-directory (concat git-directory "org/"))
 #+end_src
 
+my emacs config also lives in the same place on all my machines
+#+begin_src emacs-lisp
+(setq ads/config-file (concat git-directory "emacs/readme.org"))
+#+end_src
 ** Garbage Collection
 :PROPERTIES:
 :ID:       ecc6265b-6f3e-4637-8d8c-5f91724e9db7
@@ -201,9 +205,7 @@ Automatically tangle my configuration files on save.
 
 #+begin_src emacs-lisp
 (setq org-babel-auto-tangle-file-list
-      (list
-       "c:/Users/adanaos/git/emacs-new/readme.org"
-       ))
+      '(ads/config-file))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -517,10 +519,8 @@ The DWIM behaviour of this command is as follows:
 #+begin_src emacs-lisp
 (ads/leader-keys
   "c" '(:ignore t :which-key "config")
-  "cc" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs-new/readme.org"))
+  "cc" '((lambda () (interactive) (find-file ads/config-file))
 	 :which-key "open config")
-  "co" '((lambda () (interactive) (find-file "c:/Users/adanaos/git/emacs/readme.org"))
-	 :which-key "old config")
   "cI" '((lambda () (interactive) (load-file user-init-file))
 	 :which-key "load init"))
 #+end_src
@@ -922,7 +922,7 @@ Major mode for reading EPUB files in Emacs
 #+begin_src emacs-lisp
 (use-package org
   :custom
-  (org-directory "~/org")
+  ;; (org-directory "~/org") ;; org directory set in early init
   (org-ellipsis " ·")
   (org-log-done 'time)
   (org-pretty-entities t)
@@ -1093,7 +1093,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/org")
+  (org-roam-directory org-directory)
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode)
