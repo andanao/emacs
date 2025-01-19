@@ -142,6 +142,8 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (setq use-package-always-ensure t)
+(when (string= system-type 'gnu/linux)
+  (setq use-package-always-demand t))
 #+end_src
 ** Backup files
 Set these so emacs doesn't litter files everywhere.  At some point I might check
