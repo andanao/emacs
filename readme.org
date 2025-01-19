@@ -1263,8 +1263,11 @@ works much smoother on both Windows and Linux.
 
 Load windows only configuration
 #+begin_src emacs-lisp
-(when (string= "windows-nt" system-type)
+(when (eq system-type 'windows-nt)
   (load-file (concat user-emacs-directory "ms-windows.el")))
+
+(when (eq system-type 'gnu/linux)
+  (load-file (concat user-emacs-directory "linux.el")))
 #+end_src
 
 Load when on appropriate system:
@@ -1394,4 +1397,17 @@ start-process-variable nil)~
 
 #+begin_src emacs-lisp
 (provide 'ms-windows.el)
+#+end_src
+
+* Linux
+:PROPERTIES:
+:header-args: emacs-lisp :tangle linux.el :results none :noweb yes :comments link
+:ID:       9e7b9a70-6895-4032-bedf-f6281cd0bc67
+:END:
+** nixconfig
+jump to my nix config files
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "cn" '((lambda () (interactive) (find-file "/etc/nixos/configuration.nix"))
+	 :which-key "ni config"))
 #+end_src
