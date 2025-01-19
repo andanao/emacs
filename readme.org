@@ -366,9 +366,10 @@ particularly like the light ~modus-operandi~ theme.
 [[https://github.com/noctuid/general.el#about][general.el]] provides a more convenient method for binding keys in emacs. I use it to set all of my
 key bindings
 
-#+begin_src emacs-lisp :lexical t :noweb yes
+#+begin_src emacs-lisp :lexical t
 (use-package general
   :demand t
+  :ensure t
   :config
   (general-override-mode)
   (general-auto-unbind-keys))
