@@ -954,10 +954,10 @@ Major mode for reading EPUB files in Emacs
  (kbd "RET") 'org-open-at-point)
 
 (defun ads/consult-org-heading ()
-  "Widen buffer, consult heading then narrow to subtree"
+  "Widen buffer, consult outline then narrow to subtree"
   (interactive)
   (widen)
-  (consult-org-heading)
+  (consult-outline)
   (org-narrow-to-subtree))
 
 (defun ads/org-scratch ()
