@@ -2,6 +2,11 @@
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
+To create the init files:
+#+begin_src shell
+emacs --batch -l org readme.org -f org-babel-tangle
+#+end_src
+
 [[Windows]] specific configuration settings are saved to ~windows.el~ and loaded on
 the appropriate machines
 
