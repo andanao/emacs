@@ -1270,10 +1270,13 @@ Load windows only configuration
   (load-file (concat user-emacs-directory "ms-windows.el")))
 #+end_src
 
-Load work configuration when on appropriate system:
+Load when on appropriate system:
 #+begin_src emacs-lisp
 (when (string= "HYBD-QUFXNBP9Y9" system-name)
   (load-file (concat git-directory "emacs-work/work.el")))
+
+(when (string= system-name "ganymede")
+  (load-file (concat git-directory "windows-config/ganymede.el")))
 #+end_src
 * Windows
 :PROPERTIES:
