@@ -946,8 +946,7 @@ Major mode for reading EPUB files in Emacs
   (add-hook 'org-mode-hook 'variable-pitch-mode))
 #+end_src
 *** org keybindings
-
-
+Set custom org mode bindings and functions.
 
 #+begin_src emacs-lisp
 (general-define-key
@@ -959,7 +958,7 @@ Major mode for reading EPUB files in Emacs
  :states  '(motion) :keymaps 'org-mode-map
  (kbd "RET") 'org-open-at-point)
 
-(defun ads/consult-org-heading ()
+(defun ads/consult-org-outline ()
   "Widen buffer, consult outline then narrow to subtree"
   (interactive)
   (widen)
@@ -979,7 +978,7 @@ Major mode for reading EPUB files in Emacs
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
   "od" 'org-id-get-create
-  "oo" 'ads/consult-headline
+  "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading)
 #+end_src
@@ -1267,7 +1266,13 @@ works much smoother on both Windows and Linux.
 #+begin_src emacs-lisp
 (use-package vertico
   :demand t
-  :hook (after-init . vertico-mode))
+  :hook (after-init . vertico-mode)
+  :config
+  (general-define-key
+   :states '(insert)
+   :keymaps 'vertico-map
+   "C-j" 'vertico-next
+   "C-k" 'vertico-previous))
 #+end_src
 
 ** which-key
