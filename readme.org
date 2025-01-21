@@ -977,7 +977,9 @@ Set custom org mode bindings and functions.
 (defun ads/org-scratch ()
   "Open ~/scratch.org"
   (interactive)
-  (find-file "~/scratch.org"))
+  (if (eq system-type 'windows-nt)
+      (find-file (concat "c:/users/" user-login-name "/scratch.org"))
+      (find-file "~/scratch.org")))
 (ads/leader-keys "C-s" 'ads/org-scratch)
 #+end_src
 
@@ -1344,9 +1346,9 @@ Work forces me to use windows as much as I'd rather not.
 
 To set emacs daemon to start on windows at login:
 - win+r ~shell:startup~
-- make shortcut to ~emacs.exe~
+- make shortcut to ~runemacs.exe~
 - modify shortcut and add --daemon
-Or open task scheduler and add a task to execute emacs.exe with the --daemon flag
+Or open task scheduler and add a task to execute ~runemacs.exe --daemon flag~
 
 #+begin_src emacs-lisp
 (set-message-beep 'silent)
