@@ -332,6 +332,8 @@ particularly like the light ~modus-operandi~ theme.
      `(cursor ((t :background ,red-intense)))
      ;; link
      `(link ((t :foreground ,fg-main :underline ,fg-main)))
+     ;; bookmark
+     `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
      `(fringe ((t :background ,bg-main :foreground ,bg-main)))
      `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
@@ -1157,6 +1159,8 @@ computers I have ~~/org/personal~ and ~~/org/work~
 
 #+begin_src emacs-lisp
 (use-package projectile
+  :custom
+  (projectile-sort-order 'recently-active)
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode)
@@ -1306,6 +1310,7 @@ works much smoother on both Windows and Linux.
 * Computer specific configs
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
+:ID:       225f2069-7d4a-4503-8272-b92449242c00
 :END:
 
 
