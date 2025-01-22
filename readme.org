@@ -466,10 +466,10 @@ The DWIM behaviour of this command is as follows:
 #+begin_src emacs-lisp
 (ads/leader-keys
   "n" '(:ignore t :which-key "narrow")
+  "nn" 'narrow-to-region
   "nd" 'narrow-to-defun
-  "np" 'narrow-to-page
-  "nr" 'narrow-to-region
   "ns" 'org-narrow-to-subtree
+  "np" 'narrow-to-page
   "ne" 'org-narrow-to-element
   "nb" 'org-narrow-to-block
   "nw" 'widen
