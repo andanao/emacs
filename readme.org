@@ -354,7 +354,10 @@ particularly like the light ~modus-operandi~ theme.
      `(org-ellipsis ((,c :inherit org-hide)))
      `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
      ;; markdown mode
-     `(markdown-code-face ((,c :background ,bg-main)))
+     `(markdown-list-face ((,c :foreground ,fg-main)))
+     `(markdown-inline-code-face ((,c :foreground ,fg-main)))
+     `(markdown-code-face ((,c :background ,bg-dim)))
+     `(markdown-language-keyword-face ((,c :background ,bg-dim )))
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
@@ -856,12 +859,16 @@ if I look through the manual closely but this works for now.
   :custom
   (markdown-fontify-code-blocks-natively)
   (markdown-fontify-code-block-default-mode)
+  (markdown-list-item-bullets '("•"))
+  (markdown-fontify-code-blocks-natively "t")
    :config
   (add-hook 'markdown-mode-hook 'variable-pitch-mode)
+  (add-hook 'markdown-mode-hook 'markdown-display-inline-images)
   (add-hook 'markdown-view-mode-hook 'read-only-mode))
 
 (ads/leader-keys
   :keymaps 'markdown-mode-map
+  "oo" 'consult-outline
   "mm" 'markdown-view-mode)
 
 (ads/leader-keys
