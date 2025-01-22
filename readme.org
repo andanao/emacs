@@ -294,12 +294,10 @@ particularly like the light ~modus-operandi~ theme.
   (modus-themes-bold-constructs t))
 
 (setq modus-themes-headings
-  '((0 . (regular 2.00))
-    (1 . (regular 1.35))
-    (2 . (regular 1.30))
-    (3 . (regular 1.25))
-    (4 . (regular 1.20))
-    (5 . (regular 1.15))
+  '((0 . (regular 1.75))
+    (1 . (regular 1.25))
+    (2 . (regular 1.20))
+    (3 . (regular 1.15))
     (t . (regular 1.10))
     ))
 
