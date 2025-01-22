@@ -725,8 +725,9 @@ on MELPA
   ;; set back normal mouse behaviour
   (define-key evil-motion-state-map [down-mouse-1] nil)
   (add-hook 'after-save-hook 'evil-normal-state)
-  ;; (evil-mode)
-  )
+  ;; unbind q for macros
+  (define-key evil-normal-state-map (kbd "q") 'nil)
+  (define-key evil-normal-state-map (kbd "Q") 'nil))
 
 (general-define-key
   :states '(normal insert)
