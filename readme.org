@@ -1382,7 +1382,7 @@ order to keep the init files working properly copy the config files to
 
 #+begin_src emacs-lisp
 (defun win/copy-config-files-to-.emacs.d ()
-    (when (string= buffer-file-name ads/config-file)
+    (when (string-equal-ignore-case buffer-file-name ads/config-file)
       (dolist (filename
 	       '("early-init.el"
 		 "init.el"
@@ -1492,10 +1492,8 @@ start-process-variable nil)~
 #+begin_src emacs-lisp
 (defun ads/dired-win-default ()
     (interactive)
-    (let ((filename (dired-replace-in-string "/"
-                                             "\\"
-                                             (dired-get-filename))))
-
+    (let ((filename
+	   (dired-replace-in-string "/" "\\" (dired-get-filename))))
       (w32-shell-execute 1 filename)))
 
 (general-define-key
