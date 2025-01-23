@@ -295,6 +295,9 @@ particularly like the light ~modus-operandi~ theme.
   (modus-themes-mixed-fonts t)
   (modus-themes-bold-constructs t))
 
+(setq modus-themes-to-toggle
+      '(modus-operandi modus-vivendi-tinted))
+
 (setq modus-themes-headings
   '((0 . (regular 1.75))
     (1 . (regular 1.25))
@@ -1431,7 +1434,8 @@ I use AHK a lot to make the experience of using windows less painful
   (cons "win/theme-toggle" (cons #'display-buffer-no-window nil)))
 (defun win/theme-align-with-emacs ()
   ;;check if light or dark theme in emacs
-  (if (string= (modus-themes--current-theme) "modus-vivendi")
+  (if (string-search "vivendi"
+		     (symbol-name (modus-themes--current-theme)))
       (setq win/theme "0")
       (setq win/theme "1"))
   (async-shell-command
