@@ -289,6 +289,8 @@ particularly like the light ~modus-operandi~ theme.
 
 #+begin_src emacs-lisp
 (use-package modus-themes
+  :demand t
+  :ensure t
   :custom
   (modus-themes-mixed-fonts t)
   (modus-themes-bold-constructs t))
@@ -1346,10 +1348,10 @@ Load windows only configuration
 
 Load when on appropriate system:
 #+begin_src emacs-lisp
-(when (string= "HYBD-QUFXNBP9Y9" system-name)
+(when (string-equal-ignore-case system-name "HYBD-QUFXNBP9Y9")
   (load-file (concat git-directory "emacs-work/work.el")))
 
-(when (string= system-name "ganymede")
+(when (string-equal-ignore-case system-name "ganymede")
   (load-file (concat git-directory "windows-config/ganymede.el")))
 #+end_src
 * Windows
