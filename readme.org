@@ -494,7 +494,7 @@ The DWIM behaviour of this command is as follows:
   "jR" 'set-frame-name
   "jr" 'select-frame-by-name
 
-  "j=" 'balance-windows
+  "j=" 'balance-windows-area
   "j_" 'split-window-vertically
 
   "jh" 'evil-window-left
@@ -1012,12 +1012,64 @@ Set custom org mode bindings and functions.
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
-  "oh" 'consult-org-heading)
+  "oh" 'consult-org-heading
+  "oa" 'org-agenda)
 #+end_src
 ** org-agenda
 #+begin_src emacs-lisp
 (require 'org-agenda)
-(evil-make-intercept-map org-agenda-mode-map)
+;; (evil-make-overriding-map org-agenda-mode-map)
+
+(setq org-agenda-window-setup 'current-window
+      org-agenda-span 'day
+      org-agenda-restore-windows-after-quit t
+      org-agenda-persistent-filter t)
+#+end_src
+
+Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-org-agenda.el#L42][evil-org-agenda]], but since there's only one mode applicable I
+don't feel the need to use lots of the evil bindings
+#+begin_src emacs-lisp
+(general-define-key
+ :keymaps 'org-agenda-mode-map
+ "j" 'org-agenda-next-line
+ "k" 'org-agenda-previous-line
+
+ "h" 'org-agenda-earlier
+ "l" 'org-agenda-later
+ "H" 'org-agenda-do-date-earlier
+ "L" 'org-agenda-do-date-later
+
+ "S" 'org-agenda-schedule
+
+ "m" 'org-agenda-bulk-toggle
+ "x" 'org-agenda-bulk-action
+
+ "a" 'org-agenda-add-note
+
+ "u" 'org-agenda-undo
+ ";" 'org-agenda-set-tags
+
+ ;; refresh
+ "gr" 'org-agenda-redo
+ "gR" 'org-agenda-redo-all
+
+ ;; delete
+ "dd" 'org-agenda-kill
+ "dA" 'org-agenda-archive
+
+ ;; filter
+ "sc" 'org-agenda-filter-by-category
+ "sr" 'org-agenda-filter-by-regexp
+ "se" 'org-agenda-filter-by-effort
+ "st" 'org-agenda-filter-by-tag
+ "s^" 'org-agenda-filter-by-top-headline
+ "ss" 'org-agenda-limit-interactively
+ "S" 'org-agenda-filter-remove-all
+
+ "C-w C-h" 'evil-window-left
+ "C-w C-j" 'evil-window-down
+ "C-w C-k" 'evil-window-up
+ "C-w C-l" 'evil-window-right)
 #+end_src
 ** org-appear
 :PROPERTIES:
