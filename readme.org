@@ -764,10 +764,13 @@ A collection of evil bindings not fully set in the default package
  #+begin_src emacs-lisp
 (use-package evil-collection
   :after (evil)
-  :init (setq evil-collection-setup-minibuffer t)
+  :custom
+  (evil-collection-calendar-setup-want-org-bindings t)
+  (evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init))
 #+end_src
+
 ** git-link
 Quickly create links to  files and commits
 #+begin_src emacs-lisp
@@ -1010,6 +1013,11 @@ Set custom org mode bindings and functions.
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading)
+#+end_src
+** org-agenda
+#+begin_src emacs-lisp
+(require 'org-agenda)
+(evil-make-intercept-map org-agenda-mode-map)
 #+end_src
 ** org-appear
 :PROPERTIES:
