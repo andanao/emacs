@@ -768,7 +768,15 @@ A collection of evil bindings not fully set in the default package
   :config
   (evil-collection-init))
 #+end_src
-
+** git-link
+Quickly create links to  files and commits
+#+begin_src emacs-lisp
+(use-package git-link
+  :config
+  (ads/leader-keys
+    "gf" 'git-link
+    "gF" 'git-link-dispatch))
+#+end_src
 ** helpful
 :PROPERTIES:
 :ID:       2a3f7dcc-51ca-472d-b073-31cea58b42a5
