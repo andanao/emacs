@@ -1023,7 +1023,9 @@ Set custom org mode bindings and functions.
 (setq org-agenda-window-setup 'current-window
       org-agenda-span 'day
       org-agenda-restore-windows-after-quit t
-      org-agenda-persistent-filter t)
+      org-agenda-persistent-filter t
+      org-agenda-scheduled-leaders '("   " "%2dd")
+      )
 #+end_src
 
 Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-org-agenda.el#L42][evil-org-agenda]], but since there's only one mode applicable I
@@ -1250,9 +1252,11 @@ simplifies the task of adding a tag
   "Add :agenda: tag to the current org-roam buffer"
   (when (and (not (active-minibuffer-window))
              (org-roam-file-p buffer-file-name))
+    (save-excursion
+      (goto-char (point-min))
       (if (ads/org-todo-p)
 	  (org-roam-tag-add '("agenda"))
-	  (org-roam-tag-remove '("agenda")))))
+	  (org-roam-tag-remove '("agenda"))))))
 
 (add-hook 'before-save-hook 'ads/org-update-agenda-tag)
 #+end_src
@@ -1262,9 +1266,26 @@ simplifies the task of adding a tag
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
   (add-to-list 'org-agenda-files (concat org-directory "inbox.org")))
+(add-hook 'after-init-hook 'ads/org-agenda-files-update)
 
 (advice-add 'org-agenda :before #'ads/org-agenda-files-update)
 (advice-add 'org-todo-list :before #'ads/org-agenda-files-update)
+#+end_src
+
+
+Categories in org agenda also get messed up, often I go back and fix them if I'm
+going to be seeing it
+#+begin_src emacs-lisp
+(defun ads/org-node-name-to-category ()
+  (interactive)
+  (when (org-roam-file-p)
+    (save-excursion
+      (goto-char (point-min))
+      (org-roam-property-add
+       "CATEGORY"
+       (org-roam-node-title (org-roam-node-at-point))))))
+
+(ads/leader-keys "fc" 'ads/org-node-name-to-category)
 #+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
