@@ -1157,6 +1157,55 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "fa" 'org-roam-alias-add
    "fD" 'org-roam-db-sync))
 #+end_src
+
+I generate my org agenda files based off of an :agenda: tag in each org roam
+file, in addition to an ~inbox.org~ file.  Credit to [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][d12frosted]] and
+[[https://magnus.therning.org/2021-03-14-keeping-todo-items-in-org-roam.html][magnus.therning]] for the inspiration.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-tags-exclude-from-inheritance "agenda")
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/org-todo-p ()
+  "Return non-nil if current buffer has any todo entry.
+
+TODO entries marked as done are ignored, meaning the this
+function returns nil if current buffer contains only completed
+tasks."
+  (org-element-map                          ; (2)
+       (org-element-parse-buffer 'headline) ; (1)
+       'headline
+     (lambda (h)
+       (eq (org-element-property :todo-type h)
+           'todo))
+     nil 'first-match))                     ; (3))
+#+end_src
+
+While most of roam agenda section is unchaged, a few org-roam functions have
+been deprecated since writing and ~org-roam-tag-add~ has been added which
+simplifies the task of adding a tag
+#+begin_src emacs-lisp
+(defun ads/org-update-agenda-tag ()
+  "Add :agenda: tag to the current org-roam buffer"
+  (when (and (not (active-minibuffer-window))
+             (org-roam-file-p buffer-file-name))
+      (if (ads/org-todo-p)
+	  (org-roam-tag-add '("agenda"))
+	  (org-roam-tag-remove '("agenda")))))
+
+(add-hook 'before-save-hook 'ads/org-update-agenda-tag)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/org-agenda-files-update ()
+  "Update org agenda files list"
+  (setq org-agenda-files (ads/org-roam-agenda-files))
+  (add-to-list 'org-agenda-files (concat org-directory "inbox.org")))
+
+(advice-add 'org-agenda :before #'ads/org-agenda-files-update)
+(advice-add 'org-todo-list :before #'ads/org-agenda-files-update)
+#+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
 
