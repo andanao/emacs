@@ -957,7 +957,7 @@ Major mode for reading EPUB files in Emacs
 (use-package org
   :custom
   ;; (org-directory "~/org") ;; org directory set in early init
-  (org-ellipsis " ·")
+  (org-ellipsis "")
   (org-log-done 'time)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts nil)
@@ -972,6 +972,10 @@ Major mode for reading EPUB files in Emacs
   (org-cycle-separator-lines 0)
   (org-id-link-to-org-use-id t)
   (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+	(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
+		  "|" "Done(d!)" "CANC(k!)")))
   :config
   (add-hook 'org-mode-hook 'variable-pitch-mode))
 #+end_src
@@ -1217,6 +1221,8 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "ff" 'org-roam-node-find
    "fi" 'org-roam-node-insert
    "fa" 'org-roam-alias-add
+   "f;" 'org-roam-tag-add
+   "f:" 'org-roam-tag-remove
    "fD" '((lambda () (interactive)
 	   (org-roam-db-sync)
 	   (ads/org-agenda-files-update))
