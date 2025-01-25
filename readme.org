@@ -1236,7 +1236,7 @@ file, in addition to an ~inbox.org~ file.  Credit to [[https://d12frosted.io/pos
 #+begin_src emacs-lisp
 (add-to-list 'org-tags-exclude-from-inheritance "agenda")
 #+end_src
-
+*** roam-agenda
 #+begin_src emacs-lisp
 (defun ads/org-todo-p ()
   "Return non-nil if current buffer has any todo entry.
@@ -1282,7 +1282,7 @@ simplifies the task of adding a tag
 (advice-add 'org-agenda :before #'ads/org-agenda-files-update)
 (advice-add 'org-todo-list :before #'ads/org-agenda-files-update)
 #+end_src
-
+*** roam-categories
 
 Categories in org agenda also get messed up, often I go back and fix them if I'm
 going to be seeing it
@@ -1297,6 +1297,26 @@ going to be seeing it
        (org-roam-node-title (org-roam-node-at-point))))))
 
 (ads/leader-keys "fc" 'ads/org-node-name-to-category)
+#+end_src
+*** roam-node-display
+I want to be able to see where my files are and what tags they have when I
+search for nodes and files
+
+#+begin_src emacs-lisp
+(cl-defmethod org-roam-node-type ((node org-roam-node))
+  "Return the TYPE of NODE."
+  (condition-case nil
+      (file-name-nondirectory
+       (directory-file-name
+        (file-name-directory
+         (file-relative-name (org-roam-node-file node) org-roam-directory))))
+    (error "")))
+
+(setq org-roam-node-display-template
+      (concat (propertize "${title:*}" 'face 'org-verbatim)
+	      (propertize " ${tags:30}" 'face 'org-tag)
+	      (propertize " ${type:15}" 'face 'org-roam-dim)
+	      ))
 #+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
