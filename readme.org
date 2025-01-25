@@ -342,8 +342,11 @@ particularly like the light ~modus-operandi~ theme.
      `(org-document-info ((,c :foreground ,fg-main)))
      `(prose-done ((,c :foreground ,fg-dim)))
      `(org-done ((,c :foreground ,fg-dim)))
-     `(org-ellipsis ((,c :inherit org-hide)))
+     `(org-ellipsis ((,c :foreground ,bg-main)))
      `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
+     `(org-scheduled ((,c :foreground ,fg-main)))
+     `(org-scheduled-today ((,c :foreground ,fg-main)))
+     `(org-scheduled-previously ((,c :weight normal :foreground ,fg-main)))
      ;; markdown mode
      `(markdown-list-face ((,c :foreground ,fg-main)))
      `(markdown-inline-code-face ((,c :foreground ,fg-main)))
@@ -957,7 +960,7 @@ Major mode for reading EPUB files in Emacs
 (use-package org
   :custom
   ;; (org-directory "~/org") ;; org directory set in early init
-  (org-ellipsis "")
+  (org-ellipsis " ·")
   (org-log-done 'time)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts nil)
@@ -1016,7 +1019,9 @@ Set custom org mode bindings and functions.
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
-  "oh" 'consult-org-heading
+  "oh" 'consult-org-heading)
+
+(ads/leader-keys
   "oa" 'org-agenda)
 #+end_src
 ** org-agenda
@@ -1287,7 +1292,6 @@ simplifies the task of adding a tag
 #+begin_src emacs-lisp
 (setq ads/inbox-file (concat org-directory "inbox.org"))
 
-;; not sure why I need the ar
 (defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
