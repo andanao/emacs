@@ -1217,7 +1217,10 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "ff" 'org-roam-node-find
    "fi" 'org-roam-node-insert
    "fa" 'org-roam-alias-add
-   "fD" 'org-roam-db-sync))
+   "fD" '((lambda () (interactive)
+	   (org-roam-db-sync)
+	   (ads/org-agenda-files-update))
+	  :wk "db sync & agenda")))
 #+end_src
 
 I generate my org agenda files based off of an :agenda: tag in each org roam
@@ -1262,10 +1265,12 @@ simplifies the task of adding a tag
 #+end_src
 
 #+begin_src emacs-lisp
+(setq ads/inbox-file (concat org-directory "inbox.org"))
 (defun ads/org-agenda-files-update ()
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
-  (add-to-list 'org-agenda-files (concat org-directory "inbox.org")))
+  (add-to-list 'org-agenda-files ads/inbox-file)
+  (message "Agenda files updated from roam tags"))
 (add-hook 'after-init-hook 'ads/org-agenda-files-update)
 
 (advice-add 'org-agenda :before #'ads/org-agenda-files-update)
