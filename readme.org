@@ -1271,8 +1271,24 @@ simplifies the task of adding a tag
 #+end_src
 
 #+begin_src emacs-lisp
+(defun ads/org-roam-agenda-files ()
+  "return a list of files containing the :agenda: tag"
+  (seq-uniq
+   (seq-map
+    #'car
+    (org-roam-db-query
+     [:select [nodes:file]
+      :from tags
+      :left-join nodes
+      :on (= tags:node-id nodes:id)
+      :where (like tag (quote "%\"agenda\"%"))]))))
+#+end_src
+
+#+begin_src emacs-lisp
 (setq ads/inbox-file (concat org-directory "inbox.org"))
-(defun ads/org-agenda-files-update ()
+
+;; not sure why I need the ar
+(defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
   (add-to-list 'org-agenda-files ads/inbox-file)
@@ -1282,6 +1298,7 @@ simplifies the task of adding a tag
 (advice-add 'org-agenda :before #'ads/org-agenda-files-update)
 (advice-add 'org-todo-list :before #'ads/org-agenda-files-update)
 #+end_src
+
 *** roam-categories
 
 Categories in org agenda also get messed up, often I go back and fix them if I'm
@@ -1313,7 +1330,7 @@ search for nodes and files
     (error "")))
 
 (setq org-roam-node-display-template
-      (concat (propertize "${title:*}" 'face 'org-verbatim)
+      (concat (propertize "${title:50}" 'face 'org-verbatim)
 	      (propertize " ${tags:30}" 'face 'org-tag)
 	      (propertize " ${type:15}" 'face 'org-roam-dim)
 	      ))
