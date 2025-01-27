@@ -870,13 +870,13 @@ Major mode for reading EPUB files in Emacs
   ;; (org-directory "~/org") ;; org directory set in early init
   (org-ellipsis " .")
   (org-log-done 'time)
+  (org-log-into-drawer t)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts nil)
   (org-hidden-keywords '(title))
   (org-hide-emphasis-markers t)
   (org-image-actual-width 0.75)
   (org-startup-with-inline-images t)
-  (org-agenda-block-separator "")
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
@@ -932,8 +932,7 @@ Set custom org mode bindings and functions.
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
-  "oh" 'consult-org-heading
-  "oa" 'org-agenda)
+  "oh" 'consult-org-heading)
 #+end_src
 ** org-agenda
 #+begin_src emacs-lisp
@@ -942,10 +941,20 @@ Set custom org mode bindings and functions.
 
 (setq org-agenda-window-setup 'current-window
       org-agenda-span 'day
+      org-agenda-block-separator ""
       org-agenda-restore-windows-after-quit t
       org-agenda-persistent-filter t
       org-agenda-scheduled-leaders '("   " "%2dd")
       )
+
+(setq org-agenda-prefix-format
+      '((agenda . "  %-20 c%?-12t% s")
+	(todo . "  %-20 c")
+	(tags . "  %-20 c")
+	(search . "  %-20 c")))
+
+(ads/leader-keys
+  "oa" 'org-agenda)
 #+end_src
 
 Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-org-agenda.el#L42][evil-org-agenda]], but since there's only one mode applicable I
@@ -1185,7 +1194,10 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "fD" '((lambda () (interactive)
 	   (org-roam-db-sync)
 	   (ads/org-agenda-files-update))
-	  :wk "db sync & agenda")))
+	  :wk "db sync & agenda")
+   ;; "fd" (:ignore t :wk "roam dailies")
+   "fd" 'org-roam-dailies-map
+   ))
 #+end_src
 
 I generate my org agenda files based off of an :agenda: tag in each org roam
