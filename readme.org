@@ -920,14 +920,8 @@ Set custom org mode bindings and functions.
       (find-file (concat "c:/users/" user-login-name "/scratch.org"))
       (find-file "~/scratch.org")))
 
-(defun ads/inbox ()
-  "Open ads/inbox-file"
-  (interactive)
-  (find-file ads/inbox-file))
-
 (ads/leader-keys
-  "C-s" 'ads/org-scratch
-  "oi" 'ads/inbox)
+  "C-s" 'ads/org-scratch)
 #+end_src
 
 
@@ -1078,7 +1072,69 @@ don't feel the need to use lots of the evil bindings
 	     '((:results . "output")
 	       ))
 #+end_src
+** org-capture
+Capture all of my notes and tasks to an inbox where they are then reviewed
+reviewed from there
+#+begin_src emacs-lisp :noweb yes
+(setq ads/inbox-file (concat org-directory "inbox.org"))
+(setq org-default-notes-file ads/inbox-file)
 
+(setq org-capture-templates
+      '(
+<<capture-inbox>>
+<<capture-task>>
+<<capture-note>>
+	))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/inbox ()
+  "Open ads/inbox-file"
+  (interactive)
+  (find-file ads/inbox-file))
+
+(defun ads/quick-note ()
+  "take a note using the capture-note template"
+  (interactive)
+  (org-capture nil "n"))
+
+(ads/leader-keys
+  "oc" 'org-capture
+  "oi" 'ads/inbox
+  "C-a" 'ads/quick-note)
+#+end_src
+
+*** capture-inbox
+#+NAME: capture-inbox
+#+begin_src emacs-lisp :tangle no
+("i" "inbox" plain
+(file ads/inbox-file)
+"* %^{}
+:CREATED: %U
+"
+:immediate-finish)
+#+end_src
+*** capture-task
+#+NAME: capture-task
+#+begin_src emacs-lisp :tangle no
+("t" "todo" plain
+(file ads/inbox-file)
+"* TODO %?
+SCHEDULED: %t
+
+")
+#+end_src
+*** capture-note
+#+NAME: capture-note
+#+begin_src emacs-lisp :tangle no
+("n" "note" plain
+(file ads/inbox-file)
+"* %^{HEADING}
+:CREATED: %U
+
+%?
+")
+#+end_src
 ** org-modern
 
 #+begin_src emacs-lisp
@@ -1192,7 +1248,6 @@ simplifies the task of adding a tag
 #+end_src
 
 #+begin_src emacs-lisp
-(setq ads/inbox-file (concat org-directory "inbox.org"))
 (defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
