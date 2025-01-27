@@ -57,9 +57,6 @@ my emacs config also lives in the same place on all my machines
 (setq ads/config-file (concat git-directory "emacs/readme.org"))
 #+end_src
 ** Garbage Collection
-:PROPERTIES:
-:ID:       ecc6265b-6f3e-4637-8d8c-5f91724e9db7
-:END:
 (lifted from [[https://github.com/progfolio/.emacs.d?tab=readme-ov-file#garbage-collection][progfolio's init]])
 
 =gc-cons-threshold= (800 KB) and =gc-cons-percentage= (0.1) control when the Emacs garbage collector can kick in.
@@ -957,7 +954,7 @@ Major mode for reading EPUB files in Emacs
 (use-package org
   :custom
   ;; (org-directory "~/org") ;; org directory set in early init
-  (org-ellipsis "")
+  (org-ellipsis " .")
   (org-log-done 'time)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts nil)
@@ -1268,6 +1265,21 @@ simplifies the task of adding a tag
 	  (org-roam-tag-remove '("agenda"))))))
 
 (add-hook 'before-save-hook 'ads/org-update-agenda-tag)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/org-roam-agenda-files ()
+  "return a list of files containing the :agenda: tag"
+  (seq-uniq
+   (seq-map
+    #'car
+    (org-roam-db-query
+     [:select [nodes:file]
+      :from tags
+      :left-join nodes
+      :on (= tags:node-id nodes:id)
+      :where (like tag (quote "%\"agenda\"%"))]))))
+
 #+end_src
 
 #+begin_src emacs-lisp
