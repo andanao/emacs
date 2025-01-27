@@ -316,6 +316,10 @@ particularly like the light ~modus-operandi~ theme.
      `(org-done ((,c :foreground ,fg-dim)))
      `(org-ellipsis ((,c :inherit org-hide)))
      `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
+     `(org-modern-date-active ((,c :inherit org-modern-label :background ,bg-blue-nuanced)))
+     `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
+     `(org-modern-date-inactive ((,c :inherit org-modern-label :background ,bg-dim)))
+     `(org-modern-time-inactive ((,c :inherit org-modern-label :background ,bg-inactive)))
      ;; markdown mode
      `(markdown-list-face ((,c :foreground ,fg-main)))
      `(markdown-inline-code-face ((,c :foreground ,fg-main)))
