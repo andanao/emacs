@@ -887,6 +887,9 @@ Major mode for reading EPUB files in Emacs
   (add-hook 'org-mode-hook 'variable-pitch-mode))
 #+end_src
 *** org keybindings
+:PROPERTIES:
+:ID:       b675fb83-50bf-4177-9082-f9c039befbb9
+:END:
 Set custom org mode bindings and functions.
 
 #+begin_src emacs-lisp
@@ -912,7 +915,15 @@ Set custom org mode bindings and functions.
   (if (eq system-type 'windows-nt)
       (find-file (concat "c:/users/" user-login-name "/scratch.org"))
       (find-file "~/scratch.org")))
-(ads/leader-keys "C-s" 'ads/org-scratch)
+
+(defun ads/inbox ()
+  "Open ads/inbox-file"
+  (interactive)
+  (find-file ads/inbox-file))
+
+(ads/leader-keys
+  "C-s" 'ads/org-scratch
+  "oi" 'ads/inbox)
 #+end_src
 
 
@@ -1125,6 +1136,9 @@ file, in addition to an ~inbox.org~ file.  Credit to [[https://d12frosted.io/pos
 (add-to-list 'org-tags-exclude-from-inheritance "agenda")
 #+end_src
 *** roam-agenda
+:PROPERTIES:
+:ID:       ebd0f06b-cfe3-4db3-a018-3f0307b303ed
+:END:
 #+begin_src emacs-lisp
 (defun ads/org-todo-p ()
   "Return non-nil if current buffer has any todo entry.
@@ -1175,7 +1189,7 @@ simplifies the task of adding a tag
 
 #+begin_src emacs-lisp
 (setq ads/inbox-file (concat org-directory "inbox.org"))
-(defun ads/org-agenda-files-update ()
+(defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
   (add-to-list 'org-agenda-files ads/inbox-file)
