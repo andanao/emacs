@@ -1152,7 +1152,6 @@ SCHEDULED: %t
 ")
 #+end_src
 ** org-modern
-
 #+begin_src emacs-lisp
 (use-package org-modern
   :after (org)
@@ -1165,8 +1164,11 @@ SCHEDULED: %t
      ("        ▸ " . "        ▾ ")
      ("          ▸ " . "          ▾ ")
      ("            ▸ " . "            ▾ ")
-     ("              ▸ " . "              ▾ ")
-     ))
+     ("              ▸ " . "              ▾ ")))
+  (org-modern-checkbox
+      '((88 . " ")
+	(45 . " ")
+	(32 . " ")))
   :config
   (global-org-modern-mode)
   )
