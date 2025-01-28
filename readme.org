@@ -20,7 +20,6 @@ for my setup:
 * early-init
 :PROPERTIES:
 :header-args: emacs-lisp :tangle early-init.el :results none :noweb yes :comments link
-:ID:       a70010ba-7c49-4804-afef-c818bc0225ec
 :END:
 
 Enable debug on error at startup to automatically get debugging with init.
@@ -32,9 +31,6 @@ Enable debug on error at startup to automatically get debugging with init.
 #+end_src
 
 ** Set directory variables
-:PROPERTIES:
-:ID:       3190cd0f-37bc-476e-a322-dccf9af20846
-:END:
 
 The EMACS ~~~ directory is not the same on windows as it is on Linux, I keep my git directory on
 windows at ~c:/users/username/git~.  Windows behaviour can sometimes be strange, and to avoid
@@ -57,9 +53,6 @@ my emacs config also lives in the same place on all my machines
 (setq ads/config-file (concat git-directory "emacs/readme.org"))
 #+end_src
 ** Garbage Collection
-:PROPERTIES:
-:ID:       ecc6265b-6f3e-4637-8d8c-5f91724e9db7
-:END:
 (lifted from [[https://github.com/progfolio/.emacs.d?tab=readme-ov-file#garbage-collection][progfolio's init]])
 
 =gc-cons-threshold= (800 KB) and =gc-cons-percentage= (0.1) control when the Emacs garbage collector can kick in.
@@ -101,9 +94,6 @@ The following is a table shows values from popular Emacs configurations.
 #+end_src
 
 ** UI Changes
-:PROPERTIES:
-:ID:       9c4cb38a-f09c-4e67-9b73-a58bdc8d69bc
-:END:
 
 Changes to the UI to inhibit unused elements be used should speed up start up times by a bit
 #+begin_src emacs-lisp
@@ -137,9 +127,6 @@ Silence the bell
 
 
 ** Package Usage
-:PROPERTIES:
-:ID:       d42c037e-17f1-44bb-a1f1-15eeece7ce47
-:END:
 On corporate machines I've been unable to get elpaca/straight working, for linux I plan to use the Nix [[https://github.com/nix-community/emacs-overlay][emacs-overlay]]
 
 #+begin_src emacs-lisp
@@ -161,9 +148,6 @@ out [[https://github.com/emacscollective/no-littering][no-littering]] but this w
       lsp-session-file (expand-file-name "tmp/.lsp-session-v1" user-emacs-directory))
 #+end_src
 ** Provide Early init
-:PROPERTIES:
-:ID:       c919ae21-a56c-48f5-9e46-c6e32459ce46
-:END:
 
 #+begin_src emacs-lisp
 (provide 'early-init)
@@ -172,7 +156,6 @@ out [[https://github.com/emacscollective/no-littering][no-littering]] but this w
 
 * Emacs Settings
 :PROPERTIES:
-:ID:       0aff3214-fa20-4b4b-a126-71dabcf68edb
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
@@ -206,7 +189,6 @@ I want to have line numbers whenever I'm in programming modes
 #+end_src
 ** auto tangle files
 :PROPERTIES:
-:ID:       cd29ca1d-9409-4477-ae77-225975cc8ed3
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
@@ -232,13 +214,9 @@ Add hook to after save hook when on org mode
 
 * Theme
 :PROPERTIES:
-:ID:       402191ad-8c44-4671-a645-325322eecff4
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 ** fonts
-:PROPERTIES:
-:ID:       6546ad25-1737-4c16-a2d6-13de6b120226
-:END:
 #+begin_src emacs-lisp
 (setq
  mono "FiraCode Nerd Font"
@@ -269,9 +247,6 @@ Add hook to after save hook when on org mode
 #+end_src
 
 ** frames
-:PROPERTIES:
-:ID:       1ef9c8c4-0e3a-4b62-bbff-0b4fe37ba750
-:END:
 
 Set frame padding to have some breathing room, making the dividers invisible is done with ~ads/modus-tweaks~
 #+begin_src emacs-lisp
@@ -281,9 +256,6 @@ Set frame padding to have some breathing room, making the dividers invisible is 
 #+end_src
 
 ** modus-themes
-:PROPERTIES:
-:ID:       85514d94-c0ee-4f09-8198-1b673a363a33
-:END:
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
 
@@ -347,6 +319,10 @@ particularly like the light ~modus-operandi~ theme.
      `(org-scheduled ((,c :foreground ,fg-main)))
      `(org-scheduled-today ((,c :foreground ,fg-main)))
      `(org-scheduled-previously ((,c :weight normal :foreground ,fg-main)))
+     `(org-modern-date-active ((,c :inherit org-modern-label :background ,bg-blue-nuanced)))
+     `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
+     `(org-modern-date-inactive ((,c :inherit org-modern-label :background ,bg-dim)))
+     `(org-modern-time-inactive ((,c :inherit org-modern-label :background ,bg-inactive)))
      ;; markdown mode
      `(markdown-list-face ((,c :foreground ,fg-main)))
      `(markdown-inline-code-face ((,c :foreground ,fg-main)))
@@ -376,7 +352,6 @@ particularly like the light ~modus-operandi~ theme.
 
 * General.el
 :PROPERTIES:
-:ID:       d25d57ce-fc06-4526-9707-b7ebccd9a7e6
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
@@ -438,9 +413,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** eval ~e~
-:PROPERTIES:
-:ID:       d0130836-0a5e-459d-b066-e9507c58e947
-:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -454,9 +426,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** quit ~q~
-:PROPERTIES:
-:ID:       982cc7d7-252b-4953-82e1-a62a2468eced
-:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -467,9 +436,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** narrow ~n~
-:PROPERTIES:
-:ID:       5688c1b1-21e6-4f74-b4dd-a95cb23fcc5a
-:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -485,9 +451,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** windows, buffers, frames ~j~
-:PROPERTIES:
-:ID:       f3e626e0-21a7-4e18-8c9a-414a56ba67e2
-:END:
 #+begin_src emacs-lisp
 (ads/leader-keys
   "j" '(:ignore t :which-key "frames")
@@ -512,9 +475,6 @@ The DWIM behaviour of this command is as follows:
   )
 #+end_src
 ** kill ~k~
-:PROPERTIES:
-:ID:       8647cae1-fd22-43ec-ace7-e5f2ad3f0419
-:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -526,9 +486,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** config ~c~
-:PROPERTIES:
-:ID:       5e426a49-7743-40e0-a9b2-132889805206
-:END:
 
 
 #+begin_src emacs-lisp
@@ -541,9 +498,6 @@ The DWIM behaviour of this command is as follows:
 #+end_src
 
 ** Toggles ~t~
-:PROPERTIES:
-:ID:       14e88ab3-068e-48b0-b6f7-2edfd3e02491
-:END:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
@@ -554,12 +508,8 @@ The DWIM behaviour of this command is as follows:
 
 
 ** TODO Regex
-:PROPERTIES:
-:ID:       658c2bb2-c940-4462-a419-fa1f42c942c0
-:END:
 * Packages
 :PROPERTIES:
-:ID:       b211eefc-821f-4ac5-9944-8625a31d6448
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 ** async
@@ -583,9 +533,6 @@ The DWIM behaviour of this command is as follows:
   (global-auto-revert-mode t))
 #+end_src
 ** bookmark+
-:PROPERTIES:
-:ID:       6298ee0c-0bd9-41c3-88bb-d9d0159c14b7
-:END:
 [[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
 on MELPA
 
@@ -611,9 +558,6 @@ on MELPA
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 #+end_src
 ** consult
-:PROPERTIES:
-:ID:       839a64ba-d135-425e-b370-7e25307f438d
-:END:
 
 [[https://github.com/minad/consult][Consult]] has quickly become one of my favorite emacs packages, it makes moving around emacs feel like magic
 
@@ -635,9 +579,6 @@ on MELPA
 #+end_src
 
 ** corfu
-:PROPERTIES:
-:ID:       76b6e030-10b4-45c6-b76f-433cd2b2aa6b
-:END:
 
    #+begin_src emacs-lisp
 (use-package corfu
@@ -686,9 +627,6 @@ on MELPA
 #+end_src
 
 ** doom-modeline
-:PROPERTIES:
-:ID:       52e5ace2-d473-4238-b34a-102a1c287fe2
-:END:
 #+begin_src emacs-lisp
 (use-package doom-modeline
   :demand t
@@ -706,9 +644,6 @@ on MELPA
    column-number-mode nil))
 #+end_src
 ** evil
-:PROPERTIES:
-:ID:       0be2adc9-9670-4f89-a088-70e65229c37a
-:END:
 #+begin_src emacs-lisp
 (use-package evil
   :demand t
@@ -746,9 +681,6 @@ on MELPA
 #+end_src
 
 ** evil-anzu
-:PROPERTIES:
-:ID:       17726ce4-36da-4522-8c36-d1908afc9d53
-:END:
 Show match counts in modeline
 #+begin_src emacs-lisp
 (use-package evil-anzu
@@ -758,9 +690,6 @@ Show match counts in modeline
 #+end_src
 
 ** evil-collection
-:PROPERTIES:
-:ID:       33566ddf-dc6f-4d3f-9e24-4d8622b7c0f1
-:END:
 
 A collection of evil bindings not fully set in the default package
 
@@ -784,9 +713,6 @@ Quickly create links to  files and commits
     "gF" 'git-link-dispatch))
 #+end_src
 ** helpful
-:PROPERTIES:
-:ID:       2a3f7dcc-51ca-472d-b073-31cea58b42a5
-:END:
 
 #+begin_src emacs-lisp
 (use-package helpful
@@ -825,9 +751,6 @@ if I look through the manual closely but this works for now.
   "C-v" 'insert-any-variable-value)
 #+end_src
 ** magit
-:PROPERTIES:
-:ID:       d5db3894-eba8-4dd6-bfd3-05bf339454f7
-:END:
 
 #+begin_src emacs-lisp
 (use-package magit
@@ -860,9 +783,6 @@ if I look through the manual closely but this works for now.
 #+end_src
 
 ** marginalia
-:PROPERTIES:
-:ID:       6dd61ba5-dc71-4883-b215-4f26d461da3e
-:END:
 
 #+begin_src emacs-lisp
 (use-package marginalia
@@ -893,9 +813,6 @@ if I look through the manual closely but this works for now.
   "mm" 'markdown-mode)
 #+end_src
 ** nerd-icons
-:PROPERTIES:
-:ID:       3f5c1a1c-bd1c-4927-9230-699352ce079b
-:END:
 
 Remember run ~nerd-icons-install-fonts~ to get the font files.  Then
 restart Emacs to see the effect.
@@ -939,9 +856,6 @@ Major mode for reading EPUB files in Emacs
 #+end_src
 
 ** orderless
-:PROPERTIES:
-:ID:       d5725e1b-f4e7-4efa-9234-4434c5ef71db
-:END:
 
 #+begin_src emacs-lisp
 (use-package orderless
@@ -952,9 +866,6 @@ Major mode for reading EPUB files in Emacs
 #+end_src
 
 ** org
-:PROPERTIES:
-:ID:       fc7ed585-01d0-4b4b-97e2-1eabd86f1ce8
-:END:
 
 #+begin_src emacs-lisp
 (use-package org
@@ -962,13 +873,13 @@ Major mode for reading EPUB files in Emacs
   ;; (org-directory "~/org") ;; org directory set in early init
   (org-ellipsis " ·")
   (org-log-done 'time)
+  (org-log-into-drawer t)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts nil)
   (org-hidden-keywords '(title))
   (org-hide-emphasis-markers t)
   (org-image-actual-width 0.75)
   (org-startup-with-inline-images t)
-  (org-agenda-block-separator "")
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
@@ -987,6 +898,9 @@ Major mode for reading EPUB files in Emacs
   (add-hook 'org-mode-hook 'variable-pitch-mode))
 #+end_src
 *** org keybindings
+:PROPERTIES:
+:ID:       b675fb83-50bf-4177-9082-f9c039befbb9
+:END:
 Set custom org mode bindings and functions.
 
 #+begin_src emacs-lisp
@@ -1012,7 +926,9 @@ Set custom org mode bindings and functions.
   (if (eq system-type 'windows-nt)
       (find-file (concat "c:/users/" user-login-name "/scratch.org"))
       (find-file "~/scratch.org")))
-(ads/leader-keys "C-s" 'ads/org-scratch)
+
+(ads/leader-keys
+  "C-s" 'ads/org-scratch)
 #+end_src
 
 
@@ -1024,9 +940,6 @@ Set custom org mode bindings and functions.
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading)
-
-(ads/leader-keys
-  "oa" 'org-agenda)
 #+end_src
 ** org-agenda
 #+begin_src emacs-lisp
@@ -1035,10 +948,20 @@ Set custom org mode bindings and functions.
 
 (setq org-agenda-window-setup 'current-window
       org-agenda-span 'day
+      org-agenda-block-separator ""
       org-agenda-restore-windows-after-quit t
       org-agenda-persistent-filter t
       org-agenda-scheduled-leaders '("   " "%2dd")
       )
+
+(setq org-agenda-prefix-format
+      '((agenda . "  %-20 c%?-12t% s")
+	(todo . "  %-20 c")
+	(tags . "  %-20 c")
+	(search . "  %-20 c")))
+
+(ads/leader-keys
+  "oa" 'org-agenda)
 #+end_src
 
 Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-org-agenda.el#L42][evil-org-agenda]], but since there's only one mode applicable I
@@ -1087,9 +1010,6 @@ don't feel the need to use lots of the evil bindings
  "C-w C-l" 'evil-window-right)
 #+end_src
 ** org-appear
-:PROPERTIES:
-:ID:       8116b3e3-81fd-49aa-a0ff-f833c0304405
-:END:
 
 #+begin_src emacs-lisp
 (use-package org-appear
@@ -1109,9 +1029,6 @@ don't feel the need to use lots of the evil bindings
 #+end_src
 
 ** org-babel
-:PROPERTIES:
-:ID:       159ea42a-2961-4b22-8454-2b5cad050279
-:END:
 
 #+begin_src emacs-lisp :lexical t
 (require 'org-tempo)
@@ -1129,13 +1046,9 @@ don't feel the need to use lots of the evil bindings
 *** config
 :PROPERTIES:
 :header-args: :noweb-ref org-babel-config
-:ID:       1acbb772-0882-4bc7-b686-8af4c42cafe4
 :END:
 
 **** Structured Templates
-:PROPERTIES:
-:ID:       a119e8c0-9502-4298-a455-2f3f2aab2f5c
-:END:
 
 #+begin_src emacs-lisp :lexical t
 (dolist
@@ -1161,9 +1074,6 @@ don't feel the need to use lots of the evil bindings
 #+end_src
 
 **** Languages
-:PROPERTIES:
-:ID:       087ccdb5-1687-4b80-8c0c-82d6f0ad1853
-:END:
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
@@ -1178,11 +1088,70 @@ don't feel the need to use lots of the evil bindings
 	     '((:results . "output")
 	       ))
 #+end_src
+** org-capture
+Capture all of my notes and tasks to an inbox where they are then reviewed
+reviewed from there
+#+begin_src emacs-lisp :noweb yes
+(setq ads/inbox-file (concat org-directory "inbox.org"))
+(setq org-default-notes-file ads/inbox-file)
 
+(setq org-capture-templates
+      '(
+<<capture-inbox>>
+<<capture-task>>
+<<capture-note>>
+	))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/inbox ()
+  "Open ads/inbox-file"
+  (interactive)
+  (find-file ads/inbox-file))
+
+(defun ads/quick-note ()
+  "take a note using the capture-note template"
+  (interactive)
+  (org-capture nil "n"))
+
+(ads/leader-keys
+  "oc" 'org-capture
+  "oi" 'ads/inbox
+  "C-a" 'ads/quick-note)
+#+end_src
+
+*** capture-inbox
+#+NAME: capture-inbox
+#+begin_src emacs-lisp :tangle no
+("i" "inbox" plain
+(file ads/inbox-file)
+"* %^{}
+:CREATED: %U
+"
+:immediate-finish)
+#+end_src
+*** capture-task
+#+NAME: capture-task
+#+begin_src emacs-lisp :tangle no
+("t" "todo" plain
+(file ads/inbox-file)
+"* TODO %?
+SCHEDULED: %t
+
+")
+#+end_src
+*** capture-note
+#+NAME: capture-note
+#+begin_src emacs-lisp :tangle no
+("n" "note" plain
+(file ads/inbox-file)
+"* %^{HEADING}
+:CREATED: %U
+
+%?
+")
+#+end_src
 ** org-modern
-:PROPERTIES:
-:ID:       8ca06b78-1618-4366-8032-1aa4d85a8cd1
-:END:
 
 #+begin_src emacs-lisp
 (use-package org-modern
@@ -1203,9 +1172,6 @@ don't feel the need to use lots of the evil bindings
   )
 #+end_src
 ** org-roam
-:PROPERTIES:
-:ID:       141269e3-551b-49e0-a4df-93f41c58b678
-:END:
 [[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
 like system with links between individual notes.  It is extremely powerful but
 has a bit of a learning cuve to learn your way around and how best to work with
@@ -1235,7 +1201,10 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "fD" '((lambda () (interactive)
 	   (org-roam-db-sync)
 	   (ads/org-agenda-files-update))
-	  :wk "db sync & agenda")))
+	  :wk "db sync & agenda")
+   ;; "fd" (:ignore t :wk "roam dailies")
+   "fd" 'org-roam-dailies-map
+   ))
 #+end_src
 
 I generate my org agenda files based off of an :agenda: tag in each org roam
@@ -1246,6 +1215,9 @@ file, in addition to an ~inbox.org~ file.  Credit to [[https://d12frosted.io/pos
 (add-to-list 'org-tags-exclude-from-inheritance "agenda")
 #+end_src
 *** roam-agenda
+:PROPERTIES:
+:ID:       ebd0f06b-cfe3-4db3-a018-3f0307b303ed
+:END:
 #+begin_src emacs-lisp
 (defun ads/org-todo-p ()
   "Return non-nil if current buffer has any todo entry.
@@ -1291,11 +1263,10 @@ simplifies the task of adding a tag
       :left-join nodes
       :on (= tags:node-id nodes:id)
       :where (like tag (quote "%\"agenda\"%"))]))))
+
 #+end_src
 
 #+begin_src emacs-lisp
-(setq ads/inbox-file (concat org-directory "inbox.org"))
-
 (defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
   (setq org-agenda-files (ads/org-roam-agenda-files))
@@ -1355,9 +1326,6 @@ search for nodes and files
         org-roam-ui-open-on-start t))
 #+end_src
 ** org-tidy
-:PROPERTIES:
-:ID:       416c980e-16ee-49eb-a50c-bb1464855c52
-:END:
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
 #+begin_src emacs-lisp
@@ -1394,9 +1362,6 @@ search for nodes and files
    "pk" 'projectile-previous-project-buffer)
 #+end_src
 ** rainbow-delimiters
-:PROPERTIES:
-:ID:       1854a60e-9eba-431d-a345-1f28b290e672
-:END:
 
    #+begin_src emacs-lisp
 (use-package rainbow-delimiters
@@ -1404,18 +1369,12 @@ search for nodes and files
    #+end_src
 
 ** rainbow-mode
-:PROPERTIES:
-:ID:       4fa34d65-816c-410a-85e2-9ad40f903dc9
-:END:
 
    #+begin_src emacs-lisp
 (use-package rainbow-mode
   :commands (rainbow-mode))
    #+end_src
 ** read-only-directories
-:PROPERTIES:
-:ID:       f042ad4d-9bea-45da-a918-2335f8359d8c
-:END:
 Some directories I want to files to be opened in read-only mode because they are usually used for
 reference
 
@@ -1456,9 +1415,6 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
   (setq rust-format-on-save t))
 #+end_src
 ** save-hist
-:PROPERTIES:
-:ID:       f8c320b5-16aa-4bfd-946e-0eea50ded5e3
-:END:
 #+begin_src emacs-lisp
 (use-package savehist
   :config
@@ -1489,9 +1445,6 @@ works much smoother on both Windows and Linux.
 #+end_src
 
 ** vertico
-:PROPERTIES:
-:ID:       c5d608cf-1635-4b53-9ca7-3d998922de20
-:END:
 
 #+begin_src emacs-lisp
 (use-package vertico
@@ -1506,9 +1459,6 @@ works much smoother on both Windows and Linux.
 #+end_src
 
 ** which-key
-:PROPERTIES:
-:ID:       08d7fa94-ab28-4d15-afce-157dad2a79df
-:END:
 
 =which-key= is is included in EMACS 30
 
@@ -1528,7 +1478,6 @@ works much smoother on both Windows and Linux.
 * Computer specific configs
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
-:ID:       225f2069-7d4a-4503-8272-b92449242c00
 :END:
 
 
@@ -1554,7 +1503,6 @@ Load when on appropriate system:
 * Windows
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
-:ID:       62c6e8d8-dc0b-482c-b92c-653a1c3f860f
 :END:
 Work forces me to use windows as much as I'd rather not.
 
@@ -1595,9 +1543,6 @@ order to keep the init files working properly copy the config files to
 #+end_src
 
 ** AHK
-:PROPERTIES:
-:ID:       1788e7f1-6c96-4a3c-809a-0e4d1f656416
-:END:
 I use AHK a lot to make the experience of using windows less painful
 #+begin_src emacs-lisp
 (use-package ahk-mode
@@ -1609,9 +1554,6 @@ I use AHK a lot to make the experience of using windows less painful
   )
 #+end_src
 *** Window Spy
-:PROPERTIES:
-:ID:       b3329a59-4d1c-4a00-9a68-6507163daa35
-:END:
 #+begin_src emacs-lisp
 (defun ahk-launch-window-spy ()
   (interactive)
@@ -1706,7 +1648,6 @@ start-process-variable nil)~
 * Linux
 :PROPERTIES:
 :header-args: emacs-lisp :tangle linux.el :results none :noweb yes :comments link
-:ID:       9e7b9a70-6895-4032-bedf-f6281cd0bc67
 :END:
 ** nixconfig
 jump to my nix config files
