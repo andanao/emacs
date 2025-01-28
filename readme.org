@@ -1373,7 +1373,10 @@ search for nodes and files
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode)
   (autoload 'projectile-project-root "projectile")
-  (setq consult-project-function (lambda (_) (projectile-project-root))))
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
+
+  (add-to-list 'projectile-globally-ignored-directories "*target")
+  (add-to-list 'projectile-globally-ignored-directories "*venv"))
 
 (ads/leader-keys
    "p" '(:ignore t :wk "projects")
