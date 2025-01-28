@@ -1294,6 +1294,20 @@ going to be seeing it
 
 (ads/leader-keys "fc" 'ads/org-node-name-to-category)
 #+end_src
+*** roam-insert-immediate
+While writing and not wanting to create a rabbit hole for myself I want to make
+a node immediately and not dive further into it.  Credit to [[https://www.youtube.com/watch?v=AyhPmypHDEw&lc=Ugw7bYrPOc6oy_UBmPZ4AaABAg][Umar Ahmad]]
+
+#+begin_src emacs-lisp
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+(ads/leader-keys "fI" 'org-roam-node-insert-immediate)
+#+end_src
 *** roam-node-display
 I want to be able to see where my files are and what tags they have when I
 search for nodes and files
