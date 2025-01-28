@@ -503,7 +503,10 @@ The DWIM behaviour of this command is as follows:
 (ads/leader-keys
     "t" '(:ignore t :which-key "toggles")
     "tt" 'modus-themes-toggle
-    "tl" 'toggle-truncate-lines)
+    "tl" 'toggle-truncate-lines
+    "tb" 'display-battery-mode
+    "tm" 'display-time-mode
+    )
 #+end_src
 
 
@@ -616,7 +619,7 @@ on MELPA
 ** display-time-mode
 #+begin_src emacs-lisp
 (setq display-time-24hr-format t
-      display-time-day-and-date t
+      display-time-day-and-date nil
       display-time-default-load-average nil)
 (display-time-mode)
 #+end_src
