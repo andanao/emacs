@@ -412,6 +412,12 @@ The DWIM behaviour of this command is as follows:
  '"C-g" 'ads/keyboard-quit-dwim)
 #+end_src
 
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "C-r" 'replace-regexp
+  "C-j" 'jump-to-register)
+#+end_src
+
 ** eval ~e~
 
 #+begin_src emacs-lisp
@@ -509,8 +515,6 @@ The DWIM behaviour of this command is as follows:
     )
 #+end_src
 
-
-** TODO Regex
 * Packages
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
@@ -575,7 +579,6 @@ on MELPA
 (ads/leader-keys
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
-  "C-j" 'consult-register
   "C-;" 'consult-register-store
   "r" 'consult-recent-file
   "C-b" 'consult-bookmark)
