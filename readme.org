@@ -326,6 +326,7 @@ particularly like the light ~modus-operandi~ theme.
      ;; markdown mode
      `(markdown-list-face ((,c :foreground ,fg-main)))
      `(markdown-inline-code-face ((,c :foreground ,fg-main)))
+     `(markdown-code-face ((,c :background ,bg-dim )))
      `(markdown-language-keyword-face ((,c :background ,bg-dim )))
      ;; line numbers
      `(line-number ((,c :background ,bg-main :height 0.8)))
@@ -342,12 +343,13 @@ particularly like the light ~modus-operandi~ theme.
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
+(ads/modus-tweaks)
 #+end_src
 
 #+begin_src emacs-lisp
+(load-theme 'modus-vivendi)
 (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
 (add-hook 'after-init-hook 'ads/modus-tweaks)
-(load-theme 'modus-vivendi)
 #+end_src
 
 * General.el
