@@ -1690,11 +1690,20 @@ start-process-variable nil)~
 #+end_src
 
 #+RESULTS:
+** make frame after init
+#+begin_src emacs-lisp
+(defun ads/frame-after-init ()
+  "if in server mode make a frame once init has finished"
+  (when server-mode
+    (make-frame)))
+(add-hook 'after-init-hook 'ads/frame-after-init)
+#+end_src
 ** Provide ~ms-windows.el~
 
 #+begin_src emacs-lisp
 (provide 'ms-windows.el)
 #+end_src
+
 
 * Linux
 :PROPERTIES:
