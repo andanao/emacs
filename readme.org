@@ -52,6 +52,12 @@ my emacs config also lives in the same place on all my machines
 #+begin_src emacs-lisp
 (setq ads/config-file (concat git-directory "emacs/readme.org"))
 #+end_src
+** Set utf-8 encoding
+Taken from Doom emacs setup, migtht be worth setting ~(set-locale-environment
+"en_US.UTF-8")~ on linux systems
+#+begin_src emacs-lisp
+(set-language-environment "UTF-8")
+#+end_src
 ** Garbage Collection
 (lifted from [[https://github.com/progfolio/.emacs.d?tab=readme-ov-file#garbage-collection][progfolio's init]])
 
