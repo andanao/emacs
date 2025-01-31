@@ -764,6 +764,10 @@ if I look through the manual closely but this works for now.
 (ads/leader-keys
   "C-v" 'insert-any-variable-value)
 #+end_src
+** json
+#+begin_src emacs-lisp
+(use-package json-mode)
+#+end_src
 ** magit
 
 #+begin_src emacs-lisp
@@ -1067,10 +1071,10 @@ don't feel the need to use lots of the evil bindings
 #+begin_src emacs-lisp :lexical t
 (dolist
     (template
-     '(
-       ("el" . "src emacs-lisp")
+     '(("el" . "src emacs-lisp")
        ("py" . "src python")
        ("sh" . "src shell")
+       ("b" . "src bat")
        ("rs" . "src rust")
        ("html" . "src html")
        ("css" . "src css")
@@ -1080,10 +1084,10 @@ don't feel the need to use lots of the evil bindings
        ("yaml" . "src yaml")
        ("toml" . "src toml")
        ("js" . "src javascript")
-       ("jo" . "src json")
+       ("json" . "src json")
+       ("j" . "src json")
        ("ja" . "src java")
-       ("sql" . "src sql")
-       ))
+       ("sql" . "src sql")))
   (add-to-list 'org-structure-template-alist template))
 #+end_src
 
@@ -1227,13 +1231,14 @@ I generate my org agenda files based off of an :agenda: tag in each org roam
 file, in addition to an ~inbox.org~ file.  Credit to [[https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html][d12frosted]] and
 [[https://magnus.therning.org/2021-03-14-keeping-todo-items-in-org-roam.html][magnus.therning]] for the inspiration.
 
-#+begin_src emacs-lisp
-(add-to-list 'org-tags-exclude-from-inheritance "agenda")
-#+end_src
 *** roam-agenda
 :PROPERTIES:
 :ID:       ebd0f06b-cfe3-4db3-a018-3f0307b303ed
 :END:
+#+begin_src emacs-lisp
+(add-to-list 'org-tags-exclude-from-inheritance "agenda")
+#+end_src
+
 #+begin_src emacs-lisp
 (defun ads/org-todo-p ()
   "Return non-nil if current buffer has any todo entry.
@@ -1500,7 +1505,8 @@ works much smoother on both Windows and Linux.
   (setq scroll-conservatively 101
         scroll-margin 0)
   :config
-  (ultra-scroll-mode 1))
+  (when (not (eq system-type 'windows-nt))
+    (ultra-scroll-mode 1)))
 #+end_src
 
 ** vertico
