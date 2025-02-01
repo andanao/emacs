@@ -1701,6 +1701,20 @@ start-process-variable nil)~
  :keymaps 'dired-mode-map
  "<tab>" 'ads/dired-win-default)
 #+end_src
+** Overwrite git-lazy function
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+  (cons "ads/git-lazy" (cons #'display-buffer-no-window nil)))
+(defun ads/git-lazy ()
+  (interactive)
+  (save-buffer)
+  (shell-command (concat "git stage " buffer-file-name) )
+  (magit-diff-staged)
+  (delete-other-windows)
+  (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
+  (async-shell-command "git push" "ads/git-lazy")
+  (magit-mode-bury-buffer))
+#+end_src
 
 ** Provide ~ms-windows.el~
 
