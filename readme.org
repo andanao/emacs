@@ -1376,6 +1376,11 @@ search for nodes and files
   "ot" 'org-tidy-untidy-buffer
   "oT" 'org-tidy-toggle)
 #+end_src
+** pdf-tools
+[[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
+#+begin_src emacs-lisp
+(use-package pdf-tools)
+#+end_src
 ** projectile
 [[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
