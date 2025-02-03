@@ -565,6 +565,7 @@ Also install MiKTex to generate PDFs
 	preview-auto-cache-preamble nil
 	preview-pdf-color-adjust-method nil))
 #+end_src
+
 ** auto-fill
 #+begin_src emacs-lisp
 (customize-set-variable 'fill-column 80)
@@ -991,6 +992,47 @@ Set custom org mode bindings and functions.
   "of" 'consult-outline
   "oh" 'consult-org-heading)
 #+end_src
+*** weekly review
+I do a weekly review, this will create the weekly review file in my current
+daily and fill it in with some basic information.
+
+#+begin_src emacs-lisp :noweb yes
+(defun ads/weekly ()
+  "start weekly review process"
+  (interactive)
+  (org-roam-dailies-find-today)
+  (org-roam-tag-add '("weekly"))
+  (goto-char (point-max))
+  (insert
+<<ads/weekly>>
+   ))
+#+end_src
+
+#+NAME: ads/weekly
+#+begin_src emacs-lisp :tangle no
+"* Weekly Review
+
+- [ ] Clear
+  - [ ] [[https:gmail.com][gmail]]
+  - [ ] [[../inbox.org][inbox.org]]
+  - [ ] Downloads
+- [ ] Schedule Week
+- [ ] Clean Apartment
+
+\*\* Project Statuses
+
+List of :active: projects
+
+
+\*\* Goal Progress
+
+Overview of montly goal progress
+
+\** Upcoming Events
+
+"
+#+end_src
+
 ** org-agenda
 #+begin_src emacs-lisp
 (require 'org-agenda)
@@ -1392,6 +1434,7 @@ search for nodes and files
 	      (propertize " ${type:15}" 'face 'org-roam-dim)
 	      ))
 #+end_src
+
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
 
