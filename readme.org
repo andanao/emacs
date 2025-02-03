@@ -1,4 +1,5 @@
 #+TITLE: Emacs Literate Configuration
+#+STARTUP: overview
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
@@ -493,9 +494,9 @@ The DWIM behaviour of this command is as follows:
 #+begin_src emacs-lisp
 (ads/leader-keys
    "k" '(:ignore t :wk "kill")
-   "kj" '(kill-buffer-and-window :which-key "kill-buffer-and-window")
-   "kk" '(kill-this-buffer :which-key "kill-this-buffer")
-   "kl"'(delete-window :wk "delete-window")
+   "kj" 'kill-buffer-and-window
+   "kk" 'kill-current-buffer
+   "kl"'delete-window
   )
 #+end_src
 
