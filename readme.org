@@ -1347,6 +1347,17 @@ going to be seeing it
 
 (ads/leader-keys "fc" 'ads/org-node-name-to-category)
 #+end_src
+*** roam-daily-today
+get today's daily file and if not make it
+#+begin_src emacs-lisp
+(defun ads/roam-daily-today ()
+  (concat
+   org-roam-directory
+   org-roam-dailies-directory
+   (format-time-string "%Y-%m-%d")
+   ".org"))
+#+end_src
+
 *** roam-insert-immediate
 While writing and not wanting to create a rabbit hole for myself I want to make
 a node immediately and not dive further into it.  Credit to [[https://www.youtube.com/watch?v=AyhPmypHDEw&lc=Ugw7bYrPOc6oy_UBmPZ4AaABAg][Umar Ahmad]]
