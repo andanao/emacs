@@ -534,6 +534,37 @@ The DWIM behaviour of this command is as follows:
   :config
   (async-bytecomp-package-mode 1))
 #+end_src
+** auctex LaTeX
+Also install MiKTex to generate PDFs
+
+#+begin_src emacs-lisp
+(use-package tex
+  :ensure auctex)
+(setq-default TeX-master nil)
+(setq TeX-auto-save t
+      TeX-parse-self t
+      reftex-plug-into-AUCTeX t
+      LaTeX-electric-left-right-brace t
+      TeX-PDF-mode t
+      TeX-source-correlate-mode t
+      TeX-source-correlate-start-server t
+      )
+
+;; (setq preview-latex-debug t)
+
+;; some of these do apply to linux I just haven't tested it
+(when (eq system-type 'windows-nt)
+  (setq preview-gs-command "C:/Program Files/gs/gs10.04.0/bin/gswin64c.exe"
+	preview-gs-options '("-q" "-dNOPAUSE" "-dDELAYSAFER" "-dBATCH")
+
+	preview-image-type 'dvipng  ; Try dvipng first
+	preview-dvipng-command "dvipng"
+
+	preview-prefer-preview-pdf nil  ; Don't prefer PDF preview
+	preview-transparent-border 1
+	preview-auto-cache-preamble nil
+	preview-pdf-color-adjust-method nil))
+#+end_src
 ** auto-fill
 #+begin_src emacs-lisp
 (customize-set-variable 'fill-column 80)
