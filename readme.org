@@ -1402,6 +1402,27 @@ get today's daily file and if not make it
    (format-time-string "%Y-%m-%d")
    ".org"))
 #+end_src
+*** roam-daily-archive
+I want to archive small tasks to dailies but also link back to where the files
+came from adding an ~:ARCHIVE_NODE:~ property
+
+#+begin_src emacs-lisp
+(setq org-archive-location (concat (ads/roam-daily-today) "::* Archive")
+      org-archive-save-context-info (time file olpath category itags))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ads/org-archive ()
+  "Archive file adding ARCHIVE_NODE property"
+  (interactive)
+  (let* ((node (org-roam-node-at-point))
+	 (id (org-roam-node-id node))
+	 (title (org-roam-node-title node))
+	 (ref (concat "[[id:"id "][" title "]]")))
+    (org-set-property "ARCHIVE_NODE" ref))
+  (org-archive-subtree))
+(ads/leader-keys "oX" 'ads/org-archive)
+#+end_src
 
 *** roam-insert-immediate
 While writing and not wanting to create a rabbit hole for myself I want to make
@@ -1417,6 +1438,7 @@ a node immediately and not dive further into it.  Credit to [[https://www.youtub
 
 (ads/leader-keys "fI" 'org-roam-node-insert-immediate)
 #+end_src
+
 *** roam-node-display
 I want to be able to see where my files are and what tags they have when I
 search for nodes and files
