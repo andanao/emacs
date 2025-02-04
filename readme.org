@@ -1259,10 +1259,12 @@ SCHEDULED: %t
      ("            ▸ " . "            ▾ ")
      ("              ▸ " . "              ▾ ")))
   (org-modern-checkbox
-      '((88 . " ")
-	(45 . " ")
-	(32 . " ")))
-  (org-modern-list '((45 . "•")  (43 . "◦"))  )
+      '((?X . " ")
+	(?- . " ")
+	(?\s . " ")))
+  (org-modern-table-vertical 2)
+  (org-modern-table-horizontal 0.1)
+  (org-modern-list '((?- . "•")  (?+ . "◦")))
   :config
   (global-org-modern-mode))
 #+end_src
