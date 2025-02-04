@@ -939,9 +939,14 @@ Major mode for reading EPUB files in Emacs
   (org-id-link-to-org-use-id t)
   (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)")
+      '(;; Standard
+	(sequence "TODO(t)" "|" "DONE(d)")
+	;; Projects
 	(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
-		  "|" "Done(d!)" "CANC(k!)")))
+		  "|" "DONE(d!)" "CANC(k!)")
+	;; Meetings
+	(sequence "SCHD(m!)" "PREP(r!)" "PROG(g!)" "NOTE(o!)"
+		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)")))
   (org-tag-alist
    '(("Article" . ?r)
      ("Book" . ?b)
