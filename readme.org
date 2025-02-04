@@ -1400,6 +1400,7 @@ going to be seeing it
 *** roam-daily-today
 get today's daily file and if not make it
 #+begin_src emacs-lisp
+(setq org-roam-dailies-directory "daily/")
 (defun ads/roam-daily-today ()
   (concat
    org-roam-directory
@@ -1413,7 +1414,7 @@ came from adding an ~:ARCHIVE_NODE:~ property
 
 #+begin_src emacs-lisp
 (setq org-archive-location (concat (ads/roam-daily-today) "::* Archive")
-      org-archive-save-context-info (time file olpath category itags))
+      org-archive-save-context-info '(time file olpath category itags))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1665,9 +1666,6 @@ works much smoother on both Windows and Linux.
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
-
-
-
 
 Load windows only configuration
 #+begin_src emacs-lisp
