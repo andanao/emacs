@@ -1584,7 +1584,7 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 (use-package treemacs
   :config
   (ads/leader-keys
-    "C-f" 'treemacs))
+    "a" 'treemacs))
 #+end_src
 
 #+begin_src emacs-lisp
