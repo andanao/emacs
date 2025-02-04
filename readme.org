@@ -325,6 +325,7 @@ particularly like the light ~modus-operandi~ theme.
      `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
      `(org-scheduled ((,c :foreground ,fg-main)))
      `(org-scheduled-today ((,c :foreground ,fg-main)))
+     `(org-agenda-calendar-event ((,c :foreground ,fg-main)))
      `(org-scheduled-previously ((,c :weight normal :foreground ,fg-main)))
      `(org-modern-date-active ((,c :inherit org-modern-label :background ,bg-blue-nuanced)))
      `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
@@ -1261,9 +1262,9 @@ SCHEDULED: %t
       '((88 . " ")
 	(45 . " ")
 	(32 . " ")))
+  (org-modern-list '((45 . "•")  (43 . "◦"))  )
   :config
-  (global-org-modern-mode)
-  )
+  (global-org-modern-mode))
 #+end_src
 ** org-roam
 [[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
