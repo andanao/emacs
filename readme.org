@@ -1038,7 +1038,43 @@ Overview of montly goal progress
 
 "
 #+end_src
+*** monthly review
+Template for my monthly reviews
 
+#+begin_src emacs-lisp :noweb yes
+(defun ads/monthly ()
+  "start monthly review"
+  (interactive)
+  (org-roam-dailies-find-today)
+  (org-roam-tag-add '("monthly"))
+  (goto-char (point-max))
+  (insert
+<<ads/monthly>>
+   ))
+#+end_src
+
+#+NAME: ads/monthly
+#+begin_src emacs-lisp :tangle no
+"* Monthly Review
+
+\*\* Books Read
+
+\*\* Time Tracked
+
+\*\* Thoughts had
+
+\*\* Theme
+
+\*\* Goals
+
+\*\* Projects
+
+List of :active: projects
+
+\*\* Reflection
+
+"
+#+end_src
 ** org-agenda
 #+begin_src emacs-lisp
 (require 'org-agenda)
