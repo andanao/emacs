@@ -945,7 +945,7 @@ Major mode for reading EPUB files in Emacs
 	(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
 		  "|" "DONE(d!)" "CANC(k!)")
 	;; Meetings
-	(sequence "SCHD(m!)" "PREP(r!)" "PROG(g!)" "NOTE(o!)"
+	(sequence "SCHD(m)" "PREP(r!)" "PROG(g!)" "NOTE(o!)"
 		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)")))
   (org-tag-alist
    '(("Article" . ?r)
@@ -1018,12 +1018,14 @@ daily and fill it in with some basic information.
 #+begin_src emacs-lisp :tangle no
 "* Weekly Review
 
+- [ ] [[https:calendar.google.com/calendar/u/0/r/week][Schedule Week]]
+- [ ] [[https:app.ynab.com][YNAB]]
 - [ ] Clear
   - [ ] [[https:gmail.com][gmail]]
   - [ ] [[../inbox.org][inbox.org]]
   - [ ] Downloads
-- [ ] Schedule Week
 - [ ] Clean Apartment
+- [ ] Upgrade packages ~(package-upgrade-all)~
 
 \*\* Project Statuses
 
