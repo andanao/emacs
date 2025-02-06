@@ -948,9 +948,13 @@ Major mode for reading EPUB files in Emacs
 	(sequence "SCHD(m)" "PREP(r!)" "PROG(g!)" "NOTE(o!)"
 		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)")))
   (org-tag-alist
-   '(("Article" . ?r)
-     ("Book" . ?b)
-     ("Project" . ?p)))
+   '(("active" . ?a)
+     ("article" . ?r)
+     ("book" . ?b)
+     ("private" . ?P)
+     ("project" . ?p)
+     ("public" . ?u)
+     ("thought" . ?t)))
   :config
   (add-hook 'org-mode-hook 'variable-pitch-mode))
 #+end_src
