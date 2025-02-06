@@ -1606,15 +1606,31 @@ start buffer in read only mode if file in a child directory
   )
 #+end_src
 ** rust
-[[https://github.com/rust-lang/rust-mode][Rust-mode]] is a minimal package that probides Rust support and bindings supported
+[[https://github.com/rust-lang/rust-mode][Rust-mode]] is a minimal package that provides Rust support and bindings supported
 by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][Rustic]] offers a more fully featured experience.
 
 #+begin_src emacs-lisp
 (use-package rust-mode
-  :init
-  (setq rust-mode-treesitter-derive t)
+  ;; :init
+  ;; (setq rust-mode-treesitter-derive t)
   :config
-  (setq rust-format-on-save t))
+  (setq rust-format-on-save t)
+  (add-hook 'rust-mode-hook
+            (lambda () (setq indent-tabs-mode nil))))
+#+end_src
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  :keymaps 'rust-mode-map
+  "l" '(:ignore t :which-key "rust")
+  "lc" 'rust-run-clippy
+  "lc" 'rust-compile
+  "lk" 'rust-check
+  "lr" 'rust-run
+  "lt" 'rust-test
+  "ld" 'rust-dbg-wrap-or-unwrap
+  "lm" 'rust-toggle-mutability
+  )
 #+end_src
 ** save-hist
 #+begin_src emacs-lisp
