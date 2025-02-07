@@ -114,6 +114,7 @@ Changes to the UI to inhibit unused elements be used should speed up start up ti
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
 (setq inhibit-startup-screen t)
+(setq indent-tabs-mode nil)
 #+end_src
 
 Remove server instruction clients, on closing an emacs frame when emacs server is running
