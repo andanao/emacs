@@ -1064,19 +1064,21 @@ Template for my monthly reviews
 #+begin_src emacs-lisp :tangle no
 "* Monthly Review
 
+\*\* Theme
+
+\*\* Goals
+
 \*\* Books Read
 
 \*\* Time Tracked
 
 \*\* Thoughts had
 
-\*\* Theme
-
-\*\* Goals
-
 \*\* Projects
 
-List of :active: projects
+\*\*\* Active
+
+\*\*\* completed
 
 \*\* Reflection
 
