@@ -1525,13 +1525,13 @@ search for nodes and files
 ** org-tidy
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
-#+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 (use-package org-tidy
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  :hook
-  (org-mode . org-tidy-mode))
+  ;; :hook  (org-mode . org-tidy-mode)
+  )
 (ads/leader-keys
   :keymaps 'org-mode-map
   "ot" 'org-tidy-untidy-buffer
@@ -1542,10 +1542,10 @@ search for nodes and files
 #+begin_src emacs-lisp
 (use-package pdf-tools)
 #+end_src
-** projectile
+** SKIP projectile
 [[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package projectile
   :custom
   (projectile-sort-order 'recently-active)
@@ -1645,16 +1645,16 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 #+begin_src emacs-lisp
 (use-package sudo-edit)
 #+end_src
-** treemacs
+** SKIP treemacs
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package treemacs
   :config
   (ads/leader-keys
     "z" 'treemacs))
 #+end_src
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package treemacs-evil
   :after treemacs evil)
 
