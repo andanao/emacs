@@ -320,6 +320,8 @@ particularly like the light ~modus-operandi~ theme.
      `(org-checkbox ((,c :foreground ,fg-main)))
      `(org-table ((,c :foreground ,fg-main)))
      `(org-document-info ((,c :foreground ,fg-main)))
+     `(org-drawer ((,c :height 0.7)))
+     `(org-property-value ((,c :height 0.7)))
      `(prose-done ((,c :foreground ,fg-dim)))
      `(org-done ((,c :foreground ,fg-dim)))
      `(org-ellipsis ((,c :foreground ,bg-main)))
