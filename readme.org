@@ -114,7 +114,7 @@ Changes to the UI to inhibit unused elements be used should speed up start up ti
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
 (setq inhibit-startup-screen t)
-(setq indent-tabs-mode nil)
+(customize-set-variable 'indent-tabs-mode nil)
 #+end_src
 
 Remove server instruction clients, on closing an emacs frame when emacs server is running
@@ -315,7 +315,7 @@ particularly like the light ~modus-operandi~ theme.
     (custom-set-faces
      ;; Modus
      `(modus-themes-prose-code ((,c :foreground ,fg-alt)))
-     `(modus-themes-prose-verbatim ((,c :foreground nil)))
+     `(modus-themes-prose-verbatim ((,c :foreground ,fg-main)))
      ;; org mode
      `(org-checkbox ((,c :foreground ,fg-main)))
      `(org-table ((,c :foreground ,fg-main)))
@@ -343,14 +343,14 @@ particularly like the light ~modus-operandi~ theme.
      `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :background ,bg-main)))
      ;; misc
-     `(cursor ((t :background ,red-intense)))
-     `(link ((t :foreground ,fg-main :underline ,fg-main)))
+     `(cursor ((,c :background ,red-intense)))
+     `(link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
-     `(fringe ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-first-pixel ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-last-pixel ((t :background ,bg-main :foreground ,bg-main)))
+     `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
