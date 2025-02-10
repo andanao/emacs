@@ -1907,6 +1907,12 @@ start-process-variable nil)~
   (async-shell-command "git push" "ads/git-lazy")
   (magit-mode-bury-buffer))
 #+end_src
+** Projectile caching
+By default on windows projectile is set to index with ~native~ which ends up
+ignoreing a projects ~.gitignore~
+#+begin_src emacs-lisp
+(setq projectile-indexing-method 'hybrid)
+#+end_src
 
 ** Provide ~ms-windows.el~
 
