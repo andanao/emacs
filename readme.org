@@ -1723,6 +1723,18 @@ works much smoother on both Windows and Linux.
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.3))
 #+end_src
+** zoom
+[[https://github.com/cyrus-and/zoom][zoom]] replacmeent  for golden ratio package
+#+begin_src emacs-lisp
+(use-package zoom
+  :custom
+  (zoom-mode t)
+  (zoom-ignored-major-modes '(dired-mode markdown-mode))
+  (zoom-ignored-buffer-names '("zoom.el" "init.el"))
+  (zoom-ignored-buffer-name-regexps '("^*calc"))
+  (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
+  (zoom-size '(0.618 . 0.618)))
+#+end_src
 * Computer specific configs
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
