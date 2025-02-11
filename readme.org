@@ -1535,17 +1535,18 @@ search for nodes and files
 (ads/leader-keys
   :keymaps 'org-mode-map
   "ot" 'org-tidy-untidy-buffer
-  "oT" 'org-tidy-toggle)
+  "oT" 'org-tidy-toggle
+  "o C-t" 'org-tidy-mode)
 #+end_src
 ** pdf-tools
 [[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
 #+begin_src emacs-lisp
 (use-package pdf-tools)
 #+end_src
-** SKIP projectile
+** projectile
 [[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
-# #+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 (use-package projectile
   :custom
   (projectile-sort-order 'recently-active)
