@@ -1350,6 +1350,8 @@ computers I have ~~/org/personal~ and ~~/org/work~
    "fa" 'org-roam-alias-add
    "f;" 'org-roam-tag-add
    "f:" 'org-roam-tag-remove
+   "fr" 'org-roam-ref-add
+   "fR" 'org-roam-ref-remove
    "fD" '((lambda () (interactive)
 	   (org-roam-db-sync)
 	   (ads/org-agenda-files-update))
