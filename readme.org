@@ -114,7 +114,7 @@ Changes to the UI to inhibit unused elements be used should speed up start up ti
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
 (setq inhibit-startup-screen t)
-(setq indent-tabs-mode nil)
+(customize-set-variable 'indent-tabs-mode nil)
 #+end_src
 
 Remove server instruction clients, on closing an emacs frame when emacs server is running
@@ -276,7 +276,7 @@ particularly like the light ~modus-operandi~ theme.
   (modus-themes-bold-constructs t))
 
 (setq modus-themes-to-toggle
-      '(modus-operandi modus-vivendi-tinted))
+      '(modus-operandi modus-vivendi))
 
 (setq modus-themes-headings
   '((0 . (regular 1.75))
@@ -291,7 +291,8 @@ particularly like the light ~modus-operandi~ theme.
       (bg-mode-line-inactive bg-main)))
 
 (setq modus-vivendi-palette-overrides
-      '((bg-mode-line-active bg-dim)
+      '((bg-main "#111111")
+        (bg-mode-line-active bg-dim)
 	(bg-mode-line-inactive bg-main)))
 
 (setq modus-themes-common-palette-overrides
@@ -315,11 +316,13 @@ particularly like the light ~modus-operandi~ theme.
     (custom-set-faces
      ;; Modus
      `(modus-themes-prose-code ((,c :foreground ,fg-alt)))
-     `(modus-themes-prose-verbatim ((,c :foreground nil)))
+     `(modus-themes-prose-verbatim ((,c :foreground ,fg-main)))
      ;; org mode
      `(org-checkbox ((,c :foreground ,fg-main)))
      `(org-table ((,c :foreground ,fg-main)))
      `(org-document-info ((,c :foreground ,fg-main)))
+     `(org-drawer ((,c :height 0.7)))
+     `(org-property-value ((,c :height 0.7)))
      `(prose-done ((,c :foreground ,fg-dim)))
      `(org-done ((,c :foreground ,fg-dim)))
      `(org-ellipsis ((,c :foreground ,bg-main)))
@@ -341,14 +344,14 @@ particularly like the light ~modus-operandi~ theme.
      `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :background ,bg-main)))
      ;; misc
-     `(cursor ((t :background ,red-intense)))
-     `(link ((t :foreground ,fg-main :underline ,fg-main)))
+     `(cursor ((,c :background ,red-intense)))
+     `(link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
-     `(fringe ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-first-pixel ((t :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-last-pixel ((t :background ,bg-main :foreground ,bg-main)))
+     `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
+     `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      ;; Add "padding" to the mode lines
      `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
@@ -809,6 +812,7 @@ if I look through the manual closely but this works for now.
 (use-package magit
   :config
   (transient-bind-q-to-quit)
+  (setopt magit-format-file-function #'magit-format-file-nerd-icons)
   (defun ads/git-lazy ()
     (interactive)
     (save-buffer)
@@ -946,7 +950,7 @@ Major mode for reading EPUB files in Emacs
 	(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
 		  "|" "DONE(d!)" "CANC(k!)")
 	;; Meetings
-	(sequence "SCHD(m)" "PREP(r!)" "PROG(g!)" "NOTE(o!)"
+	(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
 		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)")))
   (org-tag-alist
    '(("active" . ?a)
@@ -980,7 +984,8 @@ Set custom org mode bindings and functions.
   (interactive)
   (widen)
   (consult-outline)
-  (org-narrow-to-subtree))
+  (org-narrow-to-subtree)
+  (org-fold-show-all))
 
 (defun ads/org-scratch ()
   "Open ~/scratch.org"
@@ -1525,17 +1530,18 @@ search for nodes and files
 ** org-tidy
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
-#+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 (use-package org-tidy
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  :hook
-  (org-mode . org-tidy-mode))
+  :hook  (org-mode . org-tidy-mode)
+  )
 (ads/leader-keys
   :keymaps 'org-mode-map
   "ot" 'org-tidy-untidy-buffer
-  "oT" 'org-tidy-toggle)
+  "oT" 'org-tidy-toggle
+  "o C-t" 'org-tidy-mode)
 #+end_src
 ** pdf-tools
 [[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
@@ -1545,7 +1551,7 @@ search for nodes and files
 ** projectile
 [[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
-#+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 (use-package projectile
   :custom
   (projectile-sort-order 'recently-active)
@@ -1645,16 +1651,16 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 #+begin_src emacs-lisp
 (use-package sudo-edit)
 #+end_src
-** treemacs
+** SKIP treemacs
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package treemacs
   :config
   (ads/leader-keys
-    "a" 'treemacs))
+    "z" 'treemacs))
 #+end_src
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (use-package treemacs-evil
   :after treemacs evil)
 
@@ -1721,7 +1727,19 @@ works much smoother on both Windows and Linux.
   (which-key-side-window-location 'bottom)
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-side-window-max-width 0.33)
-  (which-key-idle-delay 0.3))
+  (which-key-idle-delay 0.5))
+#+end_src
+** zoom
+[[https://github.com/cyrus-and/zoom][zoom]] replacmeent  for golden ratio package
+#+begin_src emacs-lisp
+(use-package zoom
+  :custom
+  (zoom-mode t)
+  (zoom-ignored-major-modes '(dired-mode markdown-mode))
+  (zoom-ignored-buffer-names '("zoom.el" "init.el"))
+  (zoom-ignored-buffer-name-regexps '("^*calc"))
+  (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
+  (zoom-size '(0.618 . 0.618)))
 #+end_src
 * Computer specific configs
 :PROPERTIES:
@@ -1894,6 +1912,12 @@ start-process-variable nil)~
   (shell-command (concat "git commit -m \"" (read-string "Commit Message:\t") "\""))
   (async-shell-command "git push" "ads/git-lazy")
   (magit-mode-bury-buffer))
+#+end_src
+** Projectile caching
+By default on windows projectile is set to index with ~native~ which ends up
+ignoreing a projects ~.gitignore~
+#+begin_src emacs-lisp
+(setq projectile-indexing-method 'hybrid)
 #+end_src
 
 ** Provide ~ms-windows.el~
