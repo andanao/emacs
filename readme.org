@@ -1083,7 +1083,7 @@ Template for my monthly reviews
 
 \*\*\* Active
 
-\*\*\* completed
+\*\*\* Completed
 
 \*\* Reflection
 
@@ -1430,6 +1430,28 @@ simplifies the task of adding a tag
 (advice-add 'org-agenda :before #'ads/org-agenda-files-update)
 (advice-add 'org-todo-list :before #'ads/org-agenda-files-update)
 #+end_src
+*** roam-active-projects
+For my [[weekly review]] I want a list of active projects.
+
+#+begin_src emacs-lisp
+(defun ads/roam-active-projects-insert ()
+  "Insert roam links to active projects"
+  (interactive)
+  (dolist
+    (node
+     (org-roam-db-query
+      [:select [nodes:id, nodes:title]
+       :from tags
+       :left-join nodes
+       :on (= tags:node-id nodes:id)
+       :where (like tag (quote "%\"active\"%"))]))
+  (insert
+     (concat "[[id:"
+             (pop node) "]["
+             (pop node) "]]
+"))))
+#+end_src
+
 
 *** roam-categories
 
