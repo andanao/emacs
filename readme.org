@@ -1533,10 +1533,11 @@ search for nodes and files
 
 (setq org-roam-node-display-template
       (concat (propertize "${title:50}" 'face 'org-verbatim)
-	      (propertize " ${tags:30}" 'face 'org-tag)
-	      (propertize " ${type:15}" 'face 'org-roam-dim)
+	      (propertize " ${type:10}" 'face 'org-roam-dim)
+	      (propertize " ${tags:35}" 'face 'org-tag)
 	      ))
 #+end_src
+
 
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
