@@ -1757,12 +1757,14 @@ works much smoother on both Windows and Linux.
 #+begin_src emacs-lisp
 (use-package zoom
   :custom
-  (zoom-mode t)
   (zoom-ignored-major-modes '(dired-mode markdown-mode))
-  (zoom-ignored-buffer-names '("zoom.el" "init.el"))
+  (zoom-ignored-buffer-names '("readme.org" "init.el"))
   (zoom-ignored-buffer-name-regexps '("^*calc"))
   (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
-  (zoom-size '(0.618 . 0.618)))
+  (zoom-size '(0.618 . 0.618))
+  :config
+  (ads/leader-keys
+    "tz" 'zoom-mode))
 #+end_src
 * Computer specific configs
 :PROPERTIES:
