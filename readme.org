@@ -1564,8 +1564,8 @@ search for nodes and files
   )
 (ads/leader-keys
   :keymaps 'org-mode-map
-  "ot" 'org-tidy-untidy-buffer
-  "oT" 'org-tidy-toggle
+  "ot" 'org-tidy-toggle
+  "oT" 'org-tidy-untidy-buffer
   "o C-t" 'org-tidy-mode)
 #+end_src
 ** pdf-tools
