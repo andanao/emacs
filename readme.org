@@ -1003,6 +1003,7 @@ Set custom org mode bindings and functions.
 (ads/leader-keys
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
+  "oM" 'org-mode
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
