@@ -947,7 +947,7 @@ Major mode for reading EPUB files in Emacs
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
   (org-cycle-separator-lines 0)
-  (org-id-link-to-org-use-id t)
+  (org-id-link-to-org-use-id nil) ;; Use org roam linking
   (org-fast-tag-selection-single-key t)
   (org-blank-before-new-entry '((heading . 1) (plain-list-item . nil)))
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
@@ -1018,6 +1018,7 @@ Set custom org mode bindings and functions.
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
   "oM" 'org-mode
+  "oS" 'org-save-all-org-buffers
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
