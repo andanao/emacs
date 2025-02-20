@@ -932,6 +932,7 @@ Major mode for reading EPUB files in Emacs
   (org-log-done 'time)
   (org-log-into-drawer t)
   (org-pretty-entities t)
+  (org-return-follows-link t)
   (org-pretty-entities-include-sub-superscripts nil)
   (org-hidden-keywords '(title))
   (org-hide-emphasis-markers t)
@@ -942,16 +943,9 @@ Major mode for reading EPUB files in Emacs
   (org-fontify-quote-and-verse-blocks t)
   (org-cycle-separator-lines 0)
   (org-id-link-to-org-use-id t)
-  (org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-  (org-todo-keywords
-      '(;; Standard
-	(sequence "TODO(t)" "|" "DONE(d)")
-	;; Projects
-	(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
-		  "|" "DONE(d!)" "CANC(k!)")
-	;; Meetings
-	(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
-		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)")))
+  (org-fast-tag-selection-single-key t)
+  (org-blank-before-new-entry '((heading . 1) (plain-list-item . nil)))
+  (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (org-tag-alist
    '(("active" . ?a)
      ("article" . ?r)
@@ -962,6 +956,21 @@ Major mode for reading EPUB files in Emacs
      ("thought" . ?t)))
   :config
   (add-hook 'org-mode-hook 'variable-pitch-mode))
+#+end_src
+
+*** org-todo-keywords
+Projects
+#+begin_src emacs-lisp
+(add-to-list 'org-todo-keywords
+'(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
+		  "|" "DONE(d!)" "CANC(k!)") t)
+#+end_src
+
+Meetings
+#+begin_src emacs-lisp
+(add-to-list 'org-todo-keywords
+'(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
+		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)") t)
 #+end_src
 *** org keybindings
 :PROPERTIES:
@@ -1009,7 +1018,7 @@ Set custom org mode bindings and functions.
   "of" 'consult-outline
   "oh" 'consult-org-heading)
 #+end_src
-*** weekly review
+*** org weekly review
 I do a weekly review, this will create the weekly review file in my current
 daily and fill it in with some basic information.
 
@@ -1051,7 +1060,7 @@ Overview of montly goal progress
 
 "
 #+end_src
-*** monthly review
+*** org monthly review
 Template for my monthly reviews
 
 #+begin_src emacs-lisp :noweb yes
