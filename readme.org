@@ -1733,16 +1733,16 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 #+begin_src emacs-lisp
 (use-package sudo-edit)
 #+end_src
-** SKIP treemacs
+** treemacs
 
-# #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package treemacs
   :config
   (ads/leader-keys
     "z" 'treemacs))
 #+end_src
 
-# #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package treemacs-evil
   :after treemacs evil)
 
