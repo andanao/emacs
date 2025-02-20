@@ -1348,23 +1348,29 @@ SCHEDULED: %t
   "Set pretty entitie for org mode"
   (setq prettify-symbols-alist
         '(("lambda" . "λ")
-
           ("CLOSED:" . "󰃯")
           ("SCHEDULED:" . "󰃭")
-          ("#+filetags:" . "")
+          (":CREATED:" . "󰃳")
+          ("+filetags:" . "")
+          ("#+options:" . "󰘵")
           ;; Blocks
           ("#+begin_quote" . "“")
           ("#+end_quote" . "”")
-          ("#+options:" . "󰘵")
+          ("#+begin_example" . "<")
+          ("#+end_example" . ">")
           ;; Languages
-          ("#+begin_src emacs-lisp" . "")
-          ("#+begin_src python" . "󱔎")
-          ("#+begin_src rust" . "󱘗")
-          ("#+begin_src java" . "")
-          ("#+begin_src javascript" . "")
           ("#+begin_src c" . "󰙱")
           ("#+begin_src cpp" . "󰙱")
           ("#+begin_src c++" . "󰙲")
+          ("#+begin_src css" . "")
+          ("#+begin_src emacs-lisp" . "")
+          ("#+begin_src html" . "")
+          ("#+begin_src java" . "")
+          ("#+begin_src javascript" . "")
+          ("#+begin_src python" . "")
+          ("#+begin_src rust" . "󱘗")
+          ("#+begin_src shell" . "")
+          ("#+begin_src sql" . "")
           ("#+begin_src toml" . "")
 
           ("#+end_src" . "»")
