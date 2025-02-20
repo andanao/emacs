@@ -1335,10 +1335,45 @@ SCHEDULED: %t
 	(?\s . " ")))
   (org-modern-table-vertical 2)
   (org-modern-table-horizontal 0.1)
+  (org-modern-block-name nil)
   (org-modern-list '((?- . "•")  (?+ . "◦")))
   :config
   (global-org-modern-mode))
 #+end_src
+
+** org-prettify-symbols
+
+#+begin_src emacs-lisp
+(defun ads/org-prettify-symbols ()
+  "Set pretty entitie for org mode"
+  (setq prettify-symbols-alist
+        '(("lambda" . "λ")
+
+          ("CLOSED:" . "󰃯")
+          ("SCHEDULED:" . "󰃭")
+          ("#+filetags:" . "")
+          ;; Blocks
+          ("#+begin_quote" . "“")
+          ("#+end_quote" . "”")
+          ("#+options:" . "󰘵")
+          ;; Languages
+          ("#+begin_src emacs-lisp" . "")
+          ("#+begin_src python" . "󱔎")
+          ("#+begin_src rust" . "󱘗")
+          ("#+begin_src java" . "")
+          ("#+begin_src javascript" . "")
+          ("#+begin_src c" . "󰙱")
+          ("#+begin_src cpp" . "󰙱")
+          ("#+begin_src c++" . "󰙲")
+          ("#+begin_src toml" . "")
+
+          ("#+end_src" . "»")
+
+          ))
+  (prettify-symbols-mode 1))
+(add-hook 'org-mode-hook 'ads/org-prettify-symbols)
+#+end_src
+
 ** org-roam
 [[https://github.com/org-roam/org-roam][Org-Roam]] is an org mode implementation of Roam Research's idea of a zettelkasten
 like system with links between individual notes.  It is extremely powerful but
