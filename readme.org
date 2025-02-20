@@ -878,6 +878,11 @@ restart Emacs to see the effect.
 (use-package nerd-icons
   :ensure t)
 
+(ads/leader-keys
+   "i" '(:ignore t :wk "insert")
+   "ii" 'nerd-icons-insert
+   "ic" 'insert-char)
+
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
