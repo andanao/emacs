@@ -695,6 +695,29 @@ on MELPA
    line-number-mode nil
    column-number-mode nil))
 #+end_src
+
+** TODO emojify
+[[https://github.com/iqbalansari/emacs-emojify?tab=readme-ov-file][emojify]] improves emoji usage in EMACS
+
+#+begin_src emacs-lisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  :custom
+  (use-default-font-for-symbols nil)
+  (emojify-emoji-styles '(unicode))
+  (emojify-display-style 'unicode)
+  :config
+
+  (when (member "Segoe UI Emoji" (font-family-list))
+    (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'prepend)
+    (set-fontset-font t 'emoji "Segoe UI Emoji" nil 'prepend))
+  ;; (when (member "OpenMoji" (font-family-list))
+  ;;   (set-fontset-font t 'symbol "OpenMoji" nil 'prepend)
+  ;;   (set-fontset-font t 'emoji "OpenMoji" nil 'prepend))
+  (ads/leader-keys
+    "ie" 'emojify-insert-emoji))
+#+end_src
+
 ** evil
 #+begin_src emacs-lisp
 (use-package evil
