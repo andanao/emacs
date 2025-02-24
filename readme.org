@@ -1411,11 +1411,24 @@ them with org capture instead of making the insertion of new nodes more of a pai
         '(("lambda" . "λ")
           ("CLOSED:" . "󰃯")
           ("SCHEDULED:" . "󰃭")
+          ("DEADLINE:" . "󰨱")
+          ("RESULTS:" . "󰘍")
+
           (":CREATED:" . "󰃳")
+          (":LOGBOOK:" . "")
+          (":PROPERTIES:" . "󱌣")
+          (":END:" . "")
+
+          (":ARCHIVE_NODE:" . "󱝜")
+          (":ARCHIVE_TIME:" . "󱝐")
+          (":ARCHIVE_FILE:" . "󱈎")
+          (":ARCHIVE_CATEGORY:" . "󱝖")
+          (":ARCHIVE_ITAGS:" . "󱝤")
+
           ("+filetags:" . "")
           ("#+Author:" . "")
           ("#+options:" . "󰘵")
-          (":tangle" . "")
+          (":tangle" . "󱓡")
           (":noweb" . "󰪎")
           ;; Blocks
           ("#+begin_quote" . "“")
