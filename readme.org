@@ -1896,6 +1896,7 @@ works much smoother on both Windows and Linux.
   (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
   (zoom-size '(0.618 . 0.618))
   :config
+  (zoom-mode 0)
   (ads/leader-keys
     "tz" 'zoom-mode))
 #+end_src
