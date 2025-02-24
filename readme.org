@@ -1298,6 +1298,7 @@ reviewed from there
 <<capture-inbox>>
 <<capture-task>>
 <<capture-note>>
+<<capture-book>>
 	))
 #+end_src
 
@@ -1348,6 +1349,32 @@ SCHEDULED: %t
 
 %?
 ")
+#+end_src
+
+*** capture-book
+I initially planned to use ~org-roam-capture-templates~ but realized that I don't
+capture books/articles/projects all that often and can just drop manually add
+them with org capture instead of making the insertion of new nodes more of a pain
+
+#+NAME: capture-book
+#+begin_src emacs-lisp :tangle no
+("b" "book" plain
+ (file (lambda () (concat org-directory
+                          (format-time-string "%Y%m%d%H%M%S-" nil t)
+                          (string-replace " " "-" (read-string "filename "))
+                          ".org")))
+":PROPERTIES:
+:ID: %(org-id-new)
+:AUTHOR: %^{Author}
+:MEDIUM: %^{MEDIUM ||audio|paper|electronic}
+:COMPLETED: %^t
+:END:
+,#+title: %^{Title}
+,#+filetags: :book:
+
+%?"
+:jump-to-captured
+ )
 #+end_src
 ** org-modern
 #+begin_src emacs-lisp
