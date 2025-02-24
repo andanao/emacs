@@ -1387,6 +1387,7 @@ SCHEDULED: %t
           (":CREATED:" . "󰃳")
           ("+filetags:" . "")
           ("#+options:" . "󰘵")
+          (":tangle" . "")
           ;; Blocks
           ("#+begin_quote" . "“")
           ("#+end_quote" . "”")
