@@ -1386,8 +1386,10 @@ SCHEDULED: %t
           ("SCHEDULED:" . "󰃭")
           (":CREATED:" . "󰃳")
           ("+filetags:" . "")
+          ("#+Author:" . "")
           ("#+options:" . "󰘵")
           (":tangle" . "")
+          (":noweb" . "󰪎")
           ;; Blocks
           ("#+begin_quote" . "“")
           ("#+end_quote" . "”")
@@ -1562,6 +1564,16 @@ going to be seeing it
        (org-roam-node-title (org-roam-node-at-point))))))
 
 (ads/leader-keys "fc" 'ads/org-node-name-to-category)
+#+end_src
+*** roam-capture-dailies
+I want to prepend my daily captures
+
+#+begin_src emacs-lisp
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>")
+         :prepend)))
 #+end_src
 *** roam-daily-today
 get today's daily file and if not make it
