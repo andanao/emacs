@@ -533,6 +533,22 @@ The DWIM behaviour of this command is as follows:
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
+
+** anki-editor
+
+#+begin_src emacs-lisp
+(use-package anki-editor
+  :vc (:url "https://github.com/anki-editor/anki-editor" :rev :newest)
+  ;; I think I can get away with resetting with a hook in the capture template
+  ;; :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
+  :config
+  (setq anki-editor-create-decks t
+        anki-editor-org-tags-as-anki-tags t
+        ads/anki-file (concat org-directory "anki.org"))
+  )
+#+end_src
+
+
 ** async
 #+begin_src emacs-lisp
 (use-package async
@@ -1299,6 +1315,8 @@ reviewed from there
 <<capture-task>>
 <<capture-note>>
 <<capture-book>>
+<<capture-anki-basic>>
+<<capture-anki-cloze>>
 	))
 #+end_src
 
@@ -1375,6 +1393,40 @@ them with org capture instead of making the insertion of new nodes more of a pai
 %?"
 :jump-to-captured t)
 #+end_src
+
+*** capture-anki-basic
+
+#+NAME: capture-anki-basic
+#+begin_src emacs-lisp :tangle no
+("a" "anki basic" plain
+(file ads/anki-file)
+"* %^{TITLE}
+:PROPERTIES:
+:ANKI_NOTE_TYPE: Basic
+:CREATED: %U
+:END:
+,** Front
+%?
+,** Back
+,%x"
+:jump-to-captured t)
+#+end_src
+*** capture-anki-cloze
+
+#+NAME: capture-anki-cloze
+#+begin_src emacs-lisp :tangle no
+("z" "anki cloze" plain
+(file ads/anki-file)
+"* %^{TITLE}
+:PROPERTIES:
+:ANKI_NOTE_TYPE: Cloze
+:CREATED: %U
+:END:
+%?
+"
+:jump-to-captured t)
+#+end_src
+
 ** org-modern
 #+begin_src emacs-lisp
 (use-package org-modern
@@ -1413,6 +1465,7 @@ them with org capture instead of making the insertion of new nodes more of a pai
           ("DEADLINE:" . "󰨱")
           ("RESULTS:" . "󰘍")
 
+          (":ID:" . "")
           (":CREATED:" . "󰃳")
           (":LOGBOOK:" . "")
           (":PROPERTIES:" . "󱌣")
@@ -1423,6 +1476,12 @@ them with org capture instead of making the insertion of new nodes more of a pai
           (":ARCHIVE_FILE:" . "󱈎")
           (":ARCHIVE_CATEGORY:" . "󱝖")
           (":ARCHIVE_ITAGS:" . "󱝤")
+
+          ;; (":ANKI" . "📚")
+          ;; ("_DECK:" . "")
+          ;; ("_NOTE_TYPE:" . "󱕷")
+          ;; ("_NOTE_ID:" . "")
+          ;; ("_NOTE_HASH:" . "󱅿")
 
           ("+filetags:" . "")
           ("#+Author:" . "")
