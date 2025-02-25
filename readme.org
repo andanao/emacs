@@ -1514,6 +1514,9 @@ them with org capture instead of making the insertion of new nodes more of a pai
           ("RESULTS:" . "󰘍")
 
           (":ID:" . "")
+          (":AUTHOR:" . "")
+          (":COMPLETED:" . "󱓴")
+          (":MEDIUM:" . "󱚋")
           (":CREATED:" . "󰃳")
           (":LOGBOOK:" . "")
           (":PROPERTIES:" . "󱌣")
