@@ -1345,21 +1345,9 @@ don't feel the need to use lots of the evil bindings
 Capture all of my notes and tasks to an inbox where they are then reviewed
 reviewed from there
 #+begin_src emacs-lisp :noweb yes
-(setq ads/inbox-file (concat org-directory "inbox.org"))
-(setq org-default-notes-file ads/inbox-file)
+(setq ads/inbox-file (concat org-directory "inbox.org")
+      org-default-notes-file ads/inbox-file)
 
-(setq org-capture-templates
-      '(
-<<capture-inbox>>
-<<capture-task>>
-<<capture-note>>
-<<capture-book>>
-<<capture-anki-basic>>
-<<capture-anki-cloze>>
-	))
-#+end_src
-
-#+begin_src emacs-lisp
 (defun ads/inbox ()
   "Open ads/inbox-file"
   (interactive)
@@ -1376,6 +1364,18 @@ reviewed from there
   "C-a" 'ads/quick-note)
 #+end_src
 
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      '(
+<<capture-inbox>>
+<<capture-task>>
+<<capture-note>>
+<<capture-book>>
+<<capture-anki-basic>>
+<<capture-anki-cloze>>
+	))
+#+end_src
+
 *** capture-inbox
 #+NAME: capture-inbox
 #+begin_src emacs-lisp :tangle no
@@ -1384,7 +1384,7 @@ reviewed from there
 "* %^{}
 :CREATED: %U
 "
-:immediate-finish)
+:immediate-finish t)
 #+end_src
 *** capture-task
 #+NAME: capture-task
@@ -1394,7 +1394,8 @@ reviewed from there
 "* TODO %?
 SCHEDULED: %t
 
-")
+"
+:immediate-finish t)
 #+end_src
 *** capture-note
 #+NAME: capture-note
@@ -1405,7 +1406,8 @@ SCHEDULED: %t
 :CREATED: %U
 
 %?
-")
+"
+:immediate-finish t)
 #+end_src
 
 *** capture-book
