@@ -1381,67 +1381,27 @@ reviewed from there
 <<capture-book>>
 <<capture-anki-basic>>
 <<capture-anki-cloze>>
+<<capture-acronym>>
 	))
 #+end_src
 
-*** capture-inbox
-#+NAME: capture-inbox
+*** capture-acronym
+#+NAME: capture-acronym
 #+begin_src emacs-lisp :tangle no
-("i" "inbox" plain
-(file ads/inbox-file)
-"* %^{}
-:CREATED: %U
-"
-:immediate-finish t)
-#+end_src
-*** capture-task
-#+NAME: capture-task
-#+begin_src emacs-lisp :tangle no
-("t" "todo" plain
-(file ads/inbox-file)
-"* TODO %^{TASK}
-SCHEDULED: %t
-
-"
-:immediate-finish t)
-#+end_src
-*** capture-note
-#+NAME: capture-note
-#+begin_src emacs-lisp :tangle no
-("n" "note" plain
-(file ads/inbox-file)
-"* %^{HEADING}
-:CREATED: %U
-
-%?
-")
-#+end_src
-
-*** capture-book
-I initially planned to use ~org-roam-capture-templates~ but realized that I don't
-capture books/articles/projects all that often and can just drop manually add
-them with org capture instead of making the insertion of new nodes more of a pain
-
-#+NAME: capture-book
-#+begin_src emacs-lisp :tangle no
-("b" "book" plain
+("x" "acronym" plain
  (file (lambda () (concat org-directory
-                          (format-time-string "%Y%m%d%H%M%S-" nil t)
-                          (string-replace " " "-" (read-string "filename "))
+                          (format-time-string "%Y%m%d%H%M%S--acronym" nil t)
                           ".org")))
 ":PROPERTIES:
 :ID: %(org-id-new)
-:AUTHOR: %^{Author}
-:MEDIUM: %^{MEDIUM ||audio|paper|electronic}
-:COMPLETED: %^u
+:CREATED: %U
 :END:
-,#+title: %^{Title}
-,#+filetags: :book:
+,#+title: %^{Short}: %^{Definition}
+,#+filetags: :acronym:
 
-%?"
-:jump-to-captured t)
+"
+)
 #+end_src
-
 *** capture-anki-basic
 
 #+NAME: capture-anki-basic
@@ -1473,6 +1433,64 @@ them with org capture instead of making the insertion of new nodes more of a pai
 %?
 "
 :jump-to-captured t)
+#+end_src
+*** capture-book
+I initially planned to use ~org-roam-capture-templates~ but realized that I don't
+capture books/articles/projects all that often and can just drop manually add
+them with org capture instead of making the insertion of new nodes more of a pain
+
+#+NAME: capture-book
+#+begin_src emacs-lisp :tangle no
+("b" "book" plain
+ (file (lambda () (concat org-directory
+                          (format-time-string "%Y%m%d%H%M%S-" nil t)
+                          (string-replace " " "-" (read-string "filename "))
+                          ".org")))
+":PROPERTIES:
+:ID: %(org-id-new)
+:AUTHOR: %^{Author}
+:MEDIUM: %^{MEDIUM ||audio|paper|electronic}
+:COMPLETED: %^u
+:END:
+,#+title: %^{Title}
+,#+filetags: :book:
+
+%?"
+:jump-to-captured t)
+#+end_src
+
+*** capture-inbox
+#+NAME: capture-inbox
+#+begin_src emacs-lisp :tangle no
+("i" "inbox" plain
+(file ads/inbox-file)
+"* %^{}
+:CREATED: %U
+"
+:immediate-finish t)
+#+end_src
+*** capture-note
+#+NAME: capture-note
+#+begin_src emacs-lisp :tangle no
+("n" "note" plain
+(file ads/inbox-file)
+"* %^{HEADING}
+:CREATED: %U
+
+%?
+")
+#+end_src
+
+*** capture-task
+#+NAME: capture-task
+#+begin_src emacs-lisp :tangle no
+("t" "todo" plain
+(file ads/inbox-file)
+"* TODO %^{TASK}
+SCHEDULED: %t
+
+"
+:immediate-finish t)
 #+end_src
 
 ** org-modern
