@@ -535,7 +535,10 @@ The DWIM behaviour of this command is as follows:
 :END:
 
 ** anki-editor
-
+[[id:4a1d6172-5ca4-4c79-8ca4-7e931e1001e8][ [[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
+anki workflows and inspired me to keep using anki instead of an emacs specific
+srs tool.  If I do eventually go that rout I'll likely just abandon what's in
+Anki or just make some sort of migration script.
 #+begin_src emacs-lisp
 (use-package anki-editor
   :vc (:url "https://github.com/anki-editor/anki-editor" :rev :newest)
@@ -545,10 +548,46 @@ The DWIM behaviour of this command is as follows:
   (setq anki-editor-create-decks t
         anki-editor-org-tags-as-anki-tags t
         ads/anki-file (concat org-directory "anki.org"))
+
+
+  (defun anki-editor-cloze-region-auto-incr (&optional arg)
+    "Cloze region without hint and increase card number."
+    (interactive)
+    (anki-editor-cloze-region my-anki-editor-cloze-number "")
+    (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
+    (forward-sexp))
+  (defun anki-editor-cloze-region-dont-incr (&optional arg)
+    "Cloze region without hint using the previous card number."
+    (interactive)
+    (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
+    (forward-sexp))
+  (defun anki-editor-reset-cloze-number (&optional arg)
+    "Reset cloze number to ARG or 1"
+    (interactive)
+    (setq my-anki-editor-cloze-number (or arg 1)))
+  (anki-editor-reset-cloze-number)
+
+  (add-hook 'find-file-hook
+            '(lambda ()
+               (when
+                 (string-equal-ignore-case buffer-file-name ads/anki-file)
+                 (anki-editor-mode))))
   )
 #+end_src
 
-
+#+begin_src emacs-lisp
+(ads/leader-keys
+  :major-modes '(org-mode)
+  :keymaps '(org-mode-map)
+  "ok" '(:ignore t :wk "anKi")
+  "okp" 'anki-editor-push-new-notes
+  "okP" 'anki-editor-push-notes
+  "okk" 'anki-editor-cloze-region-auto-incr
+  "okj" 'anki-editor-cloze-dwim
+  "okg" 'anki-editor-gui-browse
+  "okG" 'anki-editor-gui-add-cards
+  )
+#+end_src
 ** async
 #+begin_src emacs-lisp
 (use-package async
