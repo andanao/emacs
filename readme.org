@@ -1156,7 +1156,9 @@ Overview of montly goal progress
 "
 #+end_src
 *** org monthly review
-Template for my monthly reviews
+Template for my monthly reviews, I set it around the first of the month where I
+plan out goals and theme tie in, at the end of the month I do complete the rest
+of everything that is there.
 
 #+begin_src emacs-lisp :noweb yes
 (defun ads/monthly ()
@@ -1174,23 +1176,23 @@ Template for my monthly reviews
 #+begin_src emacs-lisp :tangle no
 "* Monthly Review
 
-\*\* Theme
+,** Theme
 
-\*\* Goals
+,** Goals
 
-\*\* Books Read
+,** Books Read
 
-\*\* Time Tracked
+,** Time Tracked
 
-\*\* Thoughts had
+,** Thoughts had
 
-\*\* Projects
+,** Projects
 
-\*\*\* Active
+,*** Active
 
-\*\*\* Completed
+,*** Completed
 
-\*\* Reflection
+,** Reflection
 
 "
 #+end_src
