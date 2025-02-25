@@ -1410,17 +1410,30 @@ them with org capture instead of making the insertion of new nodes more of a pai
         '(("lambda" . "λ")
           ("CLOSED:" . "󰃯")
           ("SCHEDULED:" . "󰃭")
+          ("DEADLINE:" . "󰨱")
+          ("RESULTS:" . "󰘍")
+
           (":CREATED:" . "󰃳")
+          (":LOGBOOK:" . "")
+          (":PROPERTIES:" . "󱌣")
+          (":END:" . "")
+
+          (":ARCHIVE_NODE:" . "󱝜")
+          (":ARCHIVE_TIME:" . "󱝐")
+          (":ARCHIVE_FILE:" . "󱈎")
+          (":ARCHIVE_CATEGORY:" . "󱝖")
+          (":ARCHIVE_ITAGS:" . "󱝤")
+
           ("+filetags:" . "")
           ("#+Author:" . "")
           ("#+options:" . "󰘵")
-          (":tangle" . "")
+          (":tangle" . "󱓡")
           (":noweb" . "󰪎")
           ;; Blocks
           ("#+begin_quote" . "“")
           ("#+end_quote" . "”")
-          ("#+begin_example" . "<")
-          ("#+end_example" . ">")
+          ("#+begin_example" . "󰅴")
+          ("#+end_example" . "")
           ;; Languages
           ("#+begin_src c" . "󰙱")
           ("#+begin_src cpp" . "󰙱")
@@ -1895,6 +1908,7 @@ works much smoother on both Windows and Linux.
   (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
   (zoom-size '(0.618 . 0.618))
   :config
+  (zoom-mode 0)
   (ads/leader-keys
     "tz" 'zoom-mode))
 #+end_src
@@ -1937,7 +1951,7 @@ Or open task scheduler and add a task to execute ~runemacs.exe --daemon flag~
 (setq win/.emacs.d (concat "C:\\Users\\" user-login-name "\\AppData\\Roaming\\.emacs.d\\"))
 #+end_src
 
-** Copy files to ~.emacs.d~ on tangle
+** copy files to ~.emacs.d~ on tangle
 Windows doesn't allow symlinks unless you are an admin which is a pain.  In
 order to keep the init files working properly copy the config files to
 ~C:\Users\username\AppData\Roaming\.emacs.d\~ after tangle
@@ -1962,7 +1976,7 @@ order to keep the init files working properly copy the config files to
 	 :wk "Dired .emacs.d"))
 #+end_src
 
-** AHK
+** ahk
 I use AHK a lot to make the experience of using windows less painful
 #+begin_src emacs-lisp
 (use-package ahk-mode
@@ -1979,7 +1993,7 @@ I use AHK a lot to make the experience of using windows less painful
   (interactive)
   (w32-shell-execute 1 "C:/Users/adanaos/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/AutoHotkey Window Spy.lnk"))
 #+end_src
-** Align windows theme with emacs
+** align windows theme with emacs
 #+begin_src emacs-lisp
 ;; win/theme
 ;;   0 - dark
@@ -2005,6 +2019,20 @@ I use AHK a lot to make the experience of using windows less painful
 
 (add-hook 'modus-themes-after-load-theme-hook 'win/theme-align-with-emacs)
 #+end_src
+
+** auto hide taskbar
+
+#+begin_src emacs-lisp
+(defun win/taskbar-auto-hide ()
+  (interactive)
+  (async-shell-command
+     "powershell -command
+\"&{$p='HKCU:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StuckRects3';
+$v=(Get-ItemProperty -Path $p).Settings;
+$v[8]=3;
+&Set-ItemProperty -Path $p -Name Settings -Value $v;&Stop-Process -f -ProcessName explorer}\""
+     "win/taskbar-auto-hide"))
+#+end_src
 ** Browse in Edge
 Some things only work in edge on my work computer
 #+begin_src emacs-lisp
@@ -2012,7 +2040,7 @@ Some things only work in edge on my work computer
     (shell-command (concat "start msedge " url)))
 #+end_src
 
-** Hide DOS EOL
+** hide dos eol
 Some the files I work with don't have consistent line endings DOS or UNIX
 
 #+begin_src emacs-lisp
@@ -2024,7 +2052,7 @@ Some the files I work with don't have consistent line endings DOS or UNIX
 #+end_src
 
 
-** Exec ~.bat~ in new cmd window
+** exec ~.bat~ in new cmd window
 Often emacs and windows don't always play nice together and causes emacs to lock
 up, this executes a ~.bat~ script in a new window, which seems to fix the problems
 I have.
@@ -2038,13 +2066,13 @@ start-process-variable nil)~
     (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
 
 #+end_src
-** Org-attatch dir in windows explorer
+** org-attatch dir in windows explorer
 #+begin_src emacs-lisp
 (defun org-attatch-open-win-explorer ()
   (interactive)
   (w32-shell-execute 1 (org-attach-dir-get-create)))
 #+end_src
-** Dired open in windows default
+** dired open in windows default
 #+begin_src emacs-lisp
 (defun ads/dired-win-default ()
     (interactive)
@@ -2056,7 +2084,7 @@ start-process-variable nil)~
  :keymaps 'dired-mode-map
  "<tab>" 'ads/dired-win-default)
 #+end_src
-** Overwrite git-lazy function
+** overwrite git-lazy function
 #+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist
   (cons "ads/git-lazy" (cons #'display-buffer-no-window nil)))
@@ -2070,14 +2098,14 @@ start-process-variable nil)~
   (async-shell-command "git push" "ads/git-lazy")
   (magit-mode-bury-buffer))
 #+end_src
-** Projectile caching
+** projectile caching
 By default on windows projectile is set to index with ~native~ which ends up
 ignoreing a projects ~.gitignore~
 #+begin_src emacs-lisp
 (setq projectile-indexing-method 'hybrid)
 #+end_src
 
-** Provide ~ms-windows.el~
+** provide ~ms-windows.el~
 
 #+begin_src emacs-lisp
 (provide 'ms-windows.el)
