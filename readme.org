@@ -1140,21 +1140,27 @@ daily and fill it in with some basic information.
   - [ ] [[../inbox.org][inbox.org]]
   - [ ] Downloads
 - [ ] Clean Apartment
-- [ ] Upgrade packages ~(package-upgrade-all)~
+- [ ] Upgrade packages
 
-\*\* Project Statuses
+,#+begin_src emacs-lisp
+(package-upgrade-all)
+,#+end_src
 
-List of :active: projects
+,** Project Statuses
 
+,#+begin_src emacs-lisp
+(ads/roam-active-projects-insert)
+,#+end_src
 
-\*\* Goal Progress
+,** Goal Progress
 
 Overview of montly goal progress
 
-\** Upcoming Events
+,** Upcoming Events
 
 "
 #+end_src
+
 *** org monthly review
 Template for my monthly reviews, I set it around the first of the month where I
 plan out goals and theme tie in, at the end of the month I do complete the rest
