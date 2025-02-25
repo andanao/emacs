@@ -535,7 +535,7 @@ The DWIM behaviour of this command is as follows:
 :END:
 
 ** anki-editor
-[[id:4a1d6172-5ca4-4c79-8ca4-7e931e1001e8][ [[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
+[[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
 anki workflows and inspired me to keep using anki instead of an emacs specific
 srs tool.  If I do eventually go that rout I'll likely just abandon what's in
 Anki or just make some sort of migration script.
@@ -1391,7 +1391,7 @@ reviewed from there
 #+begin_src emacs-lisp :tangle no
 ("t" "todo" plain
 (file ads/inbox-file)
-"* TODO %?
+"* TODO %^{TASK}
 SCHEDULED: %t
 
 "
@@ -1406,8 +1406,7 @@ SCHEDULED: %t
 :CREATED: %U
 
 %?
-"
-:immediate-finish t)
+")
 #+end_src
 
 *** capture-book
@@ -2007,8 +2006,8 @@ works much smoother on both Windows and Linux.
   (zoom-ignored-buffer-name-regexps '("^*calc"))
   (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
   (zoom-size '(0.618 . 0.618))
+  (zoom-mode nil)
   :config
-  (zoom-mode 0)
   (ads/leader-keys
     "tz" 'zoom-mode))
 #+end_src
