@@ -1382,6 +1382,7 @@ reviewed from there
 <<capture-anki-basic>>
 <<capture-anki-cloze>>
 <<capture-acronym>>
+<<capture-quote>>
 	))
 #+end_src
 
@@ -1389,9 +1390,10 @@ reviewed from there
 #+NAME: capture-acronym
 #+begin_src emacs-lisp :tangle no
 ("x" "acronym" plain
- (file (lambda () (concat org-directory
-                          (format-time-string "%Y%m%d%H%M%S--acronym" nil t)
-                          ".org")))
+ (file (lambda ()
+         (concat
+          org-directory
+          (format-time-string "%Y%m%d%H%M%S--acronym.org" nil t))))
 ":PROPERTIES:
 :ID: %(org-id-new)
 :CREATED: %U
@@ -1399,8 +1401,7 @@ reviewed from there
 ,#+title: %^{Short}: %^{Definition}
 ,#+filetags: :acronym:
 
-"
-)
+")
 #+end_src
 *** capture-anki-basic
 
@@ -1478,6 +1479,30 @@ them with org capture instead of making the insertion of new nodes more of a pai
 :CREATED: %U
 
 %?
+")
+#+end_src
+
+
+*** capture-quote
+#+NAME: capture-quote
+#+begin_src emacs-lisp :tangle no
+("q" "quote" plain
+ (file (lambda ()
+         (concat
+          org-directory
+          (format-time-string "%Y%m%d%H%M%S--quote.org" nil t))))
+":PROPERTIES:
+:ID: %(org-id-new)
+:CREATED: %U
+:SOURCE: %^{Source}
+:END:
+,#+title: %^{Description}
+,#+filetags: :quote:
+
+,#+begin_quote
+%?
+,#+end_quote
+
 ")
 #+end_src
 
