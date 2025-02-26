@@ -1783,7 +1783,7 @@ I want to archive small tasks to dailies but also link back to where the files
 came from adding an ~:ARCHIVE_NODE:~ property
 
 #+begin_src emacs-lisp
-(setq org-archive-location (concat (ads/roam-daily-today) "::* Archive")
+(setq org-archive-location (concat (ads/roam-daily-today) "::")
       org-archive-save-context-info '(time file olpath category itags))
 #+end_src
 
