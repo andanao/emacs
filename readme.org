@@ -1104,9 +1104,12 @@ Set custom org mode bindings and functions.
 
 #+begin_src emacs-lisp
 (ads/leader-keys
+  "oM" 'org-mode
+  "C-s" 'ads/org-scratch)
+
+(ads/leader-keys
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
-  "oM" 'org-mode
   "oS" 'org-save-all-org-buffers
   "od" 'org-id-get-create
   "oo" 'ads/consult-org-outline
