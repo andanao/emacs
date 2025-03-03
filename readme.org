@@ -1379,6 +1379,7 @@ reviewed from there
 <<capture-inbox>>
 <<capture-task>>
 <<capture-note>>
+<<capture-note-anywhere>>
 <<capture-book>>
 <<capture-anki-basic>>
 <<capture-anki-cloze>>
@@ -1481,6 +1482,21 @@ them with org capture instead of making the insertion of new nodes more of a pai
 
 %?
 ")
+#+end_src
+
+
+*** capture-note
+#+NAME: capture-note-anywhere
+#+begin_src emacs-lisp :tangle no
+("N" "note anywhere" plain
+(file ads/inbox-file)
+"* %^{HEADING}
+:CREATED: %U
+
+%?
+"
+:hook delete-other-windows
+:after-finalize delete-frame)
 #+end_src
 
 
