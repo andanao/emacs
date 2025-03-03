@@ -1859,10 +1859,11 @@ search for nodes and files
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  :hook  (org-mode . org-tidy-mode)
+  ;; :hook  (org-mode . org-tidy-mode)
   )
 (ads/leader-keys
-  :keymaps 'org-mode-map
+  :major-modes '(org-mode)
+  :keymaps '(org-mode-map)
   "ot" 'org-tidy-toggle
   "oT" 'org-tidy-untidy-buffer
   "o C-t" 'org-tidy-mode)
