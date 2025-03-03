@@ -1151,9 +1151,7 @@ daily and fill it in with some basic information.
 
 ,** Project Statuses
 
-,#+begin_src emacs-lisp
-(ads/roam-active-projects-insert)
-,#+end_src
+call ~ads/roam-active-projects-insert~
 
 ,** Goal Progress
 
