@@ -1559,6 +1559,8 @@ SCHEDULED: %t
 
           (":ID:" . "")
           (":AUTHOR:" . "")
+          (":CATEGORY:" . "󰕲")
+          (":SOURCE:" . "")
           (":COMPLETED:" . "󱓴")
           (":MEDIUM:" . "󱚋")
           (":CREATED:" . "󰃳")
@@ -1583,11 +1585,13 @@ SCHEDULED: %t
           ("#+options:" . "󰘵")
           (":tangle" . "󱓡")
           (":noweb" . "󰪎")
+
           ;; Blocks
           ("#+begin_quote" . "“")
           ("#+end_quote" . "”")
           ("#+begin_example" . "󰅴")
           ("#+end_example" . "")
+
           ;; Languages
           ("#+begin_src c" . "󰙱")
           ("#+begin_src cpp" . "󰙱")
@@ -1603,9 +1607,7 @@ SCHEDULED: %t
           ("#+begin_src sql" . "")
           ("#+begin_src toml" . "")
 
-          ("#+end_src" . "»")
-
-          ))
+          ("#+end_src" . "»")))
   (prettify-symbols-mode 1))
 (add-hook 'org-mode-hook 'ads/org-prettify-symbols)
 #+end_src
@@ -1833,7 +1835,7 @@ search for nodes and files
 (setq org-roam-node-display-template
       (concat (propertize "${title:50}" 'face 'org-verbatim)
 	      (propertize " ${type:10}" 'face 'org-roam-dim)
-	      (propertize " ${tags:35}" 'face 'org-tag)
+	      (propertize " ${tags:*}" 'face 'org-tag)
 	      ))
 #+end_src
 
