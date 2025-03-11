@@ -2059,6 +2059,16 @@ works much smoother on both Windows and Linux.
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.5))
 #+end_src
+
+** yaml
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :config
+   (add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+#+end_src
 ** zoom
 [[https://github.com/cyrus-and/zoom][zoom]] replacmeent  for golden ratio package
 #+begin_src emacs-lisp
@@ -2285,4 +2295,5 @@ jump to my nix config files
   "cn" '((lambda () (interactive) (find-file "/etc/nixos/configuration.nix"))
 	 :which-key "ni config"))
 #+end_src
+
 
