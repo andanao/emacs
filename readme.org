@@ -889,7 +889,7 @@ if I look through the manual closely but this works for now.
   (insert (format "%S" (symbol-value var))))
 
 (ads/leader-keys
-  "C-v" 'insert-any-variable-value)
+  "iv" 'insert-any-variable-value)
 #+end_src
 ** json
 #+begin_src emacs-lisp
