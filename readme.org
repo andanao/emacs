@@ -1556,6 +1556,7 @@ SCHEDULED: %t
           ("SCHEDULED:" . "󰃭")
           ("DEADLINE:" . "󰨱")
           ("RESULTS:" . "󰘍")
+          (":results" . "󰘍")
 
           (":ID:" . "")
           (":AUTHOR:" . "")
@@ -1597,15 +1598,19 @@ SCHEDULED: %t
           ("#+begin_src cpp" . "󰙱")
           ("#+begin_src c++" . "󰙲")
           ("#+begin_src css" . "")
+          ("#+begin_src dockerfile" . "")
           ("#+begin_src emacs-lisp" . "")
           ("#+begin_src html" . "")
           ("#+begin_src java" . "")
           ("#+begin_src javascript" . "")
+          ("#+begin_src json" . "J")
+          ("#+begin_src markdown" . "")
           ("#+begin_src python" . "")
           ("#+begin_src rust" . "󱘗")
           ("#+begin_src shell" . "")
           ("#+begin_src sql" . "")
-          ("#+begin_src toml" . "")
+          ("#+begin_src toml" . "T")
+          ("#+begin_src yaml" . "Y")
 
           ("#+end_src" . "»")))
   (prettify-symbols-mode 1))
@@ -2280,3 +2285,4 @@ jump to my nix config files
   "cn" '((lambda () (interactive) (find-file "/etc/nixos/configuration.nix"))
 	 :which-key "ni config"))
 #+end_src
+
