@@ -1040,18 +1040,23 @@ Major mode for reading EPUB files in Emacs
   (org-fast-tag-selection-single-key t)
   (org-blank-before-new-entry '((heading . 1) (plain-list-item . nil)))
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
-  (org-tag-alist
+
+  :config
+  (add-hook 'org-mode-hook 'variable-pitch-mode))
+#+end_src
+
+*** org-tags
+
+#+begin_src emacs-lisp
+(setq org-tag-alist
    '(("active" . ?a)
      ("article" . ?r)
      ("book" . ?b)
      ("private" . ?P)
      ("project" . ?p)
      ("public" . ?u)
-     ("thought" . ?t)))
-  :config
-  (add-hook 'org-mode-hook 'variable-pitch-mode))
+     ("thoughts" . ?t)))
 #+end_src
-
 *** org-todo-keywords
 Projects
 #+begin_src emacs-lisp
