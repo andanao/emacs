@@ -1519,6 +1519,11 @@ SCHEDULED: %t
 :immediate-finish t)
 #+end_src
 
+** org-habit
+#+begin_src emacs-lisp
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+#+end_src
 ** org-modern
 #+begin_src emacs-lisp
 (use-package org-modern
