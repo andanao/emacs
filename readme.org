@@ -1874,7 +1874,7 @@ search for nodes and files
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  ;; :hook  (org-mode . org-tidy-mode)
+  :hook  (org-mode . org-tidy-mode)
   )
 (ads/leader-keys
   :major-modes '(org-mode)
