@@ -394,7 +394,7 @@ key bindings
 
 (general-create-definer ads/leader-keys
   :keymaps 'override
-  :states '(insert normal hybrid motion visual operator)
+  :states '(insert normal hybrid motion visual operator emacs)
   :wk-full-keys nil
   :prefix "SPC"
   :global-prefix "C-SPC")
