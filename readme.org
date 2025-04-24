@@ -1234,6 +1234,13 @@ of everything that is there.
 	(tags . "  %-20 c")
 	(search . "  %-20 c")))
 
+(setopt org-agenda-custom-commands
+        '(("u" "Unscheduled TODOs"
+           ((todo ""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                 (org-agenda-overriding-header "Unscheduled TODOs")))))
+          ("t" "All tasks (no meetings)" ((tags-todo "-meeting")))))
+
 (ads/leader-keys
   "oa" 'org-agenda)
 #+end_src
