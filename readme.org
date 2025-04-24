@@ -286,14 +286,19 @@ particularly like the light ~modus-operandi~ theme.
     (t . (regular 1.10))
     ))
 
-(setq modus-operandi-palette-overrides
-    '((bg-mode-line-active bg-dim)
-      (bg-mode-line-inactive bg-main)))
-
+;; dark theme
 (setq modus-vivendi-palette-overrides
-      '((bg-main "#111111")
+      '((cursor yellow-intense)
+        (bg-main "#111111")
         (bg-mode-line-active bg-dim)
 	(bg-mode-line-inactive bg-main)))
+
+;;light theme
+(setq modus-operandi-palette-overrides
+    '((cursor red-intense)
+      (bg-mode-line-active bg-dim)
+      (bg-mode-line-inactive bg-main)))
+
 
 (setq modus-themes-common-palette-overrides
   '((bg-prose-block-contents bg-main)
@@ -344,7 +349,6 @@ particularly like the light ~modus-operandi~ theme.
      `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :background ,bg-main)))
      ;; misc
-     `(cursor ((,c :background ,red-intense)))
      `(link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
