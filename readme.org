@@ -2165,6 +2165,14 @@ order to keep the init files working properly copy the config files to
 	 :wk "Dired .emacs.d"))
 #+end_src
 
+** server mode
+Windows seems to hate emacs daemon so I just start it here
+#+begin_src emacs-lisp
+(add-hook
+ 'after-init-hook
+ '(lambda () (when (not server-mode) (server-mode))))
+#+end_src
+
 ** ahk
 I use AHK a lot to make the experience of using windows less painful
 #+begin_src emacs-lisp
@@ -2222,7 +2230,7 @@ $v[8]=3;
 &Set-ItemProperty -Path $p -Name Settings -Value $v;&Stop-Process -f -ProcessName explorer}\""
      "win/taskbar-auto-hide"))
 #+end_src
-** Browse in Edge
+** browse in edge
 Some things only work in edge on my work computer
 #+begin_src emacs-lisp
 (defun win/browse-url-edge (url)
@@ -2299,6 +2307,7 @@ ignoreing a projects ~.gitignore~
 #+begin_src emacs-lisp
 (provide 'ms-windows.el)
 #+end_src
+
 
 
 * Linux
