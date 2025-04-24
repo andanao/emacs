@@ -286,6 +286,21 @@ particularly like the light ~modus-operandi~ theme.
     (t . (regular 1.10))
     ))
 
+;; all
+(setq modus-themes-common-palette-overrides
+  '((bg-prose-block-contents bg-main)
+    (bg-prose-block-delimiter bg-main)
+    (fg-heading-0 fg-main)
+    (fg-heading-1 fg-main)
+    (fg-heading-2 fg-main)
+    (fg-heading-3 fg-main)
+    (fg-heading-4 fg-main)
+    (fg-heading-5 fg-main)
+    (fg-heading-6 fg-main)
+    (fg-heading-7 fg-main)
+    (fg-heading-8 fg-main)
+    (fringe bg-main)))
+
 ;; dark theme
 (setq modus-vivendi-palette-overrides
       '((cursor yellow-intense)
@@ -298,20 +313,6 @@ particularly like the light ~modus-operandi~ theme.
     '((cursor red-intense)
       (bg-mode-line-active bg-dim)
       (bg-mode-line-inactive bg-main)))
-
-
-(setq modus-themes-common-palette-overrides
-  '((bg-prose-block-contents bg-main)
-    (bg-prose-block-delimiter bg-main)
-    (fg-heading-0 fg-main)
-    (fg-heading-1 fg-main)
-    (fg-heading-2 fg-main)
-    (fg-heading-3 fg-main)
-    (fg-heading-4 fg-main)
-    (fg-heading-5 fg-main)
-    (fg-heading-6 fg-main)
-    (fg-heading-7 fg-main)
-    (fg-heading-8 fg-main)))
 #+end_src
 
 *** modus-tweaks
@@ -352,7 +353,6 @@ particularly like the light ~modus-operandi~ theme.
      `(link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
-     `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
