@@ -793,16 +793,17 @@ on MELPA
 (use-package evil
   :demand t
   :preface (setq evil-want-keybinding nil)
-  ;; :after 'general
-  :hook (after-init . evil-mode)
-  :init
-  (setq evil-want-integration t
-        evil-want-keybinding  nil
-        evil-want-C-u-scroll  nil
-        evil-want-C-i-jump    nil
-        evil-want-C-w-delete  nil
-	evil-complete-all-buffers nil
-	)
+  :custom
+  (evil-want-integration t)
+  (evil-want-keybinding  nil)
+  (evil-want-C-u-scroll  nil)
+  (evil-want-C-i-jump    nil)
+  (evil-want-C-w-delete  nil)
+  (evil-complete-all-buffers nil)
+  :hook
+  (after-init . evil-mode)
+  (after-save . evil-normal-state)
+
   :config
   (general-define-key :states 'insert "C-g" 'evil-normal-state)
 
@@ -812,7 +813,6 @@ on MELPA
 
   ;; set back normal mouse behaviour
   (define-key evil-motion-state-map [down-mouse-1] nil)
-  (add-hook 'after-save-hook 'evil-normal-state)
   ;; unbind q for macros
   (define-key evil-normal-state-map (kbd "q") 'nil)
   (define-key evil-normal-state-map (kbd "Q") 'nil))
@@ -1048,8 +1048,8 @@ Major mode for reading EPUB files in Emacs
   (org-outline-path-complete-in-steps nil)
   (org-refile-targets '((org-agenda-files :level . 0)))
 
-  :config
-  (add-hook 'org-mode-hook 'variable-pitch-mode))
+  :hook
+  (org-mode . variable-pitch-mode))
 #+end_src
 
 *** org-tags
@@ -1292,12 +1292,11 @@ don't feel the need to use lots of the evil bindings
   (org-appear-autoentities t)
   (org-appear-autosubmarkers t)
   (org-appear-autokeywords t)
-  :config
-  (add-hook 'org-mode-hook 'org-appear-mode)
-  (add-hook 'evil-insert-state-exit-hook
-	    (lambda ()
+  :hook
+  (org-mode . org-appear-mode)
+  (evil-insert-state-exit . (lambda ()
 	      (setq org-appear-delay 2)))
-  (add-hook 'evil-insert-state-entry-hook
+  (evil-insert-state-entry-hook .
 	    (lambda ()
 	      (setq org-appear-delay .3))))
 #+end_src
@@ -1867,11 +1866,11 @@ search for nodes and files
 
 #+begin_src emacs-lisp
 (use-package org-roam-ui
-  :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-follow t)
+  (org-roam-ui-update-on-save t)
+  (org-roam-ui-open-on-start t))
 #+end_src
 ** org-tidy
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
@@ -1885,7 +1884,6 @@ search for nodes and files
   )
 (ads/leader-keys
   :major-modes '(org-mode)
-  :keymaps '(org-mode-map)
   "ot" 'org-tidy-toggle
   "oT" 'org-tidy-untidy-buffer
   "o C-t" 'org-tidy-mode)
@@ -1969,10 +1967,10 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 (use-package rust-mode
   ;; :init
   ;; (setq rust-mode-treesitter-derive t)
-  :config
-  (setq rust-format-on-save t)
-  (add-hook 'rust-mode-hook
-            (lambda () (setq indent-tabs-mode nil))))
+  :custom
+  (rust-format-on-save t)
+  :hook
+  (rust-mode-hook .(lambda () (setq indent-tabs-mode nil))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2081,11 +2079,10 @@ works much smoother on both Windows and Linux.
 
 #+begin_src emacs-lisp
 (use-package yaml-mode
-  :config
-   (add-hook 'yaml-mode-hook
-      '(lambda ()
-        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+  :bind (:map yaml-mode-map
+         ("RET" . newline-and-indent)))
 #+end_src
+
 ** zoom
 [[https://github.com/cyrus-and/zoom][zoom]] replacmeent  for golden ratio package
 #+begin_src emacs-lisp
@@ -2168,9 +2165,7 @@ order to keep the init files working properly copy the config files to
 ** server mode
 Windows seems to hate emacs daemon so I just start it here
 #+begin_src emacs-lisp
-(add-hook
- 'after-init-hook
- '(lambda () (when (not server-mode) (server-mode))))
+(add-hook 'after-init-hook 'server-mode)
 #+end_src
 
 ** ahk
