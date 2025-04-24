@@ -1245,6 +1245,8 @@ don't feel the need to use lots of the evil bindings
  :keymaps 'org-agenda-mode-map
  "j" 'org-agenda-next-line
  "k" 'org-agenda-previous-line
+ "M-j" 'org-agenda-drag-line-forward
+ "M-k" 'org-agenda-drag-line-backward
 
  "h" 'org-agenda-earlier
  "l" 'org-agenda-later
@@ -1254,6 +1256,8 @@ don't feel the need to use lots of the evil bindings
  "S" 'org-agenda-schedule
 
  "m" 'org-agenda-bulk-toggle
+ "M" 'org-agenda-bulk-unmark-all
+ "R" 'org-agenda-bulk-mark-regexp
  "x" 'org-agenda-bulk-action
 
  "a" 'org-agenda-add-note
@@ -1261,13 +1265,19 @@ don't feel the need to use lots of the evil bindings
  "u" 'org-agenda-undo
  ";" 'org-agenda-set-tags
 
- ;; refresh
+ ;; go show
  "gr" 'org-agenda-redo
  "gR" 'org-agenda-redo-all
+ "gc" 'org-agenda-goto-calendar
+ "gt" 'org-agenda-show-tags
+ "G" '(lambda () (interactive) (goto-line 3))
+ "gg" '(lambda () (interactive)
+         (forward-line 100)
+         (forward-line -1))
 
  ;; delete
  "dd" 'org-agenda-kill
- "dA" 'org-agenda-archive
+ "da" 'org-agenda-archive
 
  ;; filter
  "sc" 'org-agenda-filter-by-category
