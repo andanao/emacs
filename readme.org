@@ -306,7 +306,7 @@ particularly like the light ~modus-operandi~ theme.
       '((cursor yellow-intense)
         (bg-main "#111111")
         (bg-mode-line-active bg-dim)
-	(bg-mode-line-inactive bg-main)))
+        (bg-mode-line-inactive bg-main)))
 
 ;;light theme
 (setq modus-operandi-palette-overrides
@@ -353,6 +353,7 @@ particularly like the light ~modus-operandi~ theme.
      `(link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
+     `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
