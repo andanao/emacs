@@ -113,7 +113,6 @@ Changes to the UI to inhibit unused elements be used should speed up start up ti
 (tooltip-mode -1)                       ;; Disable tooltips
 (menu-bar-mode -1)                      ;; Disable the menu bar
 
-(setq inhibit-startup-screen t)
 (customize-set-variable 'indent-tabs-mode nil)
 #+end_src
 
