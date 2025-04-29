@@ -1547,6 +1547,21 @@ SCHEDULED: %t
 :immediate-finish t)
 #+end_src
 
+** org-download
+better management of images in org mode
+#+begin_src emacs-lisp
+(use-package org-download
+  :hook
+  (dired-mode . org-download-enable)
+  (org-mode . org-download-enable)
+  :custom
+  (org-download-method 'attach)
+  (org-download-screenshot-method 'imagemagick/convert)
+  :config
+  (ads/leader-keys
+    :keymaps '(org-mode-map)
+    "os" 'org-download-clipboard))
+#+end_src
 ** org-habit
 #+begin_src emacs-lisp
 (require 'org-habit)
@@ -1666,6 +1681,9 @@ computers I have ~~/org/personal~ and ~~/org/work~
   :custom
   (org-roam-directory org-directory)
   (org-roam-completion-everywhere t)
+  (org-roam-db-node-include-function
+   (lambda ()
+     (not (member "ATTACH" (org-get-tags)))))
   :config
   (org-roam-db-autosync-mode)
   (org-roam-setup)
@@ -2249,6 +2267,45 @@ Some things only work in edge on my work computer
     (shell-command (concat "start msedge " url)))
 #+end_src
 
+** org clip image
+[[org-download]] doesn't work with my work computer even when specifying
+imagemagick.  Instead pull the image from the clipboard and do some crap in powershell
+
+#+begin_src emacs-lisp
+(defun win/org-clip-image ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq temp-image-filename
+	  (make-temp-file
+	   (concat
+	    (file-relative-name buffer-file-name)
+	    (format-time-string "_%Y%m%d_%H%M%S_"))
+	   nil
+	   ".png"))
+
+  (shell-command (concat
+		  "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;"
+		  "if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('"
+		  temp-image-filename
+		  "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+  (org-attach-attach
+   temp-image-filename
+   nil
+   `mv)
+  (insert (concat
+	   "[[file:"
+	   (org-attach-dir)
+	   "/"
+	   (file-name-nondirectory temp-image-filename)
+	   "]]"))
+    (org-display-inline-images))
+
+
+(ads/leader-keys
+    :keymaps '(org-mode-map)
+    "os" 'win/org-clip-image)
+#+end_src
 ** hide dos eol
 Some the files I work with don't have consistent line endings DOS or UNIX
 
