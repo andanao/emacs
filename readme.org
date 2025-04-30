@@ -526,10 +526,10 @@ The DWIM behaviour of this command is as follows:
 #+begin_src emacs-lisp
 (ads/leader-keys
     "t" '(:ignore t :which-key "toggles")
-    "tt" 'modus-themes-toggle
-    "tl" 'toggle-truncate-lines
-    "tb" 'display-battery-mode
-    "tm" 'display-time-mode
+    "tt" 'modus-themes-toggle    ; toggle theme
+    "tl" 'toggle-truncate-lines  ; toggle lines
+    "tb" 'display-battery-mode   ; toggle battery
+    "tc" 'display-time-mode      ; toggle clock
     )
 #+end_src
 
