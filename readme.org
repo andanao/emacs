@@ -1551,6 +1551,11 @@ SCHEDULED: %t
 better management of images in org mode
 #+begin_src emacs-lisp
 (use-package org-download
+  :vc (org-download
+       :url "https://github.com/andanao/org-download"
+       :main-file "org-download.el"
+       :branch "master"
+       :rev :newest)
   :hook
   (dired-mode . org-download-enable)
   (org-mode . org-download-enable)
