@@ -1169,8 +1169,6 @@ call ~ads/roam-active-projects-insert~
 
 Overview of montly goal progress
 
-,** Upcoming Events
-
 "
 #+end_src
 
