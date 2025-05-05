@@ -1910,6 +1910,32 @@ search for nodes and files
   (org-roam-ui-update-on-save t)
   (org-roam-ui-open-on-start t))
 #+end_src
+
+** org-roam-ql
+
+Query language for [[org-roam]] it's very useful for performing db queries without
+going through the sql queires.  Unfortunately wonderful org-ql (and it's roam
+integration org-roam-ql-ql) doesn't play nice with files that don't have a 1st
+level headline and only have a title, which is how all of my org roam files are
+structured.
+
+Getting books read in the last month:
+#+begin_src emacs-lisp :tangle no
+(org-roam-ql-search
+'(and (tags "book") (properties COMPLETED "2025-04")))
+#+end_src
+
+
+#+begin_src emacs-lisp
+(use-package org-roam-ql
+  :after (org-roam)
+  :bind
+  ((:map org-roam-mode-map
+         ("Q" . org-roam-ql-buffer-dispatch)))
+  :config
+  (ads/leader-keys
+    "oq" 'org-roam-ql-search))
+#+end_src
 ** org-tidy
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
