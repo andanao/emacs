@@ -1913,7 +1913,7 @@ search for nodes and files
 #+end_src
 
 
-*** roam-task-refile
+*** roam-refile-file-list
 Not really roam but using org roam to create my refile targets.  Set my refile
 targets to any file used by org-agenda or tagged :refile:, sometimes my roam
 jjnotes that are more todo-lists don't have any active tasks and thus aren't going
@@ -1941,6 +1941,41 @@ to be in my agenda
 (setopt org-refile-targets
         '((org-agenda-files :level . 0)
           (ads/org-refile-files :level . 0)))
+#+end_src
+
+*** roam-refile-note
+On my work computers I keep 2 seperate org directories under ~~/git/org~ for work
+and personal.  On my personal computers ~~/git/org/personal~ is just ~~/git/org~
+which is all synced via git to my work computer.  When new files are created org
+files are simply placed in the ~org-directory~ rather than deal with choosing
+where they go while making a new note.  This makes things a bit of a pain if I
+have to move a file somewhere else and there are attatchments, this function
+will move the current note to work/personal
+
+#+begin_src emacs-lisp
+(defun org-move-note-with-attatchments (file destination)
+  "Move note and it's attatchment directory to a new place"
+  (rename-file file (concat destination "/"))
+  (when (org-attach-dir)
+    (let*
+       ((attach-dir (org-attach-dir))
+        (attach-dir-new
+         (concat destination "/data" (nth 1 (split-string attach-dir "data")))))
+      (make-directory attach-dir-new t)
+      (rename-file attach-dir attach-dir-new t)
+      (delete-directory attach-dir))))
+
+(defun ads/move-work ()
+  "move org file to work"
+  (interactive)
+  (org-move-note-with-attatchments buffer-file-name (concat org-directory "work"))
+  (find-file org-directory))
+
+(defun ads/move-personal ()
+  "move org file to work"
+  (interactive)
+  (org-move-note-with-attatchments buffer-file-name (concat org-directory "personal"))
+  (find-file org-directory))
 #+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
