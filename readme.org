@@ -1115,9 +1115,7 @@ Set custom org mode bindings and functions.
 
 
 #+begin_src emacs-lisp
-(ads/leader-keys
-  "oM" 'org-mode
-  "C-s" 'ads/org-scratch)
+(ads/leader-keys "oM" 'org-mode)
 
 (ads/leader-keys
   :major-modes '(org-mode)
@@ -1690,23 +1688,25 @@ computers I have ~~/org/personal~ and ~~/org/work~
   :config
   (org-roam-db-autosync-mode)
   (org-roam-setup)
+
   (ads/leader-keys
-   "f" '(:ignore t :wk "roam")
-   "ft" 'org-roam-buffer-toggle
-   "ff" 'org-roam-node-find
-   "fi" 'org-roam-node-insert
-   "fa" 'org-roam-alias-add
-   "f;" 'org-roam-tag-add
-   "f:" 'org-roam-tag-remove
-   "fr" 'org-roam-ref-add
-   "fR" 'org-roam-ref-remove
-   "fD" '((lambda () (interactive)
-	   (org-roam-db-sync)
-	   (ads/org-agenda-files-update))
-	  :wk "db sync & agenda")
-   ;; "fd" (:ignore t :wk "roam dailies")
-   "fd" 'org-roam-dailies-map
-   ))
+    "f" '(:ignore t :wk "roam")
+    "ff" 'org-roam-node-find
+    "fD" '((lambda () (interactive)
+	     (org-roam-db-sync)
+	     (ads/org-agenda-files-update))
+	   :wk "db sync & agenda")
+    "fd" 'org-roam-dailies-map)
+
+  (ads/leader-keys
+    :major-modes '(org-mode)
+    "fi" 'org-roam-node-insert
+    "fa" 'org-roam-alias-add
+    "f;" 'org-roam-tag-add
+    "f:" 'org-roam-tag-remove
+    "fr" 'org-roam-ref-add
+    "fR" 'org-roam-ref-remove
+    "ft" 'org-roam-buffer-toggle))
 #+end_src
 
 I generate my org agenda files based off of an :agenda: tag in each org roam
@@ -1817,7 +1817,9 @@ going to be seeing it
        "CATEGORY"
        (org-roam-node-title (org-roam-node-at-point))))))
 
-(ads/leader-keys "fc" 'ads/org-node-name-to-category)
+(ads/leader-keys
+  :major-modes '(org-mode)
+  "fc" 'ads/org-node-name-to-category)
 #+end_src
 *** roam-capture-dailies
 I want to prepend my daily captures
@@ -1884,7 +1886,9 @@ a node immediately and not dive further into it.  Credit to [[https://www.youtub
                                                   '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
 
-(ads/leader-keys "fI" 'org-roam-node-insert-immediate)
+(ads/leader-keys
+  :major-modes '(org-mode)
+  "fI" 'org-roam-node-insert-immediate)
 #+end_src
 
 *** roam-node-display
