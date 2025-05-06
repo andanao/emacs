@@ -1046,8 +1046,6 @@ Major mode for reading EPUB files in Emacs
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (org-refile-use-outline-path 'file)
   (org-outline-path-complete-in-steps nil)
-  (org-refile-targets '((org-agenda-files :level . 0)))
-
   :hook
   (org-mode . variable-pitch-mode))
 #+end_src
@@ -1913,6 +1911,35 @@ search for nodes and files
 #+end_src
 
 
+*** roam-refile
+Not really roam but using org roam to create my refile targets.  Set my refile
+targets to any file used by org-agenda or tagged :refile:, sometimes my roam
+jjnotes that are more todo-lists don't have any active tasks and thus aren't going
+to be in my agenda
+
+
+#+begin_src emacs-lisp
+(defun ads/org-refile-files (&optional refile-arg)
+  "Create a list of files containing the :refile: tag"
+  (setopt ads/org-refile-files
+   (seq-uniq
+    (seq-map
+     #'car
+     (org-roam-db-query
+      [:select [nodes:file]
+       :from tags
+       :left-join nodes
+       :on (= tags:node-id nodes:id)
+       :where (like tag (quote "%\"refile\"%"))])))))
+
+(ads/org-refile-files)
+
+(advice-remove 'org-refile 'ads/org-refile-files)
+
+(setopt org-refile-targets
+        '((org-agenda-files :level . 0)
+          (ads/org-refile-files :level . 0)))
+#+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
 
