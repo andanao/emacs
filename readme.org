@@ -1542,7 +1542,8 @@ SCHEDULED: %t
 #+end_src
 
 ** org-download
-better management of images in org mode
+Better management of images in org mode for copying photos from internet and clipboard
+
 #+begin_src emacs-lisp
 (use-package org-download
   :vc (org-download
@@ -1556,6 +1557,7 @@ better management of images in org mode
   :custom
   (org-download-method 'attach)
   (org-download-screenshot-method 'imagemagick/convert)
+  (org-download-annotate-function '(lambda (link) ""))
   :config
   (ads/leader-keys
     :keymaps '(org-mode-map)
@@ -1911,7 +1913,7 @@ search for nodes and files
 #+end_src
 
 
-*** roam-refile
+*** roam-task-refile
 Not really roam but using org roam to create my refile targets.  Set my refile
 targets to any file used by org-agenda or tagged :refile:, sometimes my roam
 jjnotes that are more todo-lists don't have any active tasks and thus aren't going
