@@ -1859,7 +1859,17 @@ came from adding an ~:ARCHIVE_NODE:~ property
 	 (ref (concat "[[id:"id "][" title "]]")))
     (org-set-property "ARCHIVE_NODE" ref))
   (org-archive-subtree))
-(ads/leader-keys "oX" 'ads/org-archive)
+
+(defun ads/org-archive-done ()
+  "Change status to done and archive"
+  (interactive)
+  (org-todo 'done)
+  (ads/org-archive))
+
+(ads/leader-keys
+  :major-modes '(org-mode)
+  "ox" 'ads/org-archive
+  "oX" 'ads/org-archive-done)
 #+end_src
 
 *** roam-insert-immediate
