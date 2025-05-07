@@ -1913,7 +1913,7 @@ search for nodes and files
 #+end_src
 
 
-*** roam-refile-file-list
+*** roam-refile-tag-file-list
 Not really roam but using org roam to create my refile targets.  Set my refile
 targets to any file used by org-agenda or tagged :refile:, sometimes my roam
 jjnotes that are more todo-lists don't have any active tasks and thus aren't going
@@ -1936,13 +1936,12 @@ to be in my agenda
 
 (ads/org-refile-files)
 
-(advice-remove 'org-refile 'ads/org-refile-files)
+(advice-add 'org-refile :before 'ads/org-refile-files)
 
 (setopt org-refile-targets
         '((org-agenda-files :level . 0)
           (ads/org-refile-files :level . 0)))
 #+end_src
-
 *** roam-refile-note
 On my work computers I keep 2 seperate org directories under ~~/git/org~ for work
 and personal.  On my personal computers ~~/git/org/personal~ is just ~~/git/org~
