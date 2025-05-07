@@ -1684,7 +1684,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
   (org-roam-completion-everywhere t)
   (org-roam-db-node-include-function
    (lambda ()
-     (not (member "ATTACH" (org-get-tags)))))
+     (not (member "ATTACH" (org-get-tags))))) ;; ignore node if ATTACH is a tag
   :config
   (org-roam-db-autosync-mode)
   (org-roam-setup)
