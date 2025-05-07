@@ -1119,7 +1119,7 @@ Set custom org mode bindings and functions.
   :major-modes '(org-mode)
   :keymaps '(org-mode-map)
   "oS" 'org-save-all-org-buffers
-  "od" 'org-id-get-create
+  "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory")
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading)
@@ -1971,7 +1971,7 @@ will move the current note to work/personal
   (org-move-note-with-attatchments buffer-file-name (concat org-directory "work"))
   (kill-buffer)
   (find-file org-directory)
-  (revert-buffer))
+  (dired-revert))
 
 (defun ads/refile-move-personal ()
   "move org file to work"
@@ -1979,7 +1979,7 @@ will move the current note to work/personal
   (org-move-note-with-attatchments buffer-file-name (concat org-directory "personal"))
   (kill-buffer)
   (find-file org-directory)
-  (revert-buffer))
+  (dired-revert))
 #+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
