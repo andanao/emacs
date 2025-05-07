@@ -1844,7 +1844,8 @@ get today's daily file and if not make it
 #+end_src
 *** roam-daily-archive
 I want to archive small tasks to dailies but also link back to where the files
-came from adding an ~:ARCHIVE_NODE:~ property
+came from adding an ~:ARCHIVE_NODE:~ property.  Additionally move the attatched data if there
+is any
 
 #+begin_src emacs-lisp
 (setq org-archive-location (concat (ads/roam-daily-today) "::")
@@ -1874,6 +1875,19 @@ came from adding an ~:ARCHIVE_NODE:~ property
   "oX" 'ads/org-archive-done)
 #+end_src
 
+
+#+begin_src emacs-lisp
+(defun org-archive-with-attatchments ()
+  (when (org-attach-dir)
+    (let*
+       ((attach-dir (org-attach-dir))
+        (destination (file-name-directory org-archive-location))
+        (attach-dir-new
+         (concat destination "data" (nth 1 (split-string attach-dir "data")))))
+      (make-directory attach-dir-new t)
+      (rename-file attach-dir attach-dir-new t))))
+(advice-add 'org-archive-subtree :before 'org-archive-with-attatchments)
+#+end_src
 *** roam-insert-immediate
 While writing and not wanting to create a rabbit hole for myself I want to make
 a node immediately and not dive further into it.  Credit to [[https://www.youtube.com/watch?v=AyhPmypHDEw&lc=Ugw7bYrPOc6oy_UBmPZ4AaABAg][Umar Ahmad]]
