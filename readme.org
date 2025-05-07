@@ -1965,13 +1965,13 @@ will move the current note to work/personal
       (rename-file attach-dir attach-dir-new t)
       (delete-directory attach-dir))))
 
-(defun ads/move-work ()
+(defun ads/refile-move-work ()
   "move org file to work"
   (interactive)
   (org-move-note-with-attatchments buffer-file-name (concat org-directory "work"))
   (find-file org-directory))
 
-(defun ads/move-personal ()
+(defun ads/refile-move-personal ()
   "move org file to work"
   (interactive)
   (org-move-note-with-attatchments buffer-file-name (concat org-directory "personal"))
