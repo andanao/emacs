@@ -848,6 +848,16 @@ A collection of evil bindings not fully set in the default package
   (evil-collection-init))
 #+end_src
 
+** evil-surround
+Surround a visula selection with input
+
+#+begin_src emacs-lisp
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
+#+end_src
+
 ** git-link
 Quickly create links to  files and commits
 #+begin_src emacs-lisp
