@@ -1985,8 +1985,7 @@ will move the current note to work/personal
         (attach-dir-new
          (concat destination "/data" (nth 1 (split-string attach-dir "data")))))
       (make-directory attach-dir-new t)
-      (rename-file attach-dir attach-dir-new t)
-      (delete-directory attach-dir))))
+      (rename-file attach-dir attach-dir-new t))))
 
 (defun ads/refile-move-work ()
   "move org file to work"
