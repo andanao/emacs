@@ -529,6 +529,7 @@ The DWIM behaviour of this command is as follows:
     "tt" 'modus-themes-toggle    ; toggle theme
     "tl" 'toggle-truncate-lines  ; toggle lines
     "tb" 'display-battery-mode   ; toggle battery
+    "td" 'toggle-debug-on-error
     "tc" 'display-time-mode      ; toggle clock
     )
 #+end_src
@@ -1567,8 +1568,8 @@ Better management of images in org mode for copying photos from internet and cli
   :custom
   (org-download-method 'attach)
   (org-download-screenshot-method 'imagemagick/convert)
-  (org-download-annotate-function '(lambda (link) ""))
   :config
+  (setq org-download-annotate-function '(lambda (link) ""))
   (ads/leader-keys
     :keymaps '(org-mode-map)
     "os" 'org-download-clipboard))
