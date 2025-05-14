@@ -1134,7 +1134,10 @@ Set custom org mode bindings and functions.
   "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory")
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
-  "oh" 'consult-org-heading)
+  "oh" 'consult-org-heading
+  "ti" 'org-redisplay-inline-images
+  "tI" 'org-toggle-inline-images
+  )
 #+end_src
 *** org weekly review
 I do a weekly review, this will create the weekly review file in my current
