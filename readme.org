@@ -2055,8 +2055,8 @@ Getting books read in the last month:
   )
 (ads/leader-keys
   :major-modes '(org-mode)
-  "ot" 'org-tidy-toggle
-  "oT" 'org-tidy-untidy-buffer
+  "ot" 'org-tidy-untidy-buffer
+  "oT" 'org-tidy-toggle
   "o C-t" 'org-tidy-mode)
 #+end_src
 ** pdf-tools
