@@ -1827,7 +1827,8 @@ going to be seeing it
       (goto-char (point-min))
       (org-roam-property-add
        "CATEGORY"
-       (org-roam-node-title (org-roam-node-at-point))))))
+       (org-roam-node-title (org-roam-node-at-point)))
+      (org-tidy-untidy-buffer))))
 
 (ads/leader-keys
   :major-modes '(org-mode)
