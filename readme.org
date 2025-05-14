@@ -302,7 +302,7 @@ particularly like the light ~modus-operandi~ theme.
 
 ;; dark theme
 (setq modus-vivendi-palette-overrides
-      '((cursor yellow-intense)
+      '((cursor "#ff2060")
         (bg-main "#111111")
         (bg-mode-line-active bg-dim)
         (bg-mode-line-inactive bg-main)))
@@ -312,6 +312,7 @@ particularly like the light ~modus-operandi~ theme.
     '((cursor red-intense)
       (bg-mode-line-active bg-dim)
       (bg-mode-line-inactive bg-main)))
+;; (modus-themes-select (modus-themes--current-theme))
 #+end_src
 
 *** modus-tweaks
