@@ -1937,8 +1937,8 @@ search for nodes and files
 
 (setq org-roam-node-display-template
       (concat (propertize "${title:50}" 'face 'org-verbatim)
-	      (propertize " ${type:10}" 'face 'org-roam-dim)
 	      (propertize " ${tags:*}" 'face 'org-tag)
+	      (propertize " ${type:1}" 'face 'org-roam-dim)
 	      ))
 #+end_src
 
