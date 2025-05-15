@@ -2294,7 +2294,7 @@ Load when on appropriate system:
 (when (string-equal-ignore-case system-name "ganymede")
   (load-file (concat git-directory "windows-config/ganymede.el")))
 #+end_src
-* Windows
+* MS Windows
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ms-windows.el :results none :noweb yes :comments link
 :END:
@@ -2505,6 +2505,14 @@ ignoreing a projects ~.gitignore~
 (setq projectile-indexing-method 'hybrid)
 #+end_src
 
+** projectil shell-global
+#+begin_src emacs-lisp
+(defun ads/projectile-shell-global ()
+  (interactive)
+  (projectile-switch-project-by-name  (concat git-directory "shell-global")))
+
+(ads/leader-keys "cg" 'ads/projectile-shell-global)
+#+end_src
 ** provide ~ms-windows.el~
 
 #+begin_src emacs-lisp
