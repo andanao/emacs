@@ -467,10 +467,7 @@ The DWIM behaviour of this command is as follows:
   "n" '(:ignore t :which-key "narrow")
   "nn" 'narrow-to-region
   "nd" 'narrow-to-defun
-  "ns" 'org-narrow-to-subtree
   "np" 'narrow-to-page
-  "ne" 'org-narrow-to-element
-  "nb" 'org-narrow-to-block
   "nw" 'widen
   )
 #+end_src
@@ -1137,6 +1134,9 @@ Set custom org mode bindings and functions.
   "oh" 'consult-org-heading
   "ti" 'org-redisplay-inline-images
   "tI" 'org-toggle-inline-images
+  "ns" 'org-narrow-to-subtree
+  "ne" 'org-narrow-to-element
+  "nb" 'org-narrow-to-block
   )
 #+end_src
 *** org weekly review
