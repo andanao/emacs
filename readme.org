@@ -1339,6 +1339,8 @@ don't feel the need to use lots of the evil bindings
 
 (setq org-confirm-babel-evaluate nil)
 
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
 <<org-babel-config>>
 #+end_src
 
