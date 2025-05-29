@@ -1577,6 +1577,8 @@ Better management of images in org mode for copying photos from internet and cli
   (org-download-method 'attach)
   (org-download-screenshot-method 'imagemagick/convert)
   :config
+  ;; firefox makes copied images into bmp so this helps
+  (add-to-list 'image-file-name-extensions "bmp")
   (setq org-download-annotate-function '(lambda (link) ""))
   (ads/leader-keys
     :keymaps '(org-mode-map)
