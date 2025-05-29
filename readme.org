@@ -1055,6 +1055,7 @@ Major mode for reading EPUB files in Emacs
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (org-refile-use-outline-path 'file)
   (org-outline-path-complete-in-steps nil)
+  (calendar-week-start-day 1)
   :hook
   (org-mode . variable-pitch-mode))
 #+end_src
@@ -1122,13 +1123,14 @@ Set custom org mode bindings and functions.
 
 
 #+begin_src emacs-lisp
-(ads/leader-keys "oM" 'org-mode)
-
 (ads/leader-keys
-  :major-modes '(org-mode)
-  :keymaps '(org-mode-map)
+  "oM" 'org-mode
   "oS" 'org-save-all-org-buffers
   "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory")
+  )
+
+(ads/leader-keys
+  :keymaps '(org-mode-map)
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading
