@@ -178,6 +178,7 @@ out [[https://github.com/emacscollective/no-littering][no-littering]] but this w
 (global-subword-mode 1)                 ;; Iterate through CamelCase words
 (put 'downcase-region 'disabled nil)    ;; Enable downcase-region
 (put 'upcase-region 'disabled nil)      ;; Enable upcase-region
+(put 'narrow-to-region 'disabled nil)   ;; Enable narrow commands
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
