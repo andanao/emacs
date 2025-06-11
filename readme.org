@@ -1707,6 +1707,14 @@ computers I have ~~/org/personal~ and ~~/org/work~
   (org-roam-db-node-include-function
    (lambda ()
      (not (member "ATTACH" (org-get-tags))))) ;; ignore node if ATTACH is a tag
+
+  (org-roam-capture-templates '(("d" "default" plain "%?" :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+":PROPERTIES:
+:CREATED: %U
+:END:
+,#+title: ${title}
+") :unnarrowed t)))
+
   :config
   (org-roam-db-autosync-mode)
   (org-roam-setup)
