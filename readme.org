@@ -1769,11 +1769,12 @@ tasks."
 
 While most of roam agenda section is unchaged, a few org-roam functions have
 been deprecated since writing and ~org-roam-tag-add~ has been added which
-simplifies the task of adding a tag
+simplifies the task of adding a tag and ignoring files under daily
 #+begin_src emacs-lisp
 (defun ads/org-update-agenda-tag ()
   "Add :agenda: tag to the current org-roam buffer"
   (when (and (not (active-minibuffer-window))
+             (not (string-match-p "/daily/" buffer-file-name))
              (org-roam-file-p buffer-file-name))
     (save-excursion
       (goto-char (point-min))
