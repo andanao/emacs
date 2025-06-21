@@ -2544,7 +2544,7 @@ ignoreing a projects ~.gitignore~
 jump to my nix config files
 #+begin_src emacs-lisp
 (ads/leader-keys
-  "cn" '((lambda () (interactive) (find-file "/etc/nixos/configuration.nix"))
+  "cn" '((lambda () (interactive) (find-file "~/nix/configuration.nix"))
 	 :which-key "ni config"))
 #+end_src
 
