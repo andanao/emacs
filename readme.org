@@ -919,12 +919,12 @@ if I look through the manual closely but this works for now.
   (defun ads/git-lazy ()
     (interactive)
     (save-buffer)
-    (magit-stage-buffer-file)
+    (magit-file-stage)
     (magit-commit-create))
   (defun ads/git-amend ()
     (interactive)
     (save-buffer)
-    (magit-stage-buffer-file)
+    (magit-file-stage)
     (magit-commit-amend "--no-edit"))
 
   (ads/leader-keys
@@ -936,9 +936,9 @@ if I look through the manual closely but this works for now.
    "go" 'ads/git-amend
    "gp" 'magit-push
    "gP" 'vc-push
-   "gs" 'magit-stage-buffer-file
+   "gs" 'magit-file-stage
    "gS" 'magit-stage
-   "gu" 'magit-unstage-buffer-file
+   "gu" 'magit-file-unstage
    "gU" 'magit-unstage))
 #+end_src
 
