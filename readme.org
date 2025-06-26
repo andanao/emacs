@@ -640,9 +640,11 @@ Also install MiKTex to generate PDFs
 #+begin_src emacs-lisp
 (use-package autorevert
   :custom
-  (auto-revert-interval 0.01 "Instantaneously revert")
+  (auto-revert-interval 0.1 "Instantaneously revert")
   :config
-  (global-auto-revert-mode t))
+  (if (eq system-type 'windows-nt)
+      (global-auto-revert-mode nil)
+      (global-auto-revert-mode t)))
 #+end_src
 ** bookmark+
 [[https://www.emacswiki.org/emacs/BookmarkPlus][BookmarkPlus]] [[[https://github.com/emacsmirror/bookmark-plus][git]]] adds a lot of useful functionality to bookmarks, hosted on the EMACS wiki and not
