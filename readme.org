@@ -257,7 +257,7 @@ Add hook to after save hook when on org mode
 ** frames
 
 Set frame padding to have some breathing room, making the dividers invisible is done with ~ads/modus-tweaks~
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp
 (modify-all-frames-parameters
    `((right-divider-width . 20)
      (internal-border-width . 20)))
@@ -359,8 +359,9 @@ particularly like the light ~modus-operandi~ theme.
      `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
      ;; Add "padding" to the mode lines
-     `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
-     `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive)))))))
+     ;; `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
+     ;; `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive))))
+     )))
 (ads/modus-tweaks)
 #+end_src
 
@@ -773,12 +774,15 @@ on MELPA
 
 #+begin_src emacs-lisp
 (use-package emojify
-  :hook (after-init . global-emojify-mode)
+  ;; :hook (after-init . global-emojify-mode)
   :custom
   (use-default-font-for-symbols nil)
   (emojify-emoji-styles '(unicode))
   (emojify-display-style 'unicode)
   :config
+  (if (eq system-type 'windows-nt)
+      (print "emojis skipped on windows")
+    (add-hook 'after-init-hook 'global-emojify-mode))
 
   (when (member "Segoe UI Emoji" (font-family-list))
     (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'prepend)
@@ -1324,12 +1328,19 @@ don't feel the need to use lots of the evil bindings
   (org-appear-autosubmarkers t)
   (org-appear-autokeywords t)
   :hook
-  (org-mode . org-appear-mode)
+  ;; (org-mode . org-appear-mode)
   (evil-insert-state-exit . (lambda ()
 	      (setq org-appear-delay 2)))
   (evil-insert-state-entry-hook .
 	    (lambda ()
-	      (setq org-appear-delay .3))))
+	      (setq org-appear-delay .3)))
+  :config
+  (if (eq system-type 'windows-nt)
+      (print "org-appear skipped on windows")
+      (add-hook 'org-mode-hook 'org-appear-mode))
+
+
+  )
 #+end_src
 
 ** org-babel
@@ -2071,7 +2082,11 @@ Getting books read in the last month:
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  :hook  (org-mode . org-tidy-mode)
+  ;; :hook  (org-mode . org-tidy-mode)
+  :config
+ (if (eq system-type 'windows-nt)
+     (print "emojis skipped on windows")
+     (add-hook 'org-mode-hook 'org-tidy-mode))
   )
 (ads/leader-keys
   :major-modes '(org-mode)
@@ -2183,9 +2198,41 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
   :config
   (savehist-mode 1))
 #+end_src
+
+** spacious-padding
+
+#+begin_src emacs-lisp
+(use-package spacious-padding
+  :custom
+  (spacious-padding-widths
+      '(:internal-border-width 15
+        :header-line-width 4
+        :mode-line-width 6
+        :tab-width 4
+        :right-divider-width 30
+        :scroll-bar-width 0
+        :fringe-width 8))
+  :config
+  (spacious-padding-mode 1))
+#+end_src
 ** sudo-edit
 #+begin_src emacs-lisp
 (use-package sudo-edit)
+#+end_src
+
+** telephone-line
+#+begin_src emacs-lisp
+(use-package telephone-line
+  :custom
+  (telephone-line-primary-left-separator 'telephone-line-cubed-right)
+  (telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-right)
+  (telephone-line-primary-right-separator 'telephone-line-cubed-left)
+  (telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-left)
+  :config
+(setq telephone-line-height 24)
+(setq telephone-line-evil-use-short-tag t)
+
+)
 #+end_src
 ** treemacs
 
