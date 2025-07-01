@@ -2060,7 +2060,7 @@ structured.
 Getting books read in the last month:
 #+begin_src emacs-lisp :tangle no
 (org-roam-ql-search
-'(and (tags "book") (properties COMPLETED "2025-04")))
+'(and (tags "book") (properties COMPLETED "2025-06")))
 #+end_src
 
 
@@ -2082,11 +2082,7 @@ Getting books read in the last month:
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
-  ;; :hook  (org-mode . org-tidy-mode)
-  :config
- (if (eq system-type 'windows-nt)
-     (print "emojis skipped on windows")
-     (add-hook 'org-mode-hook 'org-tidy-mode))
+  :hook  (org-mode . org-tidy-mode)
   )
 (ads/leader-keys
   :major-modes '(org-mode)
