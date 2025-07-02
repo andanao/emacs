@@ -915,6 +915,13 @@ if I look through the manual closely but this works for now.
 #+begin_src emacs-lisp
 (use-package json-mode)
 #+end_src
+
+** kdl
+
+#+begin_src emacs-lisp
+(use-package kdl-mode)
+#+end_src
+
 ** magit
 
 #+begin_src emacs-lisp
