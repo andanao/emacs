@@ -2649,7 +2649,13 @@ jump to my nix config files
 (ads/leader-keys
   "cn" '((lambda () (interactive)
            (projectile-switch-project-by-name "~/nix"))
-	 :which-key "ni config"))
+	 :which-key "nix config"))
+
+(ads/leader-keys
+  "ch" '((lambda () (interactive)
+           (projectile-switch-project-by-name "~/home-manager"))
+	 :which-key "home-manager"))
 #+end_src
+
 
 
