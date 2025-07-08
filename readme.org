@@ -2245,7 +2245,7 @@ there's a decently well made CLI for it.  This requires an external package but
 it's fine for my use case.
 
 To install the external package:
-#+begin_src shell
+#+begin_src shell :tangle no
 cargo install toggl
 #+end_src
 
