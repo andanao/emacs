@@ -2237,6 +2237,57 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 
 )
 #+end_src
+
+** toggl                                                              :external:
+
+I use [[https://track.toggl.com][toggl track]] to track my time, there isn't an emacs package for it but
+there's a decently well made CLI for it.  This requires an external package but
+it's fine for my use case.
+
+To install the external package:
+#+begin_src shell
+cargo install toggl
+#+end_src
+
+#+begin_src emacs-lisp
+(setopt toggl-saved-timers
+      '("stop"
+        "continue"
+
+        ;; Personal Productivity
+        "start emacs -p Configuration -b"
+        "start nix -p Configuration -b"
+        "start CAD -p Design -b"
+        "start Anki -p 生词 -b"
+        "start Jobs -p Jobs -b"
+        "start Interview -p Jobs -b"
+
+        ;; General
+        "start Admin -p Admin"
+        "start Housekeeping -p Housekeeping"
+        "start Walk -p Walks"
+        "start Cooking -p Cooking"
+        "start Chess -p Chess"
+        ))
+#+end_src
+
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+  (cons "toggl-start" (cons #'display-buffer-no-window nil)))
+
+(defun toggl-start-saved-timer ()
+  "Start a timer from toggl-saved-timers"
+  (interactive)
+  (async-shell-command
+   (string-replace
+    "'"
+    "\"" ;; \" <- bad parsing
+    (concat "toggl " (completing-read "toggl " toggl-saved-timers)))
+   "toggl-start"))
+
+(ads/leader-keys
+  "C-t" 'toggl-start-saved-timer)
+#+end_src
 ** treemacs
 
 #+begin_src emacs-lisp
