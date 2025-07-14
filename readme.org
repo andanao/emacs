@@ -2170,6 +2170,17 @@ start buffer in read only mode if file in a child directory
   (recentf-mode)
   )
 #+end_src
+
+** rg (ripgrep)
+
+#+begin_src emacs-lisp
+(use-package rg
+
+  :config
+  (rg-enable-default-bindings)
+  (rg-enable-menu))
+#+end_src
+
 ** rust
 [[https://github.com/rust-lang/rust-mode][Rust-mode]] is a minimal package that provides Rust support and bindings supported
 by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][Rustic]] offers a more fully featured experience.
