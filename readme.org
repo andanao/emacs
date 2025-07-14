@@ -1915,7 +1915,8 @@ is any
 	 (title (org-roam-node-title node))
 	 (ref (concat "[[id:"id "][" title "]]")))
     (org-set-property "ARCHIVE_NODE" ref))
-  (org-archive-subtree))
+  (org-archive-subtree)
+  (save-buffer))
 
 (defun ads/org-archive-done ()
   "Change status to done and archive"
