@@ -2129,6 +2129,17 @@ Getting books read in the last month:
    "pj" 'projectile-next-project-buffer
    "pk" 'projectile-previous-project-buffer)
 #+end_src
+
+** python
+
+#+begin_src emacs-lisp
+(use-package python-mode
+  :ensure t
+
+  :custom
+  (python-shell-interpreter "python3"))
+#+end_src
+
 ** rainbow-delimiters
 
    #+begin_src emacs-lisp
