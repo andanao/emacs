@@ -1452,6 +1452,9 @@ reviewed from there
 #+end_src
 
 *** capture-acronym
+:PROPERTIES:
+:ID:       b07758b9-e383-4299-a52f-359bb48c3a24
+:END:
 #+NAME: capture-acronym
 #+begin_src emacs-lisp :tangle no
 ("x" "acronym" plain
@@ -2285,6 +2288,7 @@ cargo install toggl
         "start CAD -p Design -b"
         "start Anki -p 生词 -b"
         "start Jobs -p Jobs -b"
+        "start Moving -p Moving"
         "start Interview -p Jobs -b"
 
         ;; General
