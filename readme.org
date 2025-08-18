@@ -2439,8 +2439,8 @@ Load windows only configuration
 
 Load when on appropriate system:
 #+begin_src emacs-lisp
-(when (string-equal-ignore-case system-name "HYBD-QUFXNBP9Y9")
-  (load-file (concat git-directory "emacs-work/work.el")))
+(when (string-equal-ignore-case system-name "k2-mac.local")
+  (load-file (concat git-directory "k2-config/work.el")))
 
 (when (string-equal-ignore-case system-name "ganymede")
   (load-file (concat git-directory "windows-config/ganymede.el")))
