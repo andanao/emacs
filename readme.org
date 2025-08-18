@@ -2038,7 +2038,7 @@ will move the current note to work/personal
 (defun ads/refile-move-work ()
   "move org file to work"
   (interactive)
-  (org-move-note-with-attatchments buffer-file-name (concat org-directory "work"))
+  (org-move-note-with-attatchments buffer-file-name (concat org-directory "k2"))
   (kill-buffer)
   (find-file (car (directory-files org-directory t ".org"))))
 
@@ -2432,6 +2432,9 @@ Load windows only configuration
 
 (when (eq system-type 'gnu/linux)
   (load-file (concat user-emacs-directory "linux.el")))
+
+(when (eq system-type 'darwin)
+  (load-file (concat user-emacs-directory "mac.el")))
 #+end_src
 
 Load when on appropriate system:
@@ -2685,6 +2688,21 @@ jump to my nix config files
   "ch" '((lambda () (interactive)
            (projectile-switch-project-by-name "~/home-manager"))
 	 :which-key "home-manager"))
+#+end_src
+
+
+
+
+* Mac
+:PROPERTIES:
+:header-args: emacs-lisp :tangle mac.el :results none :noweb yes :comments link
+:END:
+
+#+begin_src emacs-lisp
+(setq mac-command-modifier 'control
+      mac-option-modifier 'meta
+      mac-control-modifier 'meta
+      mac-pass-command-to-system nil)
 #+end_src
 
 
