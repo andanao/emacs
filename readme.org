@@ -2697,7 +2697,7 @@ jump to my nix config files
 :PROPERTIES:
 :header-args: emacs-lisp :tangle mac.el :results none :noweb yes :comments link
 :END:
-
+ OSX
 #+begin_src emacs-lisp
 (setq mac-command-modifier 'control
       mac-option-modifier 'meta
@@ -2707,3 +2707,20 @@ jump to my nix config files
 
 
 
+** Toggle themes
+
+#+begin_src emacs-lisp
+(defun mac/dark-mode-emacs-align ()
+  "Align OSX theme with emacs light or dark mode"
+  (if (string-search "vivendi"
+		     (symbol-name (modus-themes--current-theme)))
+      (setq mac/dark-mode "true")
+      (setq mac/dark-mode "false"))
+  (shell-command
+   (concat
+    "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to "
+    mac/dark-mode
+    "'")))
+
+(add-hook 'modus-themes-after-load-theme-hook 'mac/dark-mode-emacs-align)
+#+end_src
