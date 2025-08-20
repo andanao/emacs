@@ -1442,6 +1442,7 @@ reviewed from there
       '(
 <<capture-inbox>>
 <<capture-task>>
+<<capture-task-inline>>
 <<capture-note>>
 <<capture-book>>
 <<capture-anki-basic>>
@@ -1587,6 +1588,18 @@ SCHEDULED: %t
 :immediate-finish t)
 #+end_src
 
+*** capture-task-inline
+#+NAME: capture-task-inline
+#+begin_src emacs-lisp :tangle no
+("c" "todo" plain
+(here)
+"* TODO %^{TASK}
+SCHEDULED: %t
+
+
+"
+:immediate-finish t)
+#+end_src
 ** org-download
 Better management of images in org mode for copying photos from internet and clipboard
 
