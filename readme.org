@@ -1465,6 +1465,7 @@ reviewed from there
 ":PROPERTIES:
 :ID: %(org-id-new)
 :CREATED: %U
+:ROAM_ALIASES: {Short}
 :END:
 ,#+title: %^{Short}: %^{Definition}
 ,#+filetags: :acronym:
