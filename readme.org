@@ -996,6 +996,14 @@ restart Emacs to see the effect.
 (use-package nerd-icons
   :ensure t)
 
+(defun ads/nerd-icons-select ()
+  "Select and return a nerd icon"
+  (let* ((standard-output (current-buffer))
+         (candidates (nerd-icons--read-candidates))
+         (prompt    "Icon : ")
+         (selection (completing-read prompt candidates nil t)))
+        (cdr (assoc selection candidates))))
+
 (ads/leader-keys
    "i" '(:ignore t :wk "insert")
    "ii" 'nerd-icons-insert
@@ -1253,6 +1261,7 @@ of everything that is there.
       org-agenda-restore-windows-after-quit t
       org-agenda-persistent-filter t
       org-agenda-scheduled-leaders '("   " "%2dd")
+      org-agenda-skip-scheduled-if-done t
       )
 
 (setq org-agenda-prefix-format
@@ -1466,7 +1475,7 @@ reviewed from there
 ":PROPERTIES:
 :ID: %(org-id-new)
 :CREATED: %U
-:ROAM_ALIASES: {Short}
+:ROAM_ALIASES: %^{Short}
 :END:
 ,#+title: %^{Short}: %^{Definition}
 ,#+filetags: :acronym:
@@ -1881,12 +1890,17 @@ going to be seeing it
 (defun ads/org-node-name-to-category ()
   (interactive)
   (when (org-roam-file-p)
-    (save-excursion
-      (goto-char (point-min))
-      (org-roam-property-add
-       "CATEGORY"
-       (org-roam-node-title (org-roam-node-at-point)))
-      (org-tidy-untidy-buffer))))
+    (let* ((category-icon (ads/nerd-icons-select))
+           (node-title (org-roam-node-title (org-roam-node-at-point)))
+           (category-text (read-string
+                           "Category: "
+                           node-title ))
+           (category (concat category-icon " " category-text)))
+      (save-excursion
+        (goto-char (point-min))
+        (org-set-property "CATEGORY" category))
+      (message category))))
+
 
 (ads/leader-keys
   :major-modes '(org-mode)
