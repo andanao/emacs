@@ -1935,6 +1935,12 @@ is any
 #+begin_src emacs-lisp
 (setq org-archive-location (concat (ads/roam-daily-today) "::")
       org-archive-save-context-info '(time file olpath category itags))
+
+(run-at-time "00:01"
+             86400
+             '(lambda ()
+                (setq org-archive-location
+                      (concat (ads/roam-daily-today) "::"))))
 #+end_src
 
 #+begin_src emacs-lisp
