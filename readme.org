@@ -1609,6 +1609,18 @@ SCHEDULED: %t
 "
 :immediate-finish t)
 #+end_src
+
+** org-cliplink
+
+Take URL from clipboard and insert org mode link of title page
+
+[[https://github.com/rexim/org-cliplink][GitHub - rexim/org-cliplink: Insert org-mode links from clipboard]]
+
+#+begin_src emacs-lisp
+(use-package org-cliplink)
+(ads/leader-keys "ol" '(org-cliplink :wk "org-cliplink"))
+#+end_src
+
 ** org-download
 Better management of images in org mode for copying photos from internet and clipboard
 
