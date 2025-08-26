@@ -1134,6 +1134,7 @@ Set custom org mode bindings and functions.
   (org-narrow-to-subtree)
   (org-fold-show-all))
 
+
 (defun ads/org-scratch ()
   "Open ~/scratch.org"
   (interactive)
@@ -1165,6 +1166,46 @@ Set custom org mode bindings and functions.
   "nb" 'org-narrow-to-block
   )
 #+end_src
+
+*** org url links
+
+#+begin_src emacs-lisp
+(defun org-insert-link-from-kill ()
+  "Insert an org-mode link using URL from kill ring and prompting for description.
+First tries the most recent kill ring item, then searches kill ring history for a URL."
+  (interactive)
+  (let* ((first-item (current-kill 0))
+         (url (if (string-match-p "^https?://" first-item)
+                  first-item
+                (cl-loop for i from 0 below (min kill-ring-max 20)
+                         for item = (ignore-errors (current-kill i))
+                         when (and item (string-match-p "^https?://" item))
+                         return item)))
+         (prompt-text (if url
+                          (format "Link URL: %s\n"
+                                  (if (> (length url) 100)
+                                      (concat (substring url 0 100) "...")
+                                    url))
+                        (format "Not car of kill ring!\nLink URL: %s\n"
+                                (if (> (length first-item) 100)
+                                    (concat (substring first-item 0 100) "...")
+                                  first-item))))
+         (description (if url
+                          (read-string prompt-text)
+                        (progn
+                          (message "No URL found in kill ring history")
+                          nil))))
+    (cond
+     ((null description)
+      (message "No URL available to create link"))
+     ((string-empty-p description)
+      (message "No description provided, link not inserted"))
+     (t
+      (insert (format "[[%s][%s]]" url description))))))
+
+(ads/leader-keys "oL" 'org-insert-link-from-kill)
+#+end_src
+
 *** org weekly review
 I do a weekly review, this will create the weekly review file in my current
 daily and fill it in with some basic information.
