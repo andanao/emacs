@@ -1061,7 +1061,6 @@ Major mode for reading EPUB files in Emacs
   ;; (org-directory "~/org") ;; org directory set in early init
   (org-ellipsis " ·")
   (org-log-done 'time)
-  (org-log-into-drawer t)
   (org-pretty-entities t)
   (org-return-follows-link t)
   (org-pretty-entities-include-sub-superscripts nil)
