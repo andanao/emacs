@@ -1344,6 +1344,7 @@ don't feel the need to use lots of the evil bindings
  "x" 'org-agenda-bulk-action
 
  "a" 'org-agenda-add-note
+ "A" 'org-agenda-archive
 
  "u" 'org-agenda-undo
  ";" 'org-agenda-set-tags
