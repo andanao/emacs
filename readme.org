@@ -1202,7 +1202,7 @@ First tries the most recent kill ring item, then searches kill ring history for 
      (t
       (insert (format "[[%s][%s]]" url description))))))
 
-(ads/leader-keys "oL" 'org-insert-link-from-kill)
+(ads/leader-keys "ol" 'org-insert-link-from-kill)
 #+end_src
 
 *** org weekly review
@@ -1659,7 +1659,7 @@ Take URL from clipboard and insert org mode link of title page
 
 #+begin_src emacs-lisp
 (use-package org-cliplink)
-(ads/leader-keys "ol" '(org-cliplink :wk "org-cliplink"))
+(ads/leader-keys "oL" '(org-cliplink :wk "org-cliplink"))
 #+end_src
 
 ** org-download
