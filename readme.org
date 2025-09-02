@@ -918,6 +918,14 @@ if I look through the manual closely but this works for now.
 (use-package json-mode)
 #+end_src
 
+** kanata
+
+#+begin_src emacs-lisp
+(use-package kanata-kbd-mode
+  :vc (:url "https://github.com/chmouel/kanata-kbd-mode/" :rev :newest)
+  )
+#+end_src
+
 ** kdl
 
 #+begin_src emacs-lisp
