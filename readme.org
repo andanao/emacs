@@ -923,6 +923,7 @@ if I look through the manual closely but this works for now.
 #+begin_src emacs-lisp
 (use-package kanata-kbd-mode
   :vc (:url "https://github.com/chmouel/kanata-kbd-mode/" :rev :newest)
+  :mode ("\\.kbd\\'" . kanata-kbd-mode)
   )
 #+end_src
 
@@ -2819,3 +2820,20 @@ jump to my nix config files
 
 (add-hook 'modus-themes-after-load-theme-hook 'mac/dark-mode-emacs-align)
 #+end_src
+
+** nixconfig
+jump to my nix config files
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "cn" '((lambda () (interactive)
+           (projectile-switch-project-by-name "~/nix"))
+	 :which-key "nix config"))
+
+(ads/leader-keys
+  "ch" '((lambda () (interactive)
+           (projectile-switch-project-by-name "~/home-manager"))
+	 :which-key "home-manager"))
+#+end_src
+
+
+
