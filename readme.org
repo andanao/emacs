@@ -498,15 +498,17 @@ The DWIM behaviour of this command is as follows:
   "jL" 'evil-window-move-far-right
   )
 #+end_src
-** kill ~k~
+** kill and restore ~k~
 
 #+begin_src emacs-lisp
+(winner-mode)
 (ads/leader-keys
    "k" '(:ignore t :wk "kill")
    "kj" 'kill-buffer-and-window
    "kk" 'kill-current-buffer
    "kl"'delete-window
-  )
+   "k," 'winner-undo
+   "ki" 'winner-redo)
 #+end_src
 
 ** config ~c~
@@ -1652,7 +1654,8 @@ SCHEDULED: %t
 #+begin_src emacs-lisp :tangle no
 ("c" "todo" plain
 (here)
-"* TODO %^{TASK}
+"
+,* TODO %^{TASK}
 SCHEDULED: %t
 
 
