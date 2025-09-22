@@ -506,7 +506,7 @@ The DWIM behaviour of this command is as follows:
    "k" '(:ignore t :wk "kill")
    "kj" 'kill-buffer-and-window
    "kk" 'kill-current-buffer
-   "kl"'delete-window
+   "kl" 'delete-window
    "k," 'winner-undo
    "ki" 'winner-redo)
 #+end_src
@@ -1115,6 +1115,9 @@ Projects
 #+end_src
 
 Meetings
+- ~SCHD~ Scheduled but nothing done
+- ~PREP~ preparing notes, reading documents etc
+- ~NOTE~ meeting started, taking actual notes and handling any open items
 #+begin_src emacs-lisp
 (add-to-list 'org-todo-keywords
 '(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
