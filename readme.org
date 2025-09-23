@@ -1981,8 +1981,7 @@ I want to prepend my daily captures
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry
          "* %?"
-         :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>")
-         :prepend)))
+         :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>"))))
 #+end_src
 *** roam-daily-today
 get today's daily file and if not make it
