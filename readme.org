@@ -1242,9 +1242,10 @@ daily and fill it in with some basic information.
 - [ ] [[https:calendar.google.com/calendar/u/0/r/week][Schedule Week]]
 - [ ] [[https:app.ynab.com][YNAB]]
 - [ ] Clear
-  - [ ] [[https:gmail.com][gmail]]
-  - [ ] [[../inbox.org][inbox.org]]
+  - [ ] [[id:a2a7d9b1-18b7-46f1-885c-68b9b87b29d5][Inbox]]
+  - [ ] [[id:20128D1C-9D03-4AC6-94E2-4C479F7BAADA][Reading List]]
   - [ ] Downloads
+  - [ ] [[https:gmail.com][gmail]]
 - [ ] Clean Apartment
 - [ ] Upgrade packages
 
@@ -1506,6 +1507,7 @@ reviewed from there
       '(
 <<capture-inbox>>
 <<capture-task>>
+<<capture-task-note>>
 <<capture-task-inline>>
 <<capture-note>>
 <<capture-book>>
@@ -1643,7 +1645,7 @@ them with org capture instead of making the insertion of new nodes more of a pai
 *** capture-task
 #+NAME: capture-task
 #+begin_src emacs-lisp :tangle no
-("t" "todo" plain
+("t" "todo - inbox" plain
 (file ads/inbox-file)
 "* TODO %^{TASK}
 SCHEDULED: %t
@@ -1652,10 +1654,22 @@ SCHEDULED: %t
 :immediate-finish t)
 #+end_src
 
+*** capture-task-note
+#+NAME: capture-task-note
+#+begin_src emacs-lisp :tangle no
+("r" "todo - inbox notes" plain
+(file ads/inbox-file)
+"* TODO %^{TASK}
+SCHEDULED: %t
+
+%?
+")
+#+end_src
+
 *** capture-task-inline
 #+NAME: capture-task-inline
 #+begin_src emacs-lisp :tangle no
-("c" "todo" plain
+("c" "todo - inline" plain
 (here)
 "
 ,* TODO %^{TASK}
