@@ -1105,13 +1105,17 @@ Major mode for reading EPUB files in Emacs
 
 #+begin_src emacs-lisp
 (setq org-tag-alist
-   '(("active" . ?a)
-     ("article" . ?r)
+   '(("article" . ?r)
      ("book" . ?b)
      ("private" . ?P)
-     ("project" . ?p)
+     ("thoughts" . ?t)
      ("public" . ?u)
-     ("thoughts" . ?t)))
+     ;; Projects
+     ("project" . ?p)
+     ("project_a" . ?a) ; Active
+     ("project_h" . ?h) ; Hold
+     ("project_c" . ?c) ; Complete
+     ))
 #+end_src
 *** org-todo-keywords
 Projects
@@ -1962,7 +1966,7 @@ For my [[weekly review]] I want a list of active projects.
        :from tags
        :left-join nodes
        :on (= tags:node-id nodes:id)
-       :where (like tag (quote "%\"active\"%"))]))
+       :where (like tag (quote "%\"project_a\"%"))]))
   (insert
      (concat "[[id:"
              (pop node) "]["
