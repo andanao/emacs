@@ -998,6 +998,13 @@ if I look through the manual closely but this works for now.
   :keymaps 'markdown-view-mode-map
   "mm" 'markdown-mode)
 #+end_src
+
+** multiple-cursors
+
+#+begin_src emacs-lisp
+(use-package multiple-cursors)
+#+end_src
+
 ** nerd-icons
 
 Remember run ~nerd-icons-install-fonts~ to get the font files.  Then
