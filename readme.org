@@ -1787,6 +1787,8 @@ Better management of images in org mode for copying photos from internet and cli
           (":ARCHIVE_CATEGORY:" . "󱝖")
           (":ARCHIVE_ITAGS:" . "󱝤")
 
+          (":ROAM_ALIASES:" . "󰑕")
+
           ;; (":ANKI" . "📚")
           ;; ("_DECK:" . "")
           ;; ("_NOTE_TYPE:" . "󱕷")
@@ -2871,10 +2873,10 @@ jump to my nix config files
 
 
 ** Menu bar
+
+Turn off the menu bar because I've never used it
 #+begin_src emacs-lisp
-(use-package menu-bar
-  :config
-  (menu-bar-mode -1))
+(menu-bar-mode -1)
 #+end_src
 
 ** Load work config
