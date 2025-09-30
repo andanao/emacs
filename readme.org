@@ -1111,7 +1111,7 @@ Major mode for reading EPUB files in Emacs
      ("thoughts" . ?t)
      ("public" . ?u)
      ;; Projects
-     ("project" . ?p)
+     ("project" . ?p)   ; Generic/idea stage
      ("project_a" . ?a) ; Active
      ("project_h" . ?h) ; Hold
      ("project_c" . ?c) ; Complete
@@ -2868,6 +2868,14 @@ jump to my nix config files
 
 
 
+
+
+** Menu bar
+#+begin_src emacs-lisp
+(use-package menu-bar
+  :config
+  (menu-bar-mode -1))
+#+end_src
 
 ** Load work config
 I only have a mac for work and the loading based on system name seems to not
