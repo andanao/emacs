@@ -2024,11 +2024,21 @@ get today's daily file and if not make it
 #+begin_src emacs-lisp
 (setq org-roam-dailies-directory "daily/")
 (defun ads/roam-daily-today ()
+  "Return path of active daily"
   (concat
    org-roam-directory
    org-roam-dailies-directory
-   (format-time-string "%Y-%m-%d")
-   ".org"))
+   (format-time-string "%Y-%m-%d.org")))
+
+(defun ads/roam-refile-today ()
+  "Refile current node to active daily"
+  (interactive)
+  (org-roam-refile
+    (org-roam-node-from-title-or-alias
+     (format-time-string "%Y-%m-%d"))))
+
+(ads/leader-keys
+  "fdr" 'ads/roam-refile-today)
 #+end_src
 *** roam-daily-archive
 I want to archive small tasks to dailies but also link back to where the files
