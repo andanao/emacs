@@ -1873,6 +1873,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
 
   (ads/leader-keys
     :major-modes '(org-mode)
+    "C-f" 'org-roam-node-insert
     "fi" 'org-roam-node-insert
     "fa" 'org-roam-alias-add
     "f;" 'org-roam-tag-add
