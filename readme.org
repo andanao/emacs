@@ -541,6 +541,19 @@ The DWIM behaviour of this command is as follows:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
+** all-the-icons
+
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+#+end_src
+
+** all-the-icons-ibuffer
+
+#+begin_src emacs-lisp
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+#+end_src
 ** anki-editor
 [[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
 anki workflows and inspired me to keep using anki instead of an emacs specific
