@@ -2403,13 +2403,13 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 )
 #+end_src
 
-** toggl                                                              :external:
+** toggl time tracking                                           :external:
 
 I use [[https://track.toggl.com][toggl track]] to track my time, there isn't an emacs package for it but
 there's a decently well made CLI for it.  This requires an external package but
 it's fine for my use case.
 
-To install the external package:
+To install the cli utility:
 #+begin_src shell :tangle no
 cargo install toggl
 #+end_src
@@ -2422,11 +2422,12 @@ cargo install toggl
         ;; Personal Productivity
         "start emacs -p Configuration -b"
         "start nix -p Configuration -b"
+        "start mac -p Configuration -b"
         "start CAD -p Design -b"
         "start Anki -p 生词 -b"
-        "start Jobs -p Jobs -b"
+        ;; "start Jobs -p Jobs -b"
         "start Moving -p Moving"
-        "start Interview -p Jobs -b"
+        ;; "start Interview -p Jobs -b"
 
         ;; General
         "start Admin -p Admin"
@@ -2434,6 +2435,7 @@ cargo install toggl
         "start Walk -p Walks"
         "start Cooking -p Cooking"
         "start Chess -p Chess"
+        "start Editing -p Photography"
         ))
 (setopt toggl-saved-timers toggl-saved-timers-default)
 #+end_src
