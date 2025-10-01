@@ -1297,22 +1297,30 @@ of everything that is there.
 "* Monthly Review
 
 ,** Theme
+#Beginning
 
 ,** Goals
+#Beginning
 
 ,** Books Read
+#End
 
 ,** Time Tracked
+#End
 
 ,** Thoughts had
+#End
 
 ,** Projects
 
 ,*** Active
+#Beginning
 
 ,*** Completed
+#End
 
 ,** Reflection
+#End
 
 "
 #+end_src
