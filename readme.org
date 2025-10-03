@@ -1180,9 +1180,6 @@ Set custom org mode bindings and functions.
   (if (eq system-type 'windows-nt)
       (find-file (concat "c:/users/" user-login-name "/scratch.org"))
       (find-file "~/scratch.org")))
-
-(ads/leader-keys
-  "C-s" 'ads/org-scratch)
 #+end_src
 
 
@@ -1190,8 +1187,9 @@ Set custom org mode bindings and functions.
 (ads/leader-keys
   "oM" 'org-mode
   "oS" 'org-save-all-org-buffers
-  "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory")
-  )
+  "C-c" 'org-clock-goto
+  "C-s" 'ads/org-scratch
+  "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory"))
 
 (ads/leader-keys
   :keymaps '(org-mode-map)
