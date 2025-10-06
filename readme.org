@@ -425,6 +425,8 @@ The DWIM behaviour of this command is as follows:
     (delete-completion-window))
    ((> (minibuffer-depth) 0)
     (abort-recursive-edit))
+   ((evil-emacs-state-p)
+    (evil-normal-state))
    (t
     (keyboard-quit))))
 
