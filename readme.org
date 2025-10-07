@@ -313,13 +313,14 @@ particularly like the light ~modus-operandi~ theme.
     '((cursor red-intense)
       (bg-mode-line-active bg-dim)
       (bg-mode-line-inactive bg-main)))
-;; (modus-themes-select (modus-themes--current-theme))
+;; (modus-themes-select (modus-themes-get-current-theme))
 #+end_src
 
 *** modus-tweaks
-#+begin_src emacs-lisp
-(defun ads/modus-tweaks ()
-  (modus-themes-with-colors
+
+#+NAME: modus-tweaks
+#+begin_src emacs-lisp :tangle no
+(modus-themes-with-colors
     (custom-set-faces
      ;; Modus
      `(modus-themes-prose-code ((,c :foreground ,fg-alt)))
@@ -361,16 +362,22 @@ particularly like the light ~modus-operandi~ theme.
      ;; Add "padding" to the mode lines
      ;; `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
      ;; `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive))))
-     )))
-(ads/modus-tweaks)
+     ))
 #+end_src
 
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :noweb yes
 (load-theme 'modus-vivendi t)
-(add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
-(add-hook 'after-init-hook 'ads/modus-tweaks)
+(add-hook
+ 'after-init-hook
+ (lambda ()
+   (defun ads/modus-tweaks ()
+     "Apply custom tweaks to modus themes"
+     <<modus-tweaks>>
+     )
+   (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
+   (ads/modus-tweaks)))
 #+end_src
-
 * General.el
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
@@ -1899,6 +1906,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
     "C-f" 'org-roam-node-insert
     "fi" 'org-roam-node-insert
     "fa" 'org-roam-alias-add
+    "fe" 'org-roam-extract-subtree
     "f;" 'org-roam-tag-add
     "f:" 'org-roam-tag-remove
     "fr" 'org-roam-ref-add
@@ -2688,7 +2696,7 @@ I use AHK a lot to make the experience of using windows less painful
 (defun win/theme-align-with-emacs ()
   ;;check if light or dark theme in emacs
   (if (string-search "vivendi"
-		     (symbol-name (modus-themes--current-theme)))
+		     (symbol-name (modus-themes-get-current-theme)))
       (setq win/theme "0")
       (setq win/theme "1"))
   (async-shell-command
@@ -2879,7 +2887,7 @@ jump to my nix config files
 (defun mac/dark-mode-emacs-align ()
   "Align OSX theme with emacs light or dark mode"
   (if (string-search "vivendi"
-		     (symbol-name (modus-themes--current-theme)))
+		     (symbol-name (modus-themes-get-current-theme)))
       (setq mac/dark-mode "true")
       (setq mac/dark-mode "false"))
   (shell-command
