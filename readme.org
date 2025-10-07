@@ -1826,6 +1826,7 @@ Better management of images in org mode for copying photos from internet and cli
           ("#+options:" . "󰘵")
           (":tangle" . "󱓡")
           (":noweb" . "󰪎")
+          (":noweb-ref" . "")
 
           ;; Blocks
           ("#+begin_quote" . "“")
