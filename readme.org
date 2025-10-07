@@ -1898,6 +1898,8 @@ computers I have ~~/org/personal~ and ~~/org/work~
 	   :wk "db sync & agenda")
     "fd" 'org-roam-dailies-map)
 
+  (general-define-key :states 'insert "C-f" 'org-roam-node-insert)
+
   (ads/leader-keys
     :major-modes '(org-mode)
     "C-f" 'org-roam-node-insert
