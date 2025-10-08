@@ -2386,12 +2386,13 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 
 #+begin_src emacs-lisp
 (use-package rust-mode
-  ;; :init
-  ;; (setq rust-mode-treesitter-derive t)
-  :custom
-  (rust-format-on-save t)
-  :hook
-  (rust-mode-hook .(lambda () (setq indent-tabs-mode nil))))
+  :init
+  (setq rust-mode-treesitter-derive t)
+  ;; :custom
+  ;; (rust-format-on-save t)
+  ;; :hook
+  ;; (rust-mode-hook .(lambda () (setq indent-tabs-mode nil)))
+  )
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2405,6 +2406,20 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
   "lt" 'rust-test
   "ld" 'rust-dbg-wrap-or-unwrap
   "lm" 'rust-toggle-mutability
+  )
+#+end_src
+
+** rustic
+[[https://github.com/emacs-rustic/rustic?tab=readme-ov-file#eglot][Github - rustic]]
+
+batteries included rust mode, builds upon rust-lang's rust-mode
+
+#+begin_src emacs-lisp
+(use-package rustic
+  :after (rust-mode lsp-mode)
+  :custom
+  (rustic-cargo-use-last-stored-arguments t)
+  (rustic-lsp-client 'lsp-mode)
   )
 #+end_src
 ** save-hist
