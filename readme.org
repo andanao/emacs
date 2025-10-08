@@ -2300,12 +2300,13 @@ Getting books read in the last month:
    "pp" 'consult-project-buffer
    "pP" 'projectile-switch-project
    "pj" 'projectile-next-project-buffer
+   "pg" 'projectile-ripgrep
    "pk" 'projectile-previous-project-buffer)
 #+end_src
 
 ** python
-
-#+begin_src emacs-lisp
+disabled for now because of weird org interactionsg
+#+begin_src emacs-lisp :tangle no
 (use-package python-mode
   :ensure t
 
