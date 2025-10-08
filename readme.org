@@ -154,6 +154,13 @@ out [[https://github.com/emacscollective/no-littering][no-littering]] but this w
 (setq projectile-known-projects-file (expand-file-name "tmp/projectile-bookmarks.eld" user-emacs-directory)
       lsp-session-file (expand-file-name "tmp/.lsp-session-v1" user-emacs-directory))
 #+end_src
+
+** Environment setup
+Suggested by [[lsp-mode]]
+#+begin_src emacs-lisp
+(setenv "LSP_USE_PLISTS" "true")
+#+end_src
+
 ** Provide Early init
 
 #+begin_src emacs-lisp
@@ -958,6 +965,12 @@ if I look through the manual closely but this works for now.
 (use-package kdl-mode)
 #+end_src
 
+** lsp-mode
+Maybe use eglot but I've been having some issues with the server dying randomly
+with rust..
+#+begin_src emacs-lisp
+(use-package lsp-mode)
+#+end_src
 ** magit
 
 #+begin_src emacs-lisp
