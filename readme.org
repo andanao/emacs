@@ -855,7 +855,8 @@ on MELPA
   (define-key evil-motion-state-map [down-mouse-1] nil)
   ;; unbind q for macros
   (define-key evil-normal-state-map (kbd "q") 'nil)
-  (define-key evil-normal-state-map (kbd "Q") 'nil))
+  (define-key evil-normal-state-map (kbd "Q") 'nil)
+  (evil-mode))
 
 (general-define-key
   :states '(normal insert)
@@ -1367,7 +1368,7 @@ of everything that is there.
       org-agenda-restore-windows-after-quit t
       org-agenda-persistent-filter t
       org-agenda-scheduled-leaders '("   " "%2dd")
-      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-scheduled-if-done nil
       )
 
 (setq org-agenda-prefix-format
@@ -2171,7 +2172,7 @@ search for nodes and files
 *** roam-refile-tag-file-list
 Not really roam but using org roam to create my refile targets.  Set my refile
 targets to any file used by org-agenda or tagged :refile:, sometimes my roam
-jjnotes that are more todo-lists don't have any active tasks and thus aren't going
+notes that are more todo-lists don't have any active tasks and thus aren't going
 to be in my agenda
 
 
