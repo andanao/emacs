@@ -1181,7 +1181,9 @@ Set custom org mode bindings and functions.
 (general-define-key
  :states '(normal) :keymaps 'org-mode-map
  (kbd "<tab>") 'org-cycle
- (kbd "<backtab>") 'org-shifttab)
+ (kbd "<backtab>") 'org-shifttab
+ "C-j" 'org-next-visible-heading
+ "C-k" 'org-previous-visible-heading)
 
 (general-define-key
  :states  '(motion) :keymaps 'org-mode-map
