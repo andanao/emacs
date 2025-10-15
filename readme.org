@@ -2556,6 +2556,38 @@ cargo install toggl
 (ads/leader-keys
   "C-t" 'toggl-start-saved-timer)
 #+end_src
+
+
+** treesit
+#+begin_src emacs-lisp
+(setq treesit-language-source-alist
+      '((rust "https://github.com/tree-sitter/tree-sitter-rust"
+              "v0.23.3" "src")))
+#+end_src
+
+** treesit-auto
+
+Automatically install the treesitter language
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :config
+  (add-to-list 'treesit-auto-recipe-list
+               (make-treesit-auto-recipe
+                :lang 'rust
+                :ts-mode 'rust-ts-mode
+                :remap 'rust-mode
+                :url "https://github.com/tree-sitter/tree-sitter-rust"
+                :revision "v0.23.3"
+                :ext "\\.rs\\'"))
+  (setq major-mode-remap-alist
+        (treesit-auto--build-major-mode-remap-alist))
+
+   (setq treesit-auto-langs '(rust))
+   (treesit-auto-add-to-auto-mode-alist '(rust))
+   (global-treesit-auto-mode))
+#+end_src
+
 ** treemacs
 
 #+begin_src emacs-lisp
