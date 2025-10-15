@@ -2509,15 +2509,21 @@ cargo install toggl
 (add-to-list 'display-buffer-alist
   (cons "toggl-start" (cons #'display-buffer-no-window nil)))
 
+(defun toggl-start-timer (toggl-args)
+  "Start timer passing toggl-args to cli"
+  (async-shell-command
+   (concat "toggl "toggl-args)
+   "toggl-start")
+  (message toggl-args))
+
 (defun toggl-start-saved-timer ()
   "Start a timer from toggl-saved-timers"
   (interactive)
-  (async-shell-command
+  (toggl-start-timer
    (string-replace
     "'"
     "\"" ;; \" <- bad parsing
-    (concat "toggl " (completing-read "toggl " toggl-saved-timers)))
-   "toggl-start"))
+    (completing-read "toggl " toggl-saved-timers))))
 
 (ads/leader-keys
   "C-t" 'toggl-start-saved-timer)
