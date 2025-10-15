@@ -803,6 +803,24 @@ on MELPA
    column-number-mode nil))
 #+end_src
 
+** eglot
+emacs batteries included LSP mode
+
+#+begin_src emacs-lisp
+(use-package eglot
+  :hook
+  (rust-ts-mode . eglot-ensure)
+  (python-ts-mode . eglot-ensure)
+  (c-ts-mode . eglot-ensure)
+  (c++-ts-mode . eglot-ensure)
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-sync-connect nil) ; Don't block on connection
+  (eglot-connect-timeout 120) ; Longer timeout for remote
+  (eglot-send-changes-idle-time 0.5) ; Debounce time for sending changes
+  ;; eglot-events-buffer-size 0
+  )
+#+end_src
 ** TODO emojify
 [[https://github.com/iqbalansari/emacs-emojify?tab=readme-ov-file][emojify]] improves emoji usage in EMACS
 
@@ -966,12 +984,6 @@ if I look through the manual closely but this works for now.
 (use-package kdl-mode)
 #+end_src
 
-** lsp-mode
-Maybe use eglot but I've been having some issues with the server dying randomly
-with rust..
-#+begin_src emacs-lisp
-(use-package lsp-mode)
-#+end_src
 ** magit
 
 #+begin_src emacs-lisp
@@ -2447,11 +2459,10 @@ batteries included rust mode, builds upon rust-lang's rust-mode
 
 #+begin_src emacs-lisp
 (use-package rustic
-  :after (rust-mode lsp-mode)
+  :after (rust-mode eglot)
   :custom
   (rustic-cargo-use-last-stored-arguments t)
-  (rustic-lsp-client 'lsp-mode)
-  )
+  (rustic-lsp-client 'eglot))
 #+end_src
 ** save-hist
 #+begin_src emacs-lisp
