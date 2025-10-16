@@ -1318,6 +1318,7 @@ daily and fill it in with some basic information.
   (interactive)
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("weekly"))
+  (package-upgrade-all)
   (goto-char (point-max))
   (insert
 <<ads/weekly>>
@@ -1335,10 +1336,11 @@ daily and fill it in with some basic information.
   - [ ] Downloads
   - [ ] [[https:gmail.com][gmail]]
 - [ ] Clean Apartment
-- [ ] Upgrade packages
+- [ ] Week agenda
 
 ,#+begin_src emacs-lisp
-(package-upgrade-all)
+(org-agenda-list)
+(org-agenda-week-view)
 ,#+end_src
 
 ,** Project Statuses
