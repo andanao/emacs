@@ -615,7 +615,7 @@ Anki or just make some sort of migration script.
 #+begin_src emacs-lisp
 (ads/leader-keys
   :major-modes '(org-mode)
-  :keymaps '(org-mode-map)
+  ;; :keymaps '(org-mode-map)
   "ok" '(:ignore t :wk "anKi")
   "okp" 'anki-editor-push-new-notes
   "okP" 'anki-editor-push-notes
@@ -1228,7 +1228,7 @@ Set custom org mode bindings and functions.
   "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory"))
 
 (ads/leader-keys
-  :keymaps '(org-mode-map)
+  :major-modes '(org-mode)
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading
@@ -1279,7 +1279,7 @@ First tries the most recent kill ring item, then searches kill ring history for 
 (ads/leader-keys "ol" 'org-insert-link-from-kill)
 #+end_src
 
-*** org morning review
+*** good morning review
 Simpler than the weekly, more just to get my thoughts on paper and empty my mind
 before starting the day
 
@@ -1296,8 +1296,9 @@ before starting the day
   "Good morning funciton"
   (interactive)
   (org-roam-dailies-find-today)
+   ; don't keep this here for long but for some reason calling daily doesnt make a node
+  (org-id-get-create)
   (narrow-to-region (point-max) (point-max))
-  (goto-char (point-max))
   (insert
 <<good-morning>>
    )
@@ -1362,14 +1363,14 @@ of everything that is there.
   (interactive)
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("monthly"))
-  (goto-char (point-max))
+  (narrow-to-region (point-max) (point-max))
   (insert
 <<ads/monthly>>
    ))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
-"* Monthly Review
+"* Monthly Review :monthly:
 
 ,** Theme
 #Beginning
