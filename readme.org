@@ -1430,7 +1430,8 @@ of everything that is there.
           ("t" "All tasks (no meetings)" ((tags-todo "-meeting")))))
 
 (ads/leader-keys
-  "oa" 'org-agenda)
+  "oa" 'org-agenda-list ;; I use this more frequently
+  "oA" 'org-agenda)
 #+end_src
 
 Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-org-agenda.el#L42][evil-org-agenda]], but since there's only one mode applicable I
