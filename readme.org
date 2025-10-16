@@ -720,7 +720,7 @@ on MELPA
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
   "C-;" 'consult-register-store
-  "r" 'consult-recent-file
+  "r" 'consult-grep
   "C-b" 'consult-bookmark)
 #+end_src
 
@@ -2276,6 +2276,42 @@ will move the current note to work/personal
   (kill-buffer)
   (find-file org-directory)
   (find-file (car (directory-files org-directory t ".org"))))
+#+end_src
+
+** org-roam-consult
+really [[https://github.com/jgru/consult-org-roam][consult-org-roam]]
+
+#+begin_src emacs-lisp
+(use-package consult-org-roam
+   :after org-roam
+   :init
+   (require 'consult-org-roam)
+   ;; Activate the minor mode
+   (consult-org-roam-mode 1)
+   :custom
+   ;; Use `ripgrep' for searching with `consult-org-roam-search'
+   (consult-org-roam-grep-func #'consult-ripgrep)
+   ;; Configure a custom narrow key for `consult-buffer'
+   (consult-org-roam-buffer-narrow-key ?o)
+   ;; Display org-roam buffers right after non-org-roam buffers
+   ;; in consult-buffer (and not down at the bottom)
+   (consult-org-roam-buffer-after-buffers nil)
+   :config
+   (consult-customize
+    consult-org-roam-forward-links :preview-key "C-l"
+    consult-org-roam-backlinks :preview-key "C-l"
+    consult-org-roam-backlinks-recursive :preview-key "C-l"
+    )
+   (ads/leader-keys
+    :major-modes '(org-mode)
+    "ff" 'consult-org-roam-file-find
+    "fs" 'consult-org-roam-search
+    "fl" 'consult-org-roam-forward-links
+    "fh" 'consult-org-roam-backlinks
+    "fH" 'consult-org-roam-backlinks-recursive
+    "fg" 'consult-org-roam-search ;; roam grep
+    )
+   )
 #+end_src
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
