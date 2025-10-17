@@ -3,7 +3,7 @@
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
-To create the init files:
+ To create the init files:
 #+begin_src shell
 emacs --batch -l org readme.org -f org-babel-tangle
 #+end_src
@@ -720,7 +720,7 @@ on MELPA
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
   "C-;" 'consult-register-store
-  "r" 'consult-grep
+  "r" 'consult-ripgrep
   "C-b" 'consult-bookmark)
 #+end_src
 
@@ -1304,8 +1304,8 @@ before starting the day
    )
   (goto-char (point-min))
   (org-clock-in)
-  (toggl-start-timer "start GoodMorning -p Admin")
-  )
+  (delete-other-windows)
+  (toggl-start-timer "start GoodMorning -p Admin"))
 #+end_src
 
 *** org weekly review
@@ -2618,6 +2618,13 @@ cargo install toggl
   "C-t" 'toggl-start-saved-timer)
 #+end_src
 
+
+** tramp
+remote connections in emacs
+#+begin_src emacs-lisp
+(require 'tramp)
+(setopt remote-file-name-access-timeout 300)
+#+end_src
 
 ** treesit
 #+begin_src emacs-lisp
