@@ -1360,15 +1360,23 @@ plan out goals and theme tie in, at the end of the month I do complete the rest
 of everything that is there.
 
 #+begin_src emacs-lisp :noweb yes
-(defun ads/monthly ()
-  "start monthly review"
+(defun ads/monthly-new ()
+  "New monthly review"
   (interactive)
   (org-roam-dailies-find-today)
-  (org-roam-tag-add '("monthly"))
+  (toggl-start-timer "start Monthly -p Admin")
   (narrow-to-region (point-max) (point-max))
   (insert
 <<ads/monthly>>
    ))
+
+(defun ads/monthly-current ()
+  "Go to current monthly review"
+  (interactive)
+  (org-roam-node-visit
+   (org-roam-node-from-title-or-alias
+    (format-time-string "%Y-%m Monthly Review")))
+  (org-narrow-to-subtree))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
@@ -1774,6 +1782,7 @@ SCHEDULED: %t
 
 
 "
+:empty-lines 1
 :immediate-finish t)
 #+end_src
 
@@ -2361,6 +2370,7 @@ Getting books read in the last month:
   :ensure t
   :custom
   (org-tidy-properties-style 'invisible)
+  (org-tidy-protect-overlay nil)
   :hook  (org-mode . org-tidy-mode)
   )
 (ads/leader-keys
