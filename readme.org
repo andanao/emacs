@@ -1099,6 +1099,15 @@ restart Emacs to see the effect.
   :config
   (global-nix-prettify-mode))
 #+end_src
+
+** no-littering
+
+Stop leaving files everywhere
+#+begin_src emacs-lisp
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+(use-package no-littering)
+#+end_src
+
 ** nov (epub)
 Major mode for reading EPUB files in Emacs
 
