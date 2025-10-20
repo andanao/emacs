@@ -1325,6 +1325,7 @@ daily and fill it in with some basic information.
 (defun ads/weekly ()
   "start weekly review process"
   (interactive)
+  (toggl-start-timer "start Weekly -p Admin")
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("weekly"))
   (package-upgrade-all)
@@ -1562,6 +1563,8 @@ don't feel the need to use lots of the evil bindings
      '(("el" . "src emacs-lisp")
        ("py" . "src python")
        ("sh" . "src shell")
+       ("z" . "src zsh")
+       ("nu" . "src nu")
        ("b" . "src bat")
        ("rs" . "src rust")
        ("html" . "src html")
@@ -1579,6 +1582,8 @@ don't feel the need to use lots of the evil bindings
   (add-to-list 'org-structure-template-alist template))
 #+end_src
 
+#+RESULTS:
+
 **** Languages
 
 #+begin_src emacs-lisp
@@ -1586,6 +1591,8 @@ don't feel the need to use lots of the evil bindings
      (org-babel-do-load-languages
          'org-babel-load-languages
          '((emacs-lisp . t)
+           (shell . t)
+           (zsh . t)
            (python . t))))
 
     (setq org-confirm-babel-evaluate nil)
@@ -1927,6 +1934,9 @@ Better management of images in org mode for copying photos from internet and cli
           ("#+begin_src python" . "")
           ("#+begin_src rust" . "󱘗")
           ("#+begin_src shell" . "")
+          ("#+begin_src bash" . "")
+          ("#+begin_src zsh" . "󰰶")
+          ("#+begin_src nu" . "󰰒")
           ("#+begin_src sql" . "")
           ("#+begin_src toml" . "T")
           ("#+begin_src yaml" . "Y")
