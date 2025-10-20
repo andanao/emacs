@@ -189,6 +189,9 @@ Suggested by [[lsp-mode]]
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
+(add-to-list 'display-buffer-alist
+  (cons "*Async Shell Command*" (cons #'display-buffer-no-window nil)))
+
 (when (file-exists-p custom-file)
   (load custom-file nil t))
 #+end_src
@@ -306,20 +309,18 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-6 fg-main)
     (fg-heading-7 fg-main)
     (fg-heading-8 fg-main)
-    (fringe bg-main)))
+    (fringe bg-main)
+    (bg-mode-line-active bg-dim)
+    (bg-mode-line-inactive bg-main)))
 
 ;; dark theme
 (setq modus-vivendi-palette-overrides
       '((cursor "#ff2060")
-        (bg-main "#111111")
-        (bg-mode-line-active bg-dim)
-        (bg-mode-line-inactive bg-main)))
+        (bg-main "#000000")))
 
 ;;light theme
 (setq modus-operandi-palette-overrides
-    '((cursor red-intense)
-      (bg-mode-line-active bg-dim)
-      (bg-mode-line-inactive bg-main)))
+    '((cursor red-intense)))
 ;; (modus-themes-select (modus-themes-get-current-theme))
 #+end_src
 
@@ -1592,7 +1593,6 @@ don't feel the need to use lots of the evil bindings
          'org-babel-load-languages
          '((emacs-lisp . t)
            (shell . t)
-           (zsh . t)
            (python . t))))
 
     (setq org-confirm-babel-evaluate nil)
