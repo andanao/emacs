@@ -1024,7 +1024,9 @@ if I look through the manual closely but this works for now.
 (use-package marginalia
   :ensure t
   :demand t
-  :hook (after-init . marginalia-mode))
+  :hook (after-init . marginalia-mode)
+  :config
+  (marginalia-mode 1))
 #+end_src
 ** markdown
 #+begin_src emacs-lisp
@@ -1957,6 +1959,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
 
 #+begin_src emacs-lisp
 (use-package org-roam
+  :demand t
   :init
   (setq org-roam-v2-ack t)
   :custom
@@ -2729,6 +2732,7 @@ works much smoother on both Windows and Linux.
   :demand t
   :hook (after-init . vertico-mode)
   :config
+  (vertico-mode 1)
   (general-define-key
    :states '(insert)
    :keymaps 'vertico-map
