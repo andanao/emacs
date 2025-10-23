@@ -687,7 +687,11 @@ on MELPA
 #+begin_src emacs-lisp
 (use-package bookmark+
   :vc (:url "https://github.com/emacsmirror/bookmark-plus"
-       :branch "master"))
+       :branch "master")
+  :custom
+  ;; Prevent bookmark+ from polluting custom.el
+  (bookmark-default-file "~/.emacs.d/bookmarks")
+  (bmkp-last-as-first-bookmark-file nil))
 (ads/leader-keys
   "b" '(:ignore t :which-key "bookmark")
   "bb" 'consult-bookmark
@@ -1979,6 +1983,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
   :config
   (org-roam-db-autosync-mode)
   (org-roam-setup)
+  (require 'org-roam-dailies)
 
   (ads/leader-keys
     "f" '(:ignore t :wk "roam")
@@ -2068,6 +2073,8 @@ simplifies the task of adding a tag and ignoring files under daily
 #+begin_src emacs-lisp
 (defun ads/org-agenda-files-update (&optional arg)
   "Update org agenda files list"
+  ;; Claim org-agenda-files here so custom.el doesn't mess with it
+  (defvar org-agenda-files)
   (setq org-agenda-files (ads/org-roam-agenda-files))
   (add-to-list 'org-agenda-files ads/inbox-file)
   (message "Agenda files updated from roam tags"))
