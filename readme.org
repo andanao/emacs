@@ -666,7 +666,7 @@ Also install MiKTex to generate PDFs
 
 ** auto-fill
 #+begin_src emacs-lisp
-(customize-set-variable 'fill-column 80)
+(customize-set-variable 'fill-column 100)
 (add-hook 'text-mode-hook 'auto-fill-mode)
 #+end_src
 ** auto-revert
@@ -1918,6 +1918,10 @@ Better management of images in org mode for copying photos from internet and cli
           (":tangle" . "󱓡")
           (":noweb" . "󰪎")
           (":noweb-ref" . "")
+          (":mkdirp" . "")
+          (":comments" . "󰆉")
+          ("header-args:" . "󰉴")
+          (":header-args" . "󰉴")
 
           ;; Blocks
           ("#+begin_quote" . "“")
