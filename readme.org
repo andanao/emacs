@@ -688,15 +688,19 @@ on MELPA
 (use-package bookmark+
   :vc (:url "https://github.com/emacsmirror/bookmark-plus"
        :branch "master")
-  :custom
+  ;; :custom
   ;; Prevent bookmark+ from polluting custom.el
-  (bookmark-default-file "~/.emacs.d/bookmarks")
-  (bmkp-last-as-first-bookmark-file nil))
+  ;; (bookmark-default-file "~/.emacs.d/bookmarks")
+  ;; (bmkp-last-as-first-bookmark-file nil)
+  )
 (ads/leader-keys
-  "b" '(:ignore t :which-key "bookmark")
+  "j" '(:ignore t :which-key "bookmark")
   "bb" 'consult-bookmark
   "bs" 'bookmark-set
   "br" 'bookmark-rename)
+(customize-set-variable 'bookmark-default-file '"~/.emacs.d/bookmarks")
+(customize-set-variable 'bmkp-last-bookmark-file '"~/.emacs.d/bookmarks")
+(customize-set-variable 'bmkp-last-as-first-bookmark-file 'nil)
 #+end_src
 ** cape
 [[https://github.com/minad/cape][CAPE]] (Completion At Point Extensions)
@@ -2079,7 +2083,7 @@ simplifies the task of adding a tag and ignoring files under daily
   "Update org agenda files list"
   ;; Claim org-agenda-files here so custom.el doesn't mess with it
   (defvar org-agenda-files)
-  (setq org-agenda-files (ads/org-roam-agenda-files))
+  (customize-set-variable 'org-agenda-files (ads/org-roam-agenda-files))
   (add-to-list 'org-agenda-files ads/inbox-file)
   (message "Agenda files updated from roam tags"))
 (add-hook 'after-init-hook 'ads/org-agenda-files-update)
