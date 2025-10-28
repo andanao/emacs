@@ -340,6 +340,7 @@ particularly like the light ~modus-operandi~ theme.
      `(org-property-value ((,c :height 0.9)))
      `(prose-done ((,c :foreground ,fg-dim)))
      `(org-done ((,c :foreground ,fg-dim)))
+     `(org-headline-done ((,c :foreground ,fg-dim)))
      `(org-ellipsis ((,c :foreground ,bg-main)))
      `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
      `(org-scheduled ((,c :foreground ,fg-main)))
@@ -357,9 +358,10 @@ particularly like the light ~modus-operandi~ theme.
      `(markdown-language-keyword-face ((,c :background ,bg-dim )))
      ;; line numbers
      `(line-number ((,c :background ,bg-main :height 0.8)))
-     `(line-number-current-line ((,c :background ,bg-main)))
+     `(line-number-current-line ((,c :inherit line-number :background ,bg-main)))
      ;; misc
      `(link ((,c :foreground ,fg-main :underline ,fg-main)))
+     `(org-link ((,c :inherit link)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
      `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
