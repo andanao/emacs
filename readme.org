@@ -361,7 +361,7 @@ particularly like the light ~modus-operandi~ theme.
      `(line-number-current-line ((,c :inherit line-number :background ,bg-main)))
      ;; misc
      `(link ((,c :foreground ,fg-main :underline ,fg-main)))
-     `(org-link ((,c :inherit link)))
+     `(org-link ((,c :foreground ,fg-main :underline ,fg-main)))
      `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
      ;; Make frame dividers invisible
      `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
@@ -814,6 +814,12 @@ on MELPA
    column-number-mode nil))
 #+end_src
 
+** dwim-shell-commands
+
+Run shell commands asynchronously
+#+begin_src emacs-lisp
+(use-package dwim-shell-command)
+#+end_src
 ** eglot
 emacs batteries included LSP mode
 
