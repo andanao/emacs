@@ -1070,7 +1070,11 @@ if I look through the manual closely but this works for now.
 ** multiple-cursors
 
 #+begin_src emacs-lisp
-(use-package multiple-cursors)
+(use-package multiple-cursors
+  :custom
+  (mc/always-run-for-all t)
+  :config
+  (define-key mc/keymap (kbd "C-g") 'mc/keyboard-quit))
 #+end_src
 
 ** nerd-icons
@@ -2592,6 +2596,8 @@ Mark symbols [[https://github.com/wolray/symbol-overlay][wolray/symbol-overlay]]
 #+begin_src emacs-lisp
 (use-package symbol-overlay
   :config
+
+  (define-key symbol-overlay-map (kbd "h") 'nil)
   (ads/leader-keys "s" symbol-overlay-map))
 #+end_src
 ** telephone-line
