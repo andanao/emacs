@@ -2587,6 +2587,13 @@ batteries included rust mode, builds upon rust-lang's rust-mode
 (use-package sudo-edit)
 #+end_src
 
+** symbol-overlay
+Mark symbols [[https://github.com/wolray/symbol-overlay][wolray/symbol-overlay]]
+#+begin_src emacs-lisp
+(use-package symbol-overlay
+  :config
+  (ads/leader-keys "s" symbol-overlay-map))
+#+end_src
 ** telephone-line
 #+begin_src emacs-lisp
 (use-package telephone-line
