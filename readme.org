@@ -1264,6 +1264,7 @@ Set custom org mode bindings and functions.
   "oo" 'ads/consult-org-outline
   "of" 'consult-outline
   "oh" 'consult-org-heading
+  "o TAB" 'org-cycle-global
   "ti" 'org-redisplay-inline-images
   "tI" 'org-toggle-inline-images
   "ns" 'org-narrow-to-subtree
