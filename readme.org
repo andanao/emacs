@@ -1397,28 +1397,28 @@ of everything that is there.
 (defun ads/monthly-new ()
   "New monthly review"
   (interactive)
-  (org-roam-dailies-find-today)
+  (find-file
+   (concat org-directory (format-time-string "%Y_%m_monthly_review.org")))
   (toggl-start-timer "start Monthly -p Admin")
-  (narrow-to-region (point-max) (point-max))
   (insert
    (format
 <<ads/monthly>>
-    (format-time-string "%Y-%m")))
+    (format-time-string "%B %Y")))
   (goto-char (point-min))
-  (org-id-get-create)
-  )
+  (org-id-get-create))
 
 (defun ads/monthly-current ()
   "Go to current monthly review"
   (interactive)
   (org-roam-node-visit
    (org-roam-node-from-title-or-alias
-    (format-time-string "%Y-%m Monthly Review")))
+    (format-time-string "%B %Y Monthly")))
   (org-narrow-to-subtree))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
-"* %s Monthly Review :monthly:
+"#+title:%s Monthly
+#+filetags: :monthly:
 
 ,** Theme
 #Beginning
@@ -1428,6 +1428,8 @@ of everything that is there.
 
 ,** Books Read
 #End
+(org-roam-ql-search
+'(and (tags "book") (properties COMPLETED "2025-06")))
 
 ,** Time Tracked
 #End
