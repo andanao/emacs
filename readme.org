@@ -1401,8 +1401,12 @@ of everything that is there.
   (toggl-start-timer "start Monthly -p Admin")
   (narrow-to-region (point-max) (point-max))
   (insert
+   (format
 <<ads/monthly>>
-   ))
+    (format-time-string "%Y-%m")))
+  (goto-char (point-min))
+  (org-id-get-create)
+  )
 
 (defun ads/monthly-current ()
   "Go to current monthly review"
@@ -1414,7 +1418,7 @@ of everything that is there.
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
-"* Monthly Review :monthly:
+"* %s Monthly Review :monthly:
 
 ,** Theme
 #Beginning
@@ -3241,4 +3245,11 @@ work 100% of the time when called from startup.
 
 #+begin_src emacs-lisp
 (load-file (concat git-directory "konfig/work.el"))
+#+end_src
+
+** Dwim commands
+
+#+begin_src emacs-lisp
+(ads/leader-keys
+  "tC" 'dwim-shell-commands-macos-caffeinate)
 #+end_src
