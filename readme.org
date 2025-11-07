@@ -938,6 +938,8 @@ Surround a visula selection with input
 Quickly create links to  files and commits
 #+begin_src emacs-lisp
 (use-package git-link
+  :custom
+  (git-link-use-single-line-number 'nil)
   :config
   (ads/leader-keys
     "gf" 'git-link
