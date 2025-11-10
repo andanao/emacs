@@ -1352,6 +1352,7 @@ daily and fill it in with some basic information.
   "start weekly review process"
   (interactive)
   (toggl-start-timer "start Weekly -p Admin")
+  (browse-url "https://app.ynab.com")
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("weekly"))
   (package-upgrade-all)
