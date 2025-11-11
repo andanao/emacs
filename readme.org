@@ -2004,6 +2004,7 @@ prompts for selection, then jumps to the first upcoming instance."
           (":CATEGORY:" . "󰕲")
           (":SOURCE:" . "")
           (":COMPLETED:" . "󱓴")
+          (":RECCOMENDER:" . "")
           (":MEDIUM:" . "󱚋")
           (":CREATED:" . "󰃳")
           (":LOGBOOK:" . "")
