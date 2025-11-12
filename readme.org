@@ -1981,9 +1981,25 @@ prompts for selection, then jumps to the first upcoming instance."
   (org-modern-table-vertical 2)
   (org-modern-table-horizontal 0.1)
   (org-modern-block-name nil)
+  (org-modern-block-mode nil)
   (org-modern-list '((?- . "•")  (?+ . "◦")))
-  :config
-  (global-org-modern-mode))
+  :hook
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+#+end_src
+
+** org-modern-indent
+small package to make the indentation work and visual fill column work in org modern
+
+
+#+begin_src emacs-lisp
+(use-package org-modern-indent
+  :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+  :custom
+  (org-startup-indented t)
+  (org-indent-indentation-per-level 2)
+  :config ; add late to hook
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 #+end_src
 
 ** org-prettify-symbols
@@ -2873,6 +2889,19 @@ works much smoother on both Windows and Linux.
    :keymaps 'vertico-map
    "C-j" 'vertico-next
    "C-k" 'vertico-previous))
+#+end_src
+
+** visual-fill-column
+
+#+begin_src emacs-lisp
+(use-package visual-fill-column
+  :custom
+  (visual-fill-column-center-text t)
+  (visual-fill-column-width 130)
+  (global-visual-fill-column-mode t)
+  :config
+  (ads/leader-keys "tf" 'visual-fill-column-mode)
+  )
 #+end_src
 
 ** which-key
