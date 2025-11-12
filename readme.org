@@ -2165,7 +2165,9 @@ simplifies the task of adding a tag and ignoring files under daily
              (org-roam-file-p buffer-file-name))
     (save-excursion
       (goto-char (point-min))
-      (if (ads/org-todo-p)
+      (if (and (ads/org-todo-p)
+               (not (member "project" (org-roam-node-tags (org-roam-node-at-point))))
+               (not (member "project_h" (org-roam-node-tags (org-roam-node-at-point)))))
 	  (org-roam-tag-add '("agenda"))
 	  (org-roam-tag-remove '("agenda"))))))
 
