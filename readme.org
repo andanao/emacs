@@ -1,5 +1,6 @@
 #+TITLE: Emacs Literate Configuration
 #+STARTUP: overview
+#+TAGS: external(e) core(c)
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
@@ -574,6 +575,8 @@ Icons are a font so remember to call ~(all-the-icons-install-fonts)~
 (use-package all-the-icons-ibuffer
   :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 #+end_src
+
+
 ** anki-editor
 [[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
 anki workflows and inspired me to keep using anki instead of an emacs specific
@@ -838,7 +841,7 @@ emacs batteries included LSP mode
   ;; eglot-events-buffer-size 0
   )
 #+end_src
-** TODO emojify
+** emojify
 [[https://github.com/iqbalansari/emacs-emojify?tab=readme-ov-file][emojify]] improves emoji usage in EMACS
 
 #+begin_src emacs-lisp
@@ -863,7 +866,7 @@ emacs batteries included LSP mode
     "ie" 'emojify-insert-emoji))
 #+end_src
 
-** evil
+** evil                                                            :core:
 #+begin_src emacs-lisp
 (use-package evil
   :demand t
@@ -1036,7 +1039,7 @@ if I look through the manual closely but this works for now.
    "gU" 'magit-unstage))
 #+end_src
 
-** marginalia
+** marginalia                                                      :core:
 
 #+begin_src emacs-lisp
 (use-package marginalia
@@ -1144,7 +1147,7 @@ Major mode for reading EPUB files in Emacs
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+end_src
 
-** orderless
+** orderless                                                       :core:
 
 #+begin_src emacs-lisp
 (use-package orderless
@@ -2876,7 +2879,7 @@ works much smoother on both Windows and Linux.
     (ultra-scroll-mode 1)))
 #+end_src
 
-** vertico
+** vertico                                                         :core:
 
 #+begin_src emacs-lisp
 (use-package vertico
