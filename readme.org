@@ -884,6 +884,7 @@ emacs batteries included LSP mode
 
   :config
   (general-define-key :states 'insert "C-g" 'evil-normal-state)
+  (general-define-key "C-;" 'evil-switch-to-windows-last-buffer)
 
   ;; Use visual line motions even outside of visual-line mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
