@@ -3340,5 +3340,6 @@ work 100% of the time when called from startup.
 
 #+begin_src emacs-lisp
 (ads/leader-keys
+  "tm" 'dwim-shell-commands-macos-toggle-menu-bar-autohide
   "tC" 'dwim-shell-commands-macos-caffeinate)
 #+end_src
