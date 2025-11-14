@@ -555,6 +555,18 @@ The DWIM behaviour of this command is as follows:
     )
 #+end_src
 
+*** Toggle frame decoration
+#+begin_src emacs-lisp
+(defun ads/toggle-frame-decorations ()
+  "Toggle frame decorations (title bar and borders)"
+  (interactive)
+  (let* ((current-state (frame-parameter nil 'undecorated))
+         (new-state (not current-state)))
+    (set-frame-parameter nil 'undecorated new-state)
+    (message "Frame decorations %s" (if new-state "hidden" "shown"))))
+(ads/leader-keys "tw" 'ads/toggle-frame-decorations) ;; Toggle window
+#+end_src
+
 * Packages
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
