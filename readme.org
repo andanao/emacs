@@ -1992,7 +1992,7 @@ prompts for selection, then jumps to the first upcoming instance."
   (org-agenda-finalize . org-modern-agenda))
 #+end_src
 
-** org-modern-indent
+*** org-modern-indent
 small package to make the indentation work and visual fill column work in org modern
 
 
@@ -2734,7 +2734,7 @@ Mark symbols [[https://github.com/wolray/symbol-overlay][wolray/symbol-overlay]]
 )
 #+end_src
 
-** toggl time tracking                                           :external:
+** toggl time tracking                                         :external:
 
 I use [[https://track.toggl.com][toggl track]] to track my time, there isn't an emacs package for it but
 there's a decently well made CLI for it.  This requires an external package but
@@ -2907,6 +2907,42 @@ works much smoother on both Windows and Linux.
   (ads/leader-keys "tf" 'visual-fill-column-mode)
   )
 #+end_src
+
+** vterm                                                         :external:
+Full fledged terminal, works great, now I never have to leave hotel california.
+
+Requires external packages:
+- ~libvterm~
+- ~cmake~
+- ~libtool-bin~
+
+#+begin_src emacs-lisp
+(use-package vterm
+  :config
+  (defun ads/vterm-ssh-connect (host)
+    "Open vterm and connect to HOST via SSH"
+    (interactive "sSSH host: ")
+    (let ((vterm-buffer-name (format "vterm-%s" host)))
+      (vterm)
+      (vterm-send-string (format "ssh %s\n" host))))
+
+  (ads/leader-keys
+    "m" 'vterm))
+#+end_src
+
+*** vterm-toggle
+
+#+begin_src emacs-lisp
+(use-package vterm-toggle
+  :after vterm
+  :custom
+  (vterm-toggle-scope 'project)
+  :config
+  (general-define-key "C-:" 'vterm-toggle)
+  (ads/leader-keys
+    ";" 'vterm-toggle))
+#+end_src
+
 
 ** which-key
 
