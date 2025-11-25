@@ -1565,7 +1565,7 @@ don't feel the need to use lots of the evil bindings
   (org-appear-autolinks t)
   (org-appear-autoentities t)
   (org-appear-autosubmarkers t)
-  (org-appear-autokeywords t)
+  (org-appear-autokeywords nil)
   :hook
   ;; (org-mode . org-appear-mode)
   (evil-insert-state-exit . (lambda ()
@@ -2028,6 +2028,8 @@ small package to make the indentation work and visual fill column work in org mo
           ("CLOSED:" . "󰃯")
           ("SCHEDULED:" . "󰃭")
           ("DEADLINE:" . "󰨱")
+          ("PROPERTY:" . "󱌣")
+          ("STARTUP:" . "开")
           ("RESULTS:" . "󰘍")
           (":results" . "󰘍")
 
