@@ -761,6 +761,31 @@ on MELPA
     "yh" 'copy-as-format-html))
 #+end_src
 
+** copy (yank) as markdown
+This is really waht I wanted but copy as markdown is still good
+
+#+begin_src emacs-lisp
+(defun ads/yank-region-as-markdown (start end)
+    "Convert region from START to END to markdown and copy to kill ring.
+  If the buffer is in org-mode, converts org syntax to markdown.
+  Otherwise, copies the region as-is."
+    (interactive "r")
+    (let ((text (buffer-substring-no-properties start end))
+          (markdown-text))
+      (if (derived-mode-p 'org-mode)
+          ;; Convert org to markdown
+          (with-temp-buffer
+            (insert text)
+            (org-mode)
+            (Setq markdown-text (org-export-string-as text 'md t))
+            (kill-new markdown-text)
+            (message "Region yanked as markdown (%d chars)" (length markdown-text)))
+        ;; Not in org-mode, just copy as-is
+        (kill-new text)
+        (message "Region yanked (%d chars)" (length text)))))
+(ads/leader-keys "oy" 'ads/yank-region-as-markdown)
+#+end_src
+
 ** corfu
 
 #+begin_src emacs-lisp
