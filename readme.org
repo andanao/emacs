@@ -750,17 +750,6 @@ on MELPA
   "C-b" 'consult-bookmark)
 #+end_src
 
-** copy-as-format
-
-#+begin_src emacs-lisp
-(use-package copy-as-format
-  :config
-  (ads/leader-keys
-    "y" '(:ignore t :wk "copy")
-    "yy" 'copy-as-format-markdown
-    "yh" 'copy-as-format-html))
-#+end_src
-
 ** copy (yank) as markdown
 This is really waht I wanted but copy as markdown is still good
 
