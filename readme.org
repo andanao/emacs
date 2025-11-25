@@ -1193,7 +1193,7 @@ Major mode for reading EPUB files in Emacs
   (org-fast-tag-selection-single-key t)
   (org-blank-before-new-entry '((heading . 1) (plain-list-item . nil)))
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
-  (org-refile-use-outline-path 'file)
+  (org-refile-use-outline-path 'title)
   (org-outline-path-complete-in-steps nil)
   (calendar-week-start-day 1)
   :hook
