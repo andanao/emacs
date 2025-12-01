@@ -1997,13 +1997,14 @@ prompts for selection, then jumps to the first upcoming instance."
   :custom
   (org-modern-fold-stars
    '(("▸ " . "▾ ")
-     ("  ▸ " . "  ▾ ")
-     ("    ▸ " . "    ▾ ")
-     ("      ▸ " . "      ▾ ")
-     ("        ▸ " . "        ▾ ")
-     ("          ▸ " . "          ▾ ")
-     ("            ▸ " . "            ▾ ")
-     ("              ▸ " . "              ▾ ")))
+     ;; ("  ▸ " . "  ▾ ")
+     ;; ("    ▸ " . "    ▾ ")
+     ;; ("      ▸ " . "      ▾ ")
+     ;; ("        ▸ " . "        ▾ ")
+     ;; ("          ▸ " . "          ▾ ")
+     ;; ("            ▸ " . "            ▾ ")
+     ;; ("              ▸ " . "              ▾ ")
+     ))
   (org-modern-checkbox
       '((?X . " ")
 	(?- . " ")
