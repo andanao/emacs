@@ -1453,32 +1453,32 @@ of everything that is there.
 "#+title:%s Monthly
 #+filetags: :monthly:
 
-,** Theme
+,* Theme
 #Beginning
 
-,** Goals
+,* Goals
 #Beginning
 
-,** Books Read
+,* Books Read
 #End
 (org-roam-ql-search
-'(and (tags "book") (properties COMPLETED "2025-06")))
+'(and (tags \"book\") (properties COMPLETED \"2025-06\")))
 
-,** Time Tracked
+,* Time Tracked
 #End
 
-,** Thoughts had
+,* Thoughts had
 #End
 
-,** Projects
+,* Projects
 
-,*** Active
+,** Active
 #Beginning
 
-,*** Completed
+,** Completed
 #End
 
-,** Reflection
+,* Reflection
 #End
 
 "
