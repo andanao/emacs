@@ -2467,14 +2467,29 @@ will move the current note to work/personal
 #+begin_src emacs-lisp
 (defun org-move-note-with-attatchments (file destination)
   "Move note and it's attatchment directory to a new place"
+  (let ((attach-dirs '()))
   (rename-file file (concat destination "/"))
-  (when (org-attach-dir)
-    (let*
-       ((attach-dir (org-attach-dir))
-        (attach-dir-new
-         (concat destination "/data" (nth 1 (split-string attach-dir "data")))))
-      (make-directory attach-dir-new t)
-      (rename-file attach-dir attach-dir-new t))))
+
+  ;; make list of attach dirs
+  (org-with-wide-buffer
+   (goto-char (point-min))
+   ;; At root
+   (when (org-attach-dir)
+     (push (org-attach-dir) attach-dirs))
+
+   ;; At children
+   (while (re-search-forward "^*" nil t)
+     (when (org-attach-dir)
+       (push (org-attach-dir) attach-dirs))))
+
+  ;; move all files
+  (dolist
+      (attach-dir attach-dirs)
+    (let
+        ((new-dir (concat destination "/data" (nth 1 (split-string attach-dir "data")))))
+      (make-directory new-dir t)
+      (rename-file attach-dir new-dir t)))))
+
 
 (defun ads/refile-move-work ()
   "move org file to work"
