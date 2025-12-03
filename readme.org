@@ -867,6 +867,7 @@ emacs batteries included LSP mode
   ;; eglot-events-buffer-size 0
   )
 #+end_src
+
 ** emojify
 [[https://github.com/iqbalansari/emacs-emojify?tab=readme-ov-file][emojify]] improves emoji usage in EMACS
 
@@ -1040,6 +1041,10 @@ if I look through the manual closely but this works for now.
   :config
   (transient-bind-q-to-quit)
   (setopt magit-format-file-function #'magit-format-file-nerd-icons)
+  (defun ads/git-main ()
+    "Checkout main"
+    (interactive)
+    (magit-checkout "main"))
   (defun ads/git-lazy ()
     (interactive)
     (save-buffer)
@@ -1057,6 +1062,7 @@ if I look through the manual closely but this works for now.
    "gg" 'magit-status
    "gk" 'magit-commit
    "gl" 'ads/git-lazy
+   "gm" 'ads/git-main
    "go" 'ads/git-amend
    "gp" 'magit-push
    "gP" 'vc-push
