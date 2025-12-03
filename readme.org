@@ -1445,8 +1445,7 @@ of everything that is there.
   (interactive)
   (org-roam-node-visit
    (org-roam-node-from-title-or-alias
-    (format-time-string "%B %Y Monthly")))
-  (org-narrow-to-subtree))
+    (format-time-string "%B %Y Monthly"))))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
@@ -2559,6 +2558,7 @@ Getting books read in the last month:
   (ads/leader-keys
     "oq" 'org-roam-ql-search))
 #+end_src
+
 ** org-tidy
 [[https://github.com/jxq0/org-tidy][org-tidy]] will automatically hide property drawers
 
@@ -2761,6 +2761,14 @@ Mark symbols [[https://github.com/wolray/symbol-overlay][wolray/symbol-overlay]]
 (setq telephone-line-evil-use-short-tag t)
 
 )
+#+end_src
+
+** time-zones
+
+Nice little package from xenodium for showing time zones
+
+#+begin_src emacs-lisp
+(use-package time-zones)
 #+end_src
 
 ** toggl time tracking                                         :external:
