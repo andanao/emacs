@@ -1053,7 +1053,7 @@ if I look through the manual closely but this works for now.
 
   (ads/leader-keys
    "g" '(:ignore t :wk "git")
-   "gd" 'magit-dispatch
+   "C-g" 'magit-dispatch
    "gg" 'magit-status
    "gk" 'magit-commit
    "gl" 'ads/git-lazy
