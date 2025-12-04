@@ -704,21 +704,12 @@ on MELPA
 #+begin_src emacs-lisp
 (use-package bookmark+
   :vc (:url "https://github.com/emacsmirror/bookmark-plus"
-       :branch "master")
-  ;; :custom
-  ;; Prevent bookmark+ from polluting custom.el
-  ;; (bookmark-default-file "~/.emacs.d/bookmarks")
-  ;; (bmkp-last-as-first-bookmark-file nil)
-  )
-(ads/leader-keys
-  "j" '(:ignore t :which-key "bookmark")
-  "bb" 'consult-bookmark
-  "bs" 'bookmark-set
-  "br" 'bookmark-rename)
+       :branch "master"))
 (customize-set-variable 'bookmark-default-file '"~/.emacs.d/bookmarks")
 (customize-set-variable 'bmkp-last-bookmark-file '"~/.emacs.d/bookmarks")
 (customize-set-variable 'bmkp-last-as-first-bookmark-file 'nil)
 #+end_src
+
 ** cape
 [[https://github.com/minad/cape][CAPE]] (Completion At Point Extensions)
 
@@ -747,7 +738,7 @@ on MELPA
   "SPC" 'consult-buffer
   "C-;" 'consult-register-store
   "r" 'consult-ripgrep
-  "C-b" 'consult-bookmark)
+  "b" 'consult-bookmark)
 #+end_src
 
 ** copy (yank) as markdown
