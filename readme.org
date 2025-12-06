@@ -757,7 +757,7 @@ This is really waht I wanted but copy as markdown is still good
           (with-temp-buffer
             (insert text)
             (org-mode)
-            (Setq markdown-text (org-export-string-as text 'md t))
+            (setq markdown-text (org-export-string-as text 'md t))
             (kill-new markdown-text)
             (message "Region yanked as markdown (%d chars)" (length markdown-text)))
         ;; Not in org-mode, just copy as-is
