@@ -454,7 +454,7 @@ The DWIM behaviour of this command is as follows:
 
 #+begin_src emacs-lisp
 (ads/leader-keys
-  "C-r" 'replace-regexp
+  "r" 'replace-regexp
   "C-j" 'jump-to-register)
 #+end_src
 
@@ -737,7 +737,7 @@ on MELPA
   "C-SPC" 'consult-buffer
   "SPC" 'consult-buffer
   "C-;" 'consult-register-store
-  "r" 'consult-ripgrep
+  "C-r" 'consult-ripgrep
   "b" 'consult-bookmark)
 #+end_src
 
