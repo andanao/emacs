@@ -2149,6 +2149,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
 
   (ads/leader-keys
     "f" '(:ignore t :wk "roam")
+    "d" 'org-roam-node-find
     "ff" 'org-roam-node-find
     "fD" '((lambda () (interactive)
 	     (org-roam-db-sync)
