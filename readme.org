@@ -418,6 +418,10 @@ key bindings
   :wk-full-keys nil
   :prefix "SPC"
   :global-prefix "C-SPC")
+
+(defmacro ads/leader-def (key desc &rest body)
+  "Define a leader key KEY with description DESC and BODY as the lambda."
+  `(ads/leader-keys ,key '((lambda () (interactive) ,@body) :which-key ,desc)))
 #+end_src
 
 #+begin_src emacs-lisp :lexical t
@@ -534,12 +538,10 @@ The DWIM behaviour of this command is as follows:
 
 
 #+begin_src emacs-lisp
-(ads/leader-keys
-  "c" '(:ignore t :which-key "config")
-  "cc" '((lambda () (interactive) (find-file ads/config-file))
-	 :which-key "open config")
-  "cI" '((lambda () (interactive) (load-file user-init-file))
-	 :which-key "load init"))
+(ads/leader-keys "c" '(:ignore t :which-key "config"))
+
+(ads/leader-def "cc" "emacs config" (find-file ads/config-file))
+(ads/leader-def "cI" "load init" (load-file user-init-file))
 #+end_src
 
 ** Toggles ~t~
@@ -1285,8 +1287,8 @@ Set custom org mode bindings and functions.
   "oM" 'org-mode
   "oS" 'org-save-all-org-buffers
   "C-c" 'org-clock-goto
-  "C-s" 'ads/org-scratch
-  "od" '((lambda () (interactive) (find-file org-directory)) :wk "org-directory"))
+  "C-s" 'ads/org-scratch)
+(ads/leader-def "od" "dired org" (find-file org-directory))
 
 (ads/leader-keys
   :major-modes '(org-mode)
@@ -3098,9 +3100,7 @@ order to keep the init files working properly copy the config files to
 #+end_src
 
 #+begin_src emacs-lisp
-(ads/leader-keys
-  "cW" '((lambda () (interactive) (find-file win/.emacs.d))
-	 :wk "Dired .emacs.d"))
+(ads/leader-def "cW" "Dired .emacs.d" (find-file win/.emacs.d))
 #+end_src
 
 ** server mode
@@ -3295,19 +3295,9 @@ ignoreing a projects ~.gitignore~
 ** nixconfig
 jump to my nix config files
 #+begin_src emacs-lisp
-(ads/leader-keys
-  "cn" '((lambda () (interactive)
-           (projectile-switch-project-by-name "~/nix"))
-	 :which-key "nix config"))
-
-(ads/leader-keys
-  "ch" '((lambda () (interactive)
-           (projectile-switch-project-by-name "~/home-manager"))
-	 :which-key "home-manager"))
+(ads/leader-def "cn" "nix config" (projectile-switch-project-by-name "~/nix"))
+(ads/leader-def "ch" "home-manager" (projectile-switch-project-by-name "~/home-manager"))
 #+end_src
-
-
-
 
 * Mac
 :PROPERTIES:
@@ -3344,19 +3334,9 @@ jump to my nix config files
 ** nixconfig
 jump to my nix config files
 #+begin_src emacs-lisp
-(ads/leader-keys
-  "cn" '((lambda () (interactive)
-           (projectile-switch-project-by-name "~/nix"))
-	 :which-key "nix config"))
-
-(ads/leader-keys
-  "ch" '((lambda () (interactive)
-           (projectile-switch-project-by-name "~/home-manager"))
-	 :which-key "home-manager"))
+(ads/leader-def "cn" "nix config" (projectile-switch-project-by-name "~/nix"))
+(ads/leader-def "ch" "home-manager" (projectile-switch-project-by-name "~/home-manager"))
 #+end_src
-
-
-
 
 
 ** Menu bar
