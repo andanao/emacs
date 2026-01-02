@@ -1384,11 +1384,11 @@ daily and fill it in with some basic information.
   (browse-url "https://app.ynab.com")
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("weekly"))
-  (package-upgrade-all)
   (goto-char (point-max))
   (insert
 <<ads/weekly>>
-   ))
+   )
+ (package-upgrade-all))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/weekly
