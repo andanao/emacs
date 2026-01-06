@@ -1493,6 +1493,7 @@ of everything that is there.
       org-agenda-persistent-filter t
       org-agenda-scheduled-leaders '("   " "%2dd")
       org-agenda-skip-scheduled-if-done nil
+      org-agenda-sticky t  ; use bury-buffer instead of agenda-quit
       )
 
 (setq org-agenda-prefix-format
