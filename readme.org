@@ -1065,6 +1065,14 @@ if I look through the manual closely but this works for now.
    "gU" 'magit-unstage))
 #+end_src
 
+** magit-pre-commit
+
+#+begin_src emacs-lisp
+(use-package magit-pre-commit
+  :vc (:url  "https://github.com/DamianB-BitFlipper/magit-pre-commit.el":rev :newest)
+  :after magit)
+#+end_src
+
 ** marginalia                                                      :core:
 
 #+begin_src emacs-lisp
