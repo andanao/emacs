@@ -1377,7 +1377,8 @@ before starting the day
   (goto-char (point-min))
   (org-clock-in)
   (delete-other-windows)
-  (toggl-start-timer "start GoodMorning -p Admin"))
+  ;; (toggl-start-timer "start GoodMorning -p Admin")
+  )
 #+end_src
 
 *** org weekly review
