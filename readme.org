@@ -691,6 +691,7 @@ Also install MiKTex to generate PDFs
 ** auto-revert
 
 #+begin_src emacs-lisp
+(setopt revert-without-query '(".*"))
 (use-package autorevert
   :custom
   (auto-revert-interval 0.1 "Instantaneously revert")
