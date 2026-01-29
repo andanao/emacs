@@ -1240,7 +1240,7 @@ Major mode for reading EPUB files in Emacs
 #+end_src
 *** org-todo-keywords
 Projects
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-to-list 'org-todo-keywords
 '(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
 		  "|" "DONE(d!)" "CANC(k!)") t)
@@ -1255,6 +1255,15 @@ Meetings
 '(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
 		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)") t)
 #+end_src
+
+
+Code
+#+begin_src emacs-lisp
+(add-to-list 'org-todo-keywords
+'(sequence "DEV(e!)" "REV(v!)"
+		  "|" "DONE(d!)" ) t)
+#+end_src
+
 *** org keybindings
 :PROPERTIES:
 :ID:       b675fb83-50bf-4177-9082-f9c039befbb9
