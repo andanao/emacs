@@ -144,13 +144,13 @@ On corporate machines I've been unable to get elpaca/straight working, for linux
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (setq use-package-always-ensure t)
-(when (string= system-type 'gnu/linux)
+(when (eq system-type 'gnu/linux)
   (setq use-package-always-demand t))
 #+end_src
 ** Backup files
 Set these so emacs doesn't litter files everywhere.  At some point I might check
 out [[https://github.com/emacscollective/no-littering][no-littering]] but this works for now
-#+begin_src emacs-li
+#+begin_src emacs-lisp
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 (setq projectile-known-projects-file (expand-file-name "tmp/projectile-bookmarks.eld" user-emacs-directory)
       lsp-session-file (expand-file-name "tmp/.lsp-session-v1" user-emacs-directory))
@@ -745,7 +745,7 @@ on MELPA
 #+end_src
 
 ** copy (yank) as markdown
-This is really waht I wanted but copy as markdown is still good
+This is really what I wanted but copy as markdown is still good
 
 #+begin_src emacs-lisp
 (defun ads/yank-region-as-markdown (start end)
@@ -844,9 +844,9 @@ Run shell commands asynchronously
 (use-package dwim-shell-command)
 #+end_src
 ** eglot
-emacs batteries included LSP mode
+emacs batteries included LSP mode - disabled in favor of lsp-mode
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package eglot
   :hook
   (rust-ts-mode . eglot-ensure)
@@ -964,7 +964,7 @@ Quickly create links to  files and commits
 #+begin_src emacs-lisp
 (use-package git-link
   :custom
-  (git-link-use-single-line-number 'nil)
+  (git-link-use-single-line-number nil)
   :config
   (ads/leader-keys
     "gf" 'git-link
@@ -1028,6 +1028,69 @@ if I look through the manual closely but this works for now.
 (use-package kdl-mode)
 #+end_src
 
+** lsp-mode
+[[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] - Language Server Protocol client for Emacs
+
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  (rust-ts-mode . lsp-deferred)
+  (python-ts-mode . lsp-deferred)
+  (c-ts-mode . lsp-deferred)
+  (c++-ts-mode . lsp-deferred)
+  (lsp-mode . lsp-enable-which-key-integration)
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-idle-delay 0.5)
+  (lsp-log-io nil)
+  (lsp-completion-provider :capf)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-modeline-diagnostics-enable t)
+  :config
+  (ads/leader-keys
+    :keymaps 'lsp-mode-map
+    "l" '(:ignore t :which-key "lsp")
+    "la" 'lsp-execute-code-action
+    "ld" 'lsp-find-definition
+    "lD" 'lsp-find-declaration
+    "le" 'lsp-treemacs-errors-list
+    "lf" 'lsp-format-buffer
+    "lh" 'lsp-describe-thing-at-point
+    "li" 'lsp-find-implementation
+    "ln" 'lsp-rename
+    "lr" 'lsp-find-references
+    "ls" 'lsp-signature-help
+    "lS" 'lsp-restart-workspace))
+#+end_src
+
+** lsp-ui
+UI enhancements for lsp-mode
+
+#+begin_src emacs-lisp
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-doc-show-with-mouse t)
+  (lsp-ui-sideline-enable t)
+  (lsp-ui-sideline-show-diagnostics t)
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-peek-enable t))
+#+end_src
+
+** lsp-rust
+Rust-analyzer configuration for lsp-mode. Project-specific overrides can be
+set via .dir-locals.el (see kode-dir-locals.el for Bazel projects).
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'lsp-rust
+  ;; Use stable toolchain rust-analyzer by default
+  (setq lsp-rust-analyzer-server-command
+        (list (expand-file-name "~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer"))))
+#+end_src
+
 ** magit
 
 #+begin_src emacs-lisp
@@ -1080,9 +1143,8 @@ if I look through the manual closely but this works for now.
 (use-package marginalia
   :ensure t
   :demand t
-  :hook (after-init . marginalia-mode)
-  :config
-  (marginalia-mode 1))
+  :after (vertico orderless)
+  :hook (after-init . marginalia-mode))
 #+end_src
 ** markdown
 #+begin_src emacs-lisp
@@ -1187,6 +1249,7 @@ Major mode for reading EPUB files in Emacs
 #+begin_src emacs-lisp
 (use-package orderless
   :ensure t
+  :after vertico
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
@@ -1375,7 +1438,7 @@ before starting the day
 
 #+begin_src emacs-lisp :noweb yes
 (defun good-morning ()
-  "Good morning funciton"
+  "Good morning function"
   (interactive)
   (org-roam-dailies-find-today)
    ; don't keep this here for long but for some reason calling daily doesnt make a node
@@ -2350,7 +2413,7 @@ get today's daily file and if not make it
 #+end_src
 *** roam-daily-archive
 I want to archive small tasks to dailies but also link back to where the files
-came from adding an ~:ARCHIVE_NODE:~ property.  Additionally move the attatched data if there
+came from adding an ~:ARCHIVE_NODE:~ property.  Additionally move the attached data if there
 is any
 
 #+begin_src emacs-lisp
@@ -2391,7 +2454,7 @@ is any
 
 
 #+begin_src emacs-lisp
-(defun org-archive-with-attatchments ()
+(defun org-archive-with-attachments ()
   (when (org-attach-dir)
     (let*
        ((attach-dir (org-attach-dir))
@@ -2400,7 +2463,7 @@ is any
          (concat destination "data" (nth 1 (split-string attach-dir "data")))))
       (make-directory attach-dir-new t)
       (rename-file attach-dir attach-dir-new t))))
-(advice-add 'org-archive-subtree :before 'org-archive-with-attatchments)
+(advice-add 'org-archive-subtree :before 'org-archive-with-attachments)
 #+end_src
 *** roam-insert-immediate
 While writing and not wanting to create a rabbit hole for myself I want to make
@@ -2476,12 +2539,12 @@ and personal.  On my personal computers ~~/git/org/personal~ is just ~~/git/org~
 which is all synced via git to my work computer.  When new files are created org
 files are simply placed in the ~org-directory~ rather than deal with choosing
 where they go while making a new note.  This makes things a bit of a pain if I
-have to move a file somewhere else and there are attatchments, this function
+have to move a file somewhere else and there are attachments, this function
 will move the current note to work/personal
 
 #+begin_src emacs-lisp
-(defun org-move-note-with-attatchments (file destination)
-  "Move note and it's attatchment directory to a new place"
+(defun org-move-note-with-attachments (file destination)
+  "Move note and it's attachment directory to a new place"
   (let ((attach-dirs '()))
   (rename-file file (concat destination "/"))
 
@@ -2509,14 +2572,14 @@ will move the current note to work/personal
 (defun ads/refile-move-work ()
   "move org file to work"
   (interactive)
-  (org-move-note-with-attatchments buffer-file-name (concat org-directory "k2"))
+  (org-move-note-with-attachments buffer-file-name (concat org-directory "k2"))
   (kill-buffer)
   (find-file (car (directory-files org-directory t ".org"))))
 
 (defun ads/refile-move-personal ()
   "move org file to work"
   (interactive)
-  (org-move-note-with-attatchments buffer-file-name (concat org-directory "personal"))
+  (org-move-note-with-attachments buffer-file-name (concat org-directory "personal"))
   (kill-buffer)
   (find-file org-directory)
   (find-file (car (directory-files org-directory t ".org"))))
@@ -2675,10 +2738,7 @@ reference
   "list of directories or files that will be opened in read only mode")
 
 (defun find-file-read-only-directories ()
-"""
-start buffer in read only mode if file in a child directory
- of in any of the directores defined in read-only-directories
-"""
+  "Start buffer in read only mode if file is in a child directory of any of the directories defined in read-only-directories."
   (dolist (read-only-directory read-only-directories)
     (when (string-search read-only-directory buffer-file-name)
       (read-only-mode))))
@@ -2725,7 +2785,7 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
 (ads/leader-keys
   :keymaps 'rust-mode-map
   "l" '(:ignore t :which-key "rust")
-  "lc" 'rust-run-clippy
+  "ly" 'rust-run-clippy
   "lc" 'rust-compile
   "lk" 'rust-check
   "lr" 'rust-run
@@ -2742,10 +2802,10 @@ batteries included rust mode, builds upon rust-lang's rust-mode
 
 #+begin_src emacs-lisp
 (use-package rustic
-  :after (rust-mode eglot)
+  :after (rust-mode lsp-mode)
   :custom
   (rustic-cargo-use-last-stored-arguments t)
-  (rustic-lsp-client 'eglot))
+  (rustic-lsp-client 'lsp-mode))
 #+end_src
 ** save-hist
 #+begin_src emacs-lisp
@@ -2851,7 +2911,7 @@ cargo install toggl
 (defun toggl-start-timer (toggl-args)
   "Start timer passing toggl-args to cli"
   (async-shell-command
-   (concat "toggl "toggl-args)
+   (concat "toggl " toggl-args)
    "toggl-start")
   (message toggl-args))
 
@@ -2960,7 +3020,6 @@ works much smoother on both Windows and Linux.
   :demand t
   :hook (after-init . vertico-mode)
   :config
-  (vertico-mode 1)
   (general-define-key
    :states '(insert)
    :keymaps 'vertico-map
@@ -3254,9 +3313,9 @@ start-process-variable nil)~
     (start-process "cmd" nil "cmd.exe" "/C" cmd-str)))
 
 #+end_src
-** org-attatch dir in windows explorer
+** org-attach dir in windows explorer
 #+begin_src emacs-lisp
-(defun org-attatch-open-win-explorer ()
+(defun org-attach-open-win-explorer ()
   (interactive)
   (w32-shell-execute 1 (org-attach-dir-get-create)))
 #+end_src
