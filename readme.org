@@ -2161,6 +2161,7 @@ small package to make the indentation work and visual fill column work in org mo
           (":tangle" . "󱓡")
           (":noweb" . "󰪎")
           (":noweb-ref" . "")
+          (":session" . "󱇝")
           (":mkdirp" . "")
           (":comments" . "󰆉")
           ("header-args:" . "󰉴")
@@ -2714,6 +2715,9 @@ disabled for now because of weird org interactionsg
 
   :custom
   (python-shell-interpreter "python3"))
+
+(setopt python-indent-offset 4
+        python-indent-guess-indent-offset-verbose nil)
 #+end_src
 
 ** rainbow-delimiters
