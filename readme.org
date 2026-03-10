@@ -792,6 +792,26 @@ This is really what I wanted but copy as markdown is still good
     (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
 
+** csv mode
+
+#+begin_src emacs-lisp
+(use-package csv-mode
+    :mode "\\.csv\\'"
+    :hook
+    (csv-mode . csv-align-mode)
+    (csv-mode . csv-header-line)
+    (csv-mode . (lambda ()
+                  (visual-fill-column-mode -1)
+                  (setq-local truncate-lines t)))
+    :bind (:map csv-mode-map
+                ("C-c C-a" . csv-align-fields)
+                ("C-c C-z" . csv-unalign-fields))
+    :custom
+    (csv-align-style 'auto)
+    (csv-align-padding 2)
+    (csv-align-max-width 100) ;; a lot of big csv rows
+    (csv-separators '("," ";" "\t")))
+#+end_src
 ** Dired
 
 #+begin_src emacs-lisp
