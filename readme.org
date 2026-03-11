@@ -532,6 +532,9 @@ The DWIM behaviour of this command is as follows:
    "kl" 'delete-window
    "k," 'winner-undo
    "ki" 'winner-redo)
+
+;; bound to suspend-frame by default
+(global-unset-key (kbd "C-x C-z"))
 #+end_src
 
 ** config ~c~
