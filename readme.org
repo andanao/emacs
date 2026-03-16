@@ -176,7 +176,7 @@ Suggested by [[lsp-mode]]
 
 #+begin_src emacs-lisp
 ;(set-background-color "#000000") ;; don't blind me at startup
-(setq
+(setopt
  cursor-in-non-selected-windows nil
  large-file-warning-threshold 100000000 ;; 100Mb
  help-window-select t)
@@ -188,7 +188,8 @@ Suggested by [[lsp-mode]]
 (put 'upcase-region 'disabled nil)      ;; Enable upcase-region
 (put 'narrow-to-region 'disabled nil)   ;; Enable narrow commands
 
-(setq custom-file (concat user-emacs-directory "custom.el"))
+(setopt custom-file (concat user-emacs-directory "custom.el")
+        async-shell-command-display-buffer nil)
 
 (add-to-list 'display-buffer-alist
   (cons "*Async Shell Command*" (cons #'display-buffer-no-window nil)))
@@ -854,6 +855,7 @@ This is really what I wanted but copy as markdown is still good
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-percent-position nil)
   (doom-modeline-time-icon nil)
+  (doom-modeline-modal-use-evil-tag t)
   :config
   (setq
    line-number-mode nil
@@ -3077,16 +3079,23 @@ Requires external packages:
 
 #+begin_src emacs-lisp
 (use-package vterm
-  :config
-  (defun ads/vterm-ssh-connect (host)
-    "Open vterm and connect to HOST via SSH"
-    (interactive "sSSH host: ")
-    (let ((vterm-buffer-name (format "vterm-%s" host)))
-      (vterm)
-      (vterm-send-string (format "ssh %s\n" host))))
+    :config
+    ;; Use emacs state so C-c works as terminal break
+    ;; and zsh's vim bindings (set -o vi) handle editing
+    (evil-set-initial-state 'vterm-mode 'emacs)
 
-  (ads/leader-keys
-    "m" 'vterm))
+    ;; Copy mode still uses vim bindings via evil-collection
+    (evil-set-initial-state 'vterm-copy-mode 'normal)
+
+    (defun ads/vterm-ssh-connect (host)
+      "Open vterm and connect to HOST via SSH"
+      (interactive "sSSH host: ")
+      (let ((vterm-buffer-name (format "vterm-%s" host)))
+        (vterm)
+        (vterm-send-string (format "ssh %s\n" host))))
+
+    (ads/leader-keys
+      "m" 'vterm))
 #+end_src
 
 *** vterm-toggle
@@ -3095,7 +3104,7 @@ Requires external packages:
 (use-package vterm-toggle
   :after vterm
   :custom
-  (vterm-toggle-scope 'project)
+  (vterm-toggle-scope 'dedicated)
   :config
   (general-define-key "C-:" 'vterm-toggle)
   (ads/leader-keys
