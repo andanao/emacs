@@ -822,10 +822,15 @@ Scale text globally across all frames and faces.
 #+begin_src emacs-lisp
 (use-package default-text-scale
   :config
-  (ads/leader-keys
-    "tsk" 'default-text-scale-increase
-    "tsj" 'default-text-scale-decrease
-    "tsh" 'default-text-scale-reset))
+  (transient-define-prefix ads/text-scale-transient ()
+    "Text scaling commands."
+    :transient-suffix 'transient--do-stay
+    ["Text Scale"
+     ("k" "increase" default-text-scale-increase)
+     ("j" "decrease" default-text-scale-decrease)
+     ("h" "reset" default-text-scale-reset)
+     ("q" "quit" transient-quit-one :transient nil)])
+  (ads/leader-keys "ts" 'ads/text-scale-transient))
 #+end_src
 
 ** Dired
