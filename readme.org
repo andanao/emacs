@@ -255,7 +255,7 @@ Add hook to after save hook when on org mode
 (set-face-attribute 'fixed-pitch nil
 		    :font mono
 		    :family mono
-		    :height default-font-size)
+		    :height 1.0)
 
 (set-face-attribute 'variable-pitch nil
 		    :font serif
@@ -816,6 +816,18 @@ This is really what I wanted but copy as markdown is still good
     (csv-align-max-width 100) ;; a lot of big csv rows
     (csv-separators '("," ";" "\t")))
 #+end_src
+** default-text-scale
+Scale text globally across all frames and faces.
+
+#+begin_src emacs-lisp
+(use-package default-text-scale
+  :config
+  (ads/leader-keys
+    "tsk" 'default-text-scale-increase
+    "tsj" 'default-text-scale-decrease
+    "tsh" 'default-text-scale-reset))
+#+end_src
+
 ** Dired
 
 #+begin_src emacs-lisp
