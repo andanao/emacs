@@ -828,8 +828,9 @@ Scale text globally across all frames and faces.
     ["Text Scale"
      ("k" "increase" default-text-scale-increase)
      ("j" "decrease" default-text-scale-decrease)
-     ("h" "reset" default-text-scale-reset)
-     ("q" "quit" transient-quit-one :transient nil)])
+     ("h" "reset" default-text-scale-reset :transient nil)
+     ("q" "quit" transient-quit-one :transient nil)
+     ("<escape>" "quit" transient-quit-one :transient nil)])
   (ads/leader-keys "ts" 'ads/text-scale-transient))
 #+end_src
 
