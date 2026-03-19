@@ -728,6 +728,34 @@ on MELPA
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 #+end_src
+
+** claude-code-ide
+
+#+begin_src emacs-lisp
+(use-package claude-code-ide
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  :custom
+  (claude-code-ide-terminal-backend 'vterm)
+  :config
+  (ads/leader-keys
+    "a" '(:ignore t :which-key "ai")
+    "ai" 'claude-code-ide
+    "aa" 'claude-code-ide-toggle
+    "aA" 'claude-code-ide-start
+    "aR" 'claude-code-ide-resume
+    "ac" 'claude-code-ide-continue
+    "aQ" 'claude-code-ide-stop
+    "ar" 'claude-code-ide-send-region
+    "ab" 'claude-code-ide-send-buffer
+    "af" 'claude-code-ide-send-file
+    "ap" 'claude-code-ide-send-prompt
+    "al" 'claude-code-ide-list-sessions
+    "as" 'claude-code-ide-switch-to-buffer
+    "a@" 'claude-code-ide-insert-at-mentioned
+    "at" 'claude-code-ide-toggle-recent
+    ))
+#+end_src
+
 ** consult
 
 [[https://github.com/minad/consult][Consult]] has quickly become one of my favorite emacs packages, it makes moving around emacs feel like magic
