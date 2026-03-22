@@ -337,6 +337,7 @@ particularly like the light ~modus-operandi~ theme.
      ;; org mode
      `(org-checkbox ((,c :foreground ,fg-main)))
      `(org-table ((,c :foreground ,fg-main)))
+     `(org-quote ((,c :inherit italic :foreground ,gold :background ,bg-main :height 1.1 )))
      `(org-document-info ((,c :foreground ,fg-main)))
      `(org-drawer ((,c :height 0.9)))
      `(org-property-value ((,c :height 0.9)))
