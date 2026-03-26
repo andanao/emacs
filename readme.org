@@ -1750,6 +1750,13 @@ don't feel the need to use lots of the evil bindings
   )
 #+end_src
 
+** org-autolist
+
+#+begin_src emacs-lisp
+(use-package org-autolist
+  :hook (org-mode . org-autolist-mode))
+#+end_src
+
 ** org-babel
 
 #+begin_src emacs-lisp :lexical t
@@ -1817,6 +1824,7 @@ don't feel the need to use lots of the evil bindings
 	     '((:results . "output")
 	       ))
 #+end_src
+
 ** org-capture
 Capture all of my notes and tasks to an inbox where they are then reviewed
 reviewed from there
