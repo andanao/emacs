@@ -1019,6 +1019,7 @@ A collection of evil bindings not fully set in the default package
   (evil-collection-calendar-setup-want-org-bindings t)
   (evil-collection-setup-minibuffer t)
   :config
+  (evil-set-initial-state 'vterm-mode 'insert)
   (evil-collection-init))
 #+end_src
 
@@ -3136,12 +3137,8 @@ Requires external packages:
 #+begin_src emacs-lisp
 (use-package vterm
     :config
-    ;; Use emacs state so C-c works as terminal break
-    ;; and zsh's vim bindings (set -o vi) handle editing
-    (evil-set-initial-state 'vterm-mode 'emacs)
-
-    ;; Copy mode still uses vim bindings via evil-collection
-    (evil-set-initial-state 'vterm-copy-mode 'normal)
+    ;; Let evil-collection handle vterm (insert state by default)
+    ;; ESC -> normal for navigation, i/a -> insert for typing
 
     (defun ads/vterm-ssh-connect (host)
       "Open vterm and connect to HOST via SSH"
