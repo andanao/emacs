@@ -501,6 +501,38 @@ The DWIM behaviour of this command is as follows:
 
 ** windows, buffers, frames ~j~
 #+begin_src emacs-lisp
+(require 'transient)
+
+(defcustom ads/window-resize-step 25
+  "Number of columns/rows to resize by for normal movement."
+  :type 'integer
+  :group 'convenience)
+
+(defcustom ads/window-resize-step-fine 5
+  "Number of columns/rows to resize by for fine movement."
+  :type 'integer
+  :group 'convenience)
+
+(transient-define-prefix ads/window-resize-transient ()
+  "Resize windows by moving edges."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-quit-all
+  [["Move edge"
+    ("h" "← left"  (lambda () (interactive) (enlarge-window-horizontally (- ads/window-resize-step))))
+    ("l" "→ right" (lambda () (interactive) (enlarge-window-horizontally ads/window-resize-step)))
+    ("k" "↑ up"    (lambda () (interactive) (enlarge-window (- ads/window-resize-step))))
+    ("j" "↓ down"  (lambda () (interactive) (enlarge-window ads/window-resize-step)))]
+   ["Fine"
+    ("H" "← left"  (lambda () (interactive) (enlarge-window-horizontally (- ads/window-resize-step-fine))))
+    ("L" "→ right" (lambda () (interactive) (enlarge-window-horizontally ads/window-resize-step-fine)))
+    ("K" "↑ up"    (lambda () (interactive) (enlarge-window (- ads/window-resize-step-fine))))
+    ("J" "↓ down"  (lambda () (interactive) (enlarge-window ads/window-resize-step-fine)))]
+   ["Layout"
+    ("=" "balance" balance-windows)
+    ("m" "maximize" delete-other-windows)
+    ("u" "undo" winner-undo)
+    ("r" "redo" winner-redo)]])
+
 (ads/leader-keys
   "j" '(:ignore t :which-key "frames")
 
@@ -511,6 +543,7 @@ The DWIM behaviour of this command is as follows:
 
   "j=" 'balance-windows-area
   "j_" 'split-window-vertically
+  "j;" 'ads/window-resize-transient
 
   "jh" 'evil-window-left
   "jj" 'evil-window-down
@@ -523,6 +556,7 @@ The DWIM behaviour of this command is as follows:
   "jL" 'evil-window-move-far-right
   )
 #+end_src
+
 ** kill and restore ~k~
 
 #+begin_src emacs-lisp
