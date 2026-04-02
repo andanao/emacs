@@ -501,38 +501,6 @@ The DWIM behaviour of this command is as follows:
 
 ** windows, buffers, frames ~j~
 #+begin_src emacs-lisp
-(require 'transient)
-
-(defcustom ads/window-resize-step 25
-  "Number of columns/rows to resize by for normal movement."
-  :type 'integer
-  :group 'convenience)
-
-(defcustom ads/window-resize-step-fine 5
-  "Number of columns/rows to resize by for fine movement."
-  :type 'integer
-  :group 'convenience)
-
-(transient-define-prefix ads/window-resize-transient ()
-  "Resize windows by moving edges."
-  :transient-suffix 'transient--do-stay
-  :transient-non-suffix 'transient--do-quit-all
-  [["Move edge"
-    ("h" "← left"  (lambda () (interactive) (enlarge-window-horizontally (- ads/window-resize-step))))
-    ("l" "→ right" (lambda () (interactive) (enlarge-window-horizontally ads/window-resize-step)))
-    ("k" "↑ up"    (lambda () (interactive) (enlarge-window (- ads/window-resize-step))))
-    ("j" "↓ down"  (lambda () (interactive) (enlarge-window ads/window-resize-step)))]
-   ["Fine"
-    ("H" "← left"  (lambda () (interactive) (enlarge-window-horizontally (- ads/window-resize-step-fine))))
-    ("L" "→ right" (lambda () (interactive) (enlarge-window-horizontally ads/window-resize-step-fine)))
-    ("K" "↑ up"    (lambda () (interactive) (enlarge-window (- ads/window-resize-step-fine))))
-    ("J" "↓ down"  (lambda () (interactive) (enlarge-window ads/window-resize-step-fine)))]
-   ["Layout"
-    ("=" "balance" balance-windows)
-    ("m" "maximize" delete-other-windows)
-    ("u" "undo" winner-undo)
-    ("r" "redo" winner-redo)]])
-
 (ads/leader-keys
   "j" '(:ignore t :which-key "frames")
 
@@ -543,7 +511,6 @@ The DWIM behaviour of this command is as follows:
 
   "j=" 'balance-windows-area
   "j_" 'split-window-vertically
-  "j;" 'ads/window-resize-transient
 
   "jh" 'evil-window-left
   "jj" 'evil-window-down
@@ -3215,6 +3182,156 @@ Requires external packages:
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.5))
+#+end_src
+
+** window-resize
+
+Select-then-move window resizing. If only one separator exists on an axis, move
+it directly. If multiple separators exist, first keypress selects, subsequent
+keypresses move. SPC deselects.
+
+#+begin_src emacs-lisp
+(require 'transient)
+
+(defcustom ads/window-resize-step 5
+  "Number of columns/rows to resize by."
+  :type 'integer
+  :group 'convenience)
+
+(defvar ads/resize-selected-separator nil
+  "Currently selected separator: nil, left, right, above, below.")
+
+(defun ads/resize-reset ()
+  "Deselect the current separator."
+  (interactive)
+  (setq ads/resize-selected-separator nil)
+  (message "Separator deselected"))
+
+(defun ads/resize--move-selected (delta)
+  "Move the selected separator by DELTA. Positive = right/down, negative = left/up."
+  (pcase ads/resize-selected-separator
+    ('left  (adjust-window-trailing-edge (window-in-direction 'left) delta t))
+    ('right (adjust-window-trailing-edge (selected-window) delta t))
+    ('above (adjust-window-trailing-edge (window-in-direction 'above) delta nil))
+    ('below (adjust-window-trailing-edge (selected-window) delta nil))))
+
+(defun ads/resize-h ()
+  "Move separator left, or select left separator if ambiguous."
+  (interactive)
+  (cond
+   ;; Already have a selection -> move it left
+   (ads/resize-selected-separator
+    (ads/resize--move-selected (- ads/window-resize-step)))
+   ;; No selection yet
+   (t (let ((left-win (window-in-direction 'left))
+            (right-win (window-in-direction 'right)))
+        (cond
+         ;; Only separator to right -> move it left
+         ((and right-win (not left-win))
+          (adjust-window-trailing-edge (selected-window) (- ads/window-resize-step) t))
+         ;; Only separator to left -> move it left
+         ((and left-win (not right-win))
+          (adjust-window-trailing-edge left-win (- ads/window-resize-step) t))
+         ;; Both exist -> select left
+         ((and left-win right-win)
+          (setq ads/resize-selected-separator 'left)
+          (message "Selected LEFT separator"))
+         (t (message "No separator to move")))))))
+
+(defun ads/resize-l ()
+  "Move separator right, or select right separator if ambiguous."
+  (interactive)
+  (cond
+   ;; Already have a selection -> move it right
+   (ads/resize-selected-separator
+    (ads/resize--move-selected ads/window-resize-step))
+   ;; No selection yet
+   (t (let ((left-win (window-in-direction 'left))
+            (right-win (window-in-direction 'right)))
+        (cond
+         ;; Only separator to left -> move it right
+         ((and left-win (not right-win))
+          (adjust-window-trailing-edge left-win ads/window-resize-step t))
+         ;; Only separator to right -> move it right
+         ((and right-win (not left-win))
+          (adjust-window-trailing-edge (selected-window) ads/window-resize-step t))
+         ;; Both exist -> select right
+         ((and left-win right-win)
+          (setq ads/resize-selected-separator 'right)
+          (message "Selected RIGHT separator"))
+         (t (message "No separator to move")))))))
+
+(defun ads/resize-k ()
+  "Move separator up, or select above separator if ambiguous."
+  (interactive)
+  (cond
+   ;; Already have a selection -> move it up
+   (ads/resize-selected-separator
+    (ads/resize--move-selected (- ads/window-resize-step)))
+   ;; No selection yet
+   (t (let ((above-win (window-in-direction 'above))
+            (below-win (window-in-direction 'below)))
+        (cond
+         ;; Only separator below -> move it up
+         ((and below-win (not above-win))
+          (adjust-window-trailing-edge (selected-window) (- ads/window-resize-step) nil))
+         ;; Only separator above -> move it up
+         ((and above-win (not below-win))
+          (adjust-window-trailing-edge above-win (- ads/window-resize-step) nil))
+         ;; Both exist -> select above
+         ((and above-win below-win)
+          (setq ads/resize-selected-separator 'above)
+          (message "Selected ABOVE separator"))
+         (t (message "No separator to move")))))))
+
+(defun ads/resize-j ()
+  "Move separator down, or select below separator if ambiguous."
+  (interactive)
+  (cond
+   ;; Already have a selection -> move it down
+   (ads/resize-selected-separator
+    (ads/resize--move-selected ads/window-resize-step))
+   ;; No selection yet
+   (t (let ((above-win (window-in-direction 'above))
+            (below-win (window-in-direction 'below)))
+        (cond
+         ;; Only separator above -> move it down
+         ((and above-win (not below-win))
+          (adjust-window-trailing-edge above-win ads/window-resize-step nil))
+         ;; Only separator below -> move it down
+         ((and below-win (not above-win))
+          (adjust-window-trailing-edge (selected-window) ads/window-resize-step nil))
+         ;; Both exist -> select below
+         ((and above-win below-win)
+          (setq ads/resize-selected-separator 'below)
+          (message "Selected BELOW separator"))
+         (t (message "No separator to move")))))))
+
+(defun ads/resize--mode-description ()
+  "Return mode description with color based on selection state."
+  (if ads/resize-selected-separator
+      (propertize (format "Moving: %s" (upcase (symbol-name ads/resize-selected-separator)))
+                  'face '(:foreground "dodger blue" :weight bold))
+    (propertize "Select separator" 'face '(:foreground "green" :weight bold))))
+
+(transient-define-prefix ads/window-resize-transient ()
+  "Resize windows by moving separators."
+  :transient-suffix 'transient--do-stay
+  :transient-non-suffix 'transient--do-quit-all
+  [:description ads/resize--mode-description
+   ["h/j/k/l"
+    ("h" "← left"  ads/resize-h)
+    ("l" "→ right" ads/resize-l)
+    ("k" "↑ up"    ads/resize-k)
+    ("j" "↓ down"  ads/resize-j)]
+   ["Control"
+    ("SPC" "deselect" ads/resize-reset)
+    ("=" "balance" balance-windows)
+    ("m" "maximize" delete-other-windows)
+    ("u" "undo" winner-undo)
+    ("r" "redo" winner-redo)]])
+
+(ads/leader-keys "j;" 'ads/window-resize-transient)
 #+end_src
 
 ** yaml
