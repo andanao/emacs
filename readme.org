@@ -3631,6 +3631,9 @@ jump to my nix config files
       mac-option-modifier 'meta
       mac-control-modifier 'meta
       mac-pass-command-to-system nil)
+
+;; by default don't show frame icons
+(add-to-list 'default-frame-alist '(undecorated . t))
 #+end_src
 
 
