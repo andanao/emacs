@@ -3159,8 +3159,10 @@ Requires external packages:
   :after vterm
   :custom
   (vterm-toggle-scope 'dedicated)
+  (vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
+  (vterm-toggle-togglable-buffer-functions
+   '((lambda (buf) (not (string-prefix-p "*claude-code" (buffer-name buf))))))
   :config
-  (general-define-key "C-:" 'vterm-toggle)
   (ads/leader-keys
     ";" 'vterm-toggle))
 #+end_src
