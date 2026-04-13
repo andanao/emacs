@@ -1045,6 +1045,18 @@ Surround a visula selection with input
   (global-evil-surround-mode 1))
 #+end_src
 
+** ghostel
+
+like [[vterm]] but using ghotty as a backend insted.  This is newer and much more experimentla but in
+breif testing this feels much smoother and faster than vterm.
+
+#+begin_src emacs-lisp
+(use-package ghostel
+  :hook (ghostel-mode . evil-ghostel-mode)
+  :vc (:url "https://github.com/dakra/ghostel" :rev :newest))
+#+end_src
+
+
 ** git-link
 Quickly create links to  files and commits
 #+begin_src emacs-lisp
