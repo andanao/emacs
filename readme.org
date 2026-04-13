@@ -561,6 +561,41 @@ The DWIM behaviour of this command is as follows:
 (ads/leader-def "cI" "load init" (load-file user-init-file))
 #+end_src
 
+#+begin_src emacs-lisp
+(defun ads/add-config-package (package-name)
+  "Add a new package section to the config file in alphabetical order.
+Prompts for PACKAGE-NAME, finds the correct position in the Packages
+section, and inserts a heading with a use-package elisp source block."
+  (interactive "sPackage name: ")
+  (let ((config-buffer (find-file-noselect ads/config-file)))
+    (with-current-buffer config-buffer
+      (goto-char (point-min))
+      ;; Find the Packages section
+      (unless (re-search-forward "^\\* Packages$" nil t)
+        (error "Could not find Packages section"))
+      (forward-line 1)
+      ;; Find the right alphabetical position among ** headings
+      (let ((insert-point nil)
+            (package-lower (downcase package-name)))
+        (while (and (not insert-point)
+                    (re-search-forward "^\\*\\* \\([a-zA-Z0-9_-]+\\)" nil t))
+          (let ((current-pkg (downcase (match-string 1))))
+            (when (string< package-lower current-pkg)
+              (setq insert-point (line-beginning-position)))))
+        ;; If no position found, insert before the next top-level heading
+        (unless insert-point
+          (if (re-search-forward "^\\* " nil t)
+              (setq insert-point (line-beginning-position))
+            (setq insert-point (point-max))))
+        (goto-char insert-point)
+        (insert (format "\n** %s\n\n#+begin_src emacs-lisp\n(use-package %s)\n#+end_src\n"
+                        package-name package-name))))
+    (switch-to-buffer config-buffer)
+    (goto-char (point-min))
+    (re-search-forward (format "^\\*\\* %s$" (regexp-quote package-name)) nil t)
+    (message "Added package: %s" package-name)))
+#+end_src
+
 ** Toggles ~t~
 
 #+begin_src emacs-lisp
@@ -1266,6 +1301,7 @@ set via .dir-locals.el (see kode-dir-locals.el for Bazel projects).
   :keymaps 'markdown-view-mode-map
   "dm" 'markdown-mode)
 #+end_src
+
 
 ** multiple-cursors
 
