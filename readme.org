@@ -138,6 +138,8 @@ Silence the bell
 On corporate machines I've been unable to get elpaca/straight working, for linux I plan to use the Nix [[https://github.com/nix-community/emacs-overlay][emacs-overlay]]
 
 #+begin_src emacs-lisp
+(setq native-comp-async-report-warnings-errors 'silent)
+
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
         ("gnu"  . "https://elpa.gnu.org/packages/")
