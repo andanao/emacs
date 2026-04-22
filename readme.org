@@ -882,9 +882,11 @@ This is really what I wanted but copy as markdown is still good
     :hook
     (csv-mode . csv-align-mode)
     (csv-mode . csv-header-line)
+    (csv-mode . hl-line-mode)
     (csv-mode . (lambda ()
                   (visual-fill-column-mode -1)
-                  (setq-local truncate-lines t)))
+                  (setq-local truncate-lines t)
+                  (face-remap-add-relative 'hl-line :background (modus-themes-get-color-value 'bg-dim))))
     :bind (:map csv-mode-map
                 ("C-c C-a" . csv-align-fields)
                 ("C-c C-z" . csv-unalign-fields))
@@ -894,6 +896,7 @@ This is really what I wanted but copy as markdown is still good
     (csv-align-max-width 100) ;; a lot of big csv rows
     (csv-separators '("," ";" "\t")))
 #+end_src
+
 ** default-text-scale
 Scale text globally across all frames and faces.
 
