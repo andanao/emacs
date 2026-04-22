@@ -1235,7 +1235,9 @@ set via .dir-locals.el (see kode-dir-locals.el for Bazel projects).
 (use-package magit
   :config
   (transient-bind-q-to-quit)
-  (setopt magit-format-file-function #'magit-format-file-nerd-icons)
+  (setopt
+   magit-diff-refine-hunk 'all
+   magit-format-file-function #'magit-format-file-nerd-icons)
   (defun ads/git-main ()
     "Checkout main"
     (interactive)
