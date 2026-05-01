@@ -2724,15 +2724,18 @@ will move the current note to work/personal
   (interactive)
   (org-move-note-with-attachments buffer-file-name (concat org-directory "k2"))
   (kill-buffer)
-  (find-file (car (directory-files org-directory t ".org"))))
+  (if-let ((next-file (car (directory-files org-directory t "\\.org$"))))
+      (find-file next-file)
+    (message "all org notes filed properly")))
 
 (defun ads/refile-move-personal ()
-  "move org file to work"
+  "move org file to personal"
   (interactive)
   (org-move-note-with-attachments buffer-file-name (concat org-directory "personal"))
   (kill-buffer)
-  (find-file org-directory)
-  (find-file (car (directory-files org-directory t ".org"))))
+  (if-let ((next-file (car (directory-files org-directory t "\\.org$"))))
+      (find-file next-file)
+    (message "all org notes filed properly")))
 #+end_src
 
 ** org-roam-consult
