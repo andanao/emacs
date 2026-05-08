@@ -968,6 +968,19 @@ Run shell commands asynchronously
 #+begin_src emacs-lisp
 (use-package dwim-shell-command)
 #+end_src
+
+** ediff
+built diffing packag, seems pretty good
+
+#+begin_src emacs-lisp
+(use-package ediff
+  :custom
+  (ediff-window-setup-function 'ediff-setup-windows-plain) ;; keep in one frame
+  (ediff-split-window-function 'split-window-horizontally) ;; side-by-side
+  (ediff-merge-split-window-function 'split-window-horizontally))
+#+end_src
+
+
 ** eglot
 emacs batteries included LSP mode - disabled in favor of lsp-mode
 
@@ -1093,7 +1106,8 @@ breif testing this feels much smoother and faster than vterm.
 #+begin_src emacs-lisp
 (use-package ghostel
   :hook (ghostel-mode . evil-ghostel-mode)
-  :vc (:url "https://github.com/dakra/ghostel" :rev :newest))
+  ;; :vc (:url "https://github.com/dakra/ghostel" :rev :newest)
+  )
 #+end_src
 
 
