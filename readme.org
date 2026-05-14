@@ -1719,6 +1719,7 @@ of everything that is there.
 "
 #+end_src
 ** org-agenda
+
 #+begin_src emacs-lisp
 (require 'org-agenda)
 ;; (evil-make-overriding-map org-agenda-mode-map)
@@ -1732,6 +1733,9 @@ of everything that is there.
       org-agenda-skip-scheduled-if-done nil
       org-agenda-sticky t  ; use bury-buffer instead of agenda-quit
       )
+
+(add-hook 'org-agenda-mode-hook
+            (lambda () (setq-local mode-line-format nil)))
 
 (setq org-agenda-prefix-format
       '((agenda . "  %-20 c%?-12t% s")
@@ -1822,8 +1826,7 @@ Spin up a dedicated and stripped down aenda view to have up in the background
            (aerospace "/opt/homebrew/bin/aerospace"))
       (select-frame frame)
       (set-frame-parameter frame 'task-frame t)
-      (org-agenda-list nil nil 'day)
-      (setq-local mode-line-format nil)))
+      (org-agenda-list nil nil 'day)))
 
   (defun ads/org-agenda-quit-advice (&rest _)
     "Delete frame if it's a task frame."
@@ -1832,6 +1835,7 @@ Spin up a dedicated and stripped down aenda view to have up in the background
 
 (advice-add 'org-agenda-quit :after #'ads/org-agenda-quit-advice)
 #+end_src
+
 ** org-appear
 
 #+begin_src emacs-lisp
