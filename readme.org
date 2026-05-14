@@ -1807,6 +1807,31 @@ don't feel the need to use lots of the evil bindings
  "C-w C-k" 'evil-window-up
  "C-w C-l" 'evil-window-right)
 #+end_src
+
+
+*** Task Frame
+Spin up a dedicated and stripped down aenda view to have up in the background
+
+#+begin_src emacs-lisp
+(defun ads/task-frame ()
+    "Open a dedicated frame showing today's agenda."
+    (interactive)
+    (let* ((frame (make-frame '((name . "Tasks")
+                                (width . 60)
+                                (height . 30))))
+           (aerospace "/opt/homebrew/bin/aerospace"))
+      (select-frame frame)
+      (set-frame-parameter frame 'task-frame t)
+      (org-agenda-list nil nil 'day)
+      (setq-local mode-line-format nil)))
+
+  (defun ads/org-agenda-quit-advice (&rest _)
+    "Delete frame if it's a task frame."
+    (when (frame-parameter nil 'task-frame)
+      (delete-frame)))
+
+(advice-add 'org-agenda-quit :after #'ads/org-agenda-quit-advice)
+#+end_src
 ** org-appear
 
 #+begin_src emacs-lisp
