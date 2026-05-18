@@ -2915,6 +2915,50 @@ disabled for now because of weird org interactionsg
         python-indent-guess-indent-offset-verbose nil)
 #+end_src
 
+
+** Quartz
+
+I host my org notes, including my config on a [[id:F8D27334-4635-4E36-8C19-E62FB01DC949][Quartz]] site. It was a whole vibe-coded project: [[id:98189AF8-632D-4E1F-95A5-31349A3EDD19][Org
+Mode Publishing]], which finally makes me feel less isolated in my notes.
+
+I use this to quickly grab URLs and other utils related to the site
+
+#+begin_src emacs-lisp
+(setopt ads/quartz-url "https://andanao.github.io/org-quartz/"
+        ads/quartz-dir "~/git/org-quartz")
+
+(defun ads/quartz-get-url ()
+  "Return URL for current org-roam note."
+  (let* ((title (or (org-get-title) (file-name-base (buffer-file-name))))
+         (slug (replace-regexp-in-string "-+" "-"
+                 (replace-regexp-in-string "[^a-z0-9-]" ""
+                   (replace-regexp-in-string "[_ ]+" "-" (downcase title)))))
+         (slug (string-trim slug "-")))
+    (concat ads/quartz-url slug)))
+
+(defun ads/quartz-copy-url ()
+  "Copy URL for current org-roam note to clipboard."
+  (interactive)
+  (let ((url (ads/quartz-get-url)))
+    (kill-new url)
+    (message "Copied: %s" url)))
+
+(defun ads/quartz-open-url ()
+  "Open current org-roam note in browser."
+  (interactive)
+  (browse-url (ads/quartz-get-url)))
+
+(defun ads/quartz-projectile ()
+  "Projectile search through my quartz repo"
+  (interactive)
+  (projectile-switch-project-by-name ads/quartz-dir))
+
+(ads/leader-keys
+  "ou" 'ads/quartz-copy-url
+  "oU" 'ads/quartz-open-url
+  "oz" 'ads/quartz-projectile)
+#+end_src
+
 ** rainbow-delimiters
 
    #+begin_src emacs-lisp
