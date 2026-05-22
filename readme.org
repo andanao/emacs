@@ -2218,17 +2218,20 @@ Returns a sorted list of unique heading strings."
 
 (defun ads/jump-to-first-upcoming (meeting-heading entries)
   "Jump to the first upcoming instance of MEETING-HEADING in ENTRIES.
-If scheduled times exist, picks the earliest future one.
+If scheduled times exist, picks the earliest one from today onward.
 Otherwise, picks the first occurrence."
   (let* ((matching-entries (seq-filter
                             (lambda (entry)
                               (string= (plist-get entry :heading) meeting-heading))
                             entries))
-         (now (current-time))
+         (today-start (encode-time 0 0 0
+                                   (nth 3 (decode-time))
+                                   (nth 4 (decode-time))
+                                   (nth 5 (decode-time))))
          (future-entries (seq-filter
                           (lambda (entry)
                             (let ((sched (plist-get entry :scheduled)))
-                              (and sched (time-less-p now sched))))
+                              (and sched (not (time-less-p sched today-start)))))
                           matching-entries))
          (sorted-entries (if future-entries
                              (sort future-entries
@@ -2263,6 +2266,7 @@ prompts for selection, then jumps to the first upcoming instance."
 
 (ads/leader-keys "om" 'ads/jump-to-meeting-todo)
 #+end_src
+
 ** org-modern
 #+begin_src emacs-lisp
 (use-package org-modern
@@ -3804,15 +3808,25 @@ jump to my nix config files
 :PROPERTIES:
 :header-args: emacs-lisp :tangle mac.el :results none :noweb yes :comments link
 :END:
- OSX
+
+** Modifier Keys
+Remap modifiers for a more ergonomic layout: Command becomes Control, Option becomes Meta, and Control becomes Meta.
 #+begin_src emacs-lisp
 (setq mac-command-modifier 'control
       mac-option-modifier 'meta
       mac-control-modifier 'meta
       mac-pass-command-to-system nil)
+#+end_src
 
-;; by default don't show frame icons
+** Frame Appearance
+Remove the title bar icons for a cleaner look.
+#+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(undecorated . t))
+#+end_src
+
+** Homebrew PATH
+GUI apps on macOS don't inherit the shell's PATH. Add Homebrew's bin directory to both =exec-path= (for Emacs finding executables) and =PATH= environment variable (for subprocesses like git hooks).
+#+begin_src emacs-lisp
 (add-to-list 'exec-path "/opt/homebrew/bin")
 (setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH")))
 #+end_src
