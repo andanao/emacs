@@ -1,6 +1,6 @@
 #+TITLE: Emacs Literate Configuration
 #+STARTUP: overview
-#+TAGS: external(e) core(c)
+#+TAGS: external(e) core(c) custom(m)
 This configuration tangles out to multiple individual files using
 ~org-babel-tangle~ on save of this file.
 
@@ -403,7 +403,7 @@ particularly like the light ~modus-operandi~ theme.
    (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
    (ads/modus-tweaks)))
 #+end_src
-* General.el
+* General.el                                                          :core:
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
@@ -645,7 +645,7 @@ Icons are a font so remember to call ~(all-the-icons-install-fonts)~
 #+end_src
 
 
-** anki-editor
+** anki-editor                                                   :external:
 [[https://github.com/anki-editor/anki-editor][anki-editor]] for emacs. [[https://yiufung.net/post/anki-org/][These]] [[https://rgoswami.me/posts/anki-decks-orgmode/][blog posts]] showing quite sophisticated emacs and
 anki workflows and inspired me to keep using anki instead of an emacs specific
 srs tool.  If I do eventually go that rout I'll likely just abandon what's in
@@ -806,7 +806,7 @@ on MELPA
     ))
 #+end_src
 
-** consult
+** consult                                                           :core:
 
 [[https://github.com/minad/consult][Consult]] has quickly become one of my favorite emacs packages, it makes moving around emacs feel like magic
 
@@ -1098,7 +1098,7 @@ Surround a visula selection with input
   (global-evil-surround-mode 1))
 #+end_src
 
-** ghostel
+** ghostel                                                       :external:
 
 like [[vterm]] but using ghotty as a backend insted.  This is newer and much more experimentla but in
 breif testing this feels much smoother and faster than vterm.
@@ -1139,7 +1139,7 @@ Quickly create links to  files and commits
   "C-h C-e" 'view-echo-area-messages
   "C-h C-j" 'describe-face)
 #+end_src
-** insert-variable-value
+** insert-variable-value                                           :custom:
 Sometimes when I'm writing code I want to be able to directly insert the value
 of a variable in to the buffer I am editing.  There's probably a way to do this
 if I look through the manual closely but this works for now.
@@ -1579,7 +1579,7 @@ First tries the most recent kill ring item, then searches kill ring history for 
 (ads/leader-keys "ol" 'org-insert-link-from-kill)
 #+end_src
 
-*** good morning review
+*** good morning review                                           :custom:
 Simpler than the weekly, more just to get my thoughts on paper and empty my mind
 before starting the day
 
@@ -1609,7 +1609,7 @@ before starting the day
   )
 #+end_src
 
-*** org weekly review
+*** org weekly review                                             :custom:
 I do a weekly review, this will create the weekly review file in my current
 daily and fill it in with some basic information.
 
@@ -1657,7 +1657,7 @@ Overview of montly goal progress
 "
 #+end_src
 
-*** org monthly review
+*** org monthly review                                            :custom:
 Template for my monthly reviews, I set it around the first of the month where I
 plan out goals and theme tie in, at the end of the month I do complete the rest
 of everything that is there.
@@ -1862,6 +1862,8 @@ Spin up a dedicated and stripped down aenda view to have up in the background
 #+end_src
 
 ** org-autolist
+
+Convenience package that makes org bulleted list behave like they do in most other apps
 
 #+begin_src emacs-lisp
 (use-package org-autolist
@@ -2178,7 +2180,7 @@ Better management of images in org mode for copying photos from internet and cli
 (add-to-list 'org-modules 'org-habit)
 #+end_src
 
-** org meetings
+** org meetings                                                    :custom:
 
 Quickly jump and narrow to the first entry in a meeting series,
 
@@ -2310,7 +2312,7 @@ small package to make the indentation work and visual fill column work in org mo
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 #+end_src
 
-** org-prettify-symbols
+** org-prettify-symbols                                            :custom:
 
 #+begin_src emacs-lisp
 (defun ads/org-prettify-symbols ()
@@ -2920,7 +2922,7 @@ disabled for now because of weird org interactionsg
 #+end_src
 
 
-** Quartz
+** quartz                                                          :custom:
 
 I host my org notes, including my config on a [[id:F8D27334-4635-4E36-8C19-E62FB01DC949][Quartz]] site. It was a whole vibe-coded project: [[id:98189AF8-632D-4E1F-95A5-31349A3EDD19][Org
 Mode Publishing]], which finally makes me feel less isolated in my notes.
@@ -2976,7 +2978,7 @@ I use this to quickly grab URLs and other utils related to the site
 (use-package rainbow-mode
   :commands (rainbow-mode))
    #+end_src
-** read-only-directories
+** read-only-directories                                           :custom:
 Some directories I want to files to be opened in read-only mode because they are usually used for
 reference
 
@@ -3369,7 +3371,7 @@ Requires external packages:
   (which-key-idle-delay 0.5))
 #+end_src
 
-** window-resize
+** window-resize                                                   :custom:
 
 Select-then-move window resizing. If only one separator exists on an axis, move
 it directly. If multiple separators exist, first keypress selects, subsequent
