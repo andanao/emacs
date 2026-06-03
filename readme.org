@@ -1457,29 +1457,21 @@ Major mode for reading EPUB files in Emacs
      ))
 #+end_src
 *** org-todo-keywords
-Projects
-#+begin_src emacs-lisp :tangle no
-(add-to-list 'org-todo-keywords
-'(sequence "PLAN(p)" "NEXT(n)" "STOP(s!)" "HOLD(h!)"
-		  "|" "DONE(d!)" "CANC(k!)") t)
-#+end_src
-
-Meetings
-- ~SCHD~ Scheduled but nothing done
-- ~PREP~ preparing notes, reading documents etc
-- ~NOTE~ meeting started, taking actual notes and handling any open items
-#+begin_src emacs-lisp
-(add-to-list 'org-todo-keywords
-'(sequence "SCHD(m)" "PREP(r!)" "NOTE(o!)"
-		  "|" "DONE(d!)" "CANC(k!)" "SKIP(K!)") t)
-#+end_src
-
+I used to have more here, but I've slowly realized that a more complex todo flow is just something
+that I don't usually use.  additonal states are here for SW dev where there's a frequent back and
+forth on tickets
 
 Code
 #+begin_src emacs-lisp
 (add-to-list 'org-todo-keywords
-'(sequence "DEV(e!)" "REV(v!)"
-		  "|" "DONE(d!)" ) t)
+'(sequence
+  "DEV(e!)" ;; I'm writing code
+  "REV(v!)" ;; Someone else is reviewing code
+  "|"
+  "DONE(d!)" ;; Victory
+  "CANC(k!)" ;; Doesn't matter anymore
+  "DELE(L!)" ;; Delegated out to someone
+  ) t )
 #+end_src
 
 *** org keybindings
