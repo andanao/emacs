@@ -785,7 +785,7 @@ on MELPA
 (use-package claude-code-ide
   :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
   :custom
-  (claude-code-ide-terminal-backend 'vterm)
+  (claude-code-ide-terminal-backend 'ghostel)
   :config
   (ads/leader-keys
     "a" '(:ignore t :which-key "ai")
@@ -1105,10 +1105,16 @@ breif testing this feels much smoother and faster than vterm.
 
 #+begin_src emacs-lisp
 (use-package ghostel
+  :vc (:url "https://github.com/dakra/ghostel"
+       :lisp-dir "lisp"
+       :rev :newest)
   :hook (ghostel-mode . evil-ghostel-mode)
-  ;; :vc (:url "https://github.com/dakra/ghostel" :rev :newest)
   )
+
+(use-package evil-ghostel)
 #+end_src
+
+
 
 
 ** git-link
