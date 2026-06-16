@@ -1471,6 +1471,7 @@ Code
 #+begin_src emacs-lisp
 (add-to-list 'org-todo-keywords
 '(sequence
+  "TIX(i)"  ;; Ticketed but not started
   "DEV(e!)" ;; I'm writing code
   "REV(v!)" ;; Someone else is reviewing code
   "|"
