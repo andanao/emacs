@@ -1757,6 +1757,7 @@ Largely taken from [[https://github.com/Somelauw/evil-org-mode/blob/master/evil-
 don't feel the need to use lots of the evil bindings
 #+begin_src emacs-lisp
 (general-define-key
+ :states '(normal motion emacs)
  :keymaps 'org-agenda-mode-map
  "j" 'org-agenda-next-line
  "k" 'org-agenda-previous-line
