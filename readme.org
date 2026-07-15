@@ -2105,6 +2105,7 @@ Convenience package that makes org bulleted list behave like they do in most oth
        ("cc" . "src C")
        ("cpp" . "src C++")
        ("cs" . "src C#")
+       ("k" . "src calc")
        ("yaml" . "src yaml")
        ("toml" . "src toml")
        ("js" . "src javascript")
@@ -2125,6 +2126,7 @@ Convenience package that makes org bulleted list behave like they do in most oth
          'org-babel-load-languages
          '((emacs-lisp . t)
            (shell . t)
+           (calc . t)
            (python . t))))
 
     (setq org-confirm-babel-evaluate nil)
