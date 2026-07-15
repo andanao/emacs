@@ -699,6 +699,25 @@ Anki or just make some sort of migration script.
   "okG" 'anki-editor-gui-add-cards
   )
 #+end_src
+** apheleia
+[[https://github.com/radian-software/apheleia][apheleia]] runs code formatters on save, asynchronously and without moving point.
+JSON is formatted with =jq= (=prettier= isn't installed, and =jq= ships everywhere).
+The =jq '.'= identity filter reindents while preserving key order; it also rejects
+invalid JSON, so a broken file simply isn't reformatted until you fix it.
+Opt in one language at a time: add its mode to =:hook=, and (if the default
+formatter isn't installed) point =apheleia-mode-alist= at one that is.
+#+begin_src emacs-lisp
+(use-package apheleia
+  :hook ((json-mode . apheleia-mode)
+         (json-ts-mode . apheleia-mode))
+  :config
+  ;; Define a jq formatter: read stdin, pretty-print with 2-space indent.
+  (setf (alist-get 'jq apheleia-formatters)
+        '("jq" "--indent" "2" "-M" "."))
+  (setf (alist-get 'json-mode apheleia-mode-alist) 'jq)
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'jq))
+#+end_src
+
 ** async
 #+begin_src emacs-lisp
 (use-package async
@@ -1096,6 +1115,16 @@ Surround a visula selection with input
   :ensure t
   :config
   (global-evil-surround-mode 1))
+#+end_src
+
+** flycheck
+[[https://www.flycheck.org/][flycheck]] for on-the-fly syntax checking. Enabled only in JSON buffers for now,
+where its built-in =json-jq= checker uses the =jq= binary to flag malformed JSON
+as you edit. =lsp-mode= will also prefer flycheck over flymake when it's present.
+#+begin_src emacs-lisp
+(use-package flycheck
+  :hook ((json-mode . flycheck-mode)
+         (json-ts-mode . flycheck-mode)))
 #+end_src
 
 ** ghostel                                                       :external:
