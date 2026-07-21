@@ -704,12 +704,18 @@ Anki or just make some sort of migration script.
 JSON is formatted with =jq= (=prettier= isn't installed, and =jq= ships everywhere).
 The =jq '.'= identity filter reindents while preserving key order; it also rejects
 invalid JSON, so a broken file simply isn't reformatted until you fix it.
+Elisp uses apheleia's built-in =lisp-indent= formatter (Emacs' own indentation
+engine, no external tool), which is already the default mapping for
+=emacs-lisp-mode=, so those hooks need no =setf=.
+
 Opt in one language at a time: add its mode to =:hook=, and (if the default
 formatter isn't installed) point =apheleia-mode-alist= at one that is.
 #+begin_src emacs-lisp
 (use-package apheleia
   :hook ((json-mode . apheleia-mode)
-         (json-ts-mode . apheleia-mode))
+         (json-ts-mode . apheleia-mode)
+         (emacs-lisp-mode . apheleia-mode)
+         (lisp-data-mode . apheleia-mode))
   :config
   ;; Define a jq formatter: read stdin, pretty-print with 2-space indent.
   (setf (alist-get 'jq apheleia-formatters)
