@@ -1103,7 +1103,6 @@ A collection of evil bindings not fully set in the default package
   (evil-collection-calendar-setup-want-org-bindings t)
   (evil-collection-setup-minibuffer t)
   :config
-  (evil-set-initial-state 'vterm-mode 'insert)
   (evil-collection-init))
 #+end_src
 
@@ -1129,7 +1128,7 @@ as you edit. =lsp-mode= will also prefer flycheck over flymake when it's present
 
 ** ghostel                                                       :external:
 
-like [[vterm]] but using ghotty as a backend insted.  This is newer and much more experimentla but in
+like vterm but using ghotty as a backend insted.  This is newer and much more experimentla but in
 breif testing this feels much smoother and faster than vterm.
 
 #+begin_src emacs-lisp
@@ -1476,7 +1475,23 @@ set via .dir-locals.el (see kode-dir-locals.el for Bazel projects).
 
 ** magit
 
+Magit's HEAD build calls llama's ~any~/~all~ helpers, but MELPA's published llama
+doesn't include them yet.  These shims tide it over.  Loading llama first means
+the guards skip automatically once MELPA ships a llama that defines them, so this
+block is safe to delete then.
+
 #+begin_src emacs-lisp
+;; TODO: remove once MELPA's llama ships `any'/`all' (magit HEAD needs them)
+(require 'llama nil t)
+(unless (fboundp 'any)
+  (defun any (pred seq)
+    "Compat shim for llama's `any': non-nil if PRED holds for some elt of SEQ."
+    (seq-some pred seq)))
+(unless (fboundp 'all)
+  (defun all (pred seq)
+    "Compat shim for llama's `all': non-nil if PRED holds for every elt of SEQ."
+    (seq-every-p pred seq)))
+
 (use-package magit
   :config
   (transient-bind-q-to-quit)
@@ -1710,6 +1725,7 @@ Code
 :PROPERTIES:
 :ID:       b675fb83-50bf-4177-9082-f9c039befbb9
 :END:
+
 Set custom org mode bindings and functions.
 
 #+begin_src emacs-lisp
@@ -3673,7 +3689,18 @@ works much smoother on both Windows and Linux.
 
 ** vertico                                                         :core:
 
+Recent vertico builds call ~set-local~, which only exists in Emacs 31+.  Until I
+upgrade this shim keeps it working on Emacs 30.  Remove it once on Emacs 31+.
+
 #+begin_src emacs-lisp
+;; TODO: remove this shim after upgrading to Emacs 31+
+(if (>= emacs-major-version 31)
+    (display-warning 'init "Emacs 31+ detected: remove the `set-local' shim in the vertico config" :warning)
+  (unless (fboundp 'set-local)
+    (defun set-local (variable value)
+      "Compat shim for Emacs 31's `set-local': set buffer-local VARIABLE to VALUE."
+      (set (make-local-variable variable) value))))
+
 (use-package vertico
   :demand t
   :hook (after-init . vertico-mode)
@@ -3697,47 +3724,6 @@ works much smoother on both Windows and Linux.
   (ads/leader-keys "tf" 'visual-fill-column-mode)
   )
 #+end_src
-
-** vterm                                                         :external:
-Full fledged terminal, works great, now I never have to leave hotel california.
-
-Requires external packages:
-- ~libvterm~
-- ~cmake~
-- ~libtool-bin~
-
-#+begin_src emacs-lisp
-(use-package vterm
-    :config
-    ;; Let evil-collection handle vterm (insert state by default)
-    ;; ESC -> normal for navigation, i/a -> insert for typing
-
-    (defun ads/vterm-ssh-connect (host)
-      "Open vterm and connect to HOST via SSH"
-      (interactive "sSSH host: ")
-      (let ((vterm-buffer-name (format "vterm-%s" host)))
-        (vterm)
-        (vterm-send-string (format "ssh %s\n" host))))
-
-    (ads/leader-keys
-      "m" 'vterm))
-#+end_src
-
-*** vterm-toggle
-
-#+begin_src emacs-lisp
-(use-package vterm-toggle
-  :after vterm
-  :custom
-  (vterm-toggle-scope 'dedicated)
-  (vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
-  (vterm-toggle-togglable-buffer-functions
-   '((lambda (buf) (not (string-prefix-p "*claude-code" (buffer-name buf))))))
-  :config
-  (ads/leader-keys
-    ";" 'vterm-toggle))
-#+end_src
-
 
 ** which-key
 
