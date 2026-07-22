@@ -3285,6 +3285,38 @@ Getting books read in the last month:
   "oT" 'org-tidy-toggle
   "o C-t" 'org-tidy-mode)
 #+end_src
+** org-transclusion
+[[https://github.com/nobiot/org-transclusion][org-transclusion]] embeds the content of one org file (or heading) inside another via ~#+transclude:~
+links.  I use it so my daily can pull in work items that physically live in a seperate — the text
+never lands in the personal repo, only the transclusion link does, and it renders inline in the
+daily on the work machine.
+
+Auto-rendered in dailies.  The =e= prefix is for *embed*.
+
+#+begin_src emacs-lisp
+(use-package org-transclusion
+  :after org
+  :config
+  ;; Render transclusions automatically in daily files.
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (when (and buffer-file-name
+                         (string-prefix-p
+                          (expand-file-name org-roam-dailies-directory org-directory)
+                          (expand-file-name buffer-file-name)))
+                (org-transclusion-add-all))))
+  (ads/leader-keys
+    :major-modes '(org-mode)
+    "oe"  '(:ignore t :wk "transclusion (Embed)")
+    "oea" 'org-transclusion-add
+    "oak" 'org-transclusion-make-from-link
+    "oeA" 'org-transclusion-add-all
+    "oer" 'org-transclusion-remove
+    "oeR" 'org-transclusion-remove-all
+    "oem" 'org-transclusion-mode
+    "oeg" 'org-transclusion-refresh))
+#+end_src
+
 ** pdf-tools
 [[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
 #+begin_src emacs-lisp
