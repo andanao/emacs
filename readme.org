@@ -3309,8 +3309,9 @@ Auto-rendered in dailies.  The =e= prefix is for *embed*.
     :major-modes '(org-mode)
     "oe"  '(:ignore t :wk "transclusion (Embed)")
     "oea" 'org-transclusion-add
-    "oak" 'org-transclusion-make-from-link
+    "oek" 'org-transclusion-make-from-link
     "oeA" 'org-transclusion-add-all
+    "oes" 'org-transclusion-move-to-source
     "oer" 'org-transclusion-remove
     "oeR" 'org-transclusion-remove-all
     "oem" 'org-transclusion-mode
