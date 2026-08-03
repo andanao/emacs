@@ -211,6 +211,7 @@ Suggested by [[lsp-mode]]
 #+begin_src emacs-lisp
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
+(setq-default display-line-numbers-widen t) ;; Keep line numbers absolute when narrowed
 #+end_src
 ** auto tangle files
 :PROPERTIES:
@@ -403,6 +404,7 @@ particularly like the light ~modus-operandi~ theme.
    (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
    (ads/modus-tweaks)))
 #+end_src
+
 * General.el                                                          :core:
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
@@ -502,14 +504,79 @@ The DWIM behaviour of this command is as follows:
 
 ** narrow ~n~
 
+Narrowing and heading navigation should feel the same whether I'm writing org or editing
+code, so these commands dispatch on the major mode instead of being bound per mode.  The
+capital variants narrow an indirect clone in another window, which lets me hold two
+sections of the same file open at once.
+
+#+begin_src emacs-lisp
+(defun ads/clone-indirect-here ()
+  "Clone the current buffer into an indirect buffer in another window."
+  (clone-indirect-buffer-other-window nil t))
+
+(defun ads/narrow-section-dwim (&optional indirect)
+  "Narrow to the section at point, dispatching on the major mode.
+Org narrows to the subtree, markdown to its subtree, prog modes to the
+enclosing defun and everything else to the page.  With INDIRECT, narrow
+an indirect clone in another window so the base buffer stays widened."
+  (interactive "P")
+  (when indirect (ads/clone-indirect-here))
+  (cond
+   ((derived-mode-p 'org-mode)
+    (org-narrow-to-subtree)
+    (org-fold-show-all))
+   ((derived-mode-p 'markdown-mode) (markdown-narrow-to-subtree))
+   ((derived-mode-p 'prog-mode) (narrow-to-defun))
+   (t (narrow-to-page))))
+
+(defun ads/narrow-to-defun-dwim (&optional indirect)
+  "Narrow to the defun at point.
+With INDIRECT, narrow an indirect clone in another window."
+  (interactive "P")
+  (when indirect (ads/clone-indirect-here))
+  (narrow-to-defun))
+
+(defun ads/goto-heading ()
+  "Jump to a heading or symbol using the best source for the major mode.
+Outline headings in org and markdown, imenu symbols everywhere else."
+  (if (derived-mode-p 'org-mode 'markdown-mode)
+      (consult-outline)
+    (condition-case nil
+        (consult-imenu)
+      (error (consult-outline)))))
+
+(defun ads/outline-dwim (&optional indirect)
+  "Widen, jump to a heading or symbol, then narrow to it.
+With INDIRECT, narrow an indirect clone in another window."
+  (interactive "P")
+  (widen)
+  (ads/goto-heading)
+  (ads/narrow-section-dwim indirect))
+
+(defun ads/outline-goto ()
+  "Widen then jump to a heading or symbol without narrowing."
+  (interactive)
+  (widen)
+  (ads/goto-heading))
+#+end_src
+
 #+begin_src emacs-lisp
 (ads/leader-keys
   "n" '(:ignore t :which-key "narrow")
   "nn" 'narrow-to-region
-  "nd" 'narrow-to-defun
+  "ns" 'ads/narrow-section-dwim
+  "nd" 'ads/narrow-to-defun-dwim
+  "ni" 'clone-indirect-buffer-other-window
   "np" 'narrow-to-page
   "nw" 'widen
+
+  "oo" 'ads/outline-dwim
+  "of" 'ads/outline-goto
   )
+
+(ads/leader-def "nS" "narrow section indirect" (ads/narrow-section-dwim t))
+(ads/leader-def "nD" "narrow defun indirect" (ads/narrow-to-defun-dwim t))
+(ads/leader-def "oO" "outline narrow indirect" (ads/outline-dwim t))
 #+end_src
 
 ** windows, buffers, frames ~j~
@@ -688,8 +755,7 @@ Anki or just make some sort of migration script.
 
 #+begin_src emacs-lisp
 (ads/leader-keys
-  :major-modes '(org-mode)
-  ;; :keymaps '(org-mode-map)
+  :keymaps 'org-mode-map
   "ok" '(:ignore t :wk "anKi")
   "okp" 'anki-editor-push-new-notes
   "okP" 'anki-editor-push-notes
@@ -1567,7 +1633,6 @@ block is safe to delete then.
 
 (ads/leader-keys
   :keymaps 'markdown-mode-map
-  "oo" 'consult-outline
   "dm" 'markdown-view-mode)
 
 (ads/leader-keys
@@ -1746,15 +1811,6 @@ Set custom org mode bindings and functions.
  :states  '(motion) :keymaps 'org-mode-map
  (kbd "RET") 'org-open-at-point)
 
-(defun ads/consult-org-outline ()
-  "Widen buffer, consult outline then narrow to subtree"
-  (interactive)
-  (widen)
-  (consult-outline)
-  (org-narrow-to-subtree)
-  (org-fold-show-all))
-
-
 (defun ads/org-scratch ()
   "Open ~/scratch.org"
   (interactive)
@@ -1772,15 +1828,15 @@ Set custom org mode bindings and functions.
   "C-s" 'ads/org-scratch)
 (ads/leader-def "od" "dired org" (find-file org-directory))
 
+;; Scoped to `org-mode-map' rather than `:major-modes', which does not restrict
+;; bindings placed in the override map.  `oo', `of' and `ns' now live in the
+;; global narrow section as mode-dispatching commands.
 (ads/leader-keys
-  :major-modes '(org-mode)
-  "oo" 'ads/consult-org-outline
-  "of" 'consult-outline
+  :keymaps 'org-mode-map
   "oh" 'consult-org-heading
   "o TAB" 'org-cycle-global
   "ti" 'org-redisplay-inline-images
   "tI" 'org-toggle-inline-images
-  "ns" 'org-narrow-to-subtree
   "ne" 'org-narrow-to-element
   "nb" 'org-narrow-to-block
   )
@@ -2696,7 +2752,7 @@ computers I have ~~/org/personal~ and ~~/org/work~
   (general-define-key :states '(insert visual) "C-f" 'org-roam-node-insert)
 
   (ads/leader-keys
-    :major-modes '(org-mode)
+    :keymaps 'org-mode-map
     "C-f" 'org-roam-node-insert
     "fi" 'org-roam-node-insert
     "fa" 'org-roam-alias-add
@@ -2831,7 +2887,7 @@ going to be seeing it
 
 
 (ads/leader-keys
-  :major-modes '(org-mode)
+  :keymaps 'org-mode-map
   "fc" 'ads/org-node-name-to-category)
 #+end_src
 *** roam-capture-dailies
@@ -2900,7 +2956,7 @@ is any
   (ads/org-archive))
 
 (ads/leader-keys
-  :major-modes '(org-mode)
+  :keymaps 'org-mode-map
   "ox" 'ads/org-archive
   "oX" 'ads/org-archive-done)
 #+end_src
@@ -2931,7 +2987,7 @@ a node immediately and not dive further into it.  Credit to [[https://www.youtub
     (apply #'org-roam-node-insert args)))
 
 (ads/leader-keys
-  :major-modes '(org-mode)
+  :keymaps 'org-mode-map
   "fI" 'org-roam-node-insert-immediate)
 #+end_src
 
@@ -3247,14 +3303,20 @@ If OTHER-WINDOW, visit the node in another window."
     consult-org-roam-backlinks :preview-key "C-l"
     consult-org-roam-backlinks-recursive :preview-key "C-l"
     )
+   ;; Finding and searching the roam graph is useful from any buffer, like
+   ;; `org-roam-node-find' on ~SPC d~.  The link commands are relative to the
+   ;; current node, so they stay scoped to org.
    (ads/leader-keys
-    :major-modes '(org-mode)
     "ff" 'consult-org-roam-file-find
     "fs" 'consult-org-roam-search
+    "fg" 'consult-org-roam-search ;; roam grep
+    )
+
+   (ads/leader-keys
+    :keymaps 'org-mode-map
     "fl" 'consult-org-roam-forward-links
     "fh" 'consult-org-roam-backlinks
     "fH" 'consult-org-roam-backlinks-recursive
-    "fg" 'consult-org-roam-search ;; roam grep
     )
    )
 #+end_src
@@ -3308,7 +3370,7 @@ Getting books read in the last month:
   :hook  (org-mode . org-tidy-mode)
   )
 (ads/leader-keys
-  :major-modes '(org-mode)
+  :keymaps 'org-mode-map
   "ot" 'org-tidy-untidy-buffer
   "oT" 'org-tidy-toggle
   "o C-t" 'org-tidy-mode)
@@ -3334,7 +3396,7 @@ Auto-rendered in dailies.  The =e= prefix is for *embed*.
                           (expand-file-name buffer-file-name)))
                 (org-transclusion-add-all))))
   (ads/leader-keys
-    :major-modes '(org-mode)
+    :keymaps 'org-mode-map
     "oe"  '(:ignore t :wk "transclusion (Embed)")
     "oea" 'org-transclusion-add
     "oek" 'org-transclusion-make-from-link
