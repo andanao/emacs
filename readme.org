@@ -626,7 +626,9 @@ With INDIRECT, narrow an indirect clone in another window."
 #+begin_src emacs-lisp
 (ads/leader-keys "c" '(:ignore t :which-key "config"))
 
-(ads/leader-def "cc" "emacs config" (find-file ads/config-file))
+(ads/leader-def "cc" "emacs config" (progn (find-file ads/config-file)
+                                          (ads/consult-org-outline)))
+
 (ads/leader-def "cI" "load init" (load-file user-init-file))
 #+end_src
 
@@ -766,20 +768,26 @@ Anki or just make some sort of migration script.
   )
 #+end_src
 ** apheleia
-[[https://github.com/radian-software/apheleia][apheleia]] runs code formatters on save, asynchronously and without moving point.
-JSON is formatted with =jq= (=prettier= isn't installed, and =jq= ships everywhere).
-The =jq '.'= identity filter reindents while preserving key order; it also rejects
-invalid JSON, so a broken file simply isn't reformatted until you fix it.
-Elisp uses apheleia's built-in =lisp-indent= formatter (Emacs' own indentation
-engine, no external tool), which is already the default mapping for
-=emacs-lisp-mode=, so those hooks need no =setf=.
+[[https://github.com/radian-software/apheleia][apheleia]] runs code formatters on save, asynchronously and without moving point.  JSON is formatted
+with =jq= (=prettier= isn't installed, and =jq= ships everywhere).  The =jq '.'= identity filter reindents
+while preserving key order; it also rejects invalid JSON, so a broken file simply isn't reformatted
+until you fix it.  Elisp uses apheleia's built-in =lisp-indent= formatter (Emacs' own indentation
+engine, no external tool), which is already the default mapping for =emacs-lisp-mode=, so those hooks
+need no =setf=.
 
-Opt in one language at a time: add its mode to =:hook=, and (if the default
-formatter isn't installed) point =apheleia-mode-alist= at one that is.
+Opt in one language at a time: add its mode to =:hook=, and (if the default formatter isn't installed)
+point =apheleia-mode-alist= at one that is.
+
+Rust uses the nightly =rustfmt= binary directly (some of our options are unstable and stable
+rustfmt ignores them; the rustup =+nightly= shim isn't honored in apheleia's environment) against
+a tangled =~/.config/rustfmt/rustfmt.toml=. The explicit =--config-path= overrides any
+project-local config.
 #+begin_src emacs-lisp
 (use-package apheleia
   :hook ((json-mode . apheleia-mode)
          (json-ts-mode . apheleia-mode)
+         (rust-mode . apheleia-mode)
+         (rust-ts-mode . apheleia-mode)
          (emacs-lisp-mode . apheleia-mode)
          (lisp-data-mode . apheleia-mode))
   :config
@@ -787,7 +795,13 @@ formatter isn't installed) point =apheleia-mode-alist= at one that is.
   (setf (alist-get 'jq apheleia-formatters)
         '("jq" "--indent" "2" "-M" "."))
   (setf (alist-get 'json-mode apheleia-mode-alist) 'jq)
-  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'jq))
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'jq)
+  ;; Rust: nightly rustfmt so unstable options in rustfmt.toml take effect.
+  (setf (alist-get 'rustfmt apheleia-formatters)
+        `(,(expand-file-name
+            "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/rustfmt")
+          "--quiet" "--emit" "stdout"
+          "--config-path" ,(expand-file-name "~/.config/rustfmt/rustfmt.toml"))))
 #+end_src
 
 ** async
@@ -3672,6 +3686,20 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
   "ld" 'rust-dbg-wrap-or-unwrap
   "lm" 'rust-toggle-mutability
   )
+#+end_src
+
+*** Rustfmt
+The rustfmt config, tangled to =~/.config/rustfmt/rustfmt.toml=:
+#+begin_src conf-toml :tangle ~/.config/rustfmt/rustfmt.toml :mkdirp yes :comments no
+edition = "2024"
+style_edition = "2024"
+
+imports_granularity = "Module"
+
+wrap_comments = true
+comment_width = 100
+
+format_code_in_doc_comments = true
 #+end_src
 
 ** rustic
