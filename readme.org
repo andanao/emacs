@@ -780,9 +780,26 @@ point =apheleia-mode-alist= at one that is.
 
 Rust uses the nightly =rustfmt= binary directly (some of our options are unstable and stable
 rustfmt ignores them; the rustup =+nightly= shim isn't honored in apheleia's environment) against
-a tangled =~/.config/rustfmt/rustfmt.toml=. The explicit =--config-path= overrides any
-project-local config.
+a tangled =~/.config/rustfmt/rustfmt.toml=.  The binary is globbed out of =~/.rustup= rather than
+named, so this doesn't hardcode a host triple.
+
+That =--config-path= is only passed when the project doesn't ship its own =rustfmt.toml=.  rustfmt
+reading from stdin resolves =rustfmt.toml= relative to its working directory, so a project's own
+style wins on its own — but only if we don't override it.  Any element of an
+=apheleia-formatters= entry that isn't a string is evaluated at format time and spliced in, so
+returning nil from the helper simply drops both arguments.
 #+begin_src emacs-lisp
+(defun ads/rustfmt-command ()
+  "Path to a nightly rustfmt, or plain \"rustfmt\" if rustup has no nightly."
+  (or (car (last (file-expand-wildcards
+                  (expand-file-name "~/.rustup/toolchains/nightly-*/bin/rustfmt"))))
+      "rustfmt"))
+
+(defun ads/rustfmt-config-args ()
+  "Point rustfmt at the personal config, unless the project has one of its own."
+  (unless (locate-dominating-file default-directory "rustfmt.toml")
+    (list "--config-path" (expand-file-name "~/.config/rustfmt/rustfmt.toml"))))
+
 (use-package apheleia
   :hook ((json-mode . apheleia-mode)
          (json-ts-mode . apheleia-mode)
@@ -798,10 +815,9 @@ project-local config.
   (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'jq)
   ;; Rust: nightly rustfmt so unstable options in rustfmt.toml take effect.
   (setf (alist-get 'rustfmt apheleia-formatters)
-        `(,(expand-file-name
-            "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/rustfmt")
+        `(,(ads/rustfmt-command)
           "--quiet" "--emit" "stdout"
-          "--config-path" ,(expand-file-name "~/.config/rustfmt/rustfmt.toml"))))
+          (ads/rustfmt-config-args))))
 #+end_src
 
 ** async
@@ -896,10 +912,13 @@ on MELPA
     "a" '(:ignore t :which-key "ai")
     "ai" 'claude-code-ide
     "aa" 'claude-code-ide-toggle
-    "aA" 'claude-code-ide-start
+    "aA" 'claude-code-ide-show-all
+    "am" 'claude-code-ide-menu
+    "an" 'claude-code-ide-rename-session
     "aR" 'claude-code-ide-resume
     "ac" 'claude-code-ide-continue
     "aQ" 'claude-code-ide-stop
+    "aX" 'claude-code-ide-stop-all
     "ar" 'claude-code-ide-send-region
     "ab" 'claude-code-ide-send-buffer
     "af" 'claude-code-ide-send-file
@@ -1499,14 +1518,55 @@ if I look through the manual closely but this works for now.
 ** lsp-mode
 [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] - Language Server Protocol client for Emacs
 
+=lsp-diagnostics-provider= is pinned rather than left at =:auto=.  =:auto= picks flycheck if the
+feature happens to be loaded and flymake otherwise, and since [[*flycheck][flycheck]] is =:hook=-deferred to JSON
+buffers, the backend used in a Rust buffer would otherwise depend on whether you'd opened a JSON
+file first that session.
+
+=lsp-file-watch-threshold= is raised because the default of 1000 files trips on any monorepo, and
+tripping it means a =y-or-n-p= prompt every time a workspace starts.  The servers that matter here
+are told to do their own watching instead (see [[*lsp-rust][lsp-rust]]), so this only governs the ones that
+aren't.
+
+Raising the threshold alone isn't enough, though, because the count itself is wrong in a Bazel
+repo.  lsp-mode ships patterns for =bazel-*=, but Bazel also drops a convenience symlink plainly
+named =external= that points into the output base's external tree, and no default pattern catches
+it.  Following it took the watchable-directory count in kode from 2,861 to 67,191 — the extra 64k
+being the Bazel repository cache — so the prompt fired no matter how high the threshold went.
+
+Code action, format and find-references sit on capitals rather than the obvious =la= / =lf= / =lr=.
+On the work machine [[file:~/git/konfig/readme.org][konfig]] claims those three under general.el's =override= keymap, which lives in
+=emulation-mode-map-alists= and so outranks =lsp-mode-map=; bound lowercase they would silently do
+nothing there.  Capitals keep one set of keys that works on every machine.
+
+Autostart goes through =ads/lsp-maybe-deferred= rather than =lsp-deferred= directly, so a project
+can opt out of having a server started for it just by opening a file.  The default is an empty
+predicate list, which is plain =lsp-deferred=; the reason it exists is that a server is not always
+cheap enough to start on a whim.  rust-analyzer on a large Bazel graph holds several gigabytes and
+takes a minute and a half to prime, so on [[file:~/git/konfig/readme.org][the work machine]] kode claims manual control and starts it
+on a keybinding instead.  Deciding that per project belongs to the project, not here, hence the
+hook.  =run-hook-with-args-until-success= means any predicate returning non-nil suppresses the
+start - explicit =M-x lsp= is unaffected either way.
+
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
+  :preface
+  (defvar ads/lsp-autostart-inhibit-functions nil
+    "Predicates consulted before a server is autostarted for a buffer.
+If any returns non-nil `ads/lsp-maybe-deferred' does nothing, leaving the
+buffer to start its server explicitly.  Run with no arguments in the buffer
+that is about to start one.")
+
+  (defun ads/lsp-maybe-deferred ()
+    "Start a server for this buffer unless something has claimed it."
+    (unless (run-hook-with-args-until-success 'ads/lsp-autostart-inhibit-functions)
+      (lsp-deferred)))
   :hook
-  (rust-ts-mode . lsp-deferred)
-  (python-ts-mode . lsp-deferred)
-  (c-ts-mode . lsp-deferred)
-  (c++-ts-mode . lsp-deferred)
+  (rust-ts-mode . ads/lsp-maybe-deferred)
+  (python-ts-mode . ads/lsp-maybe-deferred)
+  (c-ts-mode . ads/lsp-maybe-deferred)
+  (c++-ts-mode . ads/lsp-maybe-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-keymap-prefix "C-c l")
@@ -1515,19 +1575,23 @@ if I look through the manual closely but this works for now.
   (lsp-completion-provider :capf)
   (lsp-headerline-breadcrumb-enable t)
   (lsp-modeline-diagnostics-enable t)
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-file-watch-threshold 20000)
+  (lsp-warn-no-matched-clients nil)
   :config
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]external\\'")
   (ads/leader-keys
     :keymaps 'lsp-mode-map
     "l" '(:ignore t :which-key "lsp")
-    "la" 'lsp-execute-code-action
+    "lA" 'lsp-execute-code-action
     "ld" 'lsp-find-definition
     "lD" 'lsp-find-declaration
     "le" 'lsp-treemacs-errors-list
-    "lf" 'lsp-format-buffer
+    "lF" 'lsp-format-buffer
     "lh" 'lsp-describe-thing-at-point
     "li" 'lsp-find-implementation
     "ln" 'lsp-rename
-    "lr" 'lsp-find-references
+    "lR" 'lsp-find-references
     "ls" 'lsp-signature-help
     "lS" 'lsp-restart-workspace))
 #+end_src
@@ -1549,14 +1613,56 @@ UI enhancements for lsp-mode
 #+end_src
 
 ** lsp-rust
-Rust-analyzer configuration for lsp-mode. Project-specific overrides can be
-set via .dir-locals.el (see kode-dir-locals.el for Bazel projects).
+[[https://rust-analyzer.github.io/][rust-analyzer]] configuration for lsp-mode.
+
+The server binary comes from =PATH=.  Under rustup that's a shim which reads the project's
+=rust-toolchain.toml=, so the analyzer always matches the compiler the project pins — and the
+config keeps working on Linux and Windows, which hardcoding a =*-aarch64-apple-darwin= path did
+not.
+
+Only one behaviour setting is general enough to belong here.  =use-client-watching= nil hands file
+watching to rust-analyzer's own notify backend instead of registering thousands of directories with
+Emacs' =filenotify=, which costs one kqueue fd each on macOS.
+
+What a Bazel repo needs on top — proc macros off, build scripts off, =cargo check= off, and the
+diagnostic codes that unexpanded macros make untrustworthy suppressed — is set per buffer by [[file:~/git/konfig/readme.org::*Grove - rust-analyzer][the work
+config]] instead of globally.  Those settings are actively wrong for a Cargo project: they throw away
+proc-macro expansion, which Cargo builds for the host and which therefore works fine, along with the
+on-save diagnostics Cargo gives you for free.  Setting them here broke every Cargo crate on the
+machine in order to fix one monorepo.  Worth remembering while you are in the area that the on-save
+knob is =lsp-rust-analyzer-cargo-watch-enable= and *not* =lsp-rust-analyzer-check-on-save=, which
+looks plausible but is not a variable lsp-mode defines.
 
 #+begin_src emacs-lisp
+(defun ads/rust-analyzer-command ()
+  "Return the command list to start rust-analyzer with.
+Prefer `exec-path'; fall back to the newest rustup toolchain that has the
+component installed, then to bare \"rust-analyzer\" so lsp-mode reports a
+missing server rather than a broken path."
+  (list (or (executable-find "rust-analyzer")
+            (car (last (file-expand-wildcards
+                        (expand-file-name "~/.rustup/toolchains/*/bin/rust-analyzer"))))
+            "rust-analyzer")))
+
 (with-eval-after-load 'lsp-rust
-  ;; Use stable toolchain rust-analyzer by default
-  (setq lsp-rust-analyzer-server-command
-        (list (expand-file-name "~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer"))))
+  (setq lsp-rust-analyzer-server-command (ads/rust-analyzer-command))
+  (setq lsp-rust-analyzer-use-client-watching nil))
+#+end_src
+
+** lsp-pyright
+[[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] fronts either pyright or the [[https://docs.basedpyright.com/][basedpyright]] fork.  basedpyright, installed with
+=uv tool install basedpyright=, so there's no npm in the loop and no per-project =node_modules=.
+
+The client has to be registered *before* [[*lsp-mode][lsp-mode]]'s own =python-ts-mode= hook fires, or
+=lsp-deferred= finds no client that handles the buffer and gives up, hence the explicitly-earlier
+hook depth rather than =:hook=.
+
+#+begin_src emacs-lisp
+(use-package lsp-pyright
+  :custom
+  (lsp-pyright-langserver-command "basedpyright")
+  :init
+  (add-hook 'python-ts-mode-hook (lambda () (require 'lsp-pyright)) -50))
 #+end_src
 
 ** magit
@@ -3675,18 +3781,22 @@ by the rust-lang team, alternatively [[https://github.com/emacs-rustic/rustic][R
   )
 #+end_src
 
+These hang off =SPC m=, the conventional major-mode prefix.  They used to live on =SPC l=, which
+[[*lsp-mode][lsp-mode]] also claims — =SPC l d= was both =lsp-find-definition= and =rust-dbg-wrap-or-unwrap=,
+and which one you got depended on keymap precedence.  Only the two editing helpers survive; the
+cargo commands that were here (=rust-run=, =rust-test=, =rust-check=, =rust-compile=,
+=rust-run-clippy=) do nothing useful in a repo that builds through Bazel.
+
+=rust-ts-mode-map= rather than =rust-mode-map= because [[*treesit-auto][treesit-auto]] remaps =rust-mode= to
+=rust-ts-mode=, so a =.rs= buffer never has =rust-mode-map= active.  With
+=rust-mode-treesitter-derive= set above, =rust-ts-mode-map= is =rust-mode-map='s parent anyway,
+so these stay reachable either way.
 #+begin_src emacs-lisp
 (ads/leader-keys
-  :keymaps 'rust-mode-map
-  "l" '(:ignore t :which-key "rust")
-  "ly" 'rust-run-clippy
-  "lc" 'rust-compile
-  "lk" 'rust-check
-  "lr" 'rust-run
-  "lt" 'rust-test
-  "ld" 'rust-dbg-wrap-or-unwrap
-  "lm" 'rust-toggle-mutability
-  )
+  :keymaps 'rust-ts-mode-map
+  "m" '(:ignore t :which-key "rust")
+  "md" 'rust-dbg-wrap-or-unwrap
+  "mm" 'rust-toggle-mutability)
 #+end_src
 
 *** Rustfmt
@@ -3706,9 +3816,17 @@ format_code_in_doc_comments = true
 ** rustic
 [[https://github.com/emacs-rustic/rustic?tab=readme-ov-file#eglot][Github - rustic]]
 
-batteries included rust mode, builds upon rust-lang's rust-mode
+Batteries-included rust mode built on rust-lang's rust-mode - disabled in favor of plain
+[[*rust][rust-ts-mode]] plus [[*lsp-rust][lsp-rust]].
 
-#+begin_src emacs-lisp
+It was never actually loading: =:after (rust-mode lsp-mode)= against a =:commands=-deferred
+lsp-mode means the =eval-after-load= chain only completes once something has already started an
+LSP session, by which point the =.rs= buffer's major mode is settled.  What rustic adds over that
+is cargo integration - =rustic-cargo-build=, =-test=, =-clippy= - which is exactly the part that
+doesn't apply in a Bazel repo.  It also claims =\.rs= in =auto-mode-alist= for =rustic-mode=,
+which would quietly bypass the =rust-ts-mode= hooks the rest of this config hangs off.
+
+#+begin_src emacs-lisp :tangle no
 (use-package rustic
   :after (rust-mode lsp-mode)
   :custom
@@ -3871,12 +3989,20 @@ remote connections in emacs
 #+begin_src emacs-lisp
 (setq treesit-language-source-alist
       '((rust "https://github.com/tree-sitter/tree-sitter-rust"
-              "v0.23.3" "src")))
+              "v0.23.3" "src")
+        (python "https://github.com/tree-sitter/tree-sitter-python"
+                "v0.23.6" "src")))
 #+end_src
 
 ** treesit-auto
 
 Automatically install the treesitter language
+
+Python is in =treesit-auto-langs= because every Python hook in this config targets
+=python-ts-mode= - including =(python-ts-mode . lsp-deferred)= in [[*lsp-mode][lsp-mode]].  Without the remap a
+=.py= file opens in plain =python-mode=, none of those hooks fire, and Python LSP silently does
+nothing.  Python uses treesit-auto's stock recipe; only Rust needs one spelled out here, to pin a
+grammar revision.
 
 #+begin_src emacs-lisp
 (use-package treesit-auto
@@ -3892,8 +4018,8 @@ Automatically install the treesitter language
   (setq major-mode-remap-alist
         (treesit-auto--build-major-mode-remap-alist))
 
-   (setq treesit-auto-langs '(rust))
-   (treesit-auto-add-to-auto-mode-alist '(rust))
+   (setq treesit-auto-langs '(rust python))
+   (treesit-auto-add-to-auto-mode-alist '(rust python))
    (global-treesit-auto-mode))
 #+end_src
 
@@ -4491,10 +4617,21 @@ Remove the title bar icons for a cleaner look.
 #+end_src
 
 ** Homebrew PATH
-GUI apps on macOS don't inherit the shell's PATH. Add Homebrew's bin directory to both =exec-path= (for Emacs finding executables) and =PATH= environment variable (for subprocesses like git hooks).
+GUI apps on macOS don't inherit the shell's PATH. Add the bin directories to both =exec-path= (for
+Emacs finding executables) and =PATH= environment variable (for subprocesses like git hooks).
+
+Homebrew isn't the only one that matters: =~/.cargo/bin= holds the rustup shims that
+[[*lsp-rust][lsp-rust]] resolves =rust-analyzer= through, and =~/.local/bin= holds =uv='s tools including
+[[*lsp-pyright][basedpyright-langserver]].  Without these, both language servers are simply not found and lsp-mode
+fails to start with no obvious reason why.  Missing directories are dropped rather than added, so
+this is safe on a machine that doesn't have all three.
 #+begin_src emacs-lisp
-(add-to-list 'exec-path "/opt/homebrew/bin")
-(setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH")))
+(dolist (dir (list "/opt/homebrew/bin"
+                   (expand-file-name "~/.cargo/bin")
+                   (expand-file-name "~/.local/bin")))
+  (when (file-directory-p dir)
+    (add-to-list 'exec-path dir)
+    (setenv "PATH" (concat dir path-separator (getenv "PATH")))))
 #+end_src
 
 
