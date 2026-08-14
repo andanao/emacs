@@ -627,7 +627,7 @@ With INDIRECT, narrow an indirect clone in another window."
 (ads/leader-keys "c" '(:ignore t :which-key "config"))
 
 (ads/leader-def "cc" "emacs config" (progn (find-file ads/config-file)
-                                          (ads/consult-org-outline)))
+                                          (ads/outline-dwim)))
 
 (ads/leader-def "cI" "load init" (load-file user-init-file))
 #+end_src
@@ -3420,6 +3420,7 @@ Auto-rendered in dailies.  The =e= prefix is for *embed*.
     "oer" 'org-transclusion-remove
     "oeR" 'org-transclusion-remove-all
     "oem" 'org-transclusion-mode
+    "oel" 'org-transclusion-open-source
     "oeg" 'org-transclusion-refresh))
 #+end_src
 
