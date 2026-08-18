@@ -3628,6 +3628,55 @@ Returns nil (falling through to the default handlers) unless
             #'ads/org-transclusion-add-only-quote))
 #+end_src
 
+** pcre2el
+[[https://github.com/joddie/pcre2el][pcre2el]]'s ~pcre-mode~ reads the regexps I type interactively as PCRE and hands Emacs
+the translation — UI only, the regexps in this config stay Emacs syntax.  It advises
+~read-regexp~ (~occur~, ~replace-regexp~, ~query-replace-regexp~, ~keep-lines~,
+~dired-mark-files-regexp~ ...) and ~isearch~, where evil's ~/~ goes.  Not covered:
+evil's ~:%s~ and ~consult-line~.  ~M-x pcre-mode~ for the odd Emacs-only construct
+(~\_<~, ~\s-~).
+
+~rxt-mode~ has the translation commands (~C-c / /~ explain, ~C-c / e p~ elisp to PCRE),
+in ~prog-mode~ only since ~C-c /~ is ~org-sparse-tree~ in org.
+
+#+begin_src emacs-lisp
+(use-package pcre2el
+  :demand t
+  :hook (prog-mode . rxt-mode)
+  :config
+  (pcre-mode +1)
+
+  ;; anzu counts matches with `re-search-forward', so it needs the translation too.
+  (defun ads/anzu-pcre-transform-input (str)
+    "Translate STR from PCRE when `pcre-mode' is searching by regexp."
+    (if (and pcre-mode isearch-regexp (stringp str))
+        (or (ignore-errors (rxt-pcre-to-elisp str)) str)
+      str))
+  (advice-add 'anzu--transform-input :filter-return #'ads/anzu-pcre-transform-input))
+#+end_src
+
+*** PCRE input for consult
+
+~consult~ doesn't use ~read-regexp~, so ~consult-ripgrep~ needs its own compiler.
+ripgrep understands the input as typed; only the Emacs side gets translated.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'consult
+  (defun ads/consult-pcre-regexp-compiler (input type ignore-case)
+    "Compile INPUT, read as PCRE, into a list of regexps of TYPE.
+PCRE flavoured `consult--default-regexp-compiler'; a component that
+fails to translate (a half-typed regexp, say) passes through as-is."
+    (let* ((parts (consult--split-escaped input))
+           (elisp (mapcar (lambda (part)
+                            (or (ignore-errors (rxt-pcre-to-elisp part)) part))
+                          parts)))
+      (cons (if (memq type '(emacs basic)) elisp parts)
+            (when-let* ((regexps (seq-filter #'consult--valid-regexp-p elisp)))
+              (apply-partially #'consult--highlight-regexps regexps ignore-case)))))
+
+  (setq consult--regexp-compiler #'ads/consult-pcre-regexp-compiler))
+#+end_src
+
 ** pdf-tools
 [[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
 #+begin_src emacs-lisp
