@@ -826,21 +826,24 @@ returning nil from the helper simply drops both arguments.
   :config
   (async-bytecomp-package-mode 1))
 #+end_src
-** auctex LaTeX
-Also install MiKTex to generate PDFs
+** auctex LaTeX                                                   :external:
+[[https://www.gnu.org/software/auctex/][AUCTeX]] for editing standalone =.tex= files.  Note that inline org previews do *not* go through
+AUCTeX -- see [[*org latex preview][org latex preview]] for that.
+
+Needs a TeX distribution: MacTeX on macOS, =texliveFull= on Linux, MiKTeX on Windows.
 
 #+begin_src emacs-lisp
 (use-package tex
-  :ensure auctex)
+  :ensure auctex
+  :custom
+  (TeX-auto-save t)
+  (TeX-parse-self t)
+  (reftex-plug-into-AUCTeX t)
+  (LaTeX-electric-left-right-brace t)
+  (TeX-PDF-mode t)
+  (TeX-source-correlate-mode t)
+  (TeX-source-correlate-start-server t))
 (setq-default TeX-master nil)
-(setq TeX-auto-save t
-      TeX-parse-self t
-      reftex-plug-into-AUCTeX t
-      LaTeX-electric-left-right-brace t
-      TeX-PDF-mode t
-      TeX-source-correlate-mode t
-      TeX-source-correlate-start-server t
-      )
 
 ;; (setq preview-latex-debug t)
 
@@ -898,6 +901,21 @@ on MELPA
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
+#+end_src
+
+** cdlatex
+[[https://github.com/cdominik/cdlatex][cdlatex]] makes math fast to type: =_= and =^= auto-brace, and an environment name then TAB
+expands a template.  Org binds =`= and ='= unconditionally (not just inside fragments), so unbind
+them and type =\alpha= longhand.
+
+#+begin_src emacs-lisp
+(use-package cdlatex
+  :hook ((org-mode . org-cdlatex-mode)
+         (LaTeX-mode . turn-on-cdlatex))
+  :config
+  (with-eval-after-load 'org
+    (define-key org-cdlatex-mode-map (kbd "`") nil)
+    (define-key org-cdlatex-mode-map (kbd "'") nil)))
 #+end_src
 
 ** claude-code-ide
@@ -2347,6 +2365,13 @@ Convenience package that makes org bulleted list behave like they do in most oth
 
 **** Languages
 
+=latex= enables =#+begin_src latex :file diagram.svg= blocks, which render TikZ/pgfplots out to
+standalone image files on disk -- the thing you want when the diagram needs to leave Emacs.  See
+[[*org latex preview][org latex preview]] for the inline case.
+
+Note that =d2= is deliberately absent: [[*d2-mode][d2-mode]] provides =org-babel-execute:d2= itself and has no
+=ob-d2= feature to require, so listing it here would error.
+
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
      (org-babel-do-load-languages
@@ -2354,6 +2379,7 @@ Convenience package that makes org bulleted list behave like they do in most oth
          '((emacs-lisp . t)
            (shell . t)
            (calc . t)
+           (latex . t)
            (python . t))))
 
     (setq org-confirm-babel-evaluate nil)
@@ -2599,10 +2625,161 @@ Better management of images in org mode for copying photos from internet and cli
     :keymaps '(org-mode-map)
     "os" 'org-download-clipboard))
 #+end_src
+
+** org-fragtog
+[[https://github.com/io12/org-fragtog][org-fragtog]] previews the LaTeX fragment the cursor is in and un-previews it when you move in to
+edit, which is what makes [[*org latex preview][org latex preview]] feel live rather than a manual toggle.
+
+#+begin_src emacs-lisp
+(use-package org-fragtog
+  :hook (org-mode . org-fragtog-mode))
+#+end_src
+
 ** org-habit
 #+begin_src emacs-lisp
 (require 'org-habit)
 (add-to-list 'org-modules 'org-habit)
+#+end_src
+
+** org latex preview                                               :custom:
+Inline rendering of math *and* TikZ pictures directly in the org buffer -- plots, circuits,
+flowcharts, state machines, trees.  [[*org-fragtog][org-fragtog]] toggles these automatically as the cursor moves;
+[[*cdlatex][cdlatex]] makes them fast to type.
+
+*** Drawing preamble
+
+One package list shared by both rendering paths below, so a picture that previews inline renders
+identically when written to a file: =pgfplots= plots, =circuitikz= circuits, =forest= trees,
+=tikz-cd= arrow-heavy graphs, and the =automata= library for state machines.
+
+#+begin_src emacs-lisp
+(defconst ads/latex-drawing-preamble
+  "\\usepackage{tikz}
+\\usepackage{pgfplots}
+\\usepackage{circuitikz}
+\\usepackage{forest}
+\\usepackage{tikz-cd}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usetikzlibrary{automata,positioning,arrows.meta,shapes.geometric,calc,fit,
+  trees,decorations.pathmorphing,backgrounds,matrix,chains}
+\\pgfplotsset{compat=1.18}"
+  "LaTeX packages needed to draw plots, circuits, trees, graphs and state machines.
+Shared by inline previews and by `latex' babel blocks so both render the same.")
+#+end_src
+
+*** inline previews
+
+=dvisvgm= over the default =dvipng= because SVG stays sharp at any text scale; the stock alist
+entry is already correct, so it's selected rather than redefined.
+
+Appending to =org-format-latex-header= is what makes non-math work -- out of the box a bare
+=tikzpicture= fails on an undefined environment.
+
+=:background "Transparent"= is not cosmetic: the default bakes a =\pagecolor= rect into the SVG
+that Emacs cannot recolour, which under a dark theme renders every fragment as a white slab.
+
+=:scale= multiplies the =:image-size-adjust (1.7 . 1.5)= the =dvisvgm= entry already carries, so
+1.4 is an effective 2.38x -- deliberate, and vector output so nothing blurs.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org
+  (setq org-preview-latex-default-process 'dvisvgm)
+
+  (plist-put org-format-latex-options :scale 1.4)
+  (plist-put org-format-latex-options :background "Transparent")
+
+  (setq org-format-latex-header
+        (concat org-format-latex-header "\n" ads/latex-drawing-preamble)))
+#+end_src
+
+*** babel blocks to image files
+
+Two ob-latex defaults have to go: =org-babel-latex-preamble= ships
+=\def\pgfsysdriver{pgfsys-tex4ht.def}=, which points TikZ at the tex4ht backend and is why =latex=
+blocks silently produce a broken PDF, and the SVG step hardcodes =inkscape= where =pdftocairo=
+from poppler does the same job.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'ob-latex
+  (setq org-babel-latex-preamble
+        (lambda (_params)
+          (concat "\\documentclass[preview,border=4pt]{standalone}\n"
+                  ads/latex-drawing-preamble "\n")))
+
+  (setq org-babel-latex-pdf-svg-process "pdftocairo -svg %f %O"))
+#+end_src
+
+*** regenerate previews on theme change
+
+Previews bake the foreground colour in at render time, so [[*Toggle themes][Toggle themes]] leaves them unreadable.
+
+Rendering is synchronous and costs about a second per fragment, so this runs off an idle timer
+(the theme paints first) and does each window's visible region before the rest of the buffer.
+=org--latex-preview-region= is internal but the only entry point that takes bounds.
+
+#+begin_src emacs-lisp
+(defvar ads/org-latex-preview-timer nil
+  "Idle timer scheduled by `ads/org-refresh-latex-previews'.")
+
+(defun ads/org--latex-rerender (beg end)
+  "Drop and rebuild LaTeX previews between BEG and END."
+  (org-clear-latex-preview beg end)
+  (org--latex-preview-region beg end))
+
+(defun ads/org-refresh-latex-previews ()
+  "Regenerate LaTeX previews in every visible org buffer.
+Previews embed the theme's foreground colour, so they must be rebuilt
+after a theme change or they become unreadable.  Runs off an idle timer,
+visible regions first, so the theme switch itself stays instant."
+  (interactive)
+  (when (timerp ads/org-latex-preview-timer)
+    (cancel-timer ads/org-latex-preview-timer))
+  (setq ads/org-latex-preview-timer
+        (run-with-idle-timer
+         0.3 nil
+         (lambda ()
+           (let (buffers)
+             (dolist (window (window-list))
+               (with-current-buffer (window-buffer window)
+                 (when (derived-mode-p 'org-mode)
+                   (unless (memq (current-buffer) buffers)
+                     (push (current-buffer) buffers))
+                   (ads/org--latex-rerender (window-start window)
+                                            (window-end window t)))))
+             (dolist (buffer buffers)
+               (when (buffer-live-p buffer)
+                 (with-current-buffer buffer
+                   (ads/org--latex-rerender (point-min) (point-max))))))))))
+
+(add-hook 'modus-themes-after-load-theme-hook #'ads/org-refresh-latex-previews)
+#+end_src
+
+*** keybindings
+
+The two wrappers just hide =org-latex-preview='s =C-u C-u= / =C-u C-u C-u= prefix args.  =ov=
+rather than the obvious =op= because the work config binds =op= globally to
+=ads/refile-move-personal=, which a prefix in =org-mode-map= would shadow.
+
+#+begin_src emacs-lisp
+(defun ads/org-latex-preview-buffer ()
+  "Preview every LaTeX fragment in the buffer."
+  (interactive)
+  (org-latex-preview '(16)))
+
+(defun ads/org-latex-preview-clear ()
+  "Clear every LaTeX preview in the buffer."
+  (interactive)
+  (org-latex-preview '(64)))
+
+(ads/leader-keys
+  :keymaps 'org-mode-map
+  "ov"  '(:ignore t :wk "Preview latex")
+  "ovv" '(org-latex-preview :wk "toggle at point/section")
+  "ovb" '(ads/org-latex-preview-buffer :wk "buffer")
+  "ovc" '(ads/org-latex-preview-clear :wk "clear buffer")
+  "ovr" '(ads/org-refresh-latex-previews :wk "regenerate visible")
+  "ovd" '(ads/org-refresh-d2-images :wk "regenerate d2 images"))
 #+end_src
 
 ** org meetings                                                    :custom:
@@ -2801,12 +2978,14 @@ small package to make the indentation work and visual fill column work in org mo
           ("#+begin_src cpp" . "󰙱")
           ("#+begin_src c++" . "󰙲")
           ("#+begin_src css" . "")
+          ("#+begin_src d2" . "")
           ("#+begin_src dockerfile" . "")
           ("#+begin_src emacs-lisp" . "")
           ("#+begin_src html" . "")
           ("#+begin_src java" . "")
           ("#+begin_src javascript" . "")
           ("#+begin_src json" . "J")
+          ("#+begin_src latex" . "")
           ("#+begin_src markdown" . "")
           ("#+begin_src python" . "")
           ("#+begin_src rust" . "󱘗")
@@ -4674,13 +4853,24 @@ Homebrew isn't the only one that matters: =~/.cargo/bin= holds the rustup shims 
 [[*lsp-pyright][basedpyright-langserver]].  Without these, both language servers are simply not found and lsp-mode
 fails to start with no obvious reason why.  Missing directories are dropped rather than added, so
 this is safe on a machine that doesn't have all three.
+
+=/Library/TeX/texbin= (MacTeX) is listed *last* deliberately -- each iteration prepends, so the
+final entry ends up frontmost, and it has to beat Homebrew's =dvisvgm=, which can't find
+=texmf.cnf= and dies on every TikZ picture.  MacTeX's own =dvisvgm= needs =LIBGS= to find
+Ghostscript.  See [[*org latex preview][org latex preview]].
+
 #+begin_src emacs-lisp
 (dolist (dir (list "/opt/homebrew/bin"
                    (expand-file-name "~/.cargo/bin")
-                   (expand-file-name "~/.local/bin")))
+                   (expand-file-name "~/.local/bin")
+                   "/Library/TeX/texbin"))
   (when (file-directory-p dir)
     (add-to-list 'exec-path dir)
     (setenv "PATH" (concat dir path-separator (getenv "PATH")))))
+
+(let ((libgs "/opt/homebrew/lib/libgs.dylib"))
+  (when (file-exists-p libgs)
+    (setenv "LIBGS" libgs)))
 #+end_src
 
 
