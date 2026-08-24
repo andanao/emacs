@@ -1067,20 +1067,42 @@ Replaces =org-babel-execute:d2= to fix three things:
 - *theme* -- =--dark-theme= embeds a =prefers-color-scheme= query that librsvg ignores, so the
   theme is picked at render time from the =default= face's luminance.
 
+Any =:results= that is not =file= renders box-drawing text into the buffer instead of an SVG --
+no image, no theme problem, and it diffs.  =<da= inserts such a block.
+
 #+begin_src emacs-lisp
 (defvar ads/d2-theme-light 0   "D2 theme id used under a light Emacs theme.")
 (defvar ads/d2-theme-dark  200 "D2 theme id used under a dark Emacs theme.")
 (defvar ads/d2-pad 8 "Pixels of padding around a rendered d2 diagram.")
+(defvar ads/d2-ascii-mode "extended"
+  "d2 =--ascii-mode=: \"extended\" for box-drawing glyphs, \"standard\" for pure ASCII.")
 
 (defun ads/dark-background-p ()
   "Non-nil when the `default' face background is a dark colour."
   (let ((rgb (color-values (face-background 'default nil t))))
     (and rgb (< (/ (apply #'+ rgb) 3.0) 32768))))
 
+(defun ads/org-babel-execute:d2--ascii (body)
+  "Render BODY to a box-drawing text diagram and return it as a string."
+  (let ((temp-file (org-babel-temp-file "d2-")))
+    (with-temp-file temp-file (insert body))
+    (with-temp-buffer
+      ;; stderr discarded: d2 logs its success banner there.
+      (let ((status (call-process d2-location nil (list t nil) nil
+                                  temp-file "-"
+                                  "--stdout-format" "ascii"
+                                  (format "--ascii-mode=%s" ads/d2-ascii-mode))))
+        (unless (eq status 0)
+          (error "d2 exited %s" status))
+        (string-trim-right (buffer-string))))))
+
 (defun ads/org-babel-execute:d2 (body params)
   "Render BODY to the =:file= named in PARAMS with the theme-appropriate d2 theme.
 Replaces `org-babel-execute:d2': reports failure by exit status rather
-than by stderr being non-empty, and renders on a transparent background."
+than by stderr being non-empty, and renders on a transparent background.
+With a non-file =:results=, returns a text diagram instead of writing an SVG."
+  (if (not (member "file" (cdr (assq :result-params params))))
+      (ads/org-babel-execute:d2--ascii body)
   (let* ((out-file (or (cdr (assq :file params))
                        (error "d2 block needs a #+name: line (or an explicit :file)")))
          (temp-file (org-babel-temp-file "d2-"))
@@ -1102,7 +1124,7 @@ than by stderr being non-empty, and renders on a transparent background."
       (let ((status (apply #'call-process d2-location nil t nil args)))
         (unless (eq status 0)
           (error "d2 exited %s: %s" status (string-trim (buffer-string))))))
-    nil))
+    nil)))
 
 (with-eval-after-load 'd2-mode
   (advice-add 'org-babel-execute:d2 :override #'ads/org-babel-execute:d2))
@@ -2490,6 +2512,13 @@ Convenience package that makes org bulleted list behave like they do in most oth
  '("#+name: " p n "#+begin_src d2" n> p n "#+end_src")
  "<d"
  "Insert a named d2 diagram block"
+ 'org-tempo-tags)
+
+(tempo-define-template
+ "org-d2-ascii"
+ '("#+begin_src d2 :results verbatim :wrap example" n> p n "#+end_src")
+ "<da"
+ "Insert a d2 block that renders to text"
  'org-tempo-tags)
 #+end_src
 
