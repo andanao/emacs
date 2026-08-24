@@ -1039,6 +1039,126 @@ This is really what I wanted but copy as markdown is still good
     (csv-separators '("," ";" "\t")))
 #+end_src
 
+** d2-mode                                                       :external:
+[[https://github.com/andorsk/d2-mode][d2-mode]] for [[https://d2lang.com][D2]] -- the "just draw it for me" counterpart to TikZ: write =a -> b= and it
+places everything.  Needs =brew install d2=.
+
+There is no =ob-d2=; =d2-mode.el= defines =org-babel-execute:d2= itself, so d2 must *not* go in
+=org-babel-do-load-languages=, and =:commands= is what autoloads the symbol babel dispatches on.
+
+Never =.png= -- D2's PNG export shells out to Playwright and its driver download 404s.
+
+#+begin_src emacs-lisp
+(use-package d2-mode
+  :mode "\\.d2\\'"
+  :commands (org-babel-execute:d2)
+  :custom
+  (d2-output-format ".svg"))
+#+end_src
+
+*** making d2 blocks behave like latex previews
+
+Replaces =org-babel-execute:d2= to fix three things:
+
+- *false errors* -- =d2= logs success to stderr and has no =--quiet=, and =org-babel-eval= treats
+  any stderr as failure; check the exit status instead.
+- *opaque background* -- =style.fill: transparent= is appended (not prepended, so error line
+  numbers still match) unless the block sets a root fill itself.
+- *theme* -- =--dark-theme= embeds a =prefers-color-scheme= query that librsvg ignores, so the
+  theme is picked at render time from the =default= face's luminance.
+
+#+begin_src emacs-lisp
+(defvar ads/d2-theme-light 0   "D2 theme id used under a light Emacs theme.")
+(defvar ads/d2-theme-dark  200 "D2 theme id used under a dark Emacs theme.")
+(defvar ads/d2-pad 8 "Pixels of padding around a rendered d2 diagram.")
+
+(defun ads/dark-background-p ()
+  "Non-nil when the `default' face background is a dark colour."
+  (let ((rgb (color-values (face-background 'default nil t))))
+    (and rgb (< (/ (apply #'+ rgb) 3.0) 32768))))
+
+(defun ads/org-babel-execute:d2 (body params)
+  "Render BODY to the =:file= named in PARAMS with the theme-appropriate d2 theme.
+Replaces `org-babel-execute:d2': reports failure by exit status rather
+than by stderr being non-empty, and renders on a transparent background."
+  (let* ((out-file (or (cdr (assq :file params))
+                       (error "d2 block needs a #+name: line (or an explicit :file)")))
+         (temp-file (org-babel-temp-file "d2-"))
+         (theme (if (ads/dark-background-p) ads/d2-theme-dark ads/d2-theme-light))
+         (args (append (list temp-file
+                             (org-babel-process-file-name out-file)
+                             (format "--theme=%d" theme)
+                             (format "--pad=%d" ads/d2-pad))
+                       d2-flags)))
+    (when (file-name-directory out-file)
+      (make-directory (file-name-directory out-file) t))
+    (with-temp-file temp-file
+      (insert body)
+      (unless (string-match-p "^[ \t]*style\\.fill[ \t]*:" body)
+        (unless (bolp) (insert "\n"))
+        (insert "style.fill: transparent\n")))
+    (with-current-buffer (get-buffer-create "*d2 output*")
+      (erase-buffer)
+      (let ((status (apply #'call-process d2-location nil t nil args)))
+        (unless (eq status 0)
+          (error "d2 exited %s: %s" status (string-trim (buffer-string))))))
+    nil))
+
+(with-eval-after-load 'd2-mode
+  (advice-add 'org-babel-execute:d2 :override #'ads/org-babel-execute:d2))
+#+end_src
+
+*** block defaults
+
+=:file-ext= and =:output-dir= let babel derive the filename from the block's =#+name=, so a
+=#+name: pipeline= block needs no header args at all and writes =img/pipeline.svg= -- which is
+what =<d= expands to.
+
+=:output-dir= is prefixed onto an explicit =:file= too, so =:file ./custom/x.svg= lands at
+=img/custom/x.svg=; use =:output-dir .= to escape.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'd2-mode
+  (setq org-babel-default-header-args:d2
+        '((:results . "file")
+          (:exports . "results")
+          (:file-ext . "svg")
+          (:output-dir . "img"))))
+#+end_src
+
+*** regenerate d2 diagrams on theme change
+
+Rewrites the image files only; re-executing the blocks properly would dirty the buffer on every
+theme toggle for output that differs only in colour.
+
+#+begin_src emacs-lisp
+(defun ads/org-refresh-d2-images ()
+  "Regenerate the image behind every d2 src block in the buffer.
+Rewrites the files only; the buffer text is untouched."
+  (interactive)
+  (when (derived-mode-p 'org-mode)
+    (org-babel-map-src-blocks nil
+      (when (equal lang "d2")
+        (save-excursion
+          (goto-char beg-block)
+          (let ((info (org-babel-get-src-block-info t)))
+            (ads/org-babel-execute:d2 (nth 1 info) (nth 2 info))))))
+    (org-redisplay-inline-images)))
+
+(defun ads/org-refresh-d2-visible ()
+  "Run `ads/org-refresh-d2-images' in every visible org buffer, off an idle timer.
+Deferred for the same reason the LaTeX refresh is: the theme should
+finish painting before Emacs goes off and shells out to `d2'."
+  (run-with-idle-timer
+   0.3 nil
+   (lambda ()
+     (dolist (window (window-list))
+       (with-current-buffer (window-buffer window)
+         (ads/org-refresh-d2-images))))))
+
+(add-hook 'modus-themes-after-load-theme-hook #'ads/org-refresh-d2-visible)
+#+end_src
+
 ** default-text-scale
 Scale text globally across all frames and faces.
 
@@ -2361,16 +2481,26 @@ Convenience package that makes org bulleted list behave like they do in most oth
   (add-to-list 'org-structure-template-alist template))
 #+end_src
 
+=d2= needs its own template rather than a list entry: the block wants a =#+name:= line *above*
+=#+begin_src=, and =org-structure-template-alist= can only fill in text after it.
+
+#+begin_src emacs-lisp :lexical t
+(tempo-define-template
+ "org-d2-diagram"
+ '("#+name: " p n "#+begin_src d2" n> p n "#+end_src")
+ "<d"
+ "Insert a named d2 diagram block"
+ 'org-tempo-tags)
+#+end_src
+
 #+RESULTS:
 
 **** Languages
 
-=latex= enables =#+begin_src latex :file diagram.svg= blocks, which render TikZ/pgfplots out to
-standalone image files on disk -- the thing you want when the diagram needs to leave Emacs.  See
-[[*org latex preview][org latex preview]] for the inline case.
-
-Note that =d2= is deliberately absent: [[*d2-mode][d2-mode]] provides =org-babel-execute:d2= itself and has no
-=ob-d2= feature to require, so listing it here would error.
+=latex= enables =#+begin_src latex :file diagram.svg= blocks, which write TikZ/pgfplots out to
+image files on disk; see [[*org latex preview][org latex preview]] for the inline case.  =dot= is Graphviz, and ships with
+org.  =d2= is deliberately absent -- it has no =ob-d2= feature to require, so listing it here
+would error.
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
@@ -2380,7 +2510,15 @@ Note that =d2= is deliberately absent: [[*d2-mode][d2-mode]] provides =org-babel
            (shell . t)
            (calc . t)
            (latex . t)
-           (python . t))))
+           (dot . t)
+           (python . t)))
+
+  ;; Same ergonomics as d2: name the block, get =img/NAME.svg=.
+  (setq org-babel-default-header-args:dot
+        '((:results . "file")
+          (:exports . "results")
+          (:file-ext . "svg")
+          (:output-dir . "img"))))
 
     (setq org-confirm-babel-evaluate nil)
 
