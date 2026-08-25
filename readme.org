@@ -1144,6 +1144,21 @@ With a non-file =:results=, returns a text diagram instead of writing an SVG."
   (advice-add 'org-babel-execute:d2 :override #'ads/org-babel-execute:d2))
 #+end_src
 
+*** editing blocks with =C-c '=
+
+=C-c '= gives a real =d2-mode= buffer, but =d2-compile= reads =buffer-file-name= -- nil there,
+so =C-c C-c= errors.  Fall back to the buffer, which is what =d2-compile-buffer= already does.
+
+#+begin_src emacs-lisp
+(defun ads/d2-compile-fileless (orig &rest args)
+  "Compile the buffer instead of ORIG's file when there is no file.
+ARGS are passed through untouched when the buffer is visiting one."
+  (if buffer-file-name (apply orig args) (d2-compile-buffer)))
+
+(with-eval-after-load 'd2-mode
+  (advice-add 'd2-compile :around #'ads/d2-compile-fileless))
+#+end_src
+
 *** block defaults
 
 =:file-ext= and =:output-dir= let babel derive the filename from the block's =#+name=, so a
