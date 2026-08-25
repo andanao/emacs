@@ -1670,7 +1670,7 @@ See `gps-time--to-unix' for accepted forms of UTC."
 Use a stipple to show indentation
 
 #+begin_src emacs-lisp
-(use-package indent-bars-
+(use-package indent-bars
   :hook ((prog-mode) . indent-bars-mode))
 #+end_src
 
@@ -1713,6 +1713,55 @@ if I look through the manual closely but this works for now.
 
 #+begin_src emacs-lisp
 (use-package kdl-mode)
+#+end_src
+
+** ligature
+[[https://github.com/mickeynp/ligature.el][ligature.el]] - programs ~composition-function-table~ so FiraCode's ligatures actually render.
+
+~:noweb no~ is required here: the inherited ~:noweb yes~ treats the ~"<<" ">>"~ pair in the ligature
+list as a noweb reference and expands it to the empty string.
+
+Org body text is [[*org][variable-pitch]] EtBembo, which has no ~calt~ table and so cannot ligate; putting
+just these sequences in ~fixed-pitch~ hands them to FiraCode while the prose stays serif.  The one
+list drives both halves: ligature.el composes the sequence, the face picks the font that has the
+glyph, and a sequence missing from either one silently does nothing.
+
+#+begin_src emacs-lisp :noweb no
+(defvar ads/org-ligature-sequences
+  '(;; arrows
+    "<--->" "<===>" "<-->" "<==>" "<---" "--->" "<===" "===>"
+    "<--" "-->" "<==" "==>" "<->" "<=>" "<-" "->" "=>"
+    "->>" "=>>" ">>=" "=<<" "<<-" "<<=" "-<" ">-"
+    ;; tildes
+    "~~>" "<~~" "~>" "<~" "~=" "~~"
+    ;; comparison
+    "<=" ">=" "!=" "!==" "==" "===" "=/="
+    ;; punctuation and misc
+    "..." ".." "::" ":=" "++" "--" "<>" "</>" "|>" "<|" "www")
+  "Sequences ligated in org buffers, prose included.")
+
+(defun ads/org-ligatures ()
+  "Render `ads/org-ligature-sequences' in `fixed-pitch' so FiraCode ligates them."
+  ;; regexp-opt rather than hand-ordered alternation: it prefers the longest
+  ;; match, so "<-->" cannot be eaten by "<--" leaving a stray ">".
+  (font-lock-add-keywords
+   nil
+   `((,(regexp-opt ads/org-ligature-sequences) 0 'fixed-pitch prepend))
+   t))
+(add-hook 'org-mode-hook #'ads/org-ligatures)
+#+end_src
+
+#+begin_src emacs-lisp :noweb no
+(use-package ligature
+  :config
+  (ligature-set-ligatures
+   'prog-mode
+   '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+     "://" "//" "/*" "*/" "<-" "->" "=>" "<=" ">=" "!=" "==" "==="
+     "&&" "||" "++" "--" "::" ":=" "<>" "<<" ">>" "..." ".." "?."
+     "|>" "<|" "=>>" "<<=" "www"))
+  (ligature-set-ligatures 'org-mode ads/org-ligature-sequences)
+  (global-ligature-mode t))
 #+end_src
 
 ** lsp-mode
