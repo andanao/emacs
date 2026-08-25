@@ -1663,6 +1663,17 @@ See `gps-time--to-unix' for accepted forms of UTC."
   "C-h C-e" 'view-echo-area-messages
   "C-h C-j" 'describe-face)
 #+end_src
+
+** ident-bars
+[[https://github.com/jdtsmith/indent-bars][Github - Ident Bars]]
+
+Use a stipple to show indentation
+
+#+begin_src emacs-lisp
+(use-package indent-bars-
+  :hook ((prog-mode) . indent-bars-mode))
+#+end_src
+
 ** insert-variable-value                                           :custom:
 Sometimes when I'm writing code I want to be able to directly insert the value
 of a variable in to the buffer I am editing.  There's probably a way to do this
