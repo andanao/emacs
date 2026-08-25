@@ -24,10 +24,17 @@ for my setup:
 :header-args: emacs-lisp :tangle early-init.el :results none :noweb yes :comments link
 :END:
 
+The cookie has to be the literal first line of the tangled file, so this block
+sets ~:comments no~ — otherwise org prepends its link comment and Emacs ignores
+the cookie sitting on line 2.
+
+#+begin_src emacs-lisp :comments no
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 Enable debug on error at startup to automatically get debugging with init.
 
 #+begin_src emacs-lisp
-;; -*- lexical-binding: t; -*-
 (setq debug-on-error t)
 (add-hook 'after-init-hook '(lambda () (setq debug-on-error nil)))
 #+end_src
@@ -175,6 +182,13 @@ Suggested by [[lsp-mode]]
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
+
+First block of init.el, so it carries the lexical-binding cookie.  ~:comments no~
+keeps org's link comment from displacing it off line 1.
+
+#+begin_src emacs-lisp :comments no
+;;; -*- lexical-binding: t; -*-
+#+end_src
 
 #+begin_src emacs-lisp
 ;; General QoL settings
@@ -4467,18 +4481,10 @@ works much smoother on both Windows and Linux.
 
 ** vertico                                                         :core:
 
-Recent vertico builds call ~set-local~, which only exists in Emacs 31+.  Until I
-upgrade this shim keeps it working on Emacs 30.  Remove it once on Emacs 31+.
+Recent vertico builds call ~set-local~, which Emacs 31 provides natively.  The
+Emacs 30 compat shim was removed on the upgrade to 31.
 
 #+begin_src emacs-lisp
-;; TODO: remove this shim after upgrading to Emacs 31+
-(if (>= emacs-major-version 31)
-    (display-warning 'init "Emacs 31+ detected: remove the `set-local' shim in the vertico config" :warning)
-  (unless (fboundp 'set-local)
-    (defun set-local (variable value)
-      "Compat shim for Emacs 31's `set-local': set buffer-local VARIABLE to VALUE."
-      (set (make-local-variable variable) value))))
-
 (use-package vertico
   :demand t
   :hook (after-init . vertico-mode)
@@ -4995,6 +5001,13 @@ jump to my nix config files
 :PROPERTIES:
 :header-args: emacs-lisp :tangle mac.el :results none :noweb yes :comments link
 :END:
+
+First block of mac.el, so it carries the lexical-binding cookie.  ~:comments no~
+keeps org's link comment from displacing it off line 1.
+
+#+begin_src emacs-lisp :comments no
+;;; -*- lexical-binding: t; -*-
+#+end_src
 
 ** Modifier Keys
 Remap modifiers for a more ergonomic layout: Command becomes Control, Option becomes Meta, and Control becomes Meta.
