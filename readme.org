@@ -3170,6 +3170,27 @@ small package to make the indentation work and visual fill column work in org mo
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 #+end_src
 
+** org-noter
+[[https://github.com/org-noter/org-noter][org-noter]] pairs a PDF with an org file so notes are anchored to the page (or the exact highlight)
+they came from.
+
+Start it with =M-x org-noter= from either the PDF or an org heading carrying a =:NOTER_DOCUMENT:=
+property; =i= takes a note on the current page, =M-i= on the current selection.
+
+#+begin_src emacs-lisp
+(use-package org-noter
+  :after (pdf-tools org)
+  :custom
+  (org-noter-notes-search-path (list (concat org-directory "noter/")))
+  (org-noter-always-create-frame nil)
+  (org-noter-kill-frame-at-session-end nil)
+  (org-noter-separate-notes-from-heading t)
+  (org-noter-auto-save-last-location t))
+
+(ads/leader-keys
+  "on" 'org-noter)
+#+end_src
+
 ** org-prettify-symbols                                            :custom:
 
 #+begin_src emacs-lisp
