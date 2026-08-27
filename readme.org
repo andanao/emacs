@@ -1988,25 +1988,69 @@ block is safe to delete then.
   :hook (after-init . marginalia-mode))
 #+end_src
 ** markdown
+Markdown should read and navigate like org, so the markup is hidden, the headings scale and the
+same keys work.
+
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :custom
-  (markdown-fontify-code-blocks-natively)
-  (markdown-fontify-code-block-default-mode)
-  (markdown-list-item-bullets '("•"))
-  (markdown-fontify-code-blocks-natively "t")
-   :config
+  ;; org-hide-emphasis-markers / org-modern equivalents
+  (markdown-hide-markup t)
+  (markdown-hide-urls t)
+  (markdown-header-scaling t)
+  (markdown-marginalize-headers t)
+  (markdown-asymmetric-header t)
+  (markdown-list-item-bullets '("•" "◦"))
+  ;; org-autolist equivalent
+  (markdown-indent-on-enter 'indent-and-new-item)
+  (markdown-list-indent-width 2)
+  (markdown-enable-math t)
+  (markdown-enable-highlighting-syntax t)
+  (markdown-nested-imenu-heading-index t)
+  (markdown-fontify-code-blocks-natively t)
+  (markdown-max-image-size '(1000 . nil))
+  :config
   (add-hook 'markdown-mode-hook 'variable-pitch-mode)
-  (add-hook 'markdown-mode-hook 'markdown-display-inline-images)
-  (add-hook 'markdown-view-mode-hook 'read-only-mode))
+  (add-hook 'markdown-mode-hook 'markdown-display-inline-images))
+#+end_src
+
+*** markdown keybindings
+
+The same motions as [[id:b675fb83-50bf-4177-9082-f9c039befbb9][org keybindings]]: =C-j= / =C-k= walk visible headings, =TAB= cycles and
+=RET= follows the thing at point.
+
+#+begin_src emacs-lisp
+(general-define-key
+ :states '(normal) :keymaps '(markdown-mode-map markdown-view-mode-map)
+ (kbd "<tab>") 'markdown-cycle
+ (kbd "<backtab>") 'markdown-shifttab
+ "C-j" 'markdown-next-visible-heading
+ "C-k" 'markdown-previous-visible-heading)
+
+(general-define-key
+ :states '(motion) :keymaps '(markdown-mode-map markdown-view-mode-map)
+ (kbd "RET") 'markdown-follow-thing-at-point)
 
 (ads/leader-keys
   :keymaps 'markdown-mode-map
-  "dm" 'markdown-view-mode)
+  "dm" 'markdown-view-mode
+  "oh" 'consult-outline
+  "o TAB" 'markdown-shifttab
+  "ol" 'markdown-insert-link
+  "ti" 'markdown-display-inline-images
+  "tI" 'markdown-toggle-inline-images
+  "tm" 'markdown-toggle-markup-hiding
+  "tu" 'markdown-toggle-url-hiding
+  "ne" 'markdown-narrow-to-subtree
+  "nb" 'markdown-narrow-to-block)
 
 (ads/leader-keys
   :keymaps 'markdown-view-mode-map
-  "dm" 'markdown-mode)
+  "dm" 'markdown-mode
+  "oh" 'consult-outline
+  "o TAB" 'markdown-shifttab
+  "ti" 'markdown-display-inline-images
+  "tI" 'markdown-toggle-inline-images)
 #+end_src
 
 
