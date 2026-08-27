@@ -4113,10 +4113,64 @@ fails to translate (a half-typed regexp, say) passes through as-is."
 #+end_src
 
 ** pdf-tools
-[[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]]
+[[https://github.com/vedang/pdf-tools?tab=readme-ov-file#installing-pdf-tools][pdf-tools]] renders PDFs with poppler, which gets us real text selection, search and annotations.
+The =epdfinfo= server is compiled on first install and needs =automake=, =autoconf=, =pkg-config= and
+=poppler= from homebrew.
+
 #+begin_src emacs-lisp
-(use-package pdf-tools)
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :custom
+  (pdf-view-display-size 'fit-page)
+  (pdf-view-use-scaling t) ;; sharp on retina
+  (pdf-view-resize-factor 1.1)
+  (pdf-annot-activate-created-annotations t)
+  :config
+  (pdf-tools-install t)
+  (add-hook 'pdf-view-mode-hook #'pdf-view-themed-minor-mode)
+  (add-hook 'pdf-view-mode-hook (lambda () (display-line-numbers-mode -1))))
 #+end_src
+
+=pdf-view-themed-minor-mode= paints the page in the =default= face's colours, so a PDF looks
+inverted under =modus-vivendi= and normal under =modus-operandi=.  It only re-reads the theme on
+save or revert though, so open buffers need a nudge when ~SPC t t~ fires.  Turning it off with
+=zt= sticks: the refresh skips buffers where it isn't on, so a manual override survives a theme
+switch.
+
+#+begin_src emacs-lisp
+(defun ads/pdf-view-refresh-theme ()
+  "Re-render every open PDF against the current theme's colours."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (derived-mode-p 'pdf-view-mode)
+                 pdf-view-themed-minor-mode)
+        (pdf-view-refresh-themed-buffer t)))))
+
+(with-eval-after-load 'pdf-tools
+  (add-hook 'modus-themes-after-load-theme-hook #'ads/pdf-view-refresh-theme))
+
+(defvar ads/pdf-view-keys-set nil)
+
+(defun ads/pdf-view-keys ()
+  "Layer my bindings on top of evil-collection's `pdf-view-mode-map'."
+  (unless ads/pdf-view-keys-set
+    (setq ads/pdf-view-keys-set t)
+    (general-define-key
+     :states '(normal visual motion) :keymaps 'pdf-view-mode-map
+     "J" 'pdf-view-next-page-command
+     "K" 'pdf-view-previous-page-command
+     "zt" 'pdf-view-themed-minor-mode
+     "a" '(:ignore t :wk "annotate")
+     "ah" 'pdf-annot-add-highlight-markup-annotation
+     "au" 'pdf-annot-add-underline-markup-annotation
+     "as" 'pdf-annot-add-strikeout-markup-annotation
+     "at" 'pdf-annot-add-text-annotation
+     "ad" 'pdf-annot-delete
+     "al" 'pdf-annot-list-annotations)))
+
+(add-hook 'pdf-view-mode-hook #'ads/pdf-view-keys)
+#+end_src
+
 ** projectile
 [[https://github.com/bbatsov/projectile][Projectile]] is a popular emacs package used to manage projects
 
