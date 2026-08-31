@@ -3218,14 +3218,21 @@ small package to make the indentation work and visual fill column work in org mo
 [[https://github.com/org-noter/org-noter][org-noter]] pairs a PDF with an org file so notes are anchored to the page (or the exact highlight)
 they came from.
 
-Start it with =M-x org-noter= from either the PDF or an org heading carrying a =:NOTER_DOCUMENT:=
-property; =i= takes a note on the current page, =M-i= on the current selection.
+The workflow is roam node → =C-c C-a a= to attach the PDF → ~SPC o n~, which offers the
+attachments and writes the chosen one into a =:NOTER_DOCUMENT:= property relative to the node file.
+Notes then live in the node itself; =i= takes one on the current page, =M-i= on the selection.
+
+=org-noter-supported-modes= gates which backend modules get required, and the djvu one nags about
+a missing =djvu= package on every load, so it's dropped.
 
 #+begin_src emacs-lisp
 (use-package org-noter
   :after (pdf-tools org)
+  :init
+  (setq org-noter-supported-modes '(doc-view-mode pdf-view-mode nov-mode))
   :custom
-  (org-noter-notes-search-path (list (concat org-directory "noter/")))
+  (org-noter-notes-search-path (list org-directory))
+  (org-noter-suggest-from-attachments t)
   (org-noter-always-create-frame nil)
   (org-noter-kill-frame-at-session-end nil)
   (org-noter-separate-notes-from-heading t)
@@ -4194,6 +4201,14 @@ The =epdfinfo= server is compiled on first install and needs =automake=, =autoco
   (pdf-tools-install t)
   (add-hook 'pdf-view-mode-hook #'pdf-view-themed-minor-mode)
   (add-hook 'pdf-view-mode-hook (lambda () (display-line-numbers-mode -1))))
+#+end_src
+
+=org-file-apps= hands PDFs to the OS viewer by default, which means an org link or ~C-c C-a o~ on
+an attachment bounces out to Preview.  Our entry is consed on the front, so it wins.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . emacs)))
 #+end_src
 
 =pdf-view-themed-minor-mode= paints the page in the =default= face's colours, so a PDF looks
