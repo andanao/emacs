@@ -1272,32 +1272,7 @@ Increase on J because as text scale increases the line your looking at goes down
   :config
   (setq
    line-number-mode nil
-   column-number-mode nil)
-  (advice-add 'doom-modeline-buffer-file-name :around #'ads/doom-modeline-org-title))
-#+end_src
-
-Org buffers show their ~#+title~ rather than the timestamped roam file name.
-
-#+begin_src emacs-lisp
-(defun ads/org-buffer-title ()
-  "Return the #+title of the current org buffer, if any."
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char (point-min))
-      (and (re-search-forward "^#\\+title:[ \t]*\\(.+?\\)[ \t]*$"
-                              (min (point-max) 4096) t)
-           (match-string-no-properties 1)))))
-
-(defun ads/doom-modeline-org-title (fn)
-  "Use the org title in place of the file name, falling back to FN."
-  (if-let ((title (ads/org-buffer-title)))
-      (propertize title
-                  'face 'doom-modeline-buffer-file
-                  'mouse-face 'mode-line-highlight
-                  'help-echo (concat buffer-file-name
-                                     "\nmouse-1: Previous buffer\nmouse-3: Next buffer")
-                  'local-map mode-line-buffer-identification-keymap)
-    (funcall fn)))
+   column-number-mode nil))
 #+end_src
 
 ** dwim-shell-commands
@@ -3628,14 +3603,24 @@ is any
 #+end_src
 *** roam-insert-immediate
 While writing and not wanting to create a rabbit hole for myself I want to make
-a node immediately and not dive further into it.  Credit to [[https://www.youtube.com/watch?v=AyhPmypHDEw&lc=Ugw7bYrPOc6oy_UBmPZ4AaABAg][Umar Ahmad]]
+a node immediately and not dive further into it, tagged =:stub:= so I can find
+what I still owe myself later.  Credit to [[https://www.youtube.com/watch?v=AyhPmypHDEw&lc=Ugw7bYrPOc6oy_UBmPZ4AaABAg][Umar Ahmad]]
 
 #+begin_src emacs-lisp
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
   (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
+        (org-roam-capture-templates
+         '(("d" "stub" plain "%?"
+            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+":PROPERTIES:
+:CREATED: %U
+:END:
+,#+title: ${title}
+,#+filetags: :stub:
+")
+            :immediate-finish t
+            :unnarrowed t))))
     (apply #'org-roam-node-insert args)))
 
 (ads/leader-keys
@@ -3664,6 +3649,33 @@ search for nodes and files
 	      ))
 #+end_src
 
+
+*** roam-modeline
+Show the ~#+title~ in the modeline instead of the timestamped roam file name.
+
+#+begin_src emacs-lisp
+(defun ads/org-buffer-title ()
+  "Return the #+title of the current org buffer, if any."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char (point-min))
+      (and (re-search-forward "^#\\+title:[ \t]*\\(.+?\\)[ \t]*$"
+                              (min (point-max) 4096) t)
+           (match-string-no-properties 1)))))
+
+(defun ads/doom-modeline-org-title (fn)
+  "Use the org title in place of the file name, falling back to FN."
+  (if-let ((title (ads/org-buffer-title)))
+      (propertize title
+                  'face 'doom-modeline-buffer-file
+                  'mouse-face 'mode-line-highlight
+                  'help-echo (concat buffer-file-name
+                                     "\nmouse-1: Previous buffer\nmouse-3: Next buffer")
+                  'local-map mode-line-buffer-identification-keymap)
+    (funcall fn)))
+
+(advice-add 'doom-modeline-buffer-file-name :around #'ads/doom-modeline-org-title)
+#+end_src
 
 *** roam-refile-tag-file-list
 Not really roam but using org roam to create my refile targets.  Set my refile
@@ -3747,6 +3759,38 @@ will move the current note to work/personal
   (if-let ((next-file (car (directory-files org-directory t "\\.org$"))))
       (find-file next-file)
     (message "all org notes filed properly")))
+#+end_src
+
+*** roam-stub-tag
+Any roam file that is nothing but its header gets tagged =:stub:= on save, and
+loses the tag as soon as it has content.
+
+#+begin_src emacs-lisp
+(defun ads/org-roam-stub-p ()
+  "Return t when the buffer holds nothing but its org-roam file header."
+  (org-with-wide-buffer
+   (goto-char (point-min))
+   (when (looking-at org-property-drawer-re)
+     (goto-char (match-end 0))
+     (forward-line))
+   (while (and (not (eobp))
+               (looking-at-p "^[ \t]*\\(#\\+.*\\)?$"))
+     (forward-line))
+   (eobp)))
+
+(defun ads/org-update-stub-tag ()
+  "Add :stub: tag to empty org-roam buffers, remove it once they have content"
+  (when (and (not (active-minibuffer-window))
+             (not (string-match-p "/daily/" buffer-file-name))
+             (org-roam-file-p buffer-file-name))
+    (save-excursion
+      (goto-char (point-min))
+      (if (ads/org-roam-stub-p)
+          (org-roam-tag-add '("stub"))
+        (when (member "stub" (org-roam-node-tags (org-roam-node-at-point)))
+          (org-roam-tag-remove '("stub")))))))
+
+(add-hook 'before-save-hook 'ads/org-update-stub-tag)
 #+end_src
 
 ** org-inbox-review                                                :custom:
