@@ -1272,7 +1272,32 @@ Increase on J because as text scale increases the line your looking at goes down
   :config
   (setq
    line-number-mode nil
-   column-number-mode nil))
+   column-number-mode nil)
+  (advice-add 'doom-modeline-buffer-file-name :around #'ads/doom-modeline-org-title))
+#+end_src
+
+Org buffers show their ~#+title~ rather than the timestamped roam file name.
+
+#+begin_src emacs-lisp
+(defun ads/org-buffer-title ()
+  "Return the #+title of the current org buffer, if any."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char (point-min))
+      (and (re-search-forward "^#\\+title:[ \t]*\\(.+?\\)[ \t]*$"
+                              (min (point-max) 4096) t)
+           (match-string-no-properties 1)))))
+
+(defun ads/doom-modeline-org-title (fn)
+  "Use the org title in place of the file name, falling back to FN."
+  (if-let ((title (ads/org-buffer-title)))
+      (propertize title
+                  'face 'doom-modeline-buffer-file
+                  'mouse-face 'mode-line-highlight
+                  'help-echo (concat buffer-file-name
+                                     "\nmouse-1: Previous buffer\nmouse-3: Next buffer")
+                  'local-map mode-line-buffer-identification-keymap)
+    (funcall fn)))
 #+end_src
 
 ** dwim-shell-commands
