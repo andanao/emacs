@@ -1676,11 +1676,17 @@ See `gps-time--to-unix' for accepted forms of UTC."
 ** ident-bars
 [[https://github.com/jdtsmith/indent-bars][Github - Ident Bars]]
 
-Use a stipple to show indentation
+Use a stipple to show indentation, except in the hidden buffers org uses to
+fontify src blocks, since those faces leak into the org buffer and look awful.
 
 #+begin_src emacs-lisp
+(defun indent-bars-mode-unless-org-src-fontification ()
+  "Enable `indent-bars-mode' outside of org src fontification buffers."
+  (unless (string-prefix-p " *org-src-fontification:" (buffer-name))
+    (indent-bars-mode 1)))
+
 (use-package indent-bars
-  :hook ((prog-mode) . indent-bars-mode))
+  :hook ((prog-mode) . indent-bars-mode-unless-org-src-fontification))
 #+end_src
 
 ** insert-variable-value                                           :custom:
