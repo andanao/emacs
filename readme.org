@@ -382,11 +382,17 @@ particularly like the light ~modus-operandi~ theme.
      `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
      `(org-modern-date-inactive ((,c :inherit org-modern-label :background ,bg-dim)))
      `(org-modern-time-inactive ((,c :inherit org-modern-label :background ,bg-inactive)))
-     ;; markdown mode
-     `(markdown-list-face ((,c :foreground ,fg-main)))
-     `(markdown-inline-code-face ((,c :foreground ,fg-main)))
-     `(markdown-code-face ((,c :background ,bg-dim )))
-     `(markdown-language-keyword-face ((,c :background ,bg-dim )))
+     ;; markdown mode - headings borrow org's so both scale identically
+     `(markdown-ts-heading-1 ((,c :inherit org-level-1)))
+     `(markdown-ts-heading-2 ((,c :inherit org-level-2)))
+     `(markdown-ts-heading-3 ((,c :inherit org-level-3)))
+     `(markdown-ts-heading-4 ((,c :inherit org-level-4)))
+     `(markdown-ts-heading-5 ((,c :inherit org-level-5)))
+     `(markdown-ts-heading-6 ((,c :inherit org-level-6)))
+     `(markdown-ts-list-marker ((,c :foreground ,fg-main)))
+     `(markdown-ts-code-span ((,c :inherit fixed-pitch :foreground ,fg-main)))
+     `(markdown-ts-code-block ((,c :inherit fixed-pitch :background ,bg-dim :extend t)))
+     `(markdown-ts-language-keyword ((,c :background ,bg-dim )))
      ;; line numbers
      `(line-number ((,c :background ,bg-main :height 0.8)))
      `(line-number-current-line ((,c :inherit line-number :background ,bg-main)))
@@ -539,7 +545,10 @@ an indirect clone in another window so the base buffer stays widened."
    ((derived-mode-p 'org-mode)
     (org-narrow-to-subtree)
     (org-fold-show-all))
-   ((derived-mode-p 'markdown-mode) (markdown-narrow-to-subtree))
+   ((derived-mode-p 'markdown-ts-mode)
+    (outline-mark-subtree)
+    (narrow-to-region (region-beginning) (region-end))
+    (deactivate-mark))
    ((derived-mode-p 'prog-mode) (narrow-to-defun))
    (t (narrow-to-page))))
 
@@ -553,7 +562,7 @@ With INDIRECT, narrow an indirect clone in another window."
 (defun ads/goto-heading ()
   "Jump to a heading or symbol using the best source for the major mode.
 Outline headings in org and markdown, imenu symbols everywhere else."
-  (if (derived-mode-p 'org-mode 'markdown-mode)
+  (if (derived-mode-p 'org-mode 'markdown-ts-mode)
       (consult-outline)
     (condition-case nil
         (consult-imenu)
@@ -1989,68 +1998,69 @@ block is safe to delete then.
 #+end_src
 ** markdown
 Markdown should read and navigate like org, so the markup is hidden, the headings scale and the
-same keys work.
+same keys work.  =markdown-ts-mode= is built in as of Emacs 31 and replaces =markdown-mode=
+everywhere; =markdown-ts-mode-x= adds its conversion/preview and table-of-contents commands.  The
+=markdown= and =markdown-inline= grammars install themselves on first use.
 
 #+begin_src emacs-lisp
-(use-package markdown-mode
+(defun ads/markdown-ts-image-preview ()
+  "Fontify image previews, which sit above the default font-lock level."
+  (treesit-font-lock-recompute-features '(image-preview))
+  (font-lock-flush))
+
+(use-package markdown-ts-mode
+  :ensure nil
+  :mode ("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'")
   :custom
   ;; org-hide-emphasis-markers / org-modern equivalents
-  (markdown-hide-markup t)
-  (markdown-hide-urls t)
-  (markdown-header-scaling t)
-  (markdown-marginalize-headers t)
-  (markdown-asymmetric-header t)
-  (markdown-list-item-bullets '("•" "◦"))
-  ;; org-autolist equivalent
-  (markdown-indent-on-enter 'indent-and-new-item)
-  (markdown-list-indent-width 2)
-  (markdown-enable-math t)
-  (markdown-enable-highlighting-syntax t)
-  (markdown-nested-imenu-heading-index t)
-  (markdown-fontify-code-blocks-natively t)
-  (markdown-max-image-size '(1000 . nil))
+  (markdown-ts-hide-markup t)
+  (markdown-ts-inline-images t)
+  (markdown-ts-ellipsis " ·")
+  (markdown-ts-fontify-code-blocks-natively t)
+  (markdown-ts-menu-bar-show nil)
   :config
-  (add-hook 'markdown-mode-hook 'variable-pitch-mode)
-  (add-hook 'markdown-mode-hook 'markdown-display-inline-images))
+  (require 'markdown-ts-mode-x)
+  (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
+  (add-hook 'markdown-ts-mode-hook 'variable-pitch-mode)
+  (add-hook 'markdown-ts-mode-hook 'ads/markdown-ts-image-preview))
 #+end_src
 
 *** markdown keybindings
 
 The same motions as [[id:b675fb83-50bf-4177-9082-f9c039befbb9][org keybindings]]: =C-j= / =C-k= walk visible headings, =TAB= cycles and
-=RET= follows the thing at point.
+=RET= follows the link at point.
 
 #+begin_src emacs-lisp
 (general-define-key
- :states '(normal) :keymaps '(markdown-mode-map markdown-view-mode-map)
- (kbd "<tab>") 'markdown-cycle
- (kbd "<backtab>") 'markdown-shifttab
- "C-j" 'markdown-next-visible-heading
- "C-k" 'markdown-previous-visible-heading)
+ :states '(normal) :keymaps '(markdown-ts-mode-map markdown-ts-view-mode-map)
+ (kbd "<tab>") 'markdown-ts-outline-cycle
+ (kbd "<backtab>") 'outline-cycle-buffer
+ "C-j" 'outline-next-heading
+ "C-k" 'outline-previous-heading)
 
 (general-define-key
- :states '(motion) :keymaps '(markdown-mode-map markdown-view-mode-map)
- (kbd "RET") 'markdown-follow-thing-at-point)
+ :states '(motion) :keymaps '(markdown-ts-mode-map markdown-ts-view-mode-map)
+ (kbd "RET") 'push-button)
 
 (ads/leader-keys
-  :keymaps 'markdown-mode-map
-  "dm" 'markdown-view-mode
+  :keymaps 'markdown-ts-mode-map
+  "dm" 'markdown-ts-view-mode
   "oh" 'consult-outline
-  "o TAB" 'markdown-shifttab
-  "ol" 'markdown-insert-link
-  "ti" 'markdown-display-inline-images
-  "tI" 'markdown-toggle-inline-images
-  "tm" 'markdown-toggle-markup-hiding
-  "tu" 'markdown-toggle-url-hiding
-  "ne" 'markdown-narrow-to-subtree
-  "nb" 'markdown-narrow-to-block)
+  "o TAB" 'outline-cycle-buffer
+  "oc" 'markdown-ts-convert
+  "ol" 'markdown-ts-insert-structure
+  "ot" 'markdown-ts-toc-generate
+  "ti" 'markdown-ts-toggle-inline-images
+  "tm" 'markdown-ts-toggle-hide-markup
+  "ne" 'ads/narrow-section-dwim)
 
 (ads/leader-keys
-  :keymaps 'markdown-view-mode-map
-  "dm" 'markdown-mode
+  :keymaps 'markdown-ts-view-mode-map
+  "dm" 'markdown-ts-mode
   "oh" 'consult-outline
-  "o TAB" 'markdown-shifttab
-  "ti" 'markdown-display-inline-images
-  "tI" 'markdown-toggle-inline-images)
+  "o TAB" 'outline-cycle-buffer
+  "oc" 'markdown-ts-convert
+  "ti" 'markdown-ts-toggle-inline-images)
 #+end_src
 
 
@@ -5031,7 +5041,7 @@ Let-bound to `ads/window-resize-big-multiplier' during big moves.")
 #+begin_src emacs-lisp
 (use-package zoom
   :custom
-  (zoom-ignored-major-modes '(dired-mode markdown-mode))
+  (zoom-ignored-major-modes '(dired-mode markdown-ts-mode))
   (zoom-ignored-buffer-names '("readme.org" "init.el"))
   (zoom-ignored-buffer-name-regexps '("^*calc"))
   (zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20))))
