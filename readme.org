@@ -835,14 +835,104 @@ own agent-shell module, which binds the same map."
     "at" 'agent-shell-other-buffer))
 #+end_src
 
+*** waiting sessions
+
+=agent-shell-switch-buffer= already ranks every session with a coloured =agent-shell-status= —
+=busy=, =blocked=, =ready= — but nothing tells me a session wants me while I'm looking elsewhere,
+and there is no hook to hang that off, so poll instead.
+
+Two things count as wanting me: =blocked=, which is a permission dialog nobody can answer but me,
+and a =busy= → =ready= edge, which is a turn that just finished.  The first is a live fact and is
+recomputed every time; the second is an event, so it sticks on the buffer until I actually look at
+it.  =SPC a SPC= walks the waiting ones and falls back to plain cycling once none are.
+
+#+begin_src emacs-lisp
+(defvar-local ads/agent-shell--finished nil
+  "Non-nil when this shell finished a turn I haven't looked at yet.")
+
+(defvar ads/agent-shell--last-status nil
+  "Alist of (BUFFER . STATUS) from the previous poll, for edge detection.")
+
+(defvar ads/agent-shell--timer nil)
+
+(defun ads/agent-shell--poll ()
+  "Refresh the finished-turn flag on every live agent shell."
+  (let (statuses)
+    (dolist (buffer (agent-shell-buffers))
+      (when (buffer-live-p buffer)
+        (let ((status (agent-shell-status :shell-buffer buffer))
+              (previous (alist-get buffer ads/agent-shell--last-status)))
+          (push (cons buffer status) statuses)
+          (with-current-buffer buffer
+            (cond
+             ;; Displayed anywhere means seen; nothing left to flag.
+             ((get-buffer-window buffer t) (setq ads/agent-shell--finished nil))
+             ((and (eq status 'ready) (eq previous 'busy))
+              (setq ads/agent-shell--finished t)))))))
+    (setq ads/agent-shell--last-status statuses))
+  (force-mode-line-update t))
+
+(defun ads/agent-shell-waiting ()
+  "Agent shells wanting input, in recency order."
+  (seq-filter (lambda (buffer)
+                (and (buffer-live-p buffer)
+                     (or (eq (agent-shell-status :shell-buffer buffer) 'blocked)
+                         (buffer-local-value 'ads/agent-shell--finished buffer))))
+              (agent-shell-buffers)))
+
+(defun ads/agent-shell-next (&optional all)
+  "Switch to the next agent shell waiting on me.
+With prefix ALL, or when none are waiting, cycle through every shell."
+  (interactive "P")
+  (let* ((pool (or (and (not all) (ads/agent-shell-waiting))
+                   (agent-shell-buffers)
+                   (user-error "No agent shells")))
+         (rest (cdr (memq (current-buffer) pool))))
+    (pop-to-buffer (or (car rest) (car pool)))))
+
+(defun ads/agent-shell-mode-line ()
+  "Mode line tag counting shells that want me, blocked ones first."
+  (when-let* ((waiting (ads/agent-shell-waiting)))
+    (let ((blocked (seq-count (lambda (buffer)
+                                (eq (agent-shell-status :shell-buffer buffer) 'blocked))
+                              waiting)))
+      (propertize (format " %s%d" (if (> blocked 0) "⚠" "✓") (length waiting))
+                  'face (if (> blocked 0) 'agent-shell-error 'agent-shell-success)
+                  'help-echo (mapconcat #'buffer-name waiting ", ")))))
+
+(with-eval-after-load 'agent-shell
+  (add-to-list 'global-mode-string '(:eval (ads/agent-shell-mode-line)) t)
+  (unless ads/agent-shell--timer
+    (setq ads/agent-shell--timer (run-with-timer 1 1 #'ads/agent-shell--poll)))
+  (ads/leader-keys "a SPC" 'ads/agent-shell-next))
+#+end_src
+
 *** consult source
 
 Sessions are just buffers, so they already turn up in ~consult-buffer~ — but mixed in with
 everything else, which is the "which session is which" problem again.  Their own source
 narrows to them with =a=, ordered by recency the way ~agent-shell-buffers~ returns them.
 
+Annotating the source with the same status gets ~consult-buffer~'s =a= narrowing to the same
+information ~agent-shell-switch-buffer~ shows.
+
 #+begin_src emacs-lisp
 (with-eval-after-load 'consult
+  (defun ads/agent-shell-annotate (candidate)
+    "Status and session title for CANDIDATE, an agent shell buffer name."
+    (when-let* ((buffer (get-buffer candidate))
+                (status (agent-shell-status :shell-buffer buffer)))
+      (concat
+       (propertize (format " %-8s" status)
+                   'face (pcase status
+                           ('busy 'agent-shell-warning)
+                           ('blocked 'agent-shell-error)
+                           (_ 'agent-shell-success)))
+       (when-let* ((title (map-nested-elt (buffer-local-value 'agent-shell--state buffer)
+                                          '(:session :title))))
+         (propertize (car (split-string (string-trim title) "\n"))
+                     'face 'agent-shell-session-title)))))
+
   (defvar ads/consult-source-agent-shell
     (list :name     "Agent shell"
           :narrow   ?a
@@ -850,10 +940,69 @@ narrows to them with =a=, ordered by recency the way ~agent-shell-buffers~ retur
           :face     'consult-buffer
           :history  'buffer-name-history
           :state    #'consult--buffer-state
+          :annotate #'ads/agent-shell-annotate
           :items    (lambda () (mapcar #'buffer-name (agent-shell-buffers))))
     "Open `agent-shell' sessions, for `consult-buffer'.")
 
   (add-to-list 'consult-buffer-sources 'ads/consult-source-agent-shell))
+#+end_src
+
+*** switch-buffer preview
+
+~agent-shell-switch-buffer~ already renders what I want — icon, name, coloured status, session
+title, aligned — it just has no preview.  Rather than rebuild that in a consult command, hand
+agent-shell's own collection to ~consult--read~: it wraps any completion table, and merges the
+table's metadata, so the affixation function keeps painting the icons and the candidates stay
+byte-for-byte the ones agent-shell built.
+
+Preview needs a candidate → buffer map, which agent-shell keeps to itself, so pass =:buffers=
+explicitly and pair it positionally with ~all-completions~.  That list is also where sessions
+[[*waiting sessions][waiting on me]] get floated to the top, since the point of looking is usually to find them.
+
+Only ~consult--buffer-preview~, not ~consult--buffer-state~: selecting is agent-shell's job.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'consult
+  (defun ads/agent-shell--read-preview (prompt collection predicate require-match buffers)
+    "Read from agent-shell's COLLECTION with preview, PROMPT and REQUIRE-MATCH.
+BUFFERS is the buffer list COLLECTION was built from, in the same order.
+PREDICATE filters candidates as it would in `completing-read'."
+    (let ((entries (seq-mapn #'cons (all-completions "" collection predicate) buffers))
+          (preview (consult--buffer-preview)))
+      (consult--read collection
+                     :prompt prompt
+                     :predicate predicate
+                     :require-match require-match
+                     ;; nil keeps agent-shell's recency order; consult must not
+                     ;; add an :annotate here or it displaces the icon affixation.
+                     :sort nil
+                     :category 'buffer
+                     :state (lambda (action candidate)
+                              (funcall preview action
+                                       (when-let* ((buffer (alist-get candidate entries
+                                                                      nil nil #'equal)))
+                                         (buffer-name buffer)))))))
+
+  (defun ads/agent-shell-read-with-preview (original &rest args)
+    "Give ORIGINAL `agent-shell--read-shell-buffer' preview, passing ARGS along."
+    (let* ((buffers (or (plist-get args :buffers) (agent-shell-buffers)))
+           (waiting (ads/agent-shell-waiting))
+           (ordered (append (seq-intersection buffers waiting)
+                            (seq-difference buffers waiting)))
+           (plain (symbol-function 'completing-read)))
+      (cl-letf (((symbol-function 'completing-read)
+                 (lambda (prompt collection &optional predicate require-match &rest _)
+                   ;; The swap is dynamic, so it is still in force inside
+                   ;; `consult--read', which calls `completing-read' itself.  Put
+                   ;; the real one back first or the two recurse until the stack
+                   ;; gives out.
+                   (cl-letf (((symbol-function 'completing-read) plain))
+                     (ads/agent-shell--read-preview prompt collection predicate
+                                                    require-match ordered)))))
+        (apply original (plist-put (copy-sequence args) :buffers ordered)))))
+
+  (advice-add 'agent-shell--read-shell-buffer
+              :around #'ads/agent-shell-read-with-preview))
 #+end_src
 
 ** all-the-icons
