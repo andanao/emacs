@@ -763,8 +763,23 @@ nothing expandable, so TAB still walks the buffer."
       (call-interactively action)
     (agent-shell-next-item)))
 
+(defun ads/agent-shell-evil-keys (&optional mode &rest _)
+  "Apply the agent-shell normal-state bindings.
+Run from `evil-collection-setup-hook' so these land after evil-collection's
+own agent-shell module, which binds the same map."
+  (when (or (null mode) (eq mode 'agent-shell))
+    (general-define-key
+     :states '(normal) :keymaps 'agent-shell-mode-map
+     (kbd "RET") 'agent-shell-submit
+     (kbd "<tab>") 'ads/agent-shell-expand-item
+     "C-j" 'agent-shell-next-item
+     "C-k" 'agent-shell-previous-item)))
+
 (use-package agent-shell
   :ensure t
+  ;; Nothing here defers, so this loads where it sits — alphabetically ahead of
+  ;; evil, whose `evil-define-key' the config below needs.
+  :after evil
   :custom
   ;; Named per project: "claude-agent @ emacs".  Fixes "which session is which".
   (agent-shell-buffer-name-format 'kebab-case)
@@ -775,15 +790,14 @@ nothing expandable, so TAB still walks the buffer."
   (agent-shell-display-action '(display-buffer-same-window))
   (agent-shell-thought-process-expand-by-default nil)
   (agent-shell-tool-use-expand-by-default nil)
+  ;; Two screens of ASCII art and a sponsor plug before every conversation.
+  (agent-shell-show-welcome-message nil)
   :config
   ;; RET sends in normal state, inserts a newline in insert state.
   (evil-define-key 'insert agent-shell-mode-map (kbd "RET") #'newline)
-  (general-define-key
-   :states '(normal) :keymaps 'agent-shell-mode-map
-   (kbd "RET") 'agent-shell-submit
-   (kbd "<tab>") 'ads/agent-shell-expand-item
-   "C-j" 'agent-shell-next-item
-   "C-k" 'agent-shell-previous-item)
+  ;; evil-collection ships an agent-shell module that binds this same map, and
+  ;; it always gets the last word - re-apply from its own after-setup hook.
+  (add-hook 'evil-collection-setup-hook #'ads/agent-shell-evil-keys)
   (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-open-transcript)
   ;; The buffer is always "modified" and never savable; red is a lie here.
   (add-hook 'agent-shell-mode-hook
@@ -1316,8 +1330,13 @@ Scale text globally across all frames and faces.
 
 Increase on J because as text scale increases the line your looking at goes down
 
+=transient-define-prefix= is an un-autoloadable macro, so =:after transient= is what makes the
+=:config= below run at all — alphabetically this lands ahead of every =(require 'transient)= in
+the file, and without the =:after= the prefix silently fails to define.
+
 #+begin_src emacs-lisp
 (use-package default-text-scale
+  :after transient
   :config
   (transient-define-prefix ads/text-scale-transient ()
     "Text scaling commands."
