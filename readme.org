@@ -720,6 +720,128 @@ section, and inserts a heading with a use-package elisp source block."
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
 :END:
 
+
+** agent-shell
+
+[[https://github.com/xenodium/agent-shell][agent-shell]] talks to the real Claude Code agent over ACP and renders it into a native Emacs
+buffer, so evil works and the buffer stays put — the TUI-in-a-terminal that [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]] ran
+could never manage either.  Provider and agent selection are [[file:~/git/konfig/readme.org::*agent-shell][work-specific]] and live in konfig.
+
+The ACP adapter is a node program (=npm i -g @agentclientprotocol/claude-agent-acp=), so nvm's
+=bin= has to be on [[*Homebrew PATH][exec-path]] or agent-shell won't find it.
+
+There's no shift-tab: permission modes are ACP session modes here, cycled with =C-<tab>= or
+picked by name with =SPC a M=.
+
+Expandable sections carry their =RET= on a =keymap= text property, which evil's normal state
+shadows, so =RET= submits instead of expanding.  Rather than fight that, the same motions as
+[[id:b675fb83-50bf-4177-9082-f9c039befbb9][org keybindings]]: =C-j= / =C-k= walk items and =TAB= expands the one at point.
+
+A conversation is never unsaved, but every reply modifies the buffer, so [[*doom-modeline][doom-modeline]] paints
+the name red and I reach for =C-x C-s= — the tell is wrong, not the reflex, so drop the
+highlight here and point =C-x C-s= at the transcript, which is the thing there is to save.
+
+#+begin_src emacs-lisp
+(defun ads/agent-shell-send-buffer ()
+  "Send the whole buffer to the project's agent shell."
+  (interactive)
+  (save-mark-and-excursion
+    (push-mark (point-min) t t)
+    (goto-char (point-max))
+    (agent-shell-send-region)))
+
+(defun ads/agent-shell-expand-item ()
+  "Expand, collapse or follow the agent-shell item at point.
+Buttons hang their binding off a `keymap' text property rather than
+`button-1', so there is nothing for `push-button' to find - look the
+RET up ourselves.  Falls through to the next item when point is on
+nothing expandable, so TAB still walks the buffer."
+  (interactive)
+  (if-let* ((map (get-char-property (point) 'keymap))
+            (action (lookup-key map (kbd "RET")))
+            ((commandp action)))
+      (call-interactively action)
+    (agent-shell-next-item)))
+
+(use-package agent-shell
+  :ensure t
+  :custom
+  ;; Named per project: "claude-agent @ emacs".  Fixes "which session is which".
+  (agent-shell-buffer-name-format 'kebab-case)
+  ;; Resume vs new is a prompt at startup, not a separate command.
+  (agent-shell-session-strategy 'prompt)
+  ;; Keep the conversation visible when the agent opens a file.
+  (agent-shell-file-display-action '(display-buffer-pop-up-window))
+  (agent-shell-display-action '(display-buffer-same-window))
+  (agent-shell-thought-process-expand-by-default nil)
+  (agent-shell-tool-use-expand-by-default nil)
+  :config
+  ;; RET sends in normal state, inserts a newline in insert state.
+  (evil-define-key 'insert agent-shell-mode-map (kbd "RET") #'newline)
+  (general-define-key
+   :states '(normal) :keymaps 'agent-shell-mode-map
+   (kbd "RET") 'agent-shell-submit
+   (kbd "<tab>") 'ads/agent-shell-expand-item
+   "C-j" 'agent-shell-next-item
+   "C-k" 'agent-shell-previous-item)
+  (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-open-transcript)
+  ;; The buffer is always "modified" and never savable; red is a lie here.
+  (add-hook 'agent-shell-mode-hook
+            (lambda ()
+              (setq-local doom-modeline-highlight-modified-buffer-name nil)))
+  ;; Diff buffers are read-only review UI, not evil buffers.
+  (add-hook 'diff-mode-hook
+            (lambda ()
+              (when (string-match-p "agent-shell-diff" (buffer-name))
+                (evil-emacs-state))))
+  (ads/leader-keys
+    "a" '(:ignore t :which-key "ai")
+    "aa" 'agent-shell
+    "aA" 'agent-shell-toggle
+    "a?" 'agent-shell-help-menu
+    "am" 'agent-shell-cycle-session-mode
+    "aM" 'agent-shell-set-session-mode
+    "av" 'agent-shell-set-session-model
+    "aT" 'agent-shell-set-session-thought-level
+    "an" 'agent-shell-new-shell
+    "aw" 'agent-shell-new-worktree-shell
+    "aR" 'agent-shell-resume-session
+    "ac" 'agent-shell-prompt-compose
+    "aQ" 'agent-shell-interrupt
+    "aX" 'agent-shell-restart
+    "ar" 'agent-shell-send-region
+    "ab" 'ads/agent-shell-send-buffer
+    "af" 'agent-shell-send-file
+    "ap" 'agent-shell-send-dwim
+    "aS" 'agent-shell-send-screenshot
+    "al" 'agent-shell-switch-buffer
+    "as" 'agent-shell-switch-buffer
+    "a@" 'agent-shell-insert-file
+    "ay" 'agent-shell-copy-last-output
+    "at" 'agent-shell-other-buffer))
+#+end_src
+
+*** consult source
+
+Sessions are just buffers, so they already turn up in ~consult-buffer~ — but mixed in with
+everything else, which is the "which session is which" problem again.  Their own source
+narrows to them with =a=, ordered by recency the way ~agent-shell-buffers~ returns them.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'consult
+  (defvar ads/consult-source-agent-shell
+    (list :name     "Agent shell"
+          :narrow   ?a
+          :category 'buffer
+          :face     'consult-buffer
+          :history  'buffer-name-history
+          :state    #'consult--buffer-state
+          :items    (lambda () (mapcar #'buffer-name (agent-shell-buffers))))
+    "Open `agent-shell' sessions, for `consult-buffer'.")
+
+  (add-to-list 'consult-buffer-sources 'ads/consult-source-agent-shell))
+#+end_src
+
 ** all-the-icons
 
 Icons are a font so remember to call ~(all-the-icons-install-fonts)~
@@ -939,36 +1061,6 @@ them and type =\alpha= longhand.
   (with-eval-after-load 'org
     (define-key org-cdlatex-mode-map (kbd "`") nil)
     (define-key org-cdlatex-mode-map (kbd "'") nil)))
-#+end_src
-
-** claude-code-ide
-
-#+begin_src emacs-lisp
-(use-package claude-code-ide
-  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
-  :custom
-  (claude-code-ide-terminal-backend 'ghostel)
-  :config
-  (ads/leader-keys
-    "a" '(:ignore t :which-key "ai")
-    "ai" 'claude-code-ide
-    "aa" 'claude-code-ide-toggle
-    "aA" 'claude-code-ide-show-all
-    "am" 'claude-code-ide-menu
-    "an" 'claude-code-ide-rename-session
-    "aR" 'claude-code-ide-resume
-    "ac" 'claude-code-ide-continue
-    "aQ" 'claude-code-ide-stop
-    "aX" 'claude-code-ide-stop-all
-    "ar" 'claude-code-ide-send-region
-    "ab" 'claude-code-ide-send-buffer
-    "af" 'claude-code-ide-send-file
-    "ap" 'claude-code-ide-send-prompt
-    "al" 'claude-code-ide-list-sessions
-    "as" 'claude-code-ide-switch-to-buffer
-    "a@" 'claude-code-ide-insert-at-mentioned
-    "at" 'claude-code-ide-toggle-recent
-    ))
 #+end_src
 
 ** consult                                                           :core:
@@ -3986,6 +4078,10 @@ really [[https://github.com/jgru/consult-org-roam][consult-org-roam]]
    ;; in consult-buffer (and not down at the bottom)
    (consult-org-roam-buffer-after-buffers nil)
    :config
+   ;; Upstream never declares this; it only gets `setq'd once the Org-roam
+   ;; source computes its items, so previewing before that is a void-variable.
+   (defvar org-roam-buffer-open-buffer-list nil)
+
    ;; Stock `consult-org-roam-forward-links' only sees parsed [[id:]] link
    ;; elements, so links inside #+transclude: keywords are invisible.  Collect
    ;; links via `org-roam-db-map-links' instead (keyword-aware, and it honours
@@ -4032,6 +4128,7 @@ If OTHER-WINDOW, visit the node in another window."
     )
    )
 #+end_src
+
 ** org-roam-ui
 [[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] is a frontend for exploring and interacting with your org-roam notes.
 
@@ -5356,16 +5453,22 @@ Homebrew isn't the only one that matters: =~/.cargo/bin= holds the rustup shims 
 fails to start with no obvious reason why.  Missing directories are dropped rather than added, so
 this is safe on a machine that doesn't have all three.
 
+nvm installs per-version, so the newest =~/.nvm/versions/node/*/bin= is globbed in rather than
+named; without it [[*agent-shell][agent-shell]] can't find its ACP adapter.
+
 =/Library/TeX/texbin= (MacTeX) is listed *last* deliberately -- each iteration prepends, so the
 final entry ends up frontmost, and it has to beat Homebrew's =dvisvgm=, which can't find
 =texmf.cnf= and dies on every TikZ picture.  MacTeX's own =dvisvgm= needs =LIBGS= to find
 Ghostscript.  See [[*org latex preview][org latex preview]].
 
 #+begin_src emacs-lisp
-(dolist (dir (list "/opt/homebrew/bin"
-                   (expand-file-name "~/.cargo/bin")
-                   (expand-file-name "~/.local/bin")
-                   "/Library/TeX/texbin"))
+(dolist (dir (delq nil
+                   (list "/opt/homebrew/bin"
+                         (expand-file-name "~/.cargo/bin")
+                         (expand-file-name "~/.local/bin")
+                         (car (last (file-expand-wildcards
+                                     (expand-file-name "~/.nvm/versions/node/*/bin"))))
+                         "/Library/TeX/texbin")))
   (when (file-directory-p dir)
     (add-to-list 'exec-path dir)
     (setenv "PATH" (concat dir path-separator (getenv "PATH")))))
