@@ -1970,6 +1970,44 @@ if I look through the manual closely but this works for now.
 (ads/leader-keys
   "iv" 'insert-any-variable-value)
 #+end_src
+
+** jinx                                                          :external:
+
+[[https://github.com/minad/jinx][jinx]] spell checks the visible window only, through a C module talking to libenchant, so it stays out
+of the way in a long org file the way flyspell never did.  Needs =brew install enchant=, which pulls
+aspell and its dictionaries; the module builds itself on first use given =pkg-config= and a compiler.
+
+~jinx-languages~ defaults to whatever the locale says, and GUI Emacs on macOS inherits no =LANG=, so pin
+it rather than let it ask enchant for a "UTF-8" dictionary.
+
+Squiggles under everything I type are a distraction, so nothing is on by default.  =M-$= sweeps the
+buffer instead: ~jinx-correct-all~ walks every misspelling in turn, numbering the suggestions =1= to =9=
+and taking =M-n= / =M-p= to skip one without fixing it.  It switches ~jinx-mode~ on to do that and
+leaves it on, hence the wrapper putting it back.  =SPC t j= is there for when I do want live checking.
+Code faces are already excluded for org and markdown upstream, so only prose gets checked.
+
+#+begin_src emacs-lisp
+(use-package jinx
+  :ensure t
+  :defer t
+  :custom
+  (jinx-languages "en_US")
+  :init
+  (defun ads/jinx-sweep ()
+    "Walk every misspelling in the buffer, leaving jinx as it was found.
+`jinx-correct-all' enables `jinx-mode' to do its work and leaves it enabled,
+which is wrong when the point is to check once and go back to quiet."
+    (interactive)
+    (let ((enabled (bound-and-true-p jinx-mode)))
+      (unwind-protect (jinx-correct-all)
+        (unless enabled (jinx-mode -1)))))
+
+  (ads/leader-keys
+    "tJ" 'jinx-mode
+    "tj" 'ads/jinx-sweep))
+#+end_src
+
+
 ** json
 #+begin_src emacs-lisp
 (use-package json-mode)
@@ -5071,11 +5109,18 @@ works much smoother on both Windows and Linux.
 Recent vertico builds call ~set-local~, which Emacs 31 provides natively.  The
 Emacs 30 compat shim was removed on the upgrade to 31.
 
+~vertico-multiform-mode~ picks a display per completion category.  Only [[*jinx][jinx]] asks for one: its
+suggestions are a pile of short words, and a grid shows most of them — and all the =1= to =9= keys
+that select them — without scrolling.
+
 #+begin_src emacs-lisp
 (use-package vertico
   :demand t
   :hook (after-init . vertico-mode)
   :config
+  (vertico-multiform-mode 1)
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
   (general-define-key
    :states '(insert)
    :keymaps 'vertico-map
