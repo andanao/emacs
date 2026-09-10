@@ -459,6 +459,15 @@ key bindings
 (defmacro ads/leader-def (key desc &rest body)
   "Define a leader key KEY with description DESC and BODY as the lambda."
   `(ads/leader-keys ,key '((lambda () (interactive) ,@body) :which-key ,desc)))
+
+(defmacro ads/image-key (predicate command)
+  "A binding running COMMAND only where PREDICATE says point is on an image.
+Elsewhere the filter answers nil, which reads as unbound, so the key
+falls through to whatever evil does with it — `+' and `0' are motions I
+use far more often than I resize anything.  The same `menu-item' trick
+evil-collection uses to scope its permission keys to a live prompt."
+  `(list 'menu-item "" nil :filter
+         (lambda (&optional _) (when (,predicate) ,command))))
 #+end_src
 
 #+begin_src emacs-lisp :lexical t
@@ -742,6 +751,10 @@ one, and =C-c C-o= here is "other buffer", not org's follow-link.  evil-collecti
 rest of the =g= map (=gt= transcript, =gc= compose, =gm= mode, =gv= model, =gr= reload, =gy= session
 id), so only =gx= is taken back — it means "open the URL under the cursor" everywhere else.
 
+=+= / =-= / =0= resize the image under the cursor.  agent-shell already binds them; evil's
+motions shadow them, and off an image they'd resize every image in the buffer, so they're
+scoped to an image being under point and fall back to the motions everywhere else.
+
 A conversation is never unsaved, but every reply modifies the buffer, so [[*doom-modeline][doom-modeline]] paints
 the name red and I reach for =C-x C-s= — the tell is wrong, not the reflex, so drop the
 highlight here and point =C-x C-s= at the transcript, which is the thing there is to save.
@@ -790,6 +803,56 @@ inside a code block or in the prompt."
         (browse-url url)
       (user-error "No link at point"))))
 
+(defun ads/agent-shell--on-image-p ()
+  "Non-nil when point is on a rendered image."
+  (and (derived-mode-p 'agent-shell-mode)
+       (agent-shell-markdown--image-position-at-point)))
+
+(defvar ads/agent-shell--scaling nil
+  "Non-nil while an explicit image scale command is running.")
+
+(defun ads/agent-shell-grow-small-image (orig start end max-width window-width)
+  "Let `+' enlarge an image narrower than the width it is clamped to.
+agent-shell sizes images with `:max-width', which only ever shrinks, so
+a screenshot already under the clamp never grows however far `+' pushes
+it - a 368px capture sits at 368 while the clamp climbs past it
+unnoticed.  Where the target is wider than the file, size with `:width'
+as well, which does scale up; `:max-width' rides along so agent-shell's
+own stepping still reads the width back and carries on.
+
+Only while scaling by hand.  This is also the path that first renders an
+image and that re-renders on a window resize, and blowing every small
+screenshot up to the clamp there would be its own bug - `0' resets to
+the natural size precisely because the clamp isn't reached."
+  (funcall orig start end max-width window-width)
+  (when-let* ((ads/agent-shell--scaling)
+              (image (get-text-property start 'display))
+              ((eq (car-safe image) 'image))
+              (file (image-property image :file))
+              ((> max-width (car (image-size (create-image file) t))))
+              ((not (eql max-width (car (image-size image t))))))
+    (let ((grown (create-image file nil nil
+                               :width max-width
+                               :max-width max-width
+                               :max-height (image-property image :max-height))))
+      (image-flush grown)
+      (put-text-property start end 'display grown))))
+
+(advice-add 'agent-shell-markdown--resize-image
+            :around #'ads/agent-shell-grow-small-image)
+
+(defun ads/agent-shell-image-scale-increase ()
+  "Widen the image at point, past its own size if that's where it is."
+  (interactive)
+  (let ((ads/agent-shell--scaling t))
+    (call-interactively #'agent-shell-image-scale-increase)))
+
+(defun ads/agent-shell-image-scale-decrease ()
+  "Narrow the image at point, holding it above its own size if it's there."
+  (interactive)
+  (let ((ads/agent-shell--scaling t))
+    (call-interactively #'agent-shell-image-scale-decrease)))
+
 (defun ads/agent-shell-evil-keys (&optional mode &rest _)
   "Apply the agent-shell normal-state bindings.
 Run from `evil-collection-setup-hook' so these land after evil-collection's
@@ -804,7 +867,10 @@ own agent-shell module, which binds the same map."
      "gx" 'ads/agent-shell-open-link
      "gY" 'agent-shell-copy-link-url-at-point
      "C-j" 'agent-shell-next-item
-     "C-k" 'agent-shell-previous-item)))
+     "C-k" 'agent-shell-previous-item
+     "+" (ads/image-key ads/agent-shell--on-image-p 'ads/agent-shell-image-scale-increase)
+     "-" (ads/image-key ads/agent-shell--on-image-p 'ads/agent-shell-image-scale-decrease)
+     "0" (ads/image-key ads/agent-shell--on-image-p 'agent-shell-image-scale-reset))))
 
 (use-package agent-shell
   :ensure t
@@ -1593,7 +1659,7 @@ Rewrites the files only; the buffer text is untouched."
           (goto-char beg-block)
           (let ((info (org-babel-get-src-block-info t)))
             (ads/org-babel-execute:d2 (nth 1 info) (nth 2 info))))))
-    (org-redisplay-inline-images)))
+    (org-link-preview-refresh)))
 
 (defun ads/org-refresh-d2-visible ()
   "Run `ads/org-refresh-d2-images' in every visible org buffer, off an idle timer.
@@ -2602,7 +2668,8 @@ Major mode for reading EPUB files in Emacs
   (org-pretty-entities-include-sub-superscripts nil)
   (org-hidden-keywords '(title))
   (org-hide-emphasis-markers t)
-  (org-image-actual-width 0.75)
+  ;; List, because a bare a number here means org never reads a per-image
+  (org-image-actual-width '(0.75))
   (org-startup-with-inline-images t)
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
@@ -2697,11 +2764,140 @@ Set custom org mode bindings and functions.
   :keymaps 'org-mode-map
   "oh" 'consult-org-heading
   "o TAB" 'org-cycle-global
-  "ti" 'org-redisplay-inline-images
-  "tI" 'org-toggle-inline-images
+  "ti" 'org-link-preview-refresh
+  "tI" 'org-link-preview
   "ne" 'org-narrow-to-element
   "nb" 'org-narrow-to-block
   )
+#+end_src
+
+*** resize the image at point
+
+The same =+= / =-= / =0= as in [[*agent-shell][agent-shell]], scoped the same way so they stay evil motions
+everywhere else.  Unlike a chat log an org file is a document I keep, so a resize writes
+=#+ATTR_ORG: :width= above the link rather than tweaking the overlay: it survives a redisplay,
+a reopen and a git clone.  Widths stay a fraction of the text width, so they still reflow.
+
+#+begin_src emacs-lisp
+(defun ads/org-image--overlay ()
+  "The preview overlay showing an image at point, or nil.
+Point counts as on an image when the char it's on carries one or, so a
+cursor resting just past it still counts, when the char before it does.
+The overlay, not the display property: its bounds are exactly this one
+image's, and being a marker pair they stay correct across the edit that
+resizing makes."
+  (and (derived-mode-p 'org-mode)
+       (seq-some (lambda (pos)
+                   (seq-find (lambda (o)
+                               (eq (car-safe (overlay-get o 'display)) 'image))
+                             (overlays-at pos)))
+                 (delq nil (list (point)
+                                 (and (> (point) (point-min)) (1- (point))))))))
+
+(defun ads/org-image-at-point ()
+  "Non-nil when point is on an org inline image."
+  (and (ads/org-image--overlay) t))
+
+(defun ads/org-image--link-at-point ()
+  "The link element behind the image at point."
+  (unless (ads/org-image-at-point) (user-error "No image at point"))
+  (or (org-element-lineage (org-element-context) 'link t)
+      (user-error "No link at point")))
+
+(defun ads/org-image--width (link)
+  "The width recorded for LINK, or the `org-image-actual-width' default."
+  (let* ((paragraph (org-element-lineage link 'paragraph))
+         (attr (and paragraph
+                    (org-export-read-attribute :attr_org paragraph :width)))
+         (default (org-property-or-variable-value 'org-image-actual-width)))
+    (or (and (stringp attr)
+             (string-match-p "\\`[0-9.]+\\'" attr)
+             (string-to-number attr))
+        (and (consp default) (numberp (car default)) (car default))
+        (and (numberp default) default)
+        0.75)))
+
+(defun ads/org-image--set-width (link width)
+  "Record WIDTH for LINK on a `#+ATTR_ORG:' line above it, or drop it when nil.
+Any other attributes already on that line are kept."
+  (save-excursion
+    (goto-char (org-element-begin link))
+    (beginning-of-line)
+    (let ((indent (make-string (current-indentation) ?\s))
+          (attrs ""))
+      (when (and (not (bobp))
+                 (save-excursion
+                   (forward-line -1)
+                   (looking-at "[ \t]*#\\+ATTR_ORG:[ \t]*\\(.*?\\)[ \t]*$")))
+        (setq attrs (match-string 1))
+        (forward-line -1)
+        (delete-region (line-beginning-position) (line-beginning-position 2)))
+      (setq attrs (string-trim
+                   (replace-regexp-in-string ":width[ \t]+[^ \t]+" "" attrs)))
+      (cond (width
+             (insert indent (format "#+ATTR_ORG: :width %.2f" width)
+                     (if (string-empty-p attrs) "" (concat " " attrs))
+                     "\n"))
+            ((not (string-empty-p attrs))
+             (insert indent "#+ATTR_ORG: " attrs "\n"))))))
+
+(defun ads/org-image--rewidth (width)
+  "Give the image at point WIDTH, or the default when nil, and re-display it.
+Only this image: the range is its own overlay's, held as markers so the
+`#+ATTR_ORG:' line going in above it doesn't shift them out from under
+us.  Clearing first is the point - `org-link-preview-region' refreshes
+\"only if necessary\" and would otherwise keep the overlay it has,
+leaving the new width off the screen."
+  (let* ((overlay (or (ads/org-image--overlay) (user-error "No image at point")))
+         ;; All three advance past an insertion at their own position, which
+         ;; is the usual one: the cursor sits at the start of the image, the
+         ;; overlay starts there too, and that is exactly where the
+         ;; `#+ATTR_ORG:' line goes in.  A plain marker would stay put and
+         ;; leave point stranded on the new line, one keypress from the image.
+         (beg (copy-marker (overlay-start overlay) t))
+         (end (copy-marker (overlay-end overlay) t))
+         (origin (copy-marker (point) t)))
+    (unwind-protect
+        (progn
+          (ads/org-image--set-width (ads/org-image--link-at-point) width)
+          (org-link-preview-clear beg end)
+          (org-link-preview-region nil t beg end)
+          (goto-char origin))
+      (set-marker beg nil)
+      (set-marker end nil)
+      (set-marker origin nil))))
+
+(defun ads/org-image-scale (direction)
+  "Step the width of the image at point by DIRECTION, a twentieth each way.
+Widths are a fraction of the text width - what `org-image-actual-width'
+already deals in - so a resized image still reflows with the window."
+  (let ((width (max 0.05 (min 2.0 (+ (ads/org-image--width
+                                      (ads/org-image--link-at-point))
+                                     (* direction 0.05))))))
+    (ads/org-image--rewidth width)
+    (message "Image width: %d%% of text width" (round (* width 100)))))
+
+(defun ads/org-image-scale-increase ()
+  "Widen the image at point by one step."
+  (interactive)
+  (ads/org-image-scale 1))
+
+(defun ads/org-image-scale-decrease ()
+  "Narrow the image at point by one step."
+  (interactive)
+  (ads/org-image-scale -1))
+
+(defun ads/org-image-scale-reset ()
+  "Drop the image at point's own width, back to `org-image-actual-width'."
+  (interactive)
+  (ads/org-image--rewidth nil)
+  (message "Image width: default"))
+
+(general-define-key
+ :states '(normal) :keymaps 'org-mode-map
+ "+" (ads/image-key ads/org-image-at-point 'ads/org-image-scale-increase)
+ "-" (ads/image-key ads/org-image-at-point 'ads/org-image-scale-decrease)
+ "0" (ads/image-key ads/org-image-at-point 'ads/org-image-scale-reset))
 #+end_src
 
 *** org url links
@@ -3047,7 +3243,7 @@ Convenience package that makes org bulleted list behave like they do in most oth
 
 (setq org-confirm-babel-evaluate nil)
 
-(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+(add-hook 'org-babel-after-execute-hook 'org-link-preview-refresh)
 
 <<org-babel-config>>
 #+end_src
@@ -5686,7 +5882,7 @@ same directory as the org-buffer and insert a link to this file."
 	   "/"
 	   (file-name-nondirectory temp-image-filename)
 	   "]]"))
-    (org-display-inline-images))
+    (org-link-preview-region))
 #+end_src
 ** hide dos eol
 Some the files I work with don't have consistent line endings DOS or UNIX
