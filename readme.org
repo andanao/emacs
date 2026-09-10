@@ -737,6 +737,11 @@ Expandable sections carry their =RET= on a =keymap= text property, which evil's 
 shadows, so =RET= submits instead of expanding.  Rather than fight that, the same motions as
 [[id:b675fb83-50bf-4177-9082-f9c039befbb9][org keybindings]]: =C-j= / =C-k= walk items and =TAB= expands the one at point.
 
+=gx= opens the link at point, since agent-shell ships a copy-the-URL command but no open-it
+one, and =C-c C-o= here is "other buffer", not org's follow-link.  evil-collection owns the
+rest of the =g= map (=gt= transcript, =gc= compose, =gm= mode, =gv= model, =gr= reload, =gy= session
+id), so only =gx= is taken back — it means "open the URL under the cursor" everywhere else.
+
 A conversation is never unsaved, but every reply modifies the buffer, so [[*doom-modeline][doom-modeline]] paints
 the name red and I reach for =C-x C-s= — the tell is wrong, not the reflex, so drop the
 highlight here and point =C-x C-s= at the transcript, which is the thing there is to save.
@@ -750,18 +755,40 @@ highlight here and point =C-x C-s= at the transcript, which is the thing there i
     (goto-char (point-max))
     (agent-shell-send-region)))
 
+(defun ads/agent-shell--button-action ()
+  "Command the button under point binds to RET, if there is one.
+agent-shell hangs button actions off a `keymap' text property rather
+than `button-1', so there is nothing for `push-button' to find."
+  (when-let* ((map (get-char-property (point) 'keymap))
+              (action (lookup-key map (kbd "RET")))
+              ((commandp action)))
+    action))
+
 (defun ads/agent-shell-expand-item ()
   "Expand, collapse or follow the agent-shell item at point.
-Buttons hang their binding off a `keymap' text property rather than
-`button-1', so there is nothing for `push-button' to find - look the
-RET up ourselves.  Falls through to the next item when point is on
-nothing expandable, so TAB still walks the buffer."
+Falls through to the next item when point is on nothing expandable, so
+TAB still walks the buffer."
   (interactive)
-  (if-let* ((map (get-char-property (point) 'keymap))
-            (action (lookup-key map (kbd "RET")))
-            ((commandp action)))
+  (if-let* ((action (ads/agent-shell--button-action)))
       (call-interactively action)
     (agent-shell-next-item)))
+
+(defun ads/agent-shell-open-link ()
+  "Open the link at point, in a browser or in Emacs.
+Every rendered link hangs its action off the same `keymap' property -
+markdown links, bare URLs the renderer picked up, and `foo.el:12' file
+references alike - so defer to that rather than deciding here.  Half of
+what `agent-shell-markdown-url' holds is a file reference, not a URL,
+and `browse-url' on `readme.org:214' goes nowhere good.
+
+`thing-at-point' is the fallback, for text the renderer left alone
+inside a code block or in the prompt."
+  (interactive)
+  (if-let* ((action (ads/agent-shell--button-action)))
+      (call-interactively action)
+    (if-let* ((url (thing-at-point 'url t)))
+        (browse-url url)
+      (user-error "No link at point"))))
 
 (defun ads/agent-shell-evil-keys (&optional mode &rest _)
   "Apply the agent-shell normal-state bindings.
@@ -772,6 +799,10 @@ own agent-shell module, which binds the same map."
      :states '(normal) :keymaps 'agent-shell-mode-map
      (kbd "RET") 'agent-shell-submit
      (kbd "<tab>") 'ads/agent-shell-expand-item
+     ;; evil-collection spends gx on interrupt, which already has C-c C-c and
+     ;; SPC a Q.  Take it back for what gx means in vim.  gy is its session id.
+     "gx" 'ads/agent-shell-open-link
+     "gY" 'agent-shell-copy-link-url-at-point
      "C-j" 'agent-shell-next-item
      "C-k" 'agent-shell-previous-item)))
 
@@ -813,21 +844,21 @@ own agent-shell module, which binds the same map."
     "aa" 'agent-shell
     "aA" 'agent-shell-toggle
     "a?" 'agent-shell-help-menu
-    "am" 'agent-shell-cycle-session-mode
-    "aM" 'agent-shell-set-session-mode
+    "aM" 'agent-shell-cycle-session-mode
+    "am" 'agent-shell-set-session-mode
     "av" 'agent-shell-set-session-model
     "aT" 'agent-shell-set-session-thought-level
     "an" 'agent-shell-new-shell
     "aw" 'agent-shell-new-worktree-shell
     "aR" 'agent-shell-resume-session
     "ac" 'agent-shell-prompt-compose
-    "aQ" 'agent-shell-interrupt
+    "aq" 'agent-shell-interrupt
     "aX" 'agent-shell-restart
     "ar" 'agent-shell-send-region
     "ab" 'ads/agent-shell-send-buffer
     "af" 'agent-shell-send-file
     "ap" 'agent-shell-send-dwim
-    "aS" 'agent-shell-send-screenshot
+    "aS" 'agent-shell-send-clipboard-image
     "al" 'agent-shell-switch-buffer
     "as" 'agent-shell-switch-buffer
     "a@" 'agent-shell-insert-file
