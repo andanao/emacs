@@ -929,7 +929,7 @@ own agent-shell module, which binds the same map."
     "af" 'agent-shell-send-file
     "ap" 'agent-shell-send-dwim
     "aS" 'agent-shell-send-clipboard-image
-    "al" 'agent-shell-switch-buffer
+    "al" 'agent-shell-prompt-queue
     "as" 'agent-shell-switch-buffer
     "a@" 'agent-shell-insert-file
     "ay" 'agent-shell-copy-last-output
