@@ -882,6 +882,9 @@ own agent-shell module, which binds the same map."
   (agent-shell-buffer-name-format 'kebab-case)
   ;; Resume vs new is a prompt at startup, not a separate command.
   (agent-shell-session-strategy 'prompt)
+  ;; Replay the conversation on restore.  The default `minimal' resumes
+  ;; without one, so the agent has the context and I can't read any of it.
+  (agent-shell-session-restore-verbosity 'full)
   ;; Keep the conversation visible when the agent opens a file.
   (agent-shell-file-display-action '(display-buffer-pop-up-window))
   (agent-shell-display-action '(display-buffer-same-window))
@@ -908,6 +911,7 @@ own agent-shell module, which binds the same map."
   (ads/leader-keys
     "a" '(:ignore t :which-key "ai")
     "aa" 'agent-shell
+    "ai" 'agent-shell
     "aA" 'agent-shell-toggle
     "a?" 'agent-shell-help-menu
     "aM" 'agent-shell-cycle-session-mode
@@ -1273,11 +1277,22 @@ Needs a TeX distribution: MacTeX on macOS, =texliveFull= on Linux, MiKTeX on Win
 #+end_src
 ** auto-revert
 
+Notifications rather than polling, which is how "instant" stops costing anything.
+
 #+begin_src emacs-lisp
 (setopt revert-without-query '(".*"))
 (use-package autorevert
   :custom
-  (auto-revert-interval 0.1 "Instantaneously revert")
+  ;; kqueue says the moment a file changes, so this is faster than the 0.1s
+  ;; interval it replaces *and* free, where that one was stat-ing every one of a
+  ;; hundred-odd buffers ten times a second.  The interval is now only the
+  ;; fallback for files notification cannot watch.
+  (auto-revert-avoid-polling t)
+  (auto-revert-interval 5 "Fallback only; notifications do the work")
+  ;; [[*agent-shell][agent-shell]] appends to its transcript continuously, and a buffer visiting
+  ;; one announced every single revert into the echo area while I was typing
+  ;; somewhere else.  A revert I did not ask about is not news.
+  (auto-revert-verbose nil)
   :config
   (if (eq system-type 'windows-nt)
       (global-auto-revert-mode nil)
