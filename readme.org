@@ -2978,10 +2978,10 @@ before starting the day
 <<good-morning>>
    )
   (goto-char (point-min))
+  ;; Clocking in starts the Toggl timer; the daily's date-shaped title means
+  ;; the project comes from `toggl-org-daily-project' rather than the note.
   (org-clock-in)
-  (delete-other-windows)
-  ;; (toggl-start-timer "start GoodMorning -p Admin")
-  )
+  (delete-other-windows))
 #+end_src
 
 *** org weekly review                                             :custom:
@@ -2992,7 +2992,7 @@ daily and fill it in with some basic information.
 (defun ads/weekly ()
   "start weekly review process"
   (interactive)
-  (toggl-start-timer "start Weekly -p Admin")
+  (toggl-start "Weekly" "Admin")
   (browse-url "https://app.ynab.com")
   (org-roam-dailies-find-today)
   (org-roam-tag-add '("weekly"))
@@ -3043,7 +3043,7 @@ of everything that is there.
   (interactive)
   (find-file
    (concat org-directory (format-time-string "%Y_%m_monthly_review.org")))
-  (toggl-start-timer "start Monthly -p Admin")
+  (toggl-start "Monthly" "Admin")
   (insert
    (format
 <<ads/monthly>>
@@ -5312,65 +5312,104 @@ Nice little package from xenodium for showing time zones
 (use-package time-zones)
 #+end_src
 
-** toggl time tracking                                         :external:
+** toggl time tracking
 
-I use [[https://track.toggl.com][toggl track]] to track my time, there isn't an emacs package for it but
-there's a decently well made CLI for it.  This requires an external package but
-it's fine for my use case.
+I use [[https://track.toggl.com][toggl track]] to track my time, through [[file:~/git/emacs-toggl/README.org][emacs-toggl]], which I wrote because the
+CLI pipeline this used to run on could not tell me whether anything had actually
+happened.  ~async-shell-command~ returns immediately, so the old
+~toggl-start-timer~ echoed back the arguments I had typed and called that
+success; meanwhile the sketchybar plugin polled the CLI on a 60 second cache, so
+a timer took up to a minute to show up.  Between the two I stopped trusting it
+and stopped tracking.
 
-To install the cli utility:
-#+begin_src shell :tangle no
-cargo install toggl
-#+end_src
-
-#+begin_src emacs-lisp
-(setopt toggl-saved-timers-default
-      '("stop"
-        "continue"
-
-        ;; Personal Productivity
-        "start emacs -p Configuration -b"
-        "start nix -p Configuration -b"
-        "start mac -p Configuration -b"
-        "start CAD -p Design -b"
-        "start Anki -p 生词 -b"
-        ;; "start Jobs -p Jobs -b"
-        "start Moving -p Moving"
-        ;; "start Interview -p Jobs -b"
-
-        ;; General
-        "start Admin -p Admin"
-        "start Housekeeping -p Housekeeping"
-        "start Walk -p Walks"
-        "start Cooking -p Cooking"
-        "start Chess -p Chess"
-        "start Editing -p Photography"
-        ))
-(setopt toggl-saved-timers toggl-saved-timers-default)
-#+end_src
+The package talks to the v9 API over HTTP and reports only what the response
+body says.  Projects come from the org tree rather than a list I maintain by
+hand: the roam node is the project, the clocked headline is the description.
 
 #+begin_src emacs-lisp
-(add-to-list 'display-buffer-alist
-  (cons "toggl-start" (cons #'display-buffer-no-window nil)))
+(use-package plz)
 
-(defun toggl-start-timer (toggl-args)
-  "Start timer passing toggl-args to cli"
-  (async-shell-command
-   (concat "toggl " toggl-args)
-   "toggl-start")
-  (message toggl-args))
+(use-package toggl
+  :ensure nil
+  :load-path "~/git/emacs-toggl"
+  :custom
+  ;; The note's repo decides which client a newly created project lands under.
+  (toggl-org-client-directory-alist '(("~/git/org/personal" . "Adrian")))
+  (toggl-default-client "K2")
+  ;; Dailies are titled after their date, so clocking in from one must not
+  ;; create a project per calendar day.
+  (toggl-org-daily-project "Admin")
+  :config
+  (require 'toggl-org)
+  (toggl-mode 1)
+  (toggl-org-mode 1)
+  (ads/leader-keys
+    "C-t" 'ads/toggl-quick-start
+    "C-S-t" 'toggl-stop))
+#+end_src
 
-(defun toggl-start-saved-timer ()
-  "Start a timer from toggl-saved-timers"
+**** quick timers
+
+Most tracking now comes from clocking in, but some things I start by hand and
+never want to retype.  These used to be CLI argument strings passed to
+~toggl-start-timer~; they are now description/project pairs handed to the real
+command, so a typo'd project name fails loudly instead of starting an
+unprojected entry.
+
+Work-specific entries get appended to this in [[file:~/git/konfig/readme.org][konfig]].
+
+#+begin_src emacs-lisp
+(defvar ads/toggl-quick-timers
+  '(;; Personal productivity
+    ("emacs"        "Configuration" t)
+    ("nix"          "Configuration" t)
+    ("mac"          "Configuration" t)
+    ("CAD"          "Design"        t)
+    ("Anki"         "生词"          t)
+    ("Moving"       "Moving")
+    ;; General
+    ("Admin"        "Admin")
+    ("Housekeeping" "Housekeeping")
+    ("Walk"         "Walks")
+    ("Cooking"      "Cooking")
+    ("Chess"        "Chess")
+    ("Editing"      "Photography"))
+  "Timers started by hand, as (DESCRIPTION PROJECT &optional BILLABLE).")
+
+(defun ads/toggl-quick-start ()
+  "Start a timer from `ads/toggl-quick-timers'."
   (interactive)
-  (toggl-start-timer
-   (string-replace
-    "'"
-    "\"" ;; \" <- bad parsing
-    (completing-read "toggl " toggl-saved-timers))))
+  (let* ((choice (completing-read "Toggl: " (mapcar #'car ads/toggl-quick-timers) nil t))
+         (timer (assoc choice ads/toggl-quick-timers)))
+    (toggl-start (nth 0 timer) (nth 1 timer) (nth 2 timer))))
+#+end_src
 
-(ads/leader-keys
-  "C-t" 'toggl-start-saved-timer)
+*** toggl sketchybar
+
+[[*sketchybar][sketchybar]] used to poll the CLI on a 60 second cache, which is why starting a
+timer appeared to do nothing.  Pushing the state as soon as the server confirms
+it makes the bar update in under a second.
+
+~toggl-entry-changed-functions~ fires only on real transitions — start, stop,
+switch — not on every refresh, so this does not redraw needlessly.
+
+#+begin_src emacs-lisp
+(defun ads/toggl-sketchybar-update (entry)
+  "Push ENTRY to sketchybar immediately.
+Writes the cache file the plugin reads, then triggers a redraw."
+  (with-temp-file "/tmp/toggl_sketchybar_cache"
+    (insert
+     (if entry
+         (format "%d|%s|%s"
+                 (floor (float-time (toggl-entry-start entry)))
+                 (or (toggl-entry-description entry) "")
+                 (or (toggl-entry-project-name entry) ""))
+       "STOPPED")))
+  (call-process "/opt/homebrew/bin/sketchybar" nil 0 nil
+                "--trigger" "toggl_update"))
+
+(with-eval-after-load 'toggl
+  (add-hook 'toggl-entry-changed-functions #'ads/toggl-sketchybar-update))
 #+end_src
 
 
