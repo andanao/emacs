@@ -5349,48 +5349,24 @@ The package talks to the v9 API over HTTP and reports only what the response
 body says.  Projects come from the org tree rather than a list I maintain by
 hand: the roam node is the project, the clocked headline is the description.
 
-#+begin_src emacs-lisp
-(use-package plz)
+**** saved timers
 
-(use-package toggl
-  :ensure nil
-  :load-path "~/git/emacs-toggl"
-  :custom
-  ;; The note's repo decides which client a newly created project lands under.
-  (toggl-org-client-directory-alist '(("~/git/org/personal" . "Adrian")))
-  (toggl-default-client "K2")
-  ;; Dailies are titled after their date, so clocking in from one must not
-  ;; create a project per calendar day.
-  (toggl-org-daily-project "Admin")
-  :config
-  (require 'toggl-org)
-  (require 'toggl-transient)
-  (toggl-mode 1)
-  (toggl-org-mode 1)
-  ;; The transient is the hub: start, stop, edits and the entry list all hang
-  ;; off it.  Stop keeps its own key because it is the one thing worth hitting
-  ;; without reading a menu first.
-  (ads/leader-keys
-    "C-t" 'toggl-dispatch
-    "C-S-t" 'toggl-stop)
-  ;; Most starts here come from the curated list rather than a free prompt, so
-  ;; put that in the transient next to the generic one.
-  (transient-append-suffix 'toggl-dispatch '(0 0 -1)
-    '("f" "Favourite timer" ads/toggl-quick-start)))
-#+end_src
+Most tracking comes from clocking in, but some things I start by hand and never
+want to retype.  These used to be CLI argument strings passed to
+~toggl-start-timer~; they are now ~(DESCRIPTION PROJECT [BILLABLE [TAGS]])~ handed
+to the real command, so a project name that has drifted fails loudly instead of
+quietly starting an unprojected entry.
 
-**** quick timers
+~toggl-start-saved~ (~f~ in the transient) offers them annotated with the project
+each files under and grouped by it, so picking one does not mean remembering
+where it lands.  ~toggl-check-saved-timers~ reports any pointing at a project that
+no longer exists.
 
-Most tracking now comes from clocking in, but some things I start by hand and
-never want to retype.  These used to be CLI argument strings passed to
-~toggl-start-timer~; they are now description/project pairs handed to the real
-command, so a typo'd project name fails loudly instead of starting an
-unprojected entry.
-
-Work-specific entries get appended to this in [[file:~/git/konfig/readme.org][konfig]].
+This has to come *before* the ~use-package~ block, which reads it in ~:custom~.
+Work entries get appended in [[file:~/git/konfig/readme.org][konfig]].
 
 #+begin_src emacs-lisp
-(defvar ads/toggl-quick-timers
+(defvar ads/toggl-saved-timers
   '(;; Personal productivity
     ("emacs"        "Configuration" t)
     ("nix"          "Configuration" t)
@@ -5405,14 +5381,37 @@ Work-specific entries get appended to this in [[file:~/git/konfig/readme.org][ko
     ("Cooking"      "Cooking")
     ("Chess"        "Chess")
     ("Editing"      "Photography"))
-  "Timers started by hand, as (DESCRIPTION PROJECT &optional BILLABLE).")
+  "Timers started by hand, as (DESCRIPTION PROJECT &optional BILLABLE TAGS).")
+#+end_src
 
-(defun ads/toggl-quick-start ()
-  "Start a timer from `ads/toggl-quick-timers'."
-  (interactive)
-  (let* ((choice (completing-read "Toggl: " (mapcar #'car ads/toggl-quick-timers) nil t))
-         (timer (assoc choice ads/toggl-quick-timers)))
-    (toggl-start (nth 0 timer) (nth 1 timer) (nth 2 timer))))
+**** the package
+
+#+begin_src emacs-lisp
+(use-package plz)
+
+(use-package toggl
+  :ensure nil
+  :load-path "~/git/emacs-toggl"
+  :custom
+  ;; The note's repo decides which client a newly created project lands under.
+  (toggl-org-client-directory-alist '(("~/git/org/personal" . "Adrian")))
+  (toggl-default-client "K2")
+  ;; Dailies are titled after their date, so clocking in from one must not
+  ;; create a project per calendar day.
+  (toggl-org-daily-project "Admin")
+  ;; Timers I start by hand.  Work entries get appended in konfig.
+  (toggl-saved-timers ads/toggl-saved-timers)
+  :config
+  (require 'toggl-org)
+  (require 'toggl-transient)
+  (toggl-mode 1)
+  (toggl-org-mode 1)
+  ;; The transient is the hub: saved timers, start, stop, edits and the entry
+  ;; list all hang off it.  Stop keeps its own key because it is the one thing
+  ;; worth hitting without reading a menu first.
+  (ads/leader-keys
+    "C-t" 'toggl-dispatch
+    "C-S-t" 'toggl-stop))
 #+end_src
 
 *** toggl sketchybar
