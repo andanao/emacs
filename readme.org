@@ -3832,6 +3832,10 @@ prompts for selection, then jumps to the first upcoming instance."
 #+end_src
 
 ** org-modern
+Org-modern shrinks a table separator row to ~org-modern-table-horizontal~, but org-indent's
+full-height ~line-prefix~ pins the row back to a whole line, so hlines are thin at root and fat
+under a heading; the advice re-does that prefix at the same pixel width and the hline's height.
+
 #+begin_src emacs-lisp
 (use-package org-modern
   :after (org)
@@ -3857,7 +3861,26 @@ prompts for selection, then jumps to the first upcoming instance."
   (org-modern-list '((?- . "•")  (?+ . "◦")))
   :hook
   (org-mode . org-modern-mode)
-  (org-agenda-finalize . org-modern-agenda))
+  (org-agenda-finalize . org-modern-agenda)
+  :config
+  (defun ads/org-modern-table-thin-hline (fn &rest args)
+    "Call FN with ARGS, then shrink the indent prefix on table separator rows.
+Without this the full-height `line-prefix' keeps an indented hline a full line
+tall, even though org-modern has shrunk the rest of the row."
+    (let ((beg (match-beginning 0))
+	  (end (match-end 0))
+	  (hline (eq ?- (char-after (1+ (match-beginning 1))))))
+      (apply fn args)
+      (let ((prefix (and hline
+			 (numberp org-modern-table-horizontal)
+			 (get-text-property beg 'line-prefix))))
+	(when (and (stringp prefix) (not (string-empty-p prefix)))
+	  (put-text-property
+	   beg (min (1+ end) (point-max)) 'line-prefix
+	   (propertize " "
+		       'display `(space :width (,(string-pixel-width prefix)))
+		       'face `(:height ,org-modern-table-horizontal)))))))
+  (advice-add 'org-modern--table :around #'ads/org-modern-table-thin-hline))
 #+end_src
 
 *** org-modern-indent
