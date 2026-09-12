@@ -768,6 +768,17 @@ highlight here and point =C-x C-s= at the transcript, which is the thing there i
     (goto-char (point-max))
     (agent-shell-send-region)))
 
+(defun ads/agent-shell-resume-first (choices)
+  "Put the most recent session at the head of CHOICES.
+The startup prompt defaults to whatever comes first and agent-shell
+offers a new shell there; picking up the last conversation is the more
+common answer, whichever directory it was in.  Everything else keeps its
+place, so a new shell is still one key down."
+  (if-let* ((session (seq-find (lambda (choice) (not (keywordp (cdr choice))))
+                               choices)))
+      (cons session (remq session choices))
+    choices))
+
 (defun ads/agent-shell--button-action ()
   "Command the button under point binds to RET, if there is one.
 agent-shell hangs button actions off a `keymap' text property rather
@@ -880,8 +891,10 @@ own agent-shell module, which binds the same map."
   :custom
   ;; Named per project: "claude-agent @ emacs".  Fixes "which session is which".
   (agent-shell-buffer-name-format 'kebab-case)
-  ;; Resume vs new is a prompt at startup, not a separate command.
+  ;; Resume vs new is a prompt at startup, not a separate command, and it
+  ;; opens on the last conversation rather than on a new shell.
   (agent-shell-session-strategy 'prompt)
+  (agent-shell-session-choices-function #'ads/agent-shell-resume-first)
   ;; Replay the conversation on restore.  The default `minimal' resumes
   ;; without one, so the agent has the context and I can't read any of it.
   (agent-shell-session-restore-verbosity 'full)
