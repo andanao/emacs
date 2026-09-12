@@ -1119,6 +1119,75 @@ PREDICATE filters candidates as it would in `completing-read'."
               :around #'ads/agent-shell-read-with-preview))
 #+end_src
 
+*** last night's shells
+
+The session picker lists every conversation I have ever had, which is no help finding the three
+that were actually open when I shut down — so record those at =kill-emacs=, and =SPC a L= resumes
+all of them by session id the next morning.
+
+Oldest first, so the [[*switch-buffer preview][picker's]] recency order survives the night, and none of them displayed,
+since picking between them is that command's job.  An Emacs with no shells open has nothing to
+say about where I left off, so it leaves the record alone rather than emptying it.
+
+#+begin_src emacs-lisp
+(defvar ads/agent-shell-session-file
+  (expand-file-name "tmp/agent-shell-sessions.eld" user-emacs-directory)
+  "Where the agent shells open at exit are recorded.")
+
+(defun ads/agent-shell--live-sessions ()
+  "Every open agent shell as (CWD AGENT SESSION-ID), most recent first.
+A shell still negotiating has no session id yet, and nothing to resume."
+  (seq-keep
+   (lambda (buffer)
+     (let ((state (buffer-local-value 'agent-shell--state buffer)))
+       (when-let* ((id (map-nested-elt state '(:session :id)))
+                   (agent (map-nested-elt state '(:agent-config :identifier))))
+         (list (buffer-local-value 'default-directory buffer) agent id))))
+   (agent-shell-buffers)))
+
+(defun ads/agent-shell-save-sessions ()
+  "Record the open agent shells for `ads/agent-shell-resume-last'.
+Runs from `kill-emacs-hook', where an error would hold up the exit."
+  (with-demoted-errors "Saving agent shells: %S"
+    (when-let* ((sessions (ads/agent-shell--live-sessions)))
+      (make-directory (file-name-directory ads/agent-shell-session-file) t)
+      (with-temp-file ads/agent-shell-session-file
+        (prin1 sessions (current-buffer))))))
+
+(defun ads/agent-shell-resume-last ()
+  "Reopen every agent shell that was open when Emacs last exited.
+Each one resumes by session id, so its conversation comes back with it.
+Shells already open are left alone, as are directories that have since
+gone away - a worktree I finished with isn't somewhere to pick up."
+  (interactive)
+  (unless (file-exists-p ads/agent-shell-session-file)
+    (user-error "No shells recorded in %s" ads/agent-shell-session-file))
+  (let ((sessions (with-temp-buffer
+                    (insert-file-contents ads/agent-shell-session-file)
+                    (read (current-buffer))))
+        (live (mapcar (lambda (session) (nth 2 session))
+                      (ads/agent-shell--live-sessions)))
+        (resumed 0))
+    (dolist (session (reverse sessions))
+      (pcase-let ((`(,cwd ,agent ,id) session))
+        (when (and (file-directory-p cwd)
+                   (not (member id live)))
+          (let ((default-directory cwd))
+            (agent-shell--start
+             :config (or (agent-shell--resolve-config-designator agent)
+                         (user-error "No configuration for agent `%s'" agent))
+             :session-id id
+             :new-session t
+             :no-focus t))
+          (setq resumed (1+ resumed)))))
+    (message "Resumed %d of %d shell%s" resumed (length sessions)
+             (if (= (length sessions) 1) "" "s"))))
+
+(with-eval-after-load 'agent-shell
+  (add-hook 'kill-emacs-hook #'ads/agent-shell-save-sessions)
+  (ads/leader-keys "aL" 'ads/agent-shell-resume-last))
+#+end_src
+
 ** all-the-icons
 
 Icons are a font so remember to call ~(all-the-icons-install-fonts)~
