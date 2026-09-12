@@ -3541,6 +3541,8 @@ reviewed from there
 :ID:       b07758b9-e383-4299-a52f-359bb48c3a24
 :END:
 
+The title reuses the alias with =%\1= rather than asking for the short form twice.
+
 #+begin_src emacs-lisp :tangle no :noweb-ref capture-acronym
 ("x" "acronym" plain
  (file (lambda ()
@@ -3552,7 +3554,7 @@ reviewed from there
 :CREATED: %U
 :ROAM_ALIASES: %^{Short}
 :END:
-,#+title: %^{Short}: %^{Definition}
+,#+title: %\1: %^{Definition}
 ,#+filetags: :acronym:
 
 ")
