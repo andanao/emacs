@@ -3134,7 +3134,8 @@ before starting the day
 
 *** org weekly review                                             :custom:
 I do a weekly review, this will create the weekly review file in my current
-daily and fill it in with some basic information.
+daily and fill it in with some basic information.  Active projects and this
+month's goals come in with the template so there's nothing left to call by hand.
 
 #+begin_src emacs-lisp :noweb yes
 (defun ads/weekly ()
@@ -3146,8 +3147,10 @@ daily and fill it in with some basic information.
   (org-roam-tag-add '("weekly"))
   (goto-char (point-max))
   (insert
+   (format
 <<ads/weekly>>
-   )
+    (ads/roam-active-projects)
+    (ads/monthly-goals)))
  (package-upgrade-all))
 #+end_src
 
@@ -3171,40 +3174,66 @@ daily and fill it in with some basic information.
 
 ,** Project Statuses
 
-call ~ads/roam-active-projects-insert~
+%s
 
 ,** Goal Progress
 
-Overview of montly goal progress
-
+%s
 "
 #+end_src
 
 *** org monthly review                                            :custom:
 Template for my monthly reviews, I set it around the first of the month where I
 plan out goals and theme tie in, at the end of the month I do complete the rest
-of everything that is there.
+of everything that is there.  The weekly reads the Goals heading back out of
+here by roam title rather than path, since on work machines the note gets
+refiled under =personal/=.
 
 #+begin_src emacs-lisp :noweb yes
+(defun ads/monthly-file ()
+  "Return path of this month's review"
+  (concat org-directory (format-time-string "%Y_%m_monthly_review.org")))
+
 (defun ads/monthly-new ()
   "New monthly review"
   (interactive)
-  (find-file
-   (concat org-directory (format-time-string "%Y_%m_monthly_review.org")))
+  (find-file (ads/monthly-file))
   (toggl-start "Monthly" "Admin")
   (insert
    (format
 <<ads/monthly>>
-    (format-time-string "%B %Y")))
+    (format-time-string "%B %Y")
+    (format-time-string "%Y-%m")))
   (goto-char (point-min))
   (org-id-get-create))
+
+(defun ads/monthly-node ()
+  "Roam node for this month's review, nil before I've made one"
+  (org-roam-node-from-title-or-alias (format-time-string "%B %Y Monthly")))
 
 (defun ads/monthly-current ()
   "Go to current monthly review"
   (interactive)
-  (org-roam-node-visit
-   (org-roam-node-from-title-or-alias
-    (format-time-string "%B %Y Monthly"))))
+  (org-roam-node-visit (ads/monthly-node)))
+
+(defun ads/monthly-goals ()
+  "Return the body of the Goals heading in this month's review"
+  (let ((node (ads/monthly-node)))
+    (if (not node)
+        ""
+      (with-temp-buffer
+        (insert-file-contents (org-roam-node-file node))
+        (goto-char (point-min))
+        (if (not (re-search-forward "^\\* Goals$" nil t))
+            ""
+          (string-trim
+           (replace-regexp-in-string
+            "^#Beginning$" ""
+            (buffer-substring-no-properties
+             (line-beginning-position 2)
+             (if (re-search-forward "^\\* " nil t)
+                 (match-beginning 0)
+               (point-max))))))))))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref ads/monthly
@@ -3220,7 +3249,7 @@ of everything that is there.
 ,* Books Read
 #End
 (org-roam-ql-search
-'(and (tags \"book\") (properties COMPLETED \"2025-06\")))
+'(and (tags \"book\") (properties COMPLETED \"%s\")))
 
 ,* Time Tracked
 #End
@@ -4304,25 +4333,27 @@ simplifies the task of adding a tag and ignoring files under daily
 #+end_src
 
 *** roam-active-projects
-For my [[weekly review]] I want a list of active projects.
+For my [[weekly review]] I want a list of active projects, the weekly template
+fills itself in with ~ads/roam-active-projects~ so I never have to call it.
 
 #+begin_src emacs-lisp
+(defun ads/roam-active-projects ()
+  "Return roam links to active projects, one per line"
+  (mapconcat
+   (lambda (node)
+     (format "[[id:%s][%s]]" (car node) (cadr node)))
+   (org-roam-db-query
+    [:select [nodes:id, nodes:title]
+     :from tags
+     :left-join nodes
+     :on (= tags:node-id nodes:id)
+     :where (like tag (quote "%\"project_a\"%"))])
+   "\n"))
+
 (defun ads/roam-active-projects-insert ()
   "Insert roam links to active projects"
   (interactive)
-  (dolist
-    (node
-     (org-roam-db-query
-      [:select [nodes:id, nodes:title]
-       :from tags
-       :left-join nodes
-       :on (= tags:node-id nodes:id)
-       :where (like tag (quote "%\"project_a\"%"))]))
-  (insert
-     (concat "[[id:"
-             (pop node) "]["
-             (pop node) "]]
-"))))
+  (insert (ads/roam-active-projects) "\n"))
 #+end_src
 
 
