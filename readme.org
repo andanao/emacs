@@ -5452,12 +5452,22 @@ Work entries get appended in [[file:~/git/konfig/readme.org][konfig]].
 
 **** the package
 
+Pulled from [[https://github.com/andanao/emacs-toggl-track][its own repo]] rather than a path on disk, so a fresh machine gets it
+without me remembering to clone anything.  Private repo, so the SSH remote.
+
+Note this means Emacs loads the ~package-vc~ checkout under
+~package-user-dir~, /not/ ~~/git/emacs-toggl~.  To hack on it and have the running
+Emacs see the edits, point ELPA back at the working copy once:
+
+#+begin_src emacs-lisp :tangle no
+(package-vc-install-from-checkout "~/git/emacs-toggl" "toggl")
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package plz)
 
 (use-package toggl
-  :ensure nil
-  :load-path "~/git/emacs-toggl"
+  :vc (:url "git@github.com:andanao/emacs-toggl-track.git" :rev :newest)
   :custom
   ;; The note's repo decides which client a newly created project lands under.
   (toggl-org-client-directory-alist '(("~/git/org/personal" . "Adrian")))
@@ -5490,16 +5500,30 @@ it makes the bar update in under a second.
 switch — not on every refresh, so this does not redraw needlessly.
 
 #+begin_src emacs-lisp
+(defun ads/toggl-sketchybar-color (entry)
+  "Return ENTRY's project colour as a sketchybar ARGB string.
+
+Taken from Toggl rather than a table kept beside the bar.  The old
+plugin hardcoded a colour per project name, which drifted the moment a
+project was renamed, recoloured or added — and silently, since a miss
+just fell through to white."
+  (let* ((name (and entry (toggl-entry-project-name entry)))
+         (hex (and name (toggl-project-color (toggl-project-by-name name)))))
+    (if (and hex (= (length hex) 7))
+        (concat "0xff" (downcase (substring hex 1)))
+      "0xffffffff")))
+
 (defun ads/toggl-sketchybar-update (entry)
   "Push ENTRY to sketchybar immediately.
 Writes the cache file the plugin reads, then triggers a redraw."
   (with-temp-file "/tmp/toggl_sketchybar_cache"
     (insert
      (if entry
-         (format "%d|%s|%s"
+         (format "%d|%s|%s|%s"
                  (floor (float-time (toggl-entry-start entry)))
                  (or (toggl-entry-description entry) "")
-                 (or (toggl-entry-project-name entry) ""))
+                 (or (toggl-entry-project-name entry) "")
+                 (ads/toggl-sketchybar-color entry))
        "STOPPED")))
   (call-process "/opt/homebrew/bin/sketchybar" nil 0 nil
                 "--trigger" "toggl_update"))
