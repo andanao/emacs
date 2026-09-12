@@ -5549,7 +5549,10 @@ that select them — without scrolling.
   :demand t
   :hook (after-init . vertico-mode)
   :config
-  (vertico-multiform-mode 1)
+  ;; Guarded because reloading init re-runs this, and toggling a global mode
+  ;; while a minibuffer is open warns.
+  (unless (bound-and-true-p vertico-multiform-mode)
+    (vertico-multiform-mode 1))
   (add-to-list 'vertico-multiform-categories
                '(jinx grid (vertico-grid-annotate . 20)))
   (general-define-key
