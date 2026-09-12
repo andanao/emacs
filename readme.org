@@ -1908,21 +1908,87 @@ as you edit. =lsp-mode= will also prefer flycheck over flymake when it's present
 ** ghostel                                                       :external:
 
 like vterm but using ghotty as a backend insted.  This is newer and much more experimentla but in
-breif testing this feels much smoother and faster than vterm.
+breif testing this feels much smoother and faster than vterm.  The point is to stop opening
+Ghostty.app at all.
+
+Keys fall through to zsh in the default semi-char mode, which is the only way =TAB= is the
+completion I actually have — line mode holds the input in Emacs and completes it against
+comint's idea of a shell instead.  evil-ghostel is what makes that liveable, translating =dw= and
+friends into what zsh's line editor wants.  =C-c C-l= borrows line mode for one buffer when a
+command wants real editing.
+
+New terminals open in normal state, which is the reflex everywhere else.  ESC still reaches
+alt-screen apps, so =q= quits =htop= without ever leaving insert.
 
 #+begin_src emacs-lisp
 (use-package ghostel
   :vc (:url "https://github.com/dakra/ghostel"
        :lisp-dir "lisp"
        :rev :newest)
-  :hook (ghostel-mode . evil-ghostel-mode)
-  )
+  ;; Every command below is autoloaded, so the dynamic module stays unloaded
+  ;; until I ask for a terminal.
+  :defer t)
 
-(use-package evil-ghostel)
+(use-package evil-ghostel
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode)
+  :custom
+  (evil-ghostel-initial-state 'normal))
 #+end_src
 
+*** popup terminal
 
+The terminal I always want is one key away and never a buffer I have to find: =SPC ;= drops it
+across the bottom of the frame and the same key puts it away.  Only the window goes — the shell
+and its scrollback are still there next time.
 
+=ghostel= keys a terminal by the buffer name it was started under, so a wrapper that binds
+=ghostel-buffer-name= gets a slot of its own and =SPC s n= can still open ordinary shells beside it.
+
+#+begin_src emacs-lisp
+(defvar ghostel-buffer-name)
+
+(defconst ads/ghostel-popup-name "*ghostel-popup*"
+  "Buffer name of the always-on terminal, and its identity to `ghostel'.")
+
+(defun ads/ghostel-popup ()
+  "Toggle the always-on terminal across the bottom of the frame.
+Hides it when point is already there, jumps to it when it is showing
+elsewhere, and starts it the first time."
+  (interactive)
+  (let ((window (get-buffer-window ads/ghostel-popup-name)))
+    (cond
+     ((eq window (selected-window)) (delete-window window))
+     (window (select-window window))
+     (t (let ((ghostel-buffer-name ads/ghostel-popup-name))
+          (ghostel))))))
+
+(defun ads/ghostel-new ()
+  "Start a terminal alongside the ones already running."
+  (interactive)
+  (ghostel '(4)))
+
+;; `ghostel' pops to its buffer asking for the same window; the alist outranks
+;; that, which is the whole reason this lands in a side window.
+(add-to-list 'display-buffer-alist
+             `(,(regexp-quote ads/ghostel-popup-name)
+               (display-buffer-in-side-window)
+               (side . bottom)
+               (slot . 0)
+               (window-height . 0.3)
+               ;; Survive a resize by hand.
+               (preserve-size . (nil . t))))
+
+(ads/leader-keys
+  ";" 'ads/ghostel-popup
+  "s" '(:ignore t :which-key "shell")
+  "ss" 'ghostel
+  "sn" 'ads/ghostel-new
+  "sp" 'ghostel-project
+  "sb" 'ghostel-list-buffers
+  "sj" 'ghostel-next
+  "sk" 'ghostel-previous)
+#+end_src
 
 ** git-link
 Quickly create links to  files and commits
