@@ -5341,11 +5341,19 @@ hand: the roam node is the project, the clocked headline is the description.
   (toggl-org-daily-project "Admin")
   :config
   (require 'toggl-org)
+  (require 'toggl-transient)
   (toggl-mode 1)
   (toggl-org-mode 1)
+  ;; The transient is the hub: start, stop, edits and the entry list all hang
+  ;; off it.  Stop keeps its own key because it is the one thing worth hitting
+  ;; without reading a menu first.
   (ads/leader-keys
-    "C-t" 'ads/toggl-quick-start
-    "C-S-t" 'toggl-stop))
+    "C-t" 'toggl-dispatch
+    "C-S-t" 'toggl-stop)
+  ;; Most starts here come from the curated list rather than a free prompt, so
+  ;; put that in the transient next to the generic one.
+  (transient-append-suffix 'toggl-dispatch '(0 0 -1)
+    '("f" "Favourite timer" ads/toggl-quick-start)))
 #+end_src
 
 **** quick timers
