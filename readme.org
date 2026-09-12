@@ -2958,7 +2958,7 @@ First tries the most recent kill ring item, then searches kill ring history for 
 Simpler than the weekly, more just to get my thoughts on paper and empty my mind
 before starting the day
 
-#+begin_src emacs-lisp :noweb-ref good-morning
+#+begin_src emacs-lisp :tangle no :noweb-ref good-morning
 "* Good Morning
 ,** What's on your mind right now?
 
