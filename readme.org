@@ -294,15 +294,6 @@ Add hook to after save hook when on org mode
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
-** frames
-
-Set frame padding to have some breathing room, making the dividers invisible is done with ~ads/modus-tweaks~
-# #+begin_src emacs-lisp
-(modify-all-frames-parameters
-   `((right-divider-width . 20)
-     (internal-border-width . 20)))
-#+end_src
-
 ** modus-themes
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
@@ -325,7 +316,12 @@ particularly like the light ~modus-operandi~ theme.
     (3 . (regular 1.15))
     (t . (regular 1.10))
     ))
+#+end_src
 
+Anything that is only a recolour belongs here rather than in [[*modus-tweaks][modus-tweaks]], because the theme re-resolves
+palette overrides itself on every load and they cannot go stale when you toggle.
+
+#+begin_src emacs-lisp
 ;; all
 (setq modus-themes-common-palette-overrides
   '((bg-prose-block-contents bg-main)
@@ -341,88 +337,119 @@ particularly like the light ~modus-operandi~ theme.
     (fg-heading-8 fg-main)
     (fringe bg-main)
     (bg-mode-line-active bg-dim)
-    (bg-mode-line-inactive bg-main)))
+    (bg-mode-line-inactive bg-main)
+    ;; links are underlined, never coloured
+    (fg-link fg-main)
+    (fg-link-symbolic fg-main)
+    (fg-link-visited fg-main)
+    (underline-link fg-main)
+    (underline-link-symbolic fg-main)
+    (underline-link-visited fg-main)
+    ;; line numbers sit flush against the buffer
+    (bg-line-number-active bg-main)
+    (bg-line-number-inactive bg-main)
+    ;; org
+    (prose-done fg-dim)
+    (prose-table fg-main)
+    (fg-prose-code fg-alt)
+    (fg-prose-verbatim fg-main)
+    (date-event fg-main)
+    (date-scheduled fg-main)
+    (date-scheduled-subtle fg-main)))
 
 ;; dark theme
 (setq modus-vivendi-palette-overrides
       '((cursor "#ff2060")
-        (bg-main "#000000")))
+        (bg-main "#111111")))
 
 ;;light theme
 (setq modus-operandi-palette-overrides
-    '((cursor red-intense)))
+    '((cursor red-intense)
+      (bg-main "#fafafa")))
 ;; (modus-themes-select (modus-themes-get-current-theme))
 #+end_src
 
 *** modus-tweaks
 
+Sizes and inherits only; the few colours still needed come from ~ads/modus-color~ because
+~modus-themes-with-colors~ needs =cl-seq= at runtime and silently swallows the =void-function=
+error when it is missing, which is what used to leave this whole block unapplied.
+
 #+begin_src emacs-lisp :tangle no :noweb-ref modus-tweaks
-(modus-themes-with-colors
-    (custom-set-faces
-     ;; Modus
-     `(modus-themes-prose-code ((,c :foreground ,fg-alt)))
-     `(modus-themes-prose-verbatim ((,c :foreground ,fg-main)))
-     ;; org mode
-     `(org-checkbox ((,c :foreground ,fg-main)))
-     `(org-table ((,c :foreground ,fg-main)))
-     `(org-quote ((,c :inherit italic :foreground ,gold :background ,bg-main :height 1.1 )))
-     `(org-document-info ((,c :foreground ,fg-main)))
-     `(org-drawer ((,c :height 0.9)))
-     `(org-property-value ((,c :height 0.9)))
-     `(prose-done ((,c :foreground ,fg-dim)))
-     `(org-done ((,c :foreground ,fg-dim)))
-     `(org-headline-done ((,c :foreground ,fg-dim)))
-     `(org-ellipsis ((,c :foreground ,bg-main)))
-     `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
-     `(org-scheduled ((,c :foreground ,fg-main)))
-     `(org-scheduled-today ((,c :foreground ,fg-main)))
-     `(org-agenda-calendar-event ((,c :foreground ,fg-main)))
-     `(org-scheduled-previously ((,c :weight normal :foreground ,fg-main)))
-     `(org-modern-date-active ((,c :inherit org-modern-label :background ,bg-blue-nuanced)))
-     `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
-     `(org-modern-date-inactive ((,c :inherit org-modern-label :background ,bg-dim)))
-     `(org-modern-time-inactive ((,c :inherit org-modern-label :background ,bg-inactive)))
-     ;; markdown mode - headings borrow org's so both scale identically
-     `(markdown-ts-heading-1 ((,c :inherit org-level-1)))
-     `(markdown-ts-heading-2 ((,c :inherit org-level-2)))
-     `(markdown-ts-heading-3 ((,c :inherit org-level-3)))
-     `(markdown-ts-heading-4 ((,c :inherit org-level-4)))
-     `(markdown-ts-heading-5 ((,c :inherit org-level-5)))
-     `(markdown-ts-heading-6 ((,c :inherit org-level-6)))
-     `(markdown-ts-list-marker ((,c :foreground ,fg-main)))
-     `(markdown-ts-code-span ((,c :inherit fixed-pitch :foreground ,fg-main)))
-     `(markdown-ts-code-block ((,c :inherit fixed-pitch :background ,bg-dim :extend t)))
-     `(markdown-ts-language-keyword ((,c :background ,bg-dim )))
-     ;; line numbers
-     `(line-number ((,c :background ,bg-main :height 0.8)))
-     `(line-number-current-line ((,c :inherit line-number :background ,bg-main)))
-     ;; misc
-     `(link ((,c :foreground ,fg-main :underline ,fg-main)))
-     `(org-link ((,c :foreground ,fg-main :underline ,fg-main)))
-     `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))
-     ;; Make frame dividers invisible
-     `(fringe ((,c :background ,bg-main :foreground ,bg-main)))
-     `(window-divider ((,c :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-first-pixel ((,c :background ,bg-main :foreground ,bg-main)))
-     `(window-divider-last-pixel ((,c :background ,bg-main :foreground ,bg-main)))
-     ;; Add "padding" to the mode lines
-     ;; `(mode-line ((,c :box (:line-width 3 :color ,bg-mode-line-active))))
-     ;; `(mode-line-inactive ((,c :box (:line-width 3 :color ,bg-mode-line-inactive))))
-     ))
+(let ((c '((class color) (min-colors 256)))
+      (bg-main (ads/modus-color 'bg-main))
+      (bg-dim (ads/modus-color 'bg-dim))
+      (bg-inactive (ads/modus-color 'bg-inactive))
+      (bg-blue-nuanced (ads/modus-color 'bg-blue-nuanced))
+      (bg-blue-subtle (ads/modus-color 'bg-blue-subtle))
+      (fg-main (ads/modus-color 'fg-main))
+      (fg-dim (ads/modus-color 'fg-dim))
+      (gold (ads/modus-color 'gold)))
+  (custom-set-faces
+   ;; org mode
+   `(org-checkbox ((,c :foreground ,fg-main)))
+   `(org-quote ((,c :inherit italic :foreground ,gold :height 1.1)))
+   `(org-document-info ((,c :foreground ,fg-main)))
+   `(org-drawer ((,c :height 0.9)))
+   `(org-property-value ((,c :height 0.9)))
+   `(org-ellipsis ((,c :foreground ,bg-main)))
+   `(org-modern-label ((,c :height 0.7 :inherit fixed-pitch)))
+   `(org-scheduled-previously ((,c :inherit org-scheduled-today :weight normal)))
+   `(org-modern-date-active ((,c :inherit org-modern-label :background ,bg-blue-nuanced)))
+   `(org-modern-time-active ((,c :inherit org-modern-label :background ,bg-blue-subtle)))
+   `(org-modern-date-inactive ((,c :inherit org-modern-label :background ,bg-dim)))
+   `(org-modern-time-inactive ((,c :inherit org-modern-label :background ,bg-inactive)))
+   ;; markdown mode - headings borrow org's so both scale identically
+   `(markdown-ts-heading-1 ((,c :inherit org-level-1)))
+   `(markdown-ts-heading-2 ((,c :inherit org-level-2)))
+   `(markdown-ts-heading-3 ((,c :inherit org-level-3)))
+   `(markdown-ts-heading-4 ((,c :inherit org-level-4)))
+   `(markdown-ts-heading-5 ((,c :inherit org-level-5)))
+   `(markdown-ts-heading-6 ((,c :inherit org-level-6)))
+   `(markdown-ts-list-marker ((,c :foreground ,fg-main)))
+   `(markdown-ts-code-span ((,c :inherit fixed-pitch :foreground ,fg-main)))
+   `(markdown-ts-code-block ((,c :inherit fixed-pitch :background ,bg-dim :extend t)))
+   `(markdown-ts-language-keyword ((,c :background ,bg-dim )))
+   ;; line numbers
+   `(line-number ((,c :height 0.8)))
+   `(line-number-current-line ((,c :inherit line-number)))
+   ;; misc
+   `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))))
 #+end_src
 
+~enable-theme-functions~ runs inside ~load-theme~ itself, so the tweaks land on the startup theme
+and on every toggle, and no other theme hook erroring first can skip them.
 
 #+begin_src emacs-lisp :noweb yes
+(defun ads/modus-color (name)
+  "Return the current Modus palette value for NAME, overrides included."
+  (or (modus-themes-get-color-value name :with-overrides) 'unspecified))
+
+(defun ads/modus-tweaks (&optional theme &rest _)
+  "Apply custom face tweaks for the Modus THEME just enabled.
+Called with no THEME, tweak whichever Modus theme is current."
+  (when (or (null theme) (string-prefix-p "modus-" (symbol-name theme)))
+    (with-demoted-errors "ads/modus-tweaks: %S"
+      <<modus-tweaks>>
+      )))
+
+(add-hook 'enable-theme-functions #'ads/modus-tweaks)
+
+(defun ads/modus-tolerant-hooks (fn &rest args)
+  "Call FN with `modus-themes-after-load-theme-hook' made error tolerant.
+`run-hooks' stops at the first error, which would otherwise let one bad
+hook leave the rest of a toggle half applied."
+  (let ((modus-themes-after-load-theme-hook
+         (mapcar (lambda (f)
+                   (if (functionp f)
+                       (lambda () (with-demoted-errors "modus theme hook: %S" (funcall f)))
+                     f))
+                 modus-themes-after-load-theme-hook)))
+    (apply fn args)))
+
+(advice-add 'modus-themes-load-theme :around #'ads/modus-tolerant-hooks)
+
 (load-theme 'modus-vivendi t)
-(add-hook
- 'after-init-hook
- (lambda ()
-   (defun ads/modus-tweaks ()
-     "Apply custom tweaks to modus themes"
-     <<modus-tweaks>>
-     )
-   (add-hook 'modus-themes-after-load-theme-hook 'ads/modus-tweaks)
-   (ads/modus-tweaks)))
 #+end_src
 
 * General.el                                                          :core:
@@ -6451,18 +6478,20 @@ Ghostscript.  See [[*org latex preview][org latex preview]].
 
 ** Toggle themes
 
+The osascript runs detached: synchronously it stalled every toggle for as long as System Events
+took to answer, and a failure aborted the rest of the theme hook.
+
 #+begin_src emacs-lisp
 (defun mac/dark-mode-emacs-align ()
   "Align OSX theme with emacs light or dark mode"
-  (if (string-search "vivendi"
-		     (symbol-name (modus-themes-get-current-theme)))
-      (setq mac/dark-mode "true")
-      (setq mac/dark-mode "false"))
-  (shell-command
-   (concat
-    "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to "
-    mac/dark-mode
-    "'")))
+  (let ((dark (if (string-search "vivendi"
+				 (symbol-name (modus-themes-get-current-theme)))
+		  "true"
+		"false")))
+    (start-process
+     "mac/dark-mode" nil "osascript" "-e"
+     (concat "tell app \"System Events\" to tell appearance preferences to set dark mode to "
+	     dark))))
 
 (add-hook 'modus-themes-after-load-theme-hook 'mac/dark-mode-emacs-align)
 #+end_src
