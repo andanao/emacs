@@ -4541,6 +4541,26 @@ Show the ~#+title~ in the modeline instead of the timestamped roam file name.
 (advice-add 'doom-modeline-buffer-file-name :around #'ads/doom-modeline-org-title)
 #+end_src
 
+*** roam-project-complete
+Finishing a project moves its tag from =:project_a:= or =:project_h:= to
+=:project_c:= and stamps the file node with a =COMPLETED= date.  The
+celebration comes from =brew install gradigit/tap/confetti=, and is skipped on
+machines that don't have it.
+
+#+begin_src emacs-lisp
+(defun ads/org-mark-project-complete ()
+  "Retag the current roam project as complete and celebrate"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (org-roam-tag-remove '("project_a" "project_h"))
+    (org-roam-tag-add '("project_c"))
+    (org-set-property "COMPLETED" (format-time-string "[%Y-%m-%d %a]")))
+  (save-buffer)
+  (when-let* ((confetti (executable-find "confetti")))
+    (call-process confetti nil 0 nil "-p" "intense")))
+#+end_src
+
 *** roam-refile-tag-file-list
 Not really roam but using org roam to create my refile targets.  Set my refile
 targets to any file used by org-agenda or tagged :refile:, sometimes my roam
