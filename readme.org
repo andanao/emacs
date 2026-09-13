@@ -5713,32 +5713,6 @@ grammar revision.
    (global-treesit-auto-mode))
 #+end_src
 
-** treemacs
-
-#+begin_src emacs-lisp
-(use-package treemacs
-  :config
-  (ads/leader-keys
-    "z" 'treemacs))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package treemacs-evil
-  :after treemacs evil)
-
-(use-package treemacs-magit
-  :after treemacs magit)
-
-(use-package treemacs-projectile
-  :after treemacs projectile)
-
-(use-package treemacs-nerd-icons
-  :after treemacs
-  :config
-  (treemacs-load-theme "nerd-icons"))
-#+end_src
-
-
 ** ultra-scroll
 Scroll Emacs like Lightining.
 
