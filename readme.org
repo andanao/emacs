@@ -755,6 +755,13 @@ id), so only =gx= is taken back — it means "open the URL under the cursor" eve
 motions shadow them, and off an image they'd resize every image in the buffer, so they're
 scoped to an image being under point and fall back to the motions everywhere else.
 
+They go to agent-shell's markdown commands rather than its shell ones.  The shell commands
+self-insert instead of resizing when point sits at the last prompt, so =+= can be typed into
+a message being composed — but an image I've just attached is at the last prompt too, and
+there =+= typed a =+= in front of it.  Scrolled up to an earlier image it resized fine, which
+is why this looked intermittent.  The binding only fires with an image under point, so the
+is-the-user-typing question is already answered and the guard is only ever wrong here.
+
 A conversation is never unsaved, but every reply modifies the buffer, so [[*doom-modeline][doom-modeline]] paints
 the name red and I reach for =C-x C-s= — the tell is wrong, not the reflex, so drop the
 highlight here and point =C-x C-s= at the transcript, which is the thing there is to save.
@@ -853,16 +860,19 @@ the natural size precisely because the clamp isn't reached."
             :around #'ads/agent-shell-grow-small-image)
 
 (defun ads/agent-shell-image-scale-increase ()
-  "Widen the image at point, past its own size if that's where it is."
+  "Widen the image at point, past its own size if that's where it is.
+Straight to the markdown command: `agent-shell-image-scale-increase'
+self-inserts a `+' at the last prompt, where an image I've just
+attached lives."
   (interactive)
   (let ((ads/agent-shell--scaling t))
-    (call-interactively #'agent-shell-image-scale-increase)))
+    (agent-shell-markdown-image-scale-increase)))
 
 (defun ads/agent-shell-image-scale-decrease ()
   "Narrow the image at point, holding it above its own size if it's there."
   (interactive)
   (let ((ads/agent-shell--scaling t))
-    (call-interactively #'agent-shell-image-scale-decrease)))
+    (agent-shell-markdown-image-scale-decrease)))
 
 (defun ads/agent-shell-evil-keys (&optional mode &rest _)
   "Apply the agent-shell normal-state bindings.
@@ -881,7 +891,7 @@ own agent-shell module, which binds the same map."
      "C-k" 'agent-shell-previous-item
      "+" (ads/image-key ads/agent-shell--on-image-p 'ads/agent-shell-image-scale-increase)
      "-" (ads/image-key ads/agent-shell--on-image-p 'ads/agent-shell-image-scale-decrease)
-     "0" (ads/image-key ads/agent-shell--on-image-p 'agent-shell-image-scale-reset))))
+     "0" (ads/image-key ads/agent-shell--on-image-p 'agent-shell-markdown-image-scale-reset))))
 
 (use-package agent-shell
   :ensure t
