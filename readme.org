@@ -5246,6 +5246,7 @@ switch.
    "pf" 'projectile-find-file-dwim
    "pp" 'consult-project-buffer
    "pP" 'projectile-switch-project
+   "ps" 'projectile-switch-project
    "pj" 'projectile-next-project-buffer
    "pg" 'projectile-ripgrep
    "pk" 'projectile-previous-project-buffer)
