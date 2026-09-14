@@ -691,6 +691,13 @@ With INDIRECT, narrow an indirect clone in another window."
 (ads/leader-def "cI" "load init" (load-file user-init-file))
 #+end_src
 
+An agent writes most of the config now, so ~cC~ lands on the diff to review rather than on the file.
+
+#+begin_src emacs-lisp
+(ads/leader-def "cC" "emacs config magit"
+                (magit-status (file-name-directory ads/config-file)))
+#+end_src
+
 #+begin_src emacs-lisp
 (defun ads/add-config-package (package-name)
   "Add a new package section to the config file in alphabetical order.
