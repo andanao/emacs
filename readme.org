@@ -1058,7 +1058,7 @@ With prefix ALL, or when none are waiting, cycle through every shell."
   (ads/leader-keys "a SPC" 'ads/agent-shell-next))
 #+end_src
 
-*** consult source
+*** agent-shell consult source ~a~
 
 Sessions are just buffers, so they already turn up in ~consult-buffer~ — but mixed in with
 everything else, which is the "which session is which" problem again.  Their own source
@@ -2218,9 +2218,47 @@ elsewhere, and starts it the first time."
   "ss" 'ghostel
   "sn" 'ads/ghostel-new
   "sp" 'ghostel-project
-  "sb" 'ghostel-list-buffers
+  "sb" 'ads/consult-ghostel
   "sj" 'ghostel-next
   "sk" 'ghostel-previous)
+#+end_src
+
+*** ghostel consult source ~t~
+
+Terminals are buffers too, so they get the same source treatment the agent shells do: =t= narrows
+~consult-buffer~ to them, in the recency order =buffer-list= is already in, and previews each one as
+I move down the list.
+
+Their buffer names are all much the same, so the annotation is the directory each terminal is
+sitting in, which is what I am really picking by.
+
+~consult-buffer~ takes its sources as an argument, so the same source is also the whole of
+=SPC s b=, in place of ~ghostel-list-buffers~.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'consult
+  (defvar ads/consult-source-ghostel
+    (list :name     "Terminal"
+          :narrow   ?t
+          :category 'buffer
+          :face     'consult-buffer
+          :history  'buffer-name-history
+          :state    #'consult--buffer-state
+          :annotate (lambda (candidate)
+                      (when-let* ((buffer (get-buffer candidate)))
+                        (abbreviate-file-name
+                         (buffer-local-value 'default-directory buffer))))
+          :items    (lambda ()
+                      (mapcar #'buffer-name
+                              (match-buffers '(derived-mode . ghostel-mode)))))
+    "Open `ghostel' terminals, for `consult-buffer'.")
+
+  (add-to-list 'consult-buffer-sources 'ads/consult-source-ghostel)
+
+  (defun ads/consult-ghostel ()
+    "Pick a `ghostel' terminal, with preview."
+    (interactive)
+    (consult-buffer (list ads/consult-source-ghostel))))
 #+end_src
 
 ** git-link
