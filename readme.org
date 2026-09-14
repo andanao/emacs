@@ -5769,7 +5769,11 @@ Work entries get appended in [[file:~/git/konfig/readme.org][konfig]].
     ("Walk"         "Walks")
     ("Cooking"      "Cooking")
     ("Chess"        "Chess")
-    ("Editing"      "Photography"))
+    ("Editing"      "Photography")
+    ;; Dong something good for me
+    ("Weights"       "Gym")
+    ("Run"           "Gym")
+    ("Bike"          "Gym"))
   "Timers started by hand, as (DESCRIPTION PROJECT &optional BILLABLE TAGS).")
 #+end_src
 
