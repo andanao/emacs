@@ -452,7 +452,7 @@ hook leave the rest of a toggle half applied."
 (load-theme 'modus-vivendi t)
 #+end_src
 
-** project colours
+** project colors
 
 [[*doom-modeline][doom-modeline]] already prints the project name; the tint is the same thing read without
 reading.  The remap is buffer-local and the modeline is drawn per window, so two projects
@@ -476,7 +476,8 @@ editing are the same colour or they are not the same tree.
   "Colours to hand out, one per project.  All exist in operandi and vivendi.")
 
 (defvar ads/project-colour-pins
-  '(("spotify" . bg-green-subtle))
+  '(("spotify" . bg-green-subtle)
+    ("zmk-config" . bg-cyan-suble))
   "Projects whose colour never moves, keyed by the name of their root directory.
 A nil colour means no tint at all.  Work projects are pushed on in konfig.")
 
