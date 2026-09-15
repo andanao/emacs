@@ -365,7 +365,7 @@ palette overrides itself on every load and they cannot go stale when you toggle.
 ;;light theme
 (setq modus-operandi-palette-overrides
     '((cursor red-intense)
-      (bg-main "#fafafa")))
+      (bg-main "#fffff8")))
 ;; (modus-themes-select (modus-themes-get-current-theme))
 #+end_src
 
