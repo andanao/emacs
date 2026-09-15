@@ -4784,6 +4784,36 @@ to be in my agenda
         '((org-agenda-files :level . 0)
           (ads/org-refile-files :level . 0)))
 #+end_src
+*** roam-refile-category
+Refile targets are whole files, and a file's title alone is often not what I
+call it.  Show the =:CATEGORY:= instead, icon and all, so the picker both reads
+and matches the way I think of the note.
+
+#+begin_src emacs-lisp
+(defun ads/org-refile-category (file)
+  "Return FILE's file level CATEGORY, cutesy icon and all"
+  (when-let* ((buffer (find-buffer-visiting file)))
+    (with-current-buffer buffer
+      (org-with-wide-buffer
+       (org-entry-get (point-min) "CATEGORY")))))
+
+(defun ads/org-refile-show-category (targets)
+  "Prefix each refile target in TARGETS with its category"
+  (mapcar
+   (lambda (target)
+     (if-let* ((name (car target))
+               (category (ads/org-refile-category (nth 1 target))))
+         ;; the category usually is the title with an icon glued on, so only
+         ;; keep both when they actually say different things
+         (cons (if (string-suffix-p name category)
+                   category
+                 (concat category " · " name))
+               (cdr target))
+       target))
+   targets))
+
+(advice-add 'org-refile-get-targets :filter-return 'ads/org-refile-show-category)
+#+end_src
 *** roam-refile-note
 On my work computers I keep 2 seperate org directories under ~~/git/org~ for work
 and personal.  On my personal computers ~~/git/org/personal~ is just ~~/git/org~
