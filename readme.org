@@ -1026,7 +1026,10 @@ it.  =SPC a SPC= walks the waiting ones and falls back to plain cycling once non
              ;; Displayed anywhere means seen; nothing left to flag.
              ((get-buffer-window buffer t) (setq ads/agent-shell--finished nil))
              ((and (eq status 'ready) (eq previous 'busy))
-              (setq ads/agent-shell--finished t)))))))
+              (setq ads/agent-shell--finished t)
+              (ads/agent-shell--notify buffer status))
+             ((and (eq status 'blocked) (not (eq previous 'blocked)))
+              (ads/agent-shell--notify buffer status)))))))
     (setq ads/agent-shell--last-status statuses))
   (force-mode-line-update t))
 
@@ -1063,6 +1066,44 @@ With prefix ALL, or when none are waiting, cycle through every shell."
   (unless ads/agent-shell--timer
     (setq ads/agent-shell--timer (run-with-timer 1 1 #'ads/agent-shell--poll)))
   (ads/leader-keys "a SPC" 'ads/agent-shell-next))
+#+end_src
+
+*** notify when a session finishes
+
+The [[*waiting sessions][modeline tag]] counts the shells that want me, which is no help when three are cooking and
+only one of them is the one I am actually waiting on.  =SPC a N= marks the shell at point, and
+that one posts a notification when it stops — a banner says which session it was and takes the
+keyboard away from nothing.
+
+Off the same poll and the same two ways of wanting me, so a permission dialog pings as well as a
+finished turn, and a shell that is on screen when it finishes stays quiet: I saw it.
+
+#+begin_src emacs-lisp
+(defvar-local ads/agent-shell-notify nil
+  "Non-nil when this shell should ping me as it stops cooking.")
+
+(defun ads/agent-shell-notify-this-session ()
+  "Toggle notifications for the agent shell at point."
+  (interactive)
+  (unless (derived-mode-p 'agent-shell-mode)
+    (user-error "Not an agent shell"))
+  (setq ads/agent-shell-notify (not ads/agent-shell-notify))
+  (message "%s %s" (buffer-name)
+           (if ads/agent-shell-notify "will ping when it's done" "stays quiet")))
+
+(defun ads/agent-shell--notify (buffer status)
+  "Ping me that BUFFER reached STATUS, if that shell opted in.
+Detached, like the theme's osascript: a notification is not worth
+holding the poll up for."
+  (when (buffer-local-value 'ads/agent-shell-notify buffer)
+    (start-process
+     "ads/agent-shell-notify" nil "osascript" "-e"
+     (format "display notification %S with title %S"
+             (if (eq status 'blocked) "needs permission" "finished its turn")
+             (buffer-name buffer)))))
+
+(with-eval-after-load 'agent-shell
+  (ads/leader-keys "aN" 'ads/agent-shell-notify-this-session))
 #+end_src
 
 *** agent-shell consult source ~a~
