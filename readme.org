@@ -452,6 +452,117 @@ hook leave the rest of a toggle half applied."
 (load-theme 'modus-vivendi t)
 #+end_src
 
+** project colours
+
+[[*doom-modeline][doom-modeline]] already prints the project name; the tint is the same thing read without
+reading.  The remap is buffer-local and the modeline is drawn per window, so two projects
+side by side show two colours at once.  Not the header line — =lsp-headerline-breadcrumb=
+already owns that.
+
+Every git project is tinted except the handful I'm always in, which stay bare so a plain
+modeline means home turf.  A colour is reclaimed once its project has no buffers left,
+lazily on the next allocation, so there's no ~kill-buffer~ hook and no timer; pin a project
+when it has a colour of its own and the shuffle would be wrong.
+
+The tint keys off ~default-directory~, not the file, so everything anchored on a project
+wears its colour: the [[*agent-shell][agent-shell]] session, dired, magit.  Claude's worktrees are projects like
+any other and get their own colour, which is the point — an agent window and the code it is
+editing are the same colour or they are not the same tree.
+
+#+begin_src emacs-lisp
+(defconst ads/project-palette
+  '(bg-blue-subtle bg-green-subtle bg-yellow-subtle bg-magenta-subtle bg-cyan-subtle
+    bg-red-subtle bg-lavender bg-sage bg-clay bg-ochre)
+  "Colours to hand out, one per project.  All exist in operandi and vivendi.")
+
+(defvar ads/project-colour-pins
+  '(("spotify" . bg-green-subtle))
+  "Projects whose colour never moves, keyed by the name of their root directory.
+A nil colour means no tint at all.  Work projects are pushed on in konfig.")
+
+(defvar ads/project-colour-exclude
+  '("~/git/emacs/" "~/git/konfig/" "~/git/kode/" "~/git/org/" "~/Downloads/")
+  "Projects under these directories keep the plain modeline.
+Matched as directories, so =~/git/emacs/= leaves =~/git/emacs-toggl= alone.")
+
+(defvar ads/project--assigned nil
+  "Alist of project root -> colour for the projects currently open.")
+
+(defvar-local ads/project--remap nil
+  "Face-remap cookies owned by this buffer, so re-running can't leak them.")
+
+(defun ads/project-root ()
+  "Root of the git project this buffer is in, or nil if it gets no colour.
+Not only file buffers: the agent shell, dired and magit all sit on a project's
+`default-directory' and want the same colour as the code they're about."
+  (and default-directory
+       (not (file-remote-p default-directory))
+       (when-let* ((dir (locate-dominating-file default-directory ".git"))
+                   (root (file-name-as-directory (expand-file-name dir))))
+         (and (not (seq-some
+                    (lambda (d)
+                      (string-prefix-p (file-name-as-directory (expand-file-name d)) root))
+                    ads/project-colour-exclude))
+              (directory-file-name root)))))
+
+(defun ads/project--live-roots ()
+  "Roots with at least one buffer still open."
+  (delete-dups
+   (delq nil (mapcar (lambda (b) (with-current-buffer b (ads/project-root)))
+                     (buffer-list)))))
+
+(defun ads/project-colour (root)
+  "Colour for ROOT, allocating one on first sight, or nil if it stays bare.
+A pinned project is answered as-is - assoc, not the cdr, so a pin to nil
+reads as \"no tint\" rather than as a cache miss."
+  (if-let* ((pin (assoc (file-name-nondirectory root) ads/project-colour-pins)))
+      (cdr pin)
+    (or (cdr (assoc root ads/project--assigned))
+        (let ((live (ads/project--live-roots)))
+          ;; Only prune here: a colour is free the moment its project is closed,
+          ;; but nobody needs to know until something else asks for one.
+          (setq ads/project--assigned
+                (seq-filter (lambda (cell) (member (car cell) live))
+                            ads/project--assigned))
+          (let* ((taken (delq nil (append (mapcar #'cdr ads/project-colour-pins)
+                                          (mapcar #'cdr ads/project--assigned))))
+                 (colour (or (seq-find (lambda (c) (not (memq c taken)))
+                                       ads/project-palette)
+                             (car ads/project-palette))))
+            (push (cons root colour) ads/project--assigned)
+            colour)))))
+
+(defun ads/project--tint (face bg)
+  "Remap FACE to background BG, recolouring its :box to match.
+spacious-padding draws the modeline padding as a :box in the background
+colour, so tinting only :background leaves the outer ring untinted."
+  (let ((box (face-attribute face :box nil t)))
+    (apply #'face-remap-add-relative face :background bg
+           (when (consp box)
+             (list :box (plist-put (copy-sequence box) :color bg))))))
+
+(defun ads/project-colourise ()
+  "Tint this buffer's modeline with its project colour, if it has one."
+  (when-let* ((root (ads/project-root)))
+    (mapc #'face-remap-remove-relative ads/project--remap)
+    (setq ads/project--remap nil)
+    (when-let* ((colour (ads/project-colour root))
+                (bg (ads/modus-color colour)))
+      (when (stringp bg)
+        (setq ads/project--remap
+              (list (ads/project--tint 'mode-line-active bg)
+                    (ads/project--tint 'mode-line-inactive bg)))))))
+
+(defun ads/project-recolourise ()
+  "Re-resolve the tints after a theme change - the old values are stale hex."
+  (dolist (b (buffer-list))
+    (with-current-buffer b
+      (when ads/project--remap (ads/project-colourise)))))
+
+(add-hook 'after-change-major-mode-hook #'ads/project-colourise)
+(add-hook 'modus-themes-after-load-theme-hook #'ads/project-recolourise)
+#+end_src
+
 * General.el                                                          :core:
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
