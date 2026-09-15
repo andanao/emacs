@@ -1273,6 +1273,148 @@ gone away - a worktree I finished with isn't somewhere to pick up."
   (ads/leader-keys "aL" 'ads/agent-shell-resume-last))
 #+end_src
 
+*** global session resume
+
+~session/list~ takes a cwd, so agent-shell's picker only ever answers "what did I run here".
+=SPC a H= is the same picker over every directory at once, read out of Claude Code's own store —
+a transcript per session under =~/.claude/projects/= — and resuming the pick where it was running.
+
+This is what a crash leaves me with: =SPC a L= has nothing to replay, because =kill-emacs-hook=
+never ran.  Headless runs would crowd the list out, so cwds under =~/.cache= (the
+[[file:~/git/konfig/readme.org::*Leak check][leak check]], claude-auto) and the =/=-rooted cron are dropped.
+
+#+begin_src emacs-lisp
+(defvar ads/agent-shell-transcript-directory "~/.claude/projects/"
+  "Where Claude Code keeps its transcripts, a directory per cwd.")
+
+(defvar ads/agent-shell-transcript-ignore '("/\\.cache/" "\\`/\\'")
+  "Regexps matching cwds no shell of mine ever sat in.")
+
+(defvar ads/agent-shell-transcript-window 16384
+  "How much of a transcript to read from either end.")
+
+(defvar ads/agent-shell-transcript-count 25
+  "How many sessions `ads/agent-shell-resume-global-session' offers.")
+
+(defun ads/agent-shell--transcript-records (file beg end)
+  "The JSON records of FILE between byte BEG and END, in order.
+A byte range starts and ends mid-line, and those two lines don't parse
+and drop out, which is all the trimming they need."
+  (with-temp-buffer
+    (let ((coding-system-for-read 'utf-8))
+      (insert-file-contents file nil beg end))
+    (seq-keep (lambda (line)
+                (ignore-errors (json-parse-string line :object-type 'alist)))
+              (split-string (buffer-string) "\n" t))))
+
+(defun ads/agent-shell--transcript-tail (file)
+  "The last records of FILE, newest first.
+A window off the end rather than the file, which runs to tens of
+megabytes on a long conversation.  A single record longer than the
+window leaves nothing parseable, so widen once before giving up."
+  (let ((size (file-attribute-size (file-attributes file))))
+    (nreverse
+     (or (ads/agent-shell--transcript-records
+          file (max 0 (- size ads/agent-shell-transcript-window)) size)
+         (ads/agent-shell--transcript-records
+          file (max 0 (- size (* 64 ads/agent-shell-transcript-window))) size)))))
+
+(defun ads/agent-shell--transcript-title (file)
+  "The first thing I said in FILE.
+Claude Code titles nothing, so the opening prompt is the title - minus
+the tool results and reminders the harness sends under that same `user'
+type, which all arrive as a tag."
+  (seq-some
+   (lambda (record)
+     (and (equal "user" (alist-get 'type record))
+          (not (alist-get 'isMeta record))
+          (when-let* ((content (map-nested-elt record '(message content)))
+                      (text (if (stringp content)
+                                content
+                              (mapconcat (lambda (block) (or (alist-get 'text block) ""))
+                                         content " ")))
+                      (text (string-trim (replace-regexp-in-string "[ \t\n]+" " " text)))
+                      ((not (string-empty-p text)))
+                      ((not (string-prefix-p "<" text))))
+            text)))
+   (ads/agent-shell--transcript-records
+    file 0 (min (file-attribute-size (file-attributes file))
+                ads/agent-shell-transcript-window))))
+
+(defun ads/agent-shell--transcript-session (file)
+  "Read FILE into a session, shaped the way `session/list' returns them.
+Nil for the cwds nothing of mine sat in and for directories that have
+since gone away, on the same grounds `ads/agent-shell-resume-last' skips
+them: a worktree I finished with isn't somewhere to pick up."
+  (when-let* ((tail (ads/agent-shell--transcript-tail file))
+              (updated (seq-some (lambda (record) (alist-get 'timestamp record)) tail))
+              (cwd (seq-some (lambda (record) (alist-get 'cwd record)) tail))
+              ((not (seq-some (lambda (regexp) (string-match-p regexp cwd))
+                              ads/agent-shell-transcript-ignore)))
+              ((file-directory-p cwd)))
+    (list (cons 'sessionId (file-name-base file))
+          (cons 'cwd cwd)
+          (cons 'title (or (ads/agent-shell--transcript-title file) "Untitled"))
+          (cons 'updatedAt updated))))
+
+(defun ads/agent-shell--global-sessions ()
+  "Every session in the transcript store worth resuming, newest first."
+  (seq-take (agent-shell--sort-sessions-by-recency
+             (seq-keep #'ads/agent-shell--transcript-session
+                       (file-expand-wildcards
+                        (expand-file-name "*/*.jsonl"
+                                          ads/agent-shell-transcript-directory)
+                        t)))
+            ads/agent-shell-transcript-count))
+
+(defun ads/agent-shell--shell-on-session (id)
+  "The shell already open on session ID, if there is one."
+  (seq-find (lambda (buffer)
+              (equal id (map-nested-elt (buffer-local-value 'agent-shell--state buffer)
+                                        '(:session :id))))
+            (agent-shell-buffers)))
+
+(defun ads/agent-shell-resume-global-session ()
+  "Resume a recent session, whichever directory it was running in.
+agent-shell's own picker asks the agent for one cwd's sessions, which is
+no help when what I've lost is which directories had shells in them.
+Read Claude Code's transcripts instead - same columns, every project."
+  (interactive)
+  (let ((sessions (ads/agent-shell--global-sessions)))
+    (unless sessions
+      (user-error "No sessions under %s" ads/agent-shell-transcript-directory))
+    (let* ((max-widths
+            (mapcar (lambda (column)
+                      (cons column
+                            (apply #'max (mapcar
+                                          (lambda (session)
+                                            (length (agent-shell--session-column-value
+                                                     column session)))
+                                          sessions))))
+                    (agent-shell--session-selection-columns)))
+           (choices (mapcar (lambda (session)
+                              (cons (agent-shell--session-choice-label
+                                     :acp-session session :max-widths max-widths)
+                                    session))
+                            sessions))
+           (selection (completing-read
+                       "Resume session: "
+                       (lambda (string predicate action)
+                         (if (eq action 'metadata)
+                             '(metadata (display-sort-function . identity))
+                           (complete-with-action action choices string predicate)))
+                       nil t))
+           (session (alist-get selection choices nil nil #'equal))
+           (id (alist-get 'sessionId session)))
+      (if-let* ((buffer (ads/agent-shell--shell-on-session id)))
+          (pop-to-buffer buffer)
+        (let ((default-directory (alist-get 'cwd session)))
+          (agent-shell-resume-session id))))))
+
+(with-eval-after-load 'agent-shell
+  (ads/leader-keys "aH" 'ads/agent-shell-resume-global-session))
+#+end_src
+
 ** all-the-icons
 
 Icons are a font so remember to call ~(all-the-icons-install-fonts)~
