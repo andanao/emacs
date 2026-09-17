@@ -650,12 +650,22 @@ The DWIM behaviour of this command is as follows:
 ** eval ~e~
 
 #+begin_src emacs-lisp
+(defun ads/eval-enclosing-sexp ()
+  "Evaluate the innermost sexp containing point."
+  (interactive)
+  (save-excursion
+    (when (nth 3 (syntax-ppss)) (goto-char (nth 8 (syntax-ppss))))
+    (up-list 1 t t)
+    (call-interactively #'eval-last-sexp)))
+
 (ads/leader-keys
   "e" '(:ignore t :which-key "eval")
   "eb" 'eval-buffer
   "ed" 'eval-defun
   "ee" 'eval-expression
+  "er" 'eval-region
   "ep" 'pp-eval-last-sexp
+  "ex" 'ads/eval-enclosing-sexp
   "es" 'eval-last-sexp
   )
 #+end_src
