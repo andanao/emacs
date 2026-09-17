@@ -3416,6 +3416,9 @@ Set custom org mode bindings and functions.
   :keymaps 'org-mode-map
   "oh" 'consult-org-heading
   "o TAB" 'org-cycle-global
+  ;; Inactive and with the time of day, the stamp `%U' writes into :CREATED:.
+  "it" '((lambda () (interactive) (org-insert-time-stamp (current-time) t t))
+         :wk "timestamp")
   "ti" 'org-link-preview-refresh
   "tI" 'org-link-preview
   "ne" 'org-narrow-to-element
