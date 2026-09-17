@@ -2487,21 +2487,42 @@ The terminal I always want is one key away and never a buffer I have to find: =S
 across the bottom of the frame and the same key puts it away.  Only the window goes — the shell
 and its scrollback are still there next time.
 
-=ghostel= keys a terminal by the buffer name it was started under, so a wrapper that binds
-=ghostel-buffer-name= gets a slot of its own and =SPC s n= can still open ordinary shells beside it.
+=ghostel= keys a terminal by an identity built from the buffer name it was started under, not
+by the name the buffer currently has, so a wrapper that binds =ghostel-buffer-name= gets a slot
+of its own and =SPC s n= can still open ordinary shells beside it.  That indirection is what lets
+[[*session names][session names]] rename these buffers afterwards without ghostel losing track of the slot.
+
+Finding the popup again is the one thing the rename does cost.  The toggle and the side-window
+rule both used to match the name exactly; both now match the =ghostel-popup= prefix, under an
+optional star — the creation name is =*ghostel-popup*= and the renamed form has no stars at all,
+so the prefix is the only part the two share.
 
 #+begin_src emacs-lisp
 (defvar ghostel-buffer-name)
 
-(defconst ads/ghostel-popup-name "*ghostel-popup*"
-  "Buffer name of the always-on terminal, and its identity to `ghostel'.")
+(defconst ads/ghostel-popup-stem "ghostel-popup"
+  "Name prefix the popup keeps through every rename.")
+
+(defconst ads/ghostel-popup-name (concat "*" ads/ghostel-popup-stem "*")
+  "Buffer name the always-on terminal is created under.
+Also its identity to `ghostel', which the later rename does not disturb.")
+
+(defconst ads/ghostel-popup-regexp
+  (concat "\\`\\*?" (regexp-quote ads/ghostel-popup-stem))
+  "Matches the popup as created and as renamed.
+The leading star is optional because only the creation name carries one.")
+
+(defun ads/ghostel-popup-buffer ()
+  "The popup terminal, whatever `ads/ghostel-buffer-name' has renamed it to."
+  (car (match-buffers ads/ghostel-popup-regexp)))
 
 (defun ads/ghostel-popup ()
   "Toggle the always-on terminal across the bottom of the frame.
 Hides it when point is already there, jumps to it when it is showing
 elsewhere, and starts it the first time."
   (interactive)
-  (let ((window (get-buffer-window ads/ghostel-popup-name)))
+  (let* ((buffer (ads/ghostel-popup-buffer))
+         (window (and buffer (get-buffer-window buffer))))
     (cond
      ((eq window (selected-window)) (delete-window window))
      (window (select-window window))
@@ -2514,9 +2535,11 @@ elsewhere, and starts it the first time."
   (ghostel '(4)))
 
 ;; `ghostel' pops to its buffer asking for the same window; the alist outranks
-;; that, which is the whole reason this lands in a side window.
+;; that, which is the whole reason this lands in a side window.  Matching the
+;; prefix rather than the whole name keeps the rule working once the buffer
+;; has been renamed to carry its directory.
 (add-to-list 'display-buffer-alist
-             `(,(regexp-quote ads/ghostel-popup-name)
+             `(,ads/ghostel-popup-regexp
                (display-buffer-in-side-window)
                (side . bottom)
                (slot . 0)
@@ -2533,6 +2556,103 @@ elsewhere, and starts it the first time."
   "sb" 'ads/consult-ghostel
   "sj" 'ghostel-next
   "sk" 'ghostel-previous)
+#+end_src
+
+*** session names
+
+Four terminals all called =*ghostel*= are four terminals I have to open to tell apart.  A name
+worth reading carries the host when it is not this machine, and where the session is sitting.
+
+The stars go with them.  =*foo*= is Emacs' convention for a buffer with nothing behind it, and a
+shell sitting in a directory is not that — these read as =ghostel: konfig=, bare.  They are born
+=*ghostel*= all the same, because that name is what ghostel builds the slot identity from.
+
+Local directories get the git root and both ends of the path under it —
+=~/git/gravitas/sim/scenarios/scenarios/gnc/= reads =gravitas/sim/.../gnc=.  The middle of a deep
+path is never the part I am identifying it by, and the two ends plus the repo are.  Outside a
+repo there is no root to anchor to, so the path stays whole.
+
+Remote sessions lead with the host and stop there: =arches:~=.  No git lookup runs on them,
+because =locate-dominating-file= over TRAMP is a round trip per parent directory and the
+package goes out of its way to keep synchronous TRAMP calls off this path.
+
+Nothing here sets a terminal title.  ghostel's zsh integration emits OSC 7 and the prompt marks
+and never OSC 0/2, and there is no title hook in my =.zshrc= — so the TITLE argument is ignored
+rather than guessed at.  This is the function that would use one if that ever changes.
+
+Two calls, not one, because the two renaming paths have different blind spots:
+
+- =ghostel-buffer-name-function= fires on every =cd= and every title change, which is what keeps
+  the name honest as I move around.  It fires on /every prompt/, though, so the git lookup is
+  skipped whenever the directory has not actually moved.
+- =ghostel-pre-spawn-hook= names the terminal as it is born.  Without it a remote session would
+  never be renamed at all: =ghostel-tramp-shell-integration= is nil, so no OSC 7 ever arrives
+  from =arches= and the buffer would keep the bare name for life.  It renames through ghostel's
+  own =ghostel--rename-managed= — private, but reaching past it would leave the package's rename
+  bookkeeping stale and silently kill the =cd= tracking above.
+
+Both decline on anything that is not a plain terminal: =ghostel-exec= and =ghostel-compile= put
+buffers of their own into =ghostel-mode=, and those keep the names they arrived with.
+
+#+begin_src emacs-lisp
+(defvar ghostel-identity)
+(defvar ghostel-title)
+(defvar ghostel-buffer-name-function)
+(declare-function ghostel--rename-managed "ghostel" (new-name))
+
+(defvar-local ads/ghostel--named-for nil
+  "`default-directory' the current buffer name was built from.")
+
+(defun ads/ghostel--short-path (directory)
+  "Return DIRECTORY as ROOT/FIRST/.../LAST when it sits inside a git worktree.
+Outside one, return the abbreviated path whole - there is no root to
+elide against."
+  (let* ((directory (directory-file-name (expand-file-name directory)))
+         (root (locate-dominating-file directory ".git")))
+    (if (not root)
+        (abbreviate-file-name directory)
+      (let* ((root (directory-file-name (expand-file-name root)))
+             (relative (file-relative-name directory root))
+             (parts (unless (equal relative ".") (split-string relative "/" t))))
+        (string-join (cons (file-name-nondirectory root)
+                           (if (> (length parts) 2)
+                               (list (car parts) "..." (car (last parts)))
+                             parts))
+                     "/")))))
+
+(defun ads/ghostel--where ()
+  "Describe `default-directory' for this terminal's buffer name.
+Remote directories read HOST:DIR and are never probed for a git root."
+  (let ((host (file-remote-p default-directory 'host)))
+    (if host
+        (format "%s:%s" host
+                (directory-file-name (file-remote-p default-directory 'localname)))
+      (ads/ghostel--short-path default-directory))))
+
+(defun ads/ghostel--name-stem ()
+  "The prefix this buffer's name keeps, or nil when it is not mine to rename."
+  (when (eq (alist-get 'kind ghostel-identity) 'term)
+    (if (string-match-p ads/ghostel-popup-regexp (buffer-name))
+        ads/ghostel-popup-stem
+      "ghostel")))
+
+(defun ads/ghostel-buffer-name (_title)
+  "Name this terminal for the host and directory it is sitting in.
+A `ghostel-buffer-name-function'.  Returns nil to decline, and the
+unchanged name when the directory has not moved, so the git lookup stays
+off the every-prompt path.  TITLE is ignored: nothing here emits one."
+  (when-let* ((stem (ads/ghostel--name-stem)))
+    (if (equal default-directory ads/ghostel--named-for)
+        (buffer-name)
+      (setq ads/ghostel--named-for default-directory)
+      (format "%s: %s" stem (ads/ghostel--where)))))
+
+(defun ads/ghostel-name-at-birth ()
+  "Name a terminal as it spawns, before any OSC 7 could have arrived."
+  (ghostel--rename-managed (ads/ghostel-buffer-name ghostel-title)))
+
+(setq ghostel-buffer-name-function #'ads/ghostel-buffer-name)
+(add-hook 'ghostel-pre-spawn-hook #'ads/ghostel-name-at-birth)
 #+end_src
 
 *** ghostel consult source ~t~
