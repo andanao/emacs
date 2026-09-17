@@ -3458,6 +3458,8 @@ Major mode for reading EPUB files in Emacs
   (org-fontify-quote-and-verse-blocks t)
   (org-cycle-separator-lines 0)
   (org-id-link-to-org-use-id nil) ;; Use org roam linking
+  ;; Headings inherit the file level roam ID, so attachments work without a :DIR: drawer
+  (org-attach-use-inheritance t)
   (org-fast-tag-selection-single-key t)
   (org-blank-before-new-entry '((heading . 1) (plain-list-item . nil)))
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
