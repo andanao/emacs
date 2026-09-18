@@ -452,6 +452,48 @@ hook leave the rest of a toggle half applied."
 (load-theme 'modus-vivendi t)
 #+end_src
 
+*** force reload
+
+A toggle sometimes lands half applied — the agenda came back white on white — and the way out
+is to load the theme again from the top, palette overrides, tweaks and every
+[[*rebuild on theme change][after-load hook]] included.  Every forced
+reload appends an entry to ~ads/modus-reload-log~ with the tail of =*Messages*=, because
+needing it at all is a bug and that log is the only evidence left of which hook died.
+
+#+begin_src emacs-lisp
+(defvar ads/modus-reload-log (concat user-emacs-directory "modus-reload.log")
+  "File where forced theme reloads are recorded, one entry each.")
+
+(defun ads/modus--recent-messages (n)
+  "The last N lines of the *Messages* buffer, or nil if there is none."
+  (when-let* ((buf (get-buffer "*Messages*")))
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-max))
+        (forward-line (- n))
+        (buffer-substring-no-properties (point) (point-max))))))
+
+(defun ads/modus-log-reload (theme)
+  "Record a forced reload of THEME: where it was asked for and what was said."
+  (let ((header (format "%s %s from %s (%s)\n"
+                        (format-time-string "[%Y-%m-%d %a %H:%M]")
+                        theme (buffer-name) major-mode))
+        (tail (string-trim-right (or (ads/modus--recent-messages 20) ""))))
+    (write-region (concat header
+                          (unless (string= tail "")
+                            (concat (replace-regexp-in-string "^" "  | " tail) "\n"))
+                          "\n")
+                  nil ads/modus-reload-log :append :silent)))
+
+(defun ads/modus-reload ()
+  "Load the current Modus theme again, palette overrides and tweaks included."
+  (interactive)
+  (let ((theme (modus-themes-get-current-theme)))
+    (ads/modus-log-reload theme)
+    (modus-themes-load-theme theme)
+    (message "Reloaded %s" theme)))
+#+end_src
+
 ** project colors
 
 [[*doom-modeline][doom-modeline]] already prints the project name; the tint is the same thing read without
@@ -4011,6 +4053,32 @@ Spin up a dedicated and stripped down aenda view to have up in the background
       (delete-frame)))
 
 (advice-add 'org-agenda-quit :after #'ads/org-agenda-quit-advice)
+#+end_src
+
+*** rebuild on theme change
+
+An agenda line is painted once and ~org-agenda-sticky~ keeps the buffer across a toggle, so
+the colours baked into it are the old theme's — white on white going light — and no amount of
+[[*force reload][reloading the theme]] reaches text that has already been written.
+
+#+begin_src emacs-lisp
+(defvar ads/org-agenda-rebuild-timer nil
+  "Idle timer scheduled by `ads/org-agenda-rebuild'.")
+
+(defun ads/org-agenda-rebuild ()
+  "Rebuild every agenda buffer, off an idle timer so the theme paints first.
+`org-agenda-redo-all' keeps each buffer's filters and line, and only recenters
+when a human asked for it, so nothing moves but the colours."
+  (when (timerp ads/org-agenda-rebuild-timer)
+    (cancel-timer ads/org-agenda-rebuild-timer))
+  (setq ads/org-agenda-rebuild-timer
+        (run-with-idle-timer
+         0.3 nil
+         (lambda ()
+           (with-demoted-errors "ads/org-agenda-rebuild: %S"
+             (org-agenda-redo-all t))))))
+
+(add-hook 'modus-themes-after-load-theme-hook #'ads/org-agenda-rebuild)
 #+end_src
 
 ** org-appear
