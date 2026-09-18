@@ -3465,7 +3465,7 @@ Major mode for reading EPUB files in Emacs
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (org-refile-use-outline-path 'title)
   (org-outline-path-complete-in-steps nil)
-  (calendar-week-start-day 1)
+  (calendar-week-start-day 0)
   :hook
   (org-mode . variable-pitch-mode))
 #+end_src
