@@ -5858,6 +5858,31 @@ in ~prog-mode~ only since ~C-c /~ is ~org-sparse-tree~ in org.
   (advice-add 'anzu--transform-input :filter-return #'ads/anzu-pcre-transform-input))
 #+end_src
 
+*** Evil search arity fix
+
+pcre2el's own ~evil-search-function~ advice is an old-style ~defadvice~ that hardcodes
+the argument list ~(forward regexp-p wrap)~.  Evil has since added a fourth ~predicate~
+argument, which ~evil-isearch-function~ passes, so every ~/~ died with
+~wrong-number-of-arguments~.  Same behaviour, rewritten with ~advice-add~ and ~&rest~ so
+the next signature change passes through.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'evil
+  (ad-remove-advice 'evil-search-function 'around 'pcre-mode)
+  (ad-activate 'evil-search-function)
+
+  (defun ads/pcre-evil-search-function (fn &rest args)
+    "Read evil's search input as PCRE, outside of isearch.
+Isearch gets the translation from `pcre-isearch-search-fun-function'.
+FN is the advised `evil-search-function', ARGS its arguments."
+    (let ((search-function (apply fn args))
+          (regexp-p (nth 1 args)))
+      (if (and pcre-mode regexp-p (not isearch-mode))
+          (pcre-decorate-search-function search-function)
+        search-function)))
+  (advice-add 'evil-search-function :around #'ads/pcre-evil-search-function))
+#+end_src
+
 *** PCRE input for consult
 
 ~consult~ doesn't use ~read-regexp~, so ~consult-ripgrep~ needs its own compiler.
