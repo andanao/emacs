@@ -4262,7 +4262,8 @@ reviewed from there
 :ID:       b07758b9-e383-4299-a52f-359bb48c3a24
 :END:
 
-The title reuses the alias with =%\1= rather than asking for the short form twice.
+The title reuses the alias with =%\1= rather than asking for the short form twice.  The
+backslash is doubled in the source so the Lisp reader does not take =\1= for an octal escape.
 
 #+begin_src emacs-lisp :tangle no :noweb-ref capture-acronym
 ("x" "acronym" plain
@@ -4275,7 +4276,7 @@ The title reuses the alias with =%\1= rather than asking for the short form twic
 :CREATED: %U
 :ROAM_ALIASES: %^{Short}
 :END:
-,#+title: %\1: %^{Definition}
+,#+title: %\\1: %^{Definition}
 ,#+filetags: :acronym:
 
 ")
