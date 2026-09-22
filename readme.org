@@ -227,6 +227,58 @@ keeps org's link comment from displacing it off line 1.
 (add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
 (setq-default display-line-numbers-widen t) ;; Keep line numbers absolute when narrowed
 #+end_src
+** replace-match case conversion fix
+
+This is what was turning archived org entries into ALLCAPS, and it is an Emacs bug rather than an
+org one.  ~replace-match~ with ~FIXEDCASE~ nil reads the case of the text it matched and, if that text
+was all upper case, upcases the region it just wrote.  It works out that region *after* doing the
+edit, from the global search registers - and the edit runs ~after-change-functions~, whose handlers
+run regexp searches of their own and clobber those registers.  So the upcase lands on whatever the
+last handler happened to match, which is a random span of the buffer nowhere near the replacement.
+
+~org-todo~ walks straight into it.  It swaps the keyword with a bare ~(replace-match "")~ (org.el
+~9816~, inside ~org-fold-core-ignore-modifications~, which deliberately leaves the change hooks on),
+and the text it matches is a TODO keyword - always all caps - so the ~all_caps~ branch is taken every
+single time.  Registers before and after the call, on a heading at position 21:
+
+: BEFORE: md=(21 27 22 26 26 27)        ; " TODO ", correct
+: AFTER : md=(116 125 116 116 116 118)  ; clobbered by an after-change handler
+
+and 93 characters starting at 22 get upcased.  Reproduces with no org in sight:
+
+#+begin_example
+(with-temp-buffer
+  (insert "* TODO Test and some lower case words")
+  (goto-char 2)
+  (add-hook 'after-change-functions
+            (lambda (&rest _) (save-excursion (goto-char (point-min))
+                                              (re-search-forward "lower case" nil t)))
+            nil t)
+  (looking-at " TODO ")
+  (replace-match "")            ; => "* TEST AND SOME LOWER CASE WORDS"
+  (buffer-string))
+#+end_example
+
+~C-c C-t~, ~S-<right>~ and ~SPC o X~ all go through ~org-todo~, which is why every one of them did it,
+why the ~CLOSED~ stamp written a moment later is correctly cased, and why it only bit entries big
+enough for the clobbered registers to land inside them.
+
+An empty replacement has nothing to case-convert, so forcing ~FIXEDCASE~ there is a no-op except
+that it skips the broken branch entirely.  Filter on the arguments rather than advising ~org-todo~,
+because the same pattern is reachable from anything that empties a match.
+
+#+begin_src emacs-lisp
+(defun ads/replace-match-fixedcase-when-empty (args)
+  "Force FIXEDCASE for `replace-match' when the replacement is empty.
+ARGS is (NEWTEXT &optional FIXEDCASE LITERAL STRING SUBEXP).  Deleting a
+match has no replacement text to convert, so the only thing the case
+machinery can still do is upcase the wrong region off stale registers."
+  (if (and (equal (car args) "") (null (nth 1 args)))
+      (list "" t (nth 2 args) (nth 3 args) (nth 4 args))
+    args))
+
+(advice-add 'replace-match :filter-args #'ads/replace-match-fixedcase-when-empty)
+#+end_src
 ** auto tangle files
 :PROPERTIES:
 :header-args: emacs-lisp :tangle init.el :results none :noweb yes :comments link
