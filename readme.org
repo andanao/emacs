@@ -5208,16 +5208,18 @@ search for nodes and files
 
 *** roam-modeline
 Show the ~#+title~ in the modeline instead of the timestamped roam file name.
+The title lives above any narrowing, so the search has to widen first — otherwise
+narrowing past the search bound throws and the modeline loses the name entirely.
 
 #+begin_src emacs-lisp
 (defun ads/org-buffer-title ()
   "Return the #+title of the current org buffer, if any."
   (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char (point-min))
-      (and (re-search-forward "^#\\+title:[ \t]*\\(.+?\\)[ \t]*$"
-                              (min (point-max) 4096) t)
-           (match-string-no-properties 1)))))
+    (org-with-wide-buffer
+     (goto-char (point-min))
+     (and (re-search-forward "^#\\+title:[ \t]*\\(.+?\\)[ \t]*$"
+                             (min (point-max) 4096) t)
+          (match-string-no-properties 1)))))
 
 (defun ads/doom-modeline-org-title (fn)
   "Use the org title in place of the file name, falling back to FN."
