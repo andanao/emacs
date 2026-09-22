@@ -5689,6 +5689,21 @@ Getting books read in the last month:
   "oT" 'org-tidy-toggle
   "o C-t" 'org-tidy-mode)
 #+end_src
+** org-timegrid
+[[https://github.com/Gleek/org-timegrid][org-timegrid]] draws the day's timestamped org entries onto a grid of hours instead of listing
+them, which is the calendar view the agenda never gives me.
+
+Here on trial, so this is the install and nothing else — no leader key and nothing else in the
+config naming it, which makes deleting this block the whole uninstall.  Its commands are
+autoloaded, so =M-x= on the =org-timegrid-= prefix is how to reach them until I know whether it
+stays.
+
+#+begin_src emacs-lisp
+(use-package org-timegrid
+  :vc (:url "https://github.com/Gleek/org-timegrid"
+       :rev :newest)
+  :defer t)
+#+end_src
 ** org-transclusion
 [[https://github.com/nobiot/org-transclusion][org-transclusion]] embeds the content of one org file (or heading) inside another via ~#+transclude:~
 links.  I use it so my daily can pull in work items that physically live in a seperate — the text
