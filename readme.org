@@ -7631,6 +7631,9 @@ Scroll Emacs like Lightining.
 [[https://github.com/jdtsmith/ultra-scroll][ultra-scroll]] provides a better version of ~pixel-scroll-prescision-mode~ which
 works much smoother on both Windows and Linux.
 
+~scroll-margin~ is 2 where ultra-scroll suggests 0, so point is kept off the last line — which
+pixel scrolling often leaves half cut by the mode line — and has two lines of padding under it.
+
 #+begin_src emacs-lisp
 (use-package ultra-scroll
   :vc (ultra-scroll
@@ -7640,7 +7643,7 @@ works much smoother on both Windows and Linux.
        :rev :newest)
   :init
   (setq scroll-conservatively 101
-        scroll-margin 0)
+        scroll-margin 2)
   :config
   (when (not (eq system-type 'windows-nt))
     (ultra-scroll-mode 1)))
