@@ -1328,6 +1328,7 @@ icon stays the plain white alien: tinting it per project read as mud against the
                     "Finished"
                   "Stopped")
        :icon-file (agent-shell-knockknock--icon-file shell)
+       :tint t
        :action (lambda () (agent-shell-knockknock--switch-to-shell shell)))
       (agent-shell-knockknock--install-ret-binding shell))))
 
@@ -1342,6 +1343,7 @@ icon stays the plain white alien: tinting it per project read as mud against the
                         (capitalize (or (map-elt tool-call :kind) "permission"))
                         (agent-shell-knockknock--format-permission-message tool-call))
        :icon-file (agent-shell-knockknock--icon-file shell)
+       :tint t
        :action (lambda () (agent-shell-knockknock--switch-to-shell shell)))
       (agent-shell-knockknock--install-ret-binding shell))))
 
@@ -3225,12 +3227,24 @@ Rendered through ~knockknock--notify-internal~ rather than ~knockknock-notify~, 
 entry point debounces on a 0.15s timer that keeps only the last call and fires long after the
 per-frame bindings have unwound, collapsing the whole loop into one popup on an arbitrary frame.
 
-The colour runs through the border, the title and the icon, which is the look knockknock shows
-off in its own screenshots.  The agent's logo survives it because ~:icon-file~ embeds the image
-where a nerd-font glyph would be filled with the colour, so the tint only ever reaches glyphs —
-the earlier green blob came from tinting the PNG myself.  Green is the whole of it while agent
-shells are the only source; blue for meetings and plain for the agenda arrive with the things
-that send them.
+The colour runs through the border, the background, the title and the icon, which is the look
+knockknock shows off in its own screenshots.  Green for [[*notify when a session finishes][agent shells]], blue for [[*org meetings][meetings]]; each
+source passes its own, and anything it leaves out falls back to the global.
+
+The background has to be painted into the SVG, not just handed to posframe.  knockknock draws
+icon and text over nothing, so every surface the image misses shows through in the theme's own
+colour — the fringes, which take the ~fringe~ face rather than the frame's background, and the
+part of a character cell ~fit-frame-to-buffer~ rounds up to.  Those were black bars around a blue
+popup.  Filling the canvas, matching the frame and zeroing the fringes leaves nothing to show.
+
+Anything painted into the image has to be in the SVG cache key, which upstream builds from the
+text and icon alone.  Two sources sharing a title and a message would otherwise serve each
+other's colours.
+
+The agent's logo is recoloured on disk before knockknock sees it, because ~svg-embed~ puts a PNG
+in untinted and only nerd-font glyphs get filled with a face.  It is shipped white, which is
+invisible the moment I am in a light theme, so it is tinted to the foreground rather than to
+anything decorative — per-project colours were the first idea and read as mud.
 
 Title and icon inherit ~success~ and so follow a theme toggle on their own, but
 ~knockknock-border-color~ is a colour string rather than a face, so it is re-synced from the
@@ -3255,7 +3269,7 @@ bad placement would otherwise stay put.
 (defconst ads/notify--gap 8 "Gap between stacked popups.")
 
 (cl-defstruct (ads/notify-entry (:constructor ads/notify--entry))
-  id args action buffers)
+  id args action style buffers)
 
 (defvar ads/notify--stack nil
   "Live notifications, oldest first.")
@@ -3292,6 +3306,82 @@ bad placement would otherwise stay put.
     (cons (max 0 (if (> overhang 0) (- x overhang) x))
           (or ads/notify--y ads/notify--inset))))
 
+(defvar ads/notify--bg nil
+  "Background to paint into the SVG, bound by `ads/notify--show'.")
+
+(defun ads/notify--svg-background (svg)
+  "Fill the whole canvas of SVG with `ads/notify--bg'.
+knockknock's SVG is icon and text over nothing, so every surface the image
+does not cover shows through: the fringes, which take the `fringe' face
+rather than the frame's background-color, and the part of a character cell
+`fit-frame-to-buffer' rounds up to.  The rect goes in first, so it sits
+behind everything else.  A no-op for every other SVG, since nothing else
+binds the variable."
+  (when (and ads/notify--bg (dom-attr svg 'width))
+    (svg-rectangle svg 0 0 (dom-attr svg 'width) (dom-attr svg 'height)
+                   :fill ads/notify--bg))
+  svg)
+
+(advice-add 'svg-create :filter-return #'ads/notify--svg-background)
+
+(defun ads/notify--cache-key-colours (key)
+  "Put the colours baked into the image onto knockknock's cache KEY.
+Upstream keys on (title message icon icon-file) alone, so two sources
+sharing text and icon would serve each other's colours."
+  (append key (list (face-foreground 'knockknock-title-face nil t)
+                    (face-foreground 'knockknock-message-face nil t)
+                    (face-foreground 'knockknock-icon-face nil t)
+                    ads/notify--bg)))
+
+(advice-add 'knockknock--cache-key :filter-return #'ads/notify--cache-key-colours)
+
+(defun ads/notify--literal-icon (orig name)
+  "Pass a single-character NAME straight through; ORIG resolves real names.
+My agenda categories start with the nerd-font glyph itself rather than an
+icon name, and upstream would try to look the glyph up and find nothing."
+  (if (and (stringp name) (= (length name) 1))
+      name
+    (funcall orig name)))
+
+(advice-add 'knockknock--get-icon :around #'ads/notify--literal-icon)
+
+(defvar ads/notify-icon-dir (expand-file-name "knockknock-icons/" user-emacs-directory)
+  "Where recoloured copies of the agent icons live.")
+
+(defun ads/notify--tint-icon (file colour)
+  "A copy of FILE flat-filled with COLOUR, generated once and cached on disk.
+The agent logos are monochrome glyphs on transparency, shipped in a light
+and a dark variant, and neither is the theme's foreground.  `svg-embed'
+puts a PNG in untinted, so the recolour has to happen before knockknock
+ever sees the file."
+  (if (not (and file colour (executable-find "magick")))
+      file
+    (make-directory ads/notify-icon-dir t)
+    (let ((out (expand-file-name
+                (format "%s-%s.png" (file-name-base file)
+                        (string-remove-prefix "#" colour))
+                ads/notify-icon-dir)))
+      (unless (file-exists-p out)
+        (call-process "magick" nil nil nil file
+                      "-channel" "RGB" "-fill" colour "-colorize" "100" out))
+      (if (file-exists-p out) out file))))
+
+(defun ads/notify--call-with-faces (faces thunk)
+  "Call THUNK with FACES applied, then put them back.
+FACES is an alist of (FACE . COLOUR).  The SVG builder reads these globally
+with `face-foreground', which no buffer-local remapping reaches, and the
+render is synchronous, so setting and restoring around it is safe."
+  (let ((saved (mapcar (lambda (cell)
+                         (cons (car cell) (face-attribute (car cell) :foreground)))
+                       faces)))
+    (unwind-protect
+        (progn
+          (pcase-dolist (`(,face . ,colour) faces)
+            (when (stringp colour) (set-face-attribute face nil :foreground colour)))
+          (funcall thunk))
+      (pcase-dolist (`(,face . ,colour) saved)
+        (set-face-attribute face nil :foreground colour)))))
+
 (defun ads/notify--sync-border (&rest _)
   "Point the border at the current theme's `success' green."
   (setq knockknock-border-color (face-foreground 'success nil t)))
@@ -3315,14 +3405,46 @@ bad placement would otherwise stay put.
               (child (buffer-local-value 'posframe--frame buf)))
     (and (frame-live-p child) child)))
 
+(defconst ads/notify--style-keys '(:border :background :text :icon-color :tint)
+  "Keys `ads/notify--broadcast' takes for itself rather than passing on.")
+
+(defun ads/notify--tinted-args (args style)
+  "ARGS with its :icon-file recoloured, when STYLE asks for it.
+A :tint of t means the theme's foreground, which is the point: the shipped
+logo is white and vanishes the moment I am in a light theme.  Resolved here
+rather than at notify time so a theme toggle is picked up on the next
+relayout, and free of the SVG cache because the colour is in the filename."
+  (let ((tint (plist-get style :tint))
+        (file (plist-get args :icon-file)))
+    (if (not (and tint file))
+        args
+      (plist-put (copy-sequence args) :icon-file
+                 (ads/notify--tint-icon
+                  file (if (stringp tint) tint (face-foreground 'default nil t)))))))
+
 (defun ads/notify--show (entry frame y)
   "Render ENTRY on FRAME with its top edge at Y.  Return the next free Y."
   (let* ((name (format "*knockknock %s %s*"
                        (ads/notify--frame-id frame) (ads/notify-entry-id entry)))
-         (ads/notify--y y))
+         (style (ads/notify-entry-style entry))
+         (args (ads/notify--tinted-args (ads/notify-entry-args entry) style))
+         (ads/notify--y y)
+         ;; Painted into the image and used for the frame, so the cell
+         ;; fit-frame-to-buffer rounds up to matches instead of showing black.
+         (ads/notify--bg (or (plist-get style :background)
+                             (face-background 'default nil t)))
+         (knockknock-background-color ads/notify--bg)
+         (knockknock-border-color (or (plist-get style :border)
+                                      knockknock-border-color))
+         (knockknock-left-fringe 0)
+         (knockknock-right-fringe 0))
     (with-selected-frame frame
       (let ((knockknock--buffer name))
-        (apply #'knockknock--notify-internal (ads/notify-entry-args entry))))
+        (ads/notify--call-with-faces
+         `((knockknock-title-face   . ,(plist-get style :text))
+           (knockknock-message-face . ,(plist-get style :text))
+           (knockknock-icon-face    . ,(plist-get style :icon-color)))
+         (lambda () (apply #'knockknock--notify-internal args)))))
     (setf (alist-get frame (ads/notify-entry-buffers entry)) name)
     (+ y ads/notify--gap
        (if-let* ((child (ads/notify--child name))) (frame-pixel-height child) 0))))
@@ -3341,15 +3463,30 @@ bad placement would otherwise stay put.
 (defun ads/notify--broadcast (&rest args)
   "Show ARGS on every frame, stacked under the notifications already up.
 ARGS is a `knockknock-notify' plist plus an optional :action, the closure
-`ads/notify-visit' calls to go to whatever sent this."
+`ads/notify-visit' calls to go to whatever sent this, and the optional
+style keys in `ads/notify--style-keys'."
   (knockknock--ensure-initialized)
-  (setq ads/notify--stack
-        (append ads/notify--stack
-                (list (ads/notify--entry
-                       :id (cl-incf ads/notify--counter)
-                       :args (ads/notify--without args :action)
-                       :action (plist-get args :action)))))
+  (let ((plain args)
+        (style nil))
+    (dolist (key (cons :action ads/notify--style-keys))
+      (when (plist-member plain key)
+        (unless (eq key :action)
+          (setq style (plist-put style key (plist-get plain key))))
+        (setq plain (ads/notify--without plain key))))
+    (setq ads/notify--stack
+          (append ads/notify--stack
+                  (list (ads/notify--entry
+                         :id (cl-incf ads/notify--counter)
+                         :args plain
+                         :action (plist-get args :action)
+                         :style style)))))
   (ads/notify--relayout))
+
+(defun ads/notify--retheme (&rest _)
+  "Redraw any live popups so their colours follow a theme toggle."
+  (when ads/notify--stack (ads/notify--relayout)))
+
+(add-hook 'enable-theme-functions #'ads/notify--retheme)
 
 (defun ads/notify (title message icon &optional action)
   "Put MESSAGE on screen under TITLE, with ICON, until I dismiss it.
@@ -5059,6 +5196,135 @@ prompts for selection, then jumps to the first upcoming instance."
   (org-narrow-to-subtree))
 
 (ads/leader-keys "om" 'ads/jump-to-meeting-todo)
+#+end_src
+
+*** meeting notifications
+
+Three minutes before anything tagged =:meeting:=, through the same [[*knockknock][posframe]] the agent shells
+use.  =SPC X= opens the heading it came from.
+
+~appt~ does the work — a filter function on ~org-agenda-to-appt~ picks the tag out of the entry's
+~tags~ property, and an ~APPT_WARNTIME~ property overrides the lead per meeting for free.  Its
+beep and its ten-second teardown are both off, because [[*knockknock][nothing of mine auto-dismisses]].
+
+~appt-display-interval~ sits one above the warning time so the reminder fires once at T-3 rather
+than again at T-0.
+
+Rebuilt daily at 00:05, which is not optional: appt keeps a time as minutes after midnight with
+no date on it and only prunes what is already past, so without it today's meetings read as
+tomorrow's and fire again at the same clock time while tomorrow's are never added at all.
+Rebuilt on every agenda build too, so rescheduling something takes effect without waiting.
+
+The icon is the glyph the [[*roam-categories][category]] already starts with, so a notification looks like its line in
+the agenda.  The blue is the one thing that marks it as not an agent.
+
+~org-todo-regexp~ is no use for trimming the keyword off the title: it is buffer-local and nil
+everywhere but an org buffer, and appt calls from wherever I happen to be.  Built from
+~org-todo-keywords~ instead, which also keeps a heading like =PPU1 Anomaly Brief= intact where
+eating a leading capitalised word would not.
+
+Where the entry lives is kept as a file and a position rather than a marker, because
+~org-agenda-to-appt~ ends by releasing every buffer it opened to do the scan.
+
+#+begin_src emacs-lisp
+(require 'appt)
+
+(defvar ads/notify-appt--entries (make-hash-table :test 'equal)
+  "Appt message -> plist of :file, :point and :category behind it.")
+
+(defun ads/notify-appt--entry-text (x)
+  "The string `org-agenda-to-appt' will hand to appt for agenda entry X."
+  (org-trim (replace-regexp-in-string
+             org-link-bracket-re "\\2"
+             (or (get-text-property 1 'txt x) ""))))
+
+(defun ads/notify-appt--meeting-p (x)
+  "Non-nil when agenda entry X is a meeting, remembering where it lives."
+  (when (member "meeting" (get-text-property 1 'tags x))
+    (when-let* ((m (get-text-property 1 'org-marker x))
+                (file (buffer-file-name (marker-buffer m))))
+      (puthash (ads/notify-appt--entry-text x)
+               (list :file file
+                     :point (marker-position m)
+                     :category (get-text-property (1- (length x)) 'org-category x))
+               ads/notify-appt--entries))
+    t))
+
+(defun ads/notify-appt-refresh (&rest _)
+  "Rebuild today's appt list from the `:meeting:'-tagged agenda entries."
+  (interactive)
+  (clrhash ads/notify-appt--entries)
+  (org-agenda-to-appt t #'ads/notify-appt--meeting-p))
+
+(defun ads/notify-appt--todo-regexp ()
+  "A regexp matching any of my TODO keywords."
+  (regexp-opt
+   (delete-dups
+    (delq nil
+          (mapcar (lambda (kw)
+                    (unless (equal kw "|")
+                      (replace-regexp-in-string "(.*)\\'" "" kw)))
+                  (apply #'append
+                         (mapcar (lambda (e) (if (symbolp (car e)) (cdr e) e))
+                                 org-todo-keywords)))))
+   'words))
+
+(defun ads/notify-appt--title (msg)
+  "MSG minus its TODO keyword and trailing tags."
+  (let ((s (string-trim msg)))
+    (when (string-match (concat "\\`" (ads/notify-appt--todo-regexp) "[ \t]+") s)
+      (setq s (substring s (match-end 0))))
+    (string-trim (replace-regexp-in-string ":[[:alnum:]_@#%:]+:\\'" "" s))))
+
+(defun ads/notify-appt--icon (category)
+  "The glyph an agenda CATEGORY starts with, or a calendar if it has none."
+  (if (and (stringp category)
+           (> (length category) 0)
+           (not (string-match-p "[[:alnum:][:space:]]" (substring category 0 1))))
+      (substring category 0 1)
+    "nf-md-calendar"))
+
+(defun ads/notify-appt--visit (place)
+  "Open the org entry PLACE came from."
+  (find-file (plist-get place :file))
+  (goto-char (plist-get place :point))
+  (org-back-to-heading t)
+  (org-fold-show-entry)
+  (org-fold-show-children))
+
+(defun ads/notify-appt (minutes _time msg)
+  "Show appt reminders through `ads/notify--broadcast'.
+Either MINUTES or MSG may be a list when several are due at once."
+  (seq-mapn
+   (lambda (m s)
+     (let ((place (gethash s ads/notify-appt--entries)))
+       (ads/notify--broadcast
+        :title (ads/notify-appt--title s)
+        :message (if (equal m "0") "Starting now" (format "In %s min" m))
+        :icon (ads/notify-appt--icon (plist-get place :category))
+        ;; Resolved per notification so a theme toggle is picked up.
+        :border (ads/modus-color 'blue)
+        :background (ads/modus-color 'bg-blue-nuanced)
+        :text (ads/modus-color 'fg-main)
+        :icon-color (ads/modus-color 'blue)
+        :action (and place (lambda () (ads/notify-appt--visit place))))))
+   (if (listp minutes) minutes (list minutes))
+   (if (listp msg) msg (list msg))))
+
+(setq appt-message-warning-time 3
+      appt-display-interval 4
+      appt-audible nil
+      appt-display-mode-line nil
+      appt-display-format 'window
+      appt-disp-window-function #'ads/notify-appt
+      appt-delete-window-function #'ignore)
+
+(appt-activate 1)
+(add-hook 'org-agenda-finalize-hook #'ads/notify-appt-refresh)
+(run-at-time "00:05" 86400 #'ads/notify-appt-refresh)
+;; Appended, so it lands after `ads/org-agenda-files-update' has claimed
+;; `org-agenda-files' - there is nothing to scan before that runs.
+(add-hook 'after-init-hook #'ads/notify-appt-refresh t)
 #+end_src
 
 ** org-modern
