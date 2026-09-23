@@ -1242,10 +1242,7 @@ it.  =SPC a SPC= walks the waiting ones and falls back to plain cycling once non
              ;; Displayed anywhere means seen; nothing left to flag.
              ((get-buffer-window buffer t) (setq ads/agent-shell--finished nil))
              ((and (eq status 'ready) (eq previous 'busy))
-              (setq ads/agent-shell--finished t)
-              (ads/agent-shell--notify buffer status))
-             ((and (eq status 'blocked) (not (eq previous 'blocked)))
-              (ads/agent-shell--notify buffer status)))))))
+              (setq ads/agent-shell--finished t)))))))
     (setq ads/agent-shell--last-status statuses))
   (force-mode-line-update t))
 
@@ -1288,38 +1285,71 @@ With prefix ALL, or when none are waiting, cycle through every shell."
 
 The [[*waiting sessions][modeline tag]] counts the shells that want me, which is no help when three are cooking and
 only one of them is the one I am actually waiting on.  =SPC a N= marks the shell at point, and
-that one posts a notification when it stops — a banner says which session it was and takes the
-keyboard away from nothing.
+that one puts a [[*knockknock][notification]] in the corner when it stops, saying which session it was.
 
-Off the same poll and the same two ways of wanting me, so a permission dialog pings as well as a
-finished turn, and a shell that is on screen when it finishes stays quiet: I saw it.
+agent-shell's own author wrote this, so it hangs off the real ~turn-complete~ and
+~permission-request~ events rather than my one-second poll guessing from the status, and the icon
+is whichever agent the shell is actually running.  It skips a shell that is on screen in any
+frame, viewport included: I saw it.  Which also makes watching the shell the one reliable way to
+convince myself this is broken.
+
+No ~:hook~, because every session shouting is the thing the modeline tag already does badly.
+=SPC a N= turns the mode on for the one I am waiting on.
+
+Both handlers are overridden, because upstream titles every popup =Finished= and leaves the
+session it came from nowhere on it, which is the one thing I opened a notification to learn.  The
+session name goes in the title and the status drops to the message; the agent prefix comes off
+because the icon already says Claude.
+
+Dropping ~:duration~ is what stops them expiring — it falls back to the [[*knockknock][global]] day, while
+~agent-shell-knockknock-duration~ goes on timing the transient =RET= that jumps to the shell.  The
+two only looked inseparable because upstream passes the one variable to both.
 
 #+begin_src emacs-lisp
-(defvar-local ads/agent-shell-notify nil
-  "Non-nil when this shell should ping me as it stops cooking.")
+(defun ads/agent-shell--session-name (buffer)
+  "Which session BUFFER is, minus the agent name the icon already carries."
+  (let ((name (replace-regexp-in-string
+               "\\`\\*\\|\\*\\(<[0-9]+>\\)?\\'" "\\1" (buffer-name buffer))))
+    (if (string-match " @ \\(.+\\)\\'" name)
+        (match-string 1 name)
+      name)))
 
-(defun ads/agent-shell-notify-this-session ()
-  "Toggle notifications for the agent shell at point."
-  (interactive)
-  (unless (derived-mode-p 'agent-shell-mode)
-    (user-error "Not an agent shell"))
-  (setq ads/agent-shell-notify (not ads/agent-shell-notify))
-  (message "%s %s" (buffer-name)
-           (if ads/agent-shell-notify "will ping when it's done" "stays quiet")))
+(defun ads/agent-shell-knockknock--on-turn-complete (event)
+  "Say which session finished, and stay up until I dismiss it."
+  (unless (agent-shell-knockknock--shell-visible-p (current-buffer))
+    (knockknock-notify
+     :title (ads/agent-shell--session-name (current-buffer))
+     :message (if (equal (map-nested-elt event '(:data :stop-reason)) "end_turn")
+                  "Finished"
+                "Stopped")
+     :icon-file (agent-shell-knockknock--icon-file (current-buffer)))
+    (agent-shell-knockknock--install-ret-binding (current-buffer))))
 
-(defun ads/agent-shell--notify (buffer status)
-  "Ping me that BUFFER reached STATUS, if that shell opted in.
-Detached, like the theme's osascript: a notification is not worth
-holding the poll up for."
-  (when (buffer-local-value 'ads/agent-shell-notify buffer)
-    (start-process
-     "ads/agent-shell-notify" nil "osascript" "-e"
-     (format "display notification %S with title %S"
-             (if (eq status 'blocked) "needs permission" "finished its turn")
-             (buffer-name buffer)))))
+(defun ads/agent-shell-knockknock--on-permission-request (event)
+  "Say which session is asking, and what for."
+  (unless (agent-shell-knockknock--shell-visible-p (current-buffer))
+    (let ((tool-call (map-nested-elt event '(:data :tool-call))))
+      (knockknock-notify
+       :title (ads/agent-shell--session-name (current-buffer))
+       :message (format "%s %s"
+                        (capitalize (or (map-elt tool-call :kind) "permission"))
+                        (agent-shell-knockknock--format-permission-message tool-call))
+       :icon-file (agent-shell-knockknock--icon-file (current-buffer)))
+      (agent-shell-knockknock--install-ret-binding (current-buffer)))))
+
+(use-package agent-shell-knockknock
+  :vc (:url "https://github.com/xenodium/agent-shell-knockknock" :rev :newest)
+  :after (agent-shell knockknock)
+  :custom
+  (agent-shell-knockknock-duration 10 "Only how long RET jumps for; the popup outlives it")
+  :config
+  (advice-add 'agent-shell-knockknock--on-turn-complete
+              :override #'ads/agent-shell-knockknock--on-turn-complete)
+  (advice-add 'agent-shell-knockknock--on-permission-request
+              :override #'ads/agent-shell-knockknock--on-permission-request))
 
 (with-eval-after-load 'agent-shell
-  (ads/leader-keys "aN" 'ads/agent-shell-notify-this-session))
+  (ads/leader-keys "aN" '(agent-shell-knockknock-mode :wk "notify when done")))
 #+end_src
 
 *** agent-shell consult source ~a~
@@ -3105,6 +3135,66 @@ which is wrong when the point is to check once and go back to quiet."
 
 #+begin_src emacs-lisp
 (use-package kdl-mode)
+#+end_src
+
+** knockknock                                                    :external:
+
+A posframe in the top right of the frame, which is the one way anything in here interrupts me:
+[[*notify when a session finishes][agent shells]] today, meetings and the [[file:~/git/konfig/readme.org::*Claude Bot inbox loop][inbox loop]] later.  =SPC x= puts it away.
+
+Nothing of mine auto-dismisses.  Emacs is always on screen but not always the focused app, and a
+banner that times out while I am in a browser is a banner I never saw.
+
+The colour runs through the border, the title and the icon, which is the look knockknock shows
+off in its own screenshots.  The agent's logo survives it because ~:icon-file~ embeds the image
+where a nerd-font glyph would be filled with the colour, so the tint only ever reaches glyphs —
+the earlier green blob came from tinting the PNG myself.  Green is the whole of it while agent
+shells are the only source; blue for meetings and plain for the agenda arrive with the things
+that send them.
+
+Title and icon inherit ~success~ and so follow a theme toggle on their own, but
+~knockknock-border-color~ is a colour string rather than a face, so it is re-synced from the
+same [[*modus-tweaks][hook]] that carries everything else across.
+
+Tracking [[https://github.com/konrad1977/knockknock/pull/4][xenodium's fork]] rather than =konrad1977/knockknock=, because that is the one where
+~:icon-file~ handles a PNG, which is what [[*notify when a session finishes][agent-shell-knockknock]] hands it.  Back to upstream
+once the PR lands.
+
+Positioned by hand rather than with ~posframe-poshandler-frame-top-right-corner~, which asks for
+=-1= and leaves the negative to ~set-frame-position~ — a child frame on macOS reads that as zero
+and parks in the top *left*.  Subtracting the width myself keeps the number positive.
+
+#+begin_src emacs-lisp
+(defun ads/notify--poshandler (info)
+  "Top right of the frame, inset far enough to look deliberate."
+  (let ((inset 16))
+    (cons (max 0 (- (plist-get info :parent-frame-width)
+                    (plist-get info :posframe-width)
+                    inset))
+          inset)))
+
+(defun ads/notify--sync-border (&rest _)
+  "Point the border at the current theme's `success' green."
+  (setq knockknock-border-color (face-foreground 'success nil t)))
+
+(use-package knockknock
+  :vc (:url "https://github.com/xenodium/knockknock" :rev :newest)
+  :custom
+  (knockknock-default-duration 86400 "A day is never; I dismiss these myself")
+  (knockknock-border-width 2 "Wide enough that the colour on it reads")
+  (knockknock-poshandler #'ads/notify--poshandler)
+  :custom-face
+  (knockknock-title-face ((t (:inherit (bold success) :height 1.3))))
+  (knockknock-icon-face ((t (:inherit success))))
+  :config
+  (ads/notify--sync-border)
+  (add-hook 'enable-theme-functions #'ads/notify--sync-border))
+
+(defun ads/notify (title message icon)
+  "Put MESSAGE on screen under TITLE, with ICON, until I dismiss it."
+  (knockknock-notify :title title :message message :icon icon))
+
+(ads/leader-keys "x" '(knockknock-close :wk "dismiss notification"))
 #+end_src
 
 ** ligature
