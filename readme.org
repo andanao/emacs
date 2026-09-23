@@ -1305,6 +1305,10 @@ Dropping ~:duration~ is what stops them expiring — it falls back to the [[*kno
 ~agent-shell-knockknock-duration~ goes on timing the transient =RET= that jumps to the shell.  The
 two only looked inseparable because upstream passes the one variable to both.
 
+Each one carries the shell it came from as its [[*knockknock][:action]], so =SPC X= goes there without the ten
+seconds the transient =RET= gives me.  Six sessions open is the case this is all for, and the
+icon stays the plain white alien: tinting it per project read as mud against the dark popup.
+
 #+begin_src emacs-lisp
 (defun ads/agent-shell--session-name (buffer)
   "Which session BUFFER is, minus the agent name the icon already carries."
@@ -1317,25 +1321,29 @@ two only looked inseparable because upstream passes the one variable to both.
 (defun ads/agent-shell-knockknock--on-turn-complete (event)
   "Say which session finished, and stay up until I dismiss it."
   (unless (agent-shell-knockknock--shell-visible-p (current-buffer))
-    (knockknock-notify
-     :title (ads/agent-shell--session-name (current-buffer))
-     :message (if (equal (map-nested-elt event '(:data :stop-reason)) "end_turn")
-                  "Finished"
-                "Stopped")
-     :icon-file (agent-shell-knockknock--icon-file (current-buffer)))
-    (agent-shell-knockknock--install-ret-binding (current-buffer))))
+    (let ((shell (current-buffer)))
+      (ads/notify--broadcast
+       :title (ads/agent-shell--session-name shell)
+       :message (if (equal (map-nested-elt event '(:data :stop-reason)) "end_turn")
+                    "Finished"
+                  "Stopped")
+       :icon-file (agent-shell-knockknock--icon-file shell)
+       :action (lambda () (agent-shell-knockknock--switch-to-shell shell)))
+      (agent-shell-knockknock--install-ret-binding shell))))
 
 (defun ads/agent-shell-knockknock--on-permission-request (event)
   "Say which session is asking, and what for."
   (unless (agent-shell-knockknock--shell-visible-p (current-buffer))
-    (let ((tool-call (map-nested-elt event '(:data :tool-call))))
-      (knockknock-notify
-       :title (ads/agent-shell--session-name (current-buffer))
+    (let ((shell (current-buffer))
+          (tool-call (map-nested-elt event '(:data :tool-call))))
+      (ads/notify--broadcast
+       :title (ads/agent-shell--session-name shell)
        :message (format "%s %s"
                         (capitalize (or (map-elt tool-call :kind) "permission"))
                         (agent-shell-knockknock--format-permission-message tool-call))
-       :icon-file (agent-shell-knockknock--icon-file (current-buffer)))
-      (agent-shell-knockknock--install-ret-binding (current-buffer)))))
+       :icon-file (agent-shell-knockknock--icon-file shell)
+       :action (lambda () (agent-shell-knockknock--switch-to-shell shell)))
+      (agent-shell-knockknock--install-ret-binding shell))))
 
 (use-package agent-shell-knockknock
   :vc (:url "https://github.com/xenodium/agent-shell-knockknock" :rev :newest)
@@ -3197,11 +3205,25 @@ which is wrong when the point is to check once and go back to quiet."
 
 ** knockknock                                                    :external:
 
-A posframe in the top right of the frame, which is the one way anything in here interrupts me:
-[[*notify when a session finishes][agent shells]] today, meetings and the [[file:~/git/konfig/readme.org::*Claude Bot inbox loop][inbox loop]] later.  =SPC x= puts it away.
+A posframe in the top right of every frame, which is the one way anything in here interrupts me:
+[[*notify when a session finishes][agent shells]] today, meetings and the [[file:~/git/konfig/readme.org::*Claude Bot inbox loop][inbox loop]] later.  =SPC x= puts one away, =SPC X= goes to
+whatever sent it.
 
 Nothing of mine auto-dismisses.  Emacs is always on screen but not always the focused app, and a
 banner that times out while I am in a browser is a banner I never saw.
+
+One popup per notification, stacked downwards from the corner with the oldest on top, because a
+second agent finishing must not quietly overwrite the first.  Both keys take the oldest, so the
+one I act on is always the one in the corner and the rest close up towards it.
+
+One popup per frame as well, each in its own buffer named after a frame parameter.  posframe
+parents its child frame to ~(selected-window)~, which for a background event is the last frame I
+touched rather than the one I am looking at — that is how a finished session ended up announcing
+itself over Slack on the monitor I never read.
+
+Rendered through ~knockknock--notify-internal~ rather than ~knockknock-notify~, because the public
+entry point debounces on a 0.15s timer that keeps only the last call and fires long after the
+per-frame bindings have unwound, collapsing the whole loop into one popup on an arbitrary frame.
 
 The colour runs through the border, the title and the icon, which is the look knockknock shows
 off in its own screenshots.  The agent's logo survives it because ~:icon-file~ embeds the image
@@ -3222,14 +3244,53 @@ Positioned by hand rather than with ~posframe-poshandler-frame-top-right-corner~
 =-1= and leaves the negative to ~set-frame-position~ — a child frame on macOS reads that as zero
 and parks in the top *left*.  Subtracting the width myself keeps the number positive.
 
+The same handler pulls a popup back onto the monitor when the frame it hangs off runs past the
+edge, since ~posframe--set-frame-position~ skips any move whose coordinates have not changed and a
+bad placement would otherwise stay put.
+
 #+begin_src emacs-lisp
+(require 'cl-lib)
+
+(defconst ads/notify--inset 16 "Gap between a popup and the frame edge.")
+(defconst ads/notify--gap 8 "Gap between stacked popups.")
+
+(cl-defstruct (ads/notify-entry (:constructor ads/notify--entry))
+  id args action buffers)
+
+(defvar ads/notify--stack nil
+  "Live notifications, oldest first.")
+
+(defvar ads/notify--counter 0
+  "Source of notification ids.")
+
+(defvar ads/notify--y nil
+  "Top edge of the popup being shown, bound by `ads/notify--show'.")
+
+(defun ads/notify--frames ()
+  "Real visible graphical frames - not posframe's own children."
+  (seq-filter (lambda (f)
+                (and (display-graphic-p f)
+                     (frame-visible-p f)
+                     (not (frame-parameter f 'parent-frame))))
+              (frame-list)))
+
+(defun ads/notify--frame-id (frame)
+  "A stable short id for FRAME, made on first sight."
+  (or (frame-parameter frame 'ads/notify-id)
+      (let ((id (format "%04x" (random 65536))))
+        (set-frame-parameter frame 'ads/notify-id id)
+        id)))
+
 (defun ads/notify--poshandler (info)
-  "Top right of the frame, inset far enough to look deliberate."
-  (let ((inset 16))
-    (cons (max 0 (- (plist-get info :parent-frame-width)
-                    (plist-get info :posframe-width)
-                    inset))
-          inset)))
+  "Right edge of the parent frame at `ads/notify--y', clamped to the monitor."
+  (let* ((parent (plist-get info :parent-frame))
+         (width (plist-get info :posframe-width))
+         (x (max 0 (- (plist-get info :parent-frame-width) width ads/notify--inset)))
+         (area (frame-monitor-workarea parent))
+         (overhang (- (+ (car (frame-edges parent 'absolute)) x width ads/notify--inset)
+                      (+ (nth 0 area) (nth 2 area)))))
+    (cons (max 0 (if (> overhang 0) (- x overhang) x))
+          (or ads/notify--y ads/notify--inset))))
 
 (defun ads/notify--sync-border (&rest _)
   "Point the border at the current theme's `success' green."
@@ -3248,11 +3309,108 @@ and parks in the top *left*.  Subtracting the width myself keeps the number posi
   (ads/notify--sync-border)
   (add-hook 'enable-theme-functions #'ads/notify--sync-border))
 
-(defun ads/notify (title message icon)
-  "Put MESSAGE on screen under TITLE, with ICON, until I dismiss it."
-  (knockknock-notify :title title :message message :icon icon))
+(defun ads/notify--child (name)
+  "The posframe child frame showing buffer NAME, if it is live."
+  (when-let* ((buf (get-buffer name))
+              (child (buffer-local-value 'posframe--frame buf)))
+    (and (frame-live-p child) child)))
 
-(ads/leader-keys "x" '(knockknock-close :wk "dismiss notification"))
+(defun ads/notify--show (entry frame y)
+  "Render ENTRY on FRAME with its top edge at Y.  Return the next free Y."
+  (let* ((name (format "*knockknock %s %s*"
+                       (ads/notify--frame-id frame) (ads/notify-entry-id entry)))
+         (ads/notify--y y))
+    (with-selected-frame frame
+      (let ((knockknock--buffer name))
+        (apply #'knockknock--notify-internal (ads/notify-entry-args entry))))
+    (setf (alist-get frame (ads/notify-entry-buffers entry)) name)
+    (+ y ads/notify--gap
+       (if-let* ((child (ads/notify--child name))) (frame-pixel-height child) 0))))
+
+(defun ads/notify--relayout ()
+  "Redraw the whole stack on every frame, oldest at the top."
+  (dolist (frame (ads/notify--frames))
+    (let ((y ads/notify--inset))
+      (dolist (entry ads/notify--stack)
+        (setq y (ads/notify--show entry frame y))))))
+
+(defun ads/notify--without (plist key)
+  "PLIST without KEY and its value."
+  (cl-loop for (k v) on plist by #'cddr unless (eq k key) append (list k v)))
+
+(defun ads/notify--broadcast (&rest args)
+  "Show ARGS on every frame, stacked under the notifications already up.
+ARGS is a `knockknock-notify' plist plus an optional :action, the closure
+`ads/notify-visit' calls to go to whatever sent this."
+  (knockknock--ensure-initialized)
+  (setq ads/notify--stack
+        (append ads/notify--stack
+                (list (ads/notify--entry
+                       :id (cl-incf ads/notify--counter)
+                       :args (ads/notify--without args :action)
+                       :action (plist-get args :action)))))
+  (ads/notify--relayout))
+
+(defun ads/notify (title message icon &optional action)
+  "Put MESSAGE on screen under TITLE, with ICON, until I dismiss it.
+ACTION, if given, is what `ads/notify-visit' calls to go to the source."
+  (ads/notify--broadcast :title title :message message :icon icon :action action))
+
+(defun ads/notify--delete (entry)
+  "Take ENTRY off every frame and out of the stack, without redrawing."
+  (dolist (cell (ads/notify-entry-buffers entry))
+    (when-let* ((buf (get-buffer (cdr cell))))
+      (ignore-errors (posframe-delete buf))))
+  (setq ads/notify--stack (delq entry ads/notify--stack)))
+
+(defun ads/notify-close ()
+  "Dismiss the lot.  Unbound on purpose; for a popup that outlived its entry."
+  (interactive)
+  (mapc #'ads/notify--delete (copy-sequence ads/notify--stack))
+  (setq ads/notify--stack nil)
+  (dolist (b (buffer-list))
+    (when (string-prefix-p "*knockknock" (buffer-name b))
+      (ignore-errors (posframe-delete b)))))
+
+(defun ads/notify--pick (choose prompt)
+  "The oldest live notification, or one picked by hand when CHOOSE is non-nil.
+Oldest, not newest: the stack is drawn oldest-first, so this always takes the
+popup nearest the corner and the rest close up towards it.
+PROMPT is used for the completing read."
+  (when ads/notify--stack
+    (if (and choose (cdr ads/notify--stack))
+        (let ((by-title (mapcar (lambda (e)
+                                  (cons (plist-get (ads/notify-entry-args e) :title) e))
+                                ads/notify--stack)))
+          (cdr (assoc (completing-read prompt by-title nil t) by-title)))
+      (car ads/notify--stack))))
+
+(defun ads/notify-dismiss (&optional choose)
+  "Dismiss the oldest notification.  One press, one popup.
+With a prefix argument CHOOSE, pick which one."
+  (interactive "P")
+  (if-let* ((entry (ads/notify--pick choose "Dismiss: ")))
+      (progn (ads/notify--delete entry)
+             (ads/notify--relayout))
+    (message "No notifications")))
+
+(defun ads/notify-visit (&optional choose)
+  "Go to the source of the oldest notification and dismiss it.
+With a prefix argument CHOOSE, pick which one."
+  (interactive "P")
+  (if-let* ((entry (ads/notify--pick choose "Visit: ")))
+      (let ((action (ads/notify-entry-action entry)))
+        (ads/notify--delete entry)
+        (ads/notify--relayout)
+        (if action
+            (funcall action)
+          (message "No source recorded for %s"
+                   (plist-get (ads/notify-entry-args entry) :title))))
+    (message "No notifications")))
+
+(ads/leader-keys
+  "x" '(ads/notify-dismiss :wk "dismiss notification")
+  "X" '(ads/notify-visit :wk "go to notification source"))
 #+end_src
 
 ** ligature
