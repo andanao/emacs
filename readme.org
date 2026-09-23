@@ -3366,6 +3366,38 @@ ever sees the file."
                       "-channel" "RGB" "-fill" colour "-colorize" "100" out))
       (if (file-exists-p out) out file))))
 
+(defun ads/notify--text-px (text px bold)
+  "Roughly how wide TEXT is when the SVG draws it at PX pixels.
+Whichever is larger of `string-pixel-width' in Emacs' own font, scaled to
+PX through `:height' in tenths of a point, and a generous count per
+character.  librsvg's font is not Emacs' and there is no asking it what it
+will do, so over-padding is the safe error; the eight-per-character guess
+this replaces under-padded and cut the title off.  The floor also covers a
+frame with no font metrics to measure against."
+  (if (or (null text) (string-empty-p text))
+      0
+    (max (ceiling (* 1.1 (string-pixel-width
+                          (propertize text 'face `(:height ,(round (* px 7.5))
+                                                   :weight ,(if bold 'bold 'normal))))))
+         (* (length text) (if bold 10 7)))))
+
+(defun ads/notify--svg-width (orig title message icon &optional icon-file progress)
+  "Widen the canvas to fit TITLE before ORIG draws it.
+knockknock sizes the canvas at eight pixels per title character, which is
+short for bold 16px and cuts a long heading off at the right edge.
+`knockknock-svg-min-width' is the only lever that reaches the calculation
+from outside, so measure the text and raise it - capped at the max width,
+which the clamp inside would not do for the minimum."
+  (let* ((needed (+ knockknock-svg-icon-size knockknock-svg-padding
+                    knockknock-left-padding knockknock-right-padding
+                    (max (ads/notify--text-px title 16 t)
+                         (ads/notify--text-px message 12 nil))))
+         (knockknock-svg-min-width (max knockknock-svg-min-width
+                                        (min knockknock-svg-max-width needed))))
+    (funcall orig title message icon icon-file progress)))
+
+(advice-add 'knockknock--format-buffer-svg :around #'ads/notify--svg-width)
+
 (defun ads/notify--call-with-faces (faces thunk)
   "Call THUNK with FACES applied, then put them back.
 FACES is an alist of (FACE . COLOUR).  The SVG builder reads these globally
@@ -3391,6 +3423,7 @@ render is synchronous, so setting and restoring around it is safe."
   :custom
   (knockknock-default-duration 86400 "A day is never; I dismiss these myself")
   (knockknock-border-width 2 "Wide enough that the colour on it reads")
+  (knockknock-svg-max-width 700 "Room for a long heading now the width is measured")
   (knockknock-poshandler #'ads/notify--poshandler)
   :custom-face
   (knockknock-title-face ((t (:inherit (bold success) :height 1.3))))
@@ -5198,25 +5231,32 @@ prompts for selection, then jumps to the first upcoming instance."
 (ads/leader-keys "om" 'ads/jump-to-meeting-todo)
 #+end_src
 
-*** meeting notifications
+*** agenda notifications
 
-Three minutes before anything tagged =:meeting:=, through the same [[*knockknock][posframe]] the agent shells
-use.  =SPC X= opens the heading it came from.
+Three minutes before anything in the agenda with a time on it, through the same [[*knockknock][posframe]] the
+agent shells use.  =SPC X= opens the heading it came from.
 
-~appt~ does the work — a filter function on ~org-agenda-to-appt~ picks the tag out of the entry's
-~tags~ property, and an ~APPT_WARNTIME~ property overrides the lead per meeting for free.  Its
-beep and its ten-second teardown are both off, because [[*knockknock][nothing of mine auto-dismisses]].
+Blue outlines the lot, so a glance says agenda rather than agent.  A =:meeting:= also gets the
+filled background and a blue icon, because a meeting is the one I have to be somewhere for; a
+plain TODO is the outline and nothing else.
+
+~appt~ does the work, over scheduled, deadline and plain timestamps that carry a time.  An
+~APPT_WARNTIME~ property overrides the lead per entry for free.  Its beep and its ten-second
+teardown are both off, because [[*knockknock][nothing of mine auto-dismisses]].
 
 ~appt-display-interval~ sits one above the warning time so the reminder fires once at T-3 rather
 than again at T-0.
 
 Rebuilt daily at 00:05, which is not optional: appt keeps a time as minutes after midnight with
-no date on it and only prunes what is already past, so without it today's meetings read as
+no date on it and only prunes what is already past, so without it today's entries read as
 tomorrow's and fire again at the same clock time while tomorrow's are never added at all.
-Rebuilt on every agenda build too, so rescheduling something takes effect without waiting.
+Rebuilt on every agenda build too, so rescheduling something takes effect without waiting, and
+once at the end of this block — that one finds nothing, since ~org-agenda-files~ is not claimed
+until ~after-init-hook~, but the 00:05 timer is already overdue by then and fires on the first
+run of the timer list, which is after init.  Cheap enough to leave both.
 
 The icon is the glyph the [[*roam-categories][category]] already starts with, so a notification looks like its line in
-the agenda.  The blue is the one thing that marks it as not an agent.
+the agenda.
 
 ~org-todo-regexp~ is no use for trimming the keyword off the title: it is buffer-local and nil
 everywhere but an org buffer, and appt calls from wherever I happen to be.  Built from
@@ -5230,7 +5270,7 @@ Where the entry lives is kept as a file and a position rather than a marker, bec
 (require 'appt)
 
 (defvar ads/notify-appt--entries (make-hash-table :test 'equal)
-  "Appt message -> plist of :file, :point and :category behind it.")
+  "Appt message -> plist of :file, :point, :category and :meeting behind it.")
 
 (defun ads/notify-appt--entry-text (x)
   "The string `org-agenda-to-appt' will hand to appt for agenda entry X."
@@ -5238,23 +5278,25 @@ Where the entry lives is kept as a file and a position rather than a marker, bec
              org-link-bracket-re "\\2"
              (or (get-text-property 1 'txt x) ""))))
 
-(defun ads/notify-appt--meeting-p (x)
-  "Non-nil when agenda entry X is a meeting, remembering where it lives."
-  (when (member "meeting" (get-text-property 1 'tags x))
-    (when-let* ((m (get-text-property 1 'org-marker x))
-                (file (buffer-file-name (marker-buffer m))))
-      (puthash (ads/notify-appt--entry-text x)
-               (list :file file
-                     :point (marker-position m)
-                     :category (get-text-property (1- (length x)) 'org-category x))
-               ads/notify-appt--entries))
-    t))
+(defun ads/notify-appt--record (x)
+  "Remember where agenda entry X lives, and always take it.
+`org-agenda-to-appt' has already dropped anything without a time on it or
+already done, which is the whole of the filtering I want."
+  (when-let* ((m (get-text-property 1 'org-marker x))
+              (file (buffer-file-name (marker-buffer m))))
+    (puthash (ads/notify-appt--entry-text x)
+             (list :file file
+                   :point (marker-position m)
+                   :category (get-text-property (1- (length x)) 'org-category x)
+                   :meeting (and (member "meeting" (get-text-property 1 'tags x)) t))
+             ads/notify-appt--entries))
+  t)
 
 (defun ads/notify-appt-refresh (&rest _)
-  "Rebuild today's appt list from the `:meeting:'-tagged agenda entries."
+  "Rebuild today's appt list from the timed agenda entries."
   (interactive)
   (clrhash ads/notify-appt--entries)
-  (org-agenda-to-appt t #'ads/notify-appt--meeting-p))
+  (org-agenda-to-appt t #'ads/notify-appt--record))
 
 (defun ads/notify-appt--todo-regexp ()
   "A regexp matching any of my TODO keywords."
@@ -5292,22 +5334,28 @@ Where the entry lives is kept as a file and a position rather than a marker, bec
   (org-fold-show-entry)
   (org-fold-show-children))
 
+(defun ads/notify-appt--style (meeting)
+  "Colours for an agenda popup.  MEETING earns the filled background.
+Resolved per notification, so a theme toggle is picked up."
+  (append (list :border (ads/modus-color 'blue)
+                :text (ads/modus-color 'fg-main))
+          (if meeting
+              (list :background (ads/modus-color 'bg-blue-nuanced)
+                    :icon-color (ads/modus-color 'blue))
+            (list :icon-color (ads/modus-color 'fg-main)))))
+
 (defun ads/notify-appt (minutes _time msg)
   "Show appt reminders through `ads/notify--broadcast'.
 Either MINUTES or MSG may be a list when several are due at once."
   (seq-mapn
    (lambda (m s)
      (let ((place (gethash s ads/notify-appt--entries)))
-       (ads/notify--broadcast
-        :title (ads/notify-appt--title s)
-        :message (if (equal m "0") "Starting now" (format "In %s min" m))
-        :icon (ads/notify-appt--icon (plist-get place :category))
-        ;; Resolved per notification so a theme toggle is picked up.
-        :border (ads/modus-color 'blue)
-        :background (ads/modus-color 'bg-blue-nuanced)
-        :text (ads/modus-color 'fg-main)
-        :icon-color (ads/modus-color 'blue)
-        :action (and place (lambda () (ads/notify-appt--visit place))))))
+       (apply #'ads/notify--broadcast
+              :title (ads/notify-appt--title s)
+              :message (if (equal m "0") "Starting now" (format "In %s min" m))
+              :icon (ads/notify-appt--icon (plist-get place :category))
+              :action (and place (lambda () (ads/notify-appt--visit place)))
+              (ads/notify-appt--style (plist-get place :meeting)))))
    (if (listp minutes) minutes (list minutes))
    (if (listp msg) msg (list msg))))
 
@@ -5322,9 +5370,7 @@ Either MINUTES or MSG may be a list when several are due at once."
 (appt-activate 1)
 (add-hook 'org-agenda-finalize-hook #'ads/notify-appt-refresh)
 (run-at-time "00:05" 86400 #'ads/notify-appt-refresh)
-;; Appended, so it lands after `ads/org-agenda-files-update' has claimed
-;; `org-agenda-files' - there is nothing to scan before that runs.
-(add-hook 'after-init-hook #'ads/notify-appt-refresh t)
+(ads/notify-appt-refresh)
 #+end_src
 
 ** org-modern
