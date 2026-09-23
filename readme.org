@@ -5846,6 +5846,7 @@ stays.
        :rev :newest)
   :defer t)
 #+end_src
+
 ** org-transclusion
 [[https://github.com/nobiot/org-transclusion][org-transclusion]] embeds the content of one org file (or heading) inside another via ~#+transclude:~
 links.  I use it so my daily can pull in work items that physically live in a seperate — the text
@@ -6398,15 +6399,7 @@ which would quietly bypass the =rust-ts-mode= hooks the rest of this config hang
 (use-package sudo-edit)
 #+end_src
 
-** symbol-overlay
-Mark symbols [[https://github.com/wolray/symbol-overlay][wolray/symbol-overlay]]
-#+begin_src emacs-lisp
-(use-package symbol-overlay
-  :config
 
-  (define-key symbol-overlay-map (kbd "h") 'nil)
-  (ads/leader-keys "s" symbol-overlay-map))
-#+end_src
 ** telephone-line
 #+begin_src emacs-lisp
 (use-package telephone-line
