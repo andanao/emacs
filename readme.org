@@ -1661,6 +1661,64 @@ Read Claude Code's transcripts instead - same columns, every project."
   (ads/leader-keys "aH" 'ads/agent-shell-resume-global-session))
 #+end_src
 
+*** kickoff with the first prompt
+
+A task that opens a shell in a worktree always opens it the same way, and the =/boot= that
+follows is part of the task rather than something to retype.  ~ads/agent-shell-kickoff~ is the
+block those tasks already carry, with the prompt in it:
+
+#+begin_src emacs-lisp :tangle no
+(ads/agent-shell-kickoff "/boot" "~/git/pr/multi-burn/")
+#+end_src
+
+The session negotiates after the command returns, so there is nothing to send to yet — wait for
+a shell in that directory holding a session id, the same tell [[*last night's shells][the exit record]] reads as a live
+session, and type into it the way I would.  It gives up after a minute rather than sit on a
+timer for a shell that never came up.
+
+#+begin_src emacs-lisp
+(defvar ads/agent-shell-kickoff-timeout 60
+  "Seconds to wait for a kicked-off shell before dropping its prompt.")
+
+(defun ads/agent-shell--ready-shell (directory)
+  "An agent shell in DIRECTORY with a session up and nothing in flight."
+  (seq-find (lambda (buffer)
+              (and (file-equal-p (buffer-local-value 'default-directory buffer)
+                                 directory)
+                   (map-nested-elt (buffer-local-value 'agent-shell--state buffer)
+                                   '(:session :id))
+                   (eq (agent-shell-status :shell-buffer buffer) 'ready)))
+            (agent-shell-buffers)))
+
+(defun ads/agent-shell-kickoff (prompt &optional directory)
+  "Open an agent shell in DIRECTORY and send it PROMPT.
+DIRECTORY defaults to `default-directory', and the shell is the same one
+`agent-shell' would open there by hand, resume prompt and all.
+
+Nothing can be sent until the session has negotiated, which happens well
+after the command returns, so poll for it and send at the prompt - the
+shell is a buffer I type into, and this is that typing."
+  (let* ((directory (expand-file-name (or directory default-directory)))
+         (default-directory directory)
+         (deadline (time-add (current-time) ads/agent-shell-kickoff-timeout))
+         timer)
+    (agent-shell)
+    (setq timer
+          (run-with-timer
+           1 1
+           (lambda ()
+             (if-let* ((buffer (ads/agent-shell--ready-shell directory)))
+                 (progn
+                   (cancel-timer timer)
+                   (with-current-buffer buffer
+                     (goto-char (point-max))
+                     (insert prompt)
+                     (agent-shell-submit)))
+               (when (time-less-p deadline (current-time))
+                 (cancel-timer timer)
+                 (message "No shell in %s to send `%s' to" directory prompt))))))))
+#+end_src
+
 ** all-the-icons
 
 Icons are a font so remember to call ~(all-the-icons-install-fonts)~
