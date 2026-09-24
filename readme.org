@@ -478,6 +478,8 @@ package finally declares the face.  Only the =user= theme spec survives being se
    ;; line numbers
    `(line-number ((,c :height 0.8)))
    `(line-number-current-line ((,c :inherit line-number)))
+   ;; mode line - the buffer name and the clocked project are what you read
+   `(ads/modeline-context ((,c :foreground ,fg-dim)))
    ;; misc
    `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))))
 #+end_src
@@ -2490,19 +2492,53 @@ left to dirvish's own dispatcher instead of hanging the cursor on it."
 #+end_src
 
 ** display-time-mode
+
+Off by default: the macOS menu bar and sketchybar both carry the time, so the [[*doom-modeline][mode line]] copy was
+the third.  =SPC t c= turns it back on and the segment is still in the mode line to receive it.
+
 #+begin_src emacs-lisp
 (setq display-time-24hr-format t
       display-time-day-and-date nil
       display-time-default-load-average nil)
-(display-time-mode)
 #+end_src
 ** display-battery
 
-#+begin_src emacs-lisp
+Off for the same reason, and because =100%= is never news.  =SPC t b= brings it back.
+
+#+begin_src emacs-lisp :tangle no
 (display-battery-mode)
 #+end_src
 
+When it is on I am away from a desk, so the [[*doom-modeline][segment]] draws a bolt on AC, nothing at all on AC
+above 90, and on battery a glyph filled to match plus the number, warning under 30 and error
+under 15.  It reads ~battery-update-functions~, which doom already runs with the data it fetched,
+rather than shelling out to =pmset= on every redraw.
+
+#+begin_src emacs-lisp
+(defvar ads/battery-status nil
+  "Cons of (PERCENTAGE . LINE-POWER) from the most recent battery poll.")
+
+(defun ads/battery-watch (data)
+  "Cache the two fields of DATA the mode line reads."
+  (setq ads/battery-status
+        (cons (string-to-number (or (cdr (assq ?p data)) "0"))
+              (cdr (assq ?L data)))))
+
+(add-hook 'battery-update-functions #'ads/battery-watch)
+#+end_src
+
 ** doom-modeline
+
+The stock right hand side printed eight segments and four of them were already on the screen:
+the project name is in the buffer name and in the [[*project colors][mode line tint]], the major mode is the buffer
+icon a few inches to its left, and the time and the battery are both in the menu bar.  =main= is
+redefined here rather than trimmed by ~:custom~ so the order is written down in one place and a new
+upstream default cannot quietly add to it.
+
+What is left is glyphs: a branch, a checker count, one clock from [[*toggl time tracking][toggl]], a [[*display-battery][battery]] only when it
+is worth reading, and the state of the [[*agent-shell][agent shell]] if the buffer is one.  Colour only where it
+means something - the clocked project, the state of the tree, and an agent that wants an answer.
+
 #+begin_src emacs-lisp
 (use-package doom-modeline
   :demand t
@@ -2518,7 +2554,72 @@ left to dirvish's own dispatcher instead of hanging the cursor on it."
   :config
   (setq
    line-number-mode nil
-   column-number-mode nil))
+   column-number-mode nil)
+  ;; comint sets `mode-line-process' to ":%s", the process status, so a live
+  ;; shell says ":run" forever and only stops saying it when the process dies.
+  ;; Print it when it is anything other than that, and print it as a warning,
+  ;; because by then it is one.
+  (doom-modeline-def-segment ads/process
+    (let ((text (string-trim (format-mode-line mode-line-process))))
+      (unless (or (string-empty-p text) (member text '(":run" "run")))
+        (concat (doom-modeline-spc)
+                (propertize text 'face (doom-modeline-face 'doom-modeline-warning))))))
+  ;; doom-modeline draws the whole line, so agent-shell's own busy indicator
+  ;; never reaches it.  Green and thinking, red and waiting on me, or nothing at
+  ;; all - a shell with nothing to say should not be saying it.  The faces are
+  ;; agent-shell's own, the same two `ads/agent-shell-mode-line' uses, and that
+  ;; poll's `force-mode-line-update' every second is what keeps this current.
+  (doom-modeline-def-segment ads/agent
+    (when (and (derived-mode-p 'agent-shell-mode) (fboundp 'agent-shell-status))
+      (pcase (agent-shell-status)
+        ('busy    (concat (doom-modeline-spc)
+                          (propertize "" 'face (doom-modeline-face 'agent-shell-success))))
+        ('blocked (concat (doom-modeline-spc)
+                          (propertize "" 'face (doom-modeline-face 'agent-shell-error)))))))
+  ;; Upstream's is a vertical icon plus a percentage that reads 100% nearly
+  ;; always.  On AC the level is not news, so say only that; on battery the
+  ;; glyph fills to match and the number comes back with it.
+  (doom-modeline-def-segment ads/battery
+    (when (and (bound-and-true-p display-battery-mode) ads/battery-status)
+      (let ((percentage (car ads/battery-status))
+            (charging (equal (cdr ads/battery-status) "AC")))
+        ;; Plugged in and nearly full is the one state that never needs saying.
+        (unless (and charging (>= percentage 90))
+          (concat
+           (doom-modeline-spc)
+           (propertize
+            (if charging
+                ""
+              (concat (cond ((>= percentage 88) "")
+                            ((>= percentage 63) "")
+                            ((>= percentage 38) "")
+                            ((>= percentage 13) "")
+                            (t ""))
+                      ;; Doubled because the segment is printed by `format-mode-line'.
+                      (format " %d%%%%" percentage)))
+            'face (doom-modeline-face
+                   (cond (charging 'ads/modeline-context)
+                         ((< percentage 15) 'doom-modeline-urgent)
+                         ((< percentage 30) 'doom-modeline-warning)
+                         (t 'ads/modeline-context)))))))))
+  ;; Guarded because doom-modeline loads long before toggl, and an unguarded
+  ;; call here would be a void-function on every redraw until it does.
+  (doom-modeline-def-segment ads/clock
+    (when-let* (((fboundp 'ads/toggl-mode-line))
+                (clock (ads/toggl-mode-line)))
+      (concat (doom-modeline-spc)
+              (propertize clock
+                          'help-echo "mouse-1 toggl menu, mouse-3 stop"
+                          'mouse-face 'mode-line-highlight
+                          'local-map toggl-mode-line-keymap))))
+  ;; Upstream's `main' without `project-name' and `major-mode'.  `time' and
+  ;; `ads/battery' stay so `SPC t c' and `SPC t b' still have somewhere to draw.
+  (doom-modeline-def-modeline 'main
+    '(eldoc bar window-state workspace-name window-number modals matches follow
+      buffer-info ads/agent remote-host buffer-position word-count parrot selection-info)
+    '(compilation objed-state misc-info persp-name ads/battery grip irc mu4e gnus
+      github debug repl lsp spell minor-modes input-method indent-info
+      buffer-encoding ads/clock ads/process vcs check time)))
 #+end_src
 
 ** dwim-shell-commands
@@ -4059,6 +4160,9 @@ Major mode for reading EPUB files in Emacs
   (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (org-refile-use-outline-path 'title)
   (org-outline-path-complete-in-steps nil)
+  ;; Clocking in starts a toggl timer, so the mode line was counting the same
+  ;; work twice, from two different start times.  Toggl keeps the clock.
+  (org-clock-clocked-in-display nil)
   (calendar-week-start-day 0)
   :hook
   (org-mode . variable-pitch-mode))
@@ -7604,6 +7708,48 @@ Work entries get appended in [[file:~/git/konfig/readme.org][konfig]].
   "Timers started by hand, as (DESCRIPTION PROJECT &optional BILLABLE TAGS).")
 #+end_src
 
+**** the mode line
+
+The running timer is the only clock in the [[*doom-modeline][mode line]], and it counts in whole minutes so that
+nothing up there changes every second.
+
+Three pieces read the way you would say it - how long, at what, under which project - and three
+weights, because only the project is worth finding at a glance.  It keeps the colour Toggl gave
+it, from ~toggl-colorize-project~, so the mode line, the entry list and [[*toggl sketchybar][sketchybar]] all agree on what
+colour a project is.
+
+Which is why this does not go through ~toggl-mode-line-format~: toggl paints one face over the
+whole string, flattening the three back into one.
+
+#+begin_src emacs-lisp
+(defface ads/modeline-context '((t :inherit shadow))
+  "Mode line text that is context rather than the thing itself."
+  :group 'mode-line-faces)
+
+(defun ads/toggl-mode-line ()
+  "Return the running Toggl entry for the mode line, or nil."
+  (when-let* ((entry (toggl-current-entry)))
+    (let ((minutes (/ (or (toggl-entry-elapsed entry) 0) 60))
+          (project (toggl-entry-project-name entry))
+          (description (toggl-entry-description entry)))
+      (concat
+       (propertize (if (< minutes 60)
+                       (format " %dm" minutes)
+                     (format " %dh%02d" (/ minutes 60) (% minutes 60)))
+                   'face 'ads/modeline-context)
+       (when description
+         (propertize (concat " " description) 'face 'ads/modeline-context))
+       (when project
+         ;; The client marker is already a separator, and a coloured one, so a
+         ;; bullet in front of it is two dots doing one job.  Supply the
+         ;; separator only for a project with no client to mark it.
+         (let ((label (toggl-colorize-project project)))
+           (concat (if (string-prefix-p toggl-project-marker label)
+                       " "
+                     (propertize " · " 'face 'ads/modeline-context))
+                   label)))))))
+#+end_src
+
 **** the package
 
 Pulled from [[https://github.com/andanao/emacs-toggl-track][its own repo]] rather than a path on disk, so a fresh machine gets it
@@ -7636,6 +7782,10 @@ Emacs see the edits, point ELPA back at the working copy once:
   (require 'toggl-transient)
   (toggl-mode 1)
   (toggl-org-mode 1)
+  ;; `toggl-mode' puts its own string in the mode line; the clock is drawn by a
+  ;; doom-modeline segment instead, so the parts can carry their own faces.  The
+  ;; string stays live and its one second timer is what keeps that segment fresh.
+  (setq global-mode-string (delq 'toggl-mode-line-string global-mode-string))
   ;; The transient is the hub: saved timers, start, stop, edits and the entry
   ;; list all hang off it.  Stop keeps its own key because it is the one thing
   ;; worth hitting without reading a menu first.
