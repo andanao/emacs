@@ -1681,52 +1681,63 @@ block those tasks already carry, with the prompt in it:
 (ads/agent-shell-kickoff "/boot" "~/git/pr/multi-burn/")
 #+end_src
 
-The session negotiates after the command returns, so there is nothing to send to yet — wait for
-a shell in that directory holding a session id, the same tell [[*last night's shells][the exit record]] reads as a live
-session, and type into it the way I would.  It gives up after a minute rather than sit on a
-timer for a shell that never came up.
+The directory is the whole point, so nothing about the shell may be inferred from where I
+called this.  ~agent-shell~ itself is DWIM — from a shell buffer it toggles that window and
+opens nothing, and its =prompt= [[*agent-shell][session strategy]] would sit on a picker — so start the shell
+outright, on a new session, and hold onto the buffer rather than looking it up again later.
+An existing shell in that directory is reused: two agents on one worktree is the one
+arrangement guaranteed to waste both of them.
+
+The target directory is only ever set in a temp buffer, never bound around the lookup.
+~default-directory~ is buffer-local, so letting it in a shell buffer rewrites *that shell's*
+cwd for the duration of the call — and since finding the shell to reuse means reading cwds
+back off buffers, the shell I called from answers to the directory I asked for and takes the
+prompt itself.  Which is how this one sent =/boot= to the session that ran it.
+
+agent-shell will hold the prompt for me.  ~agent-shell-prompt-queue~ sends it now if the
+session is up, queues it behind the current turn if one is running, and otherwise hands it to
+agent-shell's own =prompt-ready= subscription, which fires when the session finishes
+negotiating — a poll for the same moment is a poll that can be wrong.
 
 #+begin_src emacs-lisp
-(defvar ads/agent-shell-kickoff-timeout 60
-  "Seconds to wait for a kicked-off shell before dropping its prompt.")
-
-(defun ads/agent-shell--ready-shell (directory)
-  "An agent shell in DIRECTORY with a session up and nothing in flight."
-  (seq-find (lambda (buffer)
-              (and (file-equal-p (buffer-local-value 'default-directory buffer)
-                                 directory)
-                   (map-nested-elt (buffer-local-value 'agent-shell--state buffer)
-                                   '(:session :id))
-                   (eq (agent-shell-status :shell-buffer buffer) 'ready)))
-            (agent-shell-buffers)))
+(defun ads/agent-shell--cwd (directory)
+  "Where agent-shell would anchor a session opened in DIRECTORY.
+`agent-shell-cwd-function' answers from the buffer it is called in, and
+on this machine that can name a different worktree entirely - DIRECTORY
+is the instruction, so project detection answers from it alone."
+  (let ((directory (file-name-as-directory (expand-file-name directory))))
+    (with-temp-buffer
+      (setq default-directory directory)
+      (let ((agent-shell-cwd-function nil))
+        (agent-shell-cwd)))))
 
 (defun ads/agent-shell-kickoff (prompt &optional directory)
   "Open an agent shell in DIRECTORY and send it PROMPT.
-DIRECTORY defaults to `default-directory', and the shell is the same one
-`agent-shell' would open there by hand, resume prompt and all.
-
-Nothing can be sent until the session has negotiated, which happens well
-after the command returns, so poll for it and send at the prompt - the
-shell is a buffer I type into, and this is that typing."
-  (let* ((directory (expand-file-name (or directory default-directory)))
-         (default-directory directory)
-         (deadline (time-add (current-time) ads/agent-shell-kickoff-timeout))
-         timer)
-    (agent-shell)
-    (setq timer
-          (run-with-timer
-           1 1
-           (lambda ()
-             (if-let* ((buffer (ads/agent-shell--ready-shell directory)))
-                 (progn
-                   (cancel-timer timer)
-                   (with-current-buffer buffer
-                     (goto-char (point-max))
-                     (insert prompt)
-                     (agent-shell-submit)))
-               (when (time-less-p deadline (current-time))
-                 (cancel-timer timer)
-                 (message "No shell in %s to send `%s' to" directory prompt))))))))
+DIRECTORY defaults to `default-directory'.  An agent shell already
+running there gets the prompt instead of a second one being started."
+  (let* ((cwd (ads/agent-shell--cwd (or directory default-directory)))
+         ;; Read off each buffer rather than switching into one: a shell's cwd
+         ;; is its `default-directory', and nothing here may rewrite it.
+         (shell (or (seq-find (lambda (buffer)
+                                (file-equal-p (buffer-local-value 'default-directory buffer)
+                                              cwd))
+                              (agent-shell-buffers))
+                    (with-temp-buffer
+                      (setq default-directory cwd)
+                      (let ((agent-shell-cwd-function nil))
+                        (agent-shell--start
+                         :config (or (agent-shell--auto-preferred-config)
+                                     (agent-shell-select-config :prompt "Start new agent: ")
+                                     (error "No agent config found"))
+                         :no-focus t
+                         :new-session t
+                         :session-strategy 'new))))))
+    (agent-shell--display-buffer shell)
+    ;; From inside the shell, so the queue resolves to this one rather than to
+    ;; the first shell in whatever project point was in.
+    (with-current-buffer shell
+      (agent-shell-prompt-queue prompt))
+    shell))
 #+end_src
 
 ** all-the-icons
@@ -4721,6 +4732,10 @@ image files on disk; see [[*org latex preview][org latex preview]] for the inlin
 org.  =d2= is deliberately absent -- it has no =ob-d2= feature to require, so listing it here
 would error.
 
+Babel evaluates elisp with =:lexical no=, but every block in this file is =init.el=, which is
+lexical -- so a =C-c C-c= here quietly redefines a function with dynamic binding and its
+closures go void somewhere else entirely, in a timer or a hook, long after the block ran.
+
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
      (org-babel-do-load-languages
@@ -4737,7 +4752,11 @@ would error.
         '((:results . "file")
           (:exports . "results")
           (:file-ext . "svg")
-          (:output-dir . "img"))))
+          (:output-dir . "img")))
+
+  ;; Evaluate a block the way init.el loads it.
+  (setq org-babel-default-header-args:emacs-lisp
+        '((:lexical . t))))
 
     (setq org-confirm-babel-evaluate nil)
 
