@@ -6404,6 +6404,12 @@ default anchor is a block named "To Refile", which I don't have, and the name is
 regexp against the whole agenda — an item that happened to say those words would drag the strip
 down to it.  =RET= with point on the image opens that day in the week view.
 
+It draws first on that hook, ahead of ~org-modern-agenda~, so it draws inside
+~with-demoted-errors~: once it took org-modern down with it and the agenda rendered as plain
+text.  A failed open of the week view is cleared the same way — the package builds the buffer
+before it loads the week, so an error in the load leaves a stateless buffer that every later
+open trips over, and a =:before= advice kills it rather than wedging the calendar for the session.
+
 The canvas is 8:00 to 22:00, which is the day I actually keep.  Anything timed outside it is
 off the canvas rather than squeezed onto it, so =-= and === narrow and widen the day by an hour
 at each end, =0= cycles waking / working / the whole 24, and =w= drops the weekend for a Monday
@@ -6589,6 +6595,27 @@ rather than the calendar."
                            :fill (org-timegrid--blend foreground background 0.07)
                            :fill-opacity 0.6)))))))
 
+(defun ads/org-timegrid-drop-stateless (&rest _)
+  "Kill a calendar buffer that a failed open left without state.
+`org-timegrid-open' creates the buffer and turns the mode on before it
+loads the week, so a signal in the load leaves `org-timegrid--state' nil
+-- and from then on every open takes the revisit branch and dies reading
+the week start off it, which is a wedge that outlives whatever caused it.
+The minute timer reads the same nil state, so it errors every tick too."
+  (when-let* ((buffer (get-buffer org-timegrid-buffer-name))
+              ((provided-mode-derived-p
+                (buffer-local-value 'major-mode buffer) 'org-timegrid-mode))
+              ((null (buffer-local-value 'org-timegrid--state buffer))))
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer buffer))))
+
+(defun ads/org-timegrid-agenda-guard (fn &rest args)
+  "Draw the day strip inside `with-demoted-errors'.
+It runs first on `org-agenda-finalize-hook', so a signal here takes
+`org-modern-agenda' and the appt rebuild down with it and the agenda
+renders as plain text.  The strip is worth less than the rest of it."
+  (with-demoted-errors "org-timegrid strip: %S" (apply fn args)))
+
 (use-package org-timegrid
   :vc (:url "https://github.com/Gleek/org-timegrid"
        :rev :newest)
@@ -6607,6 +6634,7 @@ rather than the calendar."
         org-timegrid-org-tag-color-alist '(("meeting" . yellow)))
   (evil-set-initial-state 'org-timegrid-mode 'emacs)
   (advice-add 'org-timegrid-week :before #'ads/org-agenda-files-update)
+  (advice-add 'org-timegrid-open :before #'ads/org-timegrid-drop-stateless)
   (advice-add 'org-timegrid-org--event :around #'ads/org-timegrid-note-category)
   (advice-add 'org-timegrid--draw-block :around #'ads/org-timegrid-plain-title)
   (advice-add 'org-timegrid--draw-all-day-block :around #'ads/org-timegrid-plain-title)
@@ -6620,6 +6648,7 @@ rather than the calendar."
   :demand t
   :init
   (setq org-timegrid-agenda-insert-after nil)
+  (advice-add 'org-timegrid-agenda-insert :around #'ads/org-timegrid-agenda-guard)
   :config
   (org-timegrid-agenda-mode 1))
 
