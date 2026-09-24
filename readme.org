@@ -222,6 +222,15 @@ keeps org's link comment from displacing it off line 1.
 
 #+end_src
 
+Custom saves variables but never faces.  Anything setting a face through ~custom-set-faces~ -
+spacious-padding does, [[*modus-tweaks][modus-tweaks]] used to - marks it saved, and the next ~custom-save-all~
+freezes that theme's resolved colours into =custom.el=, where they outrank the theme and survive
+a toggle: that is how links ended up white on a light background.
+
+#+begin_src emacs-lisp
+(advice-add 'custom-save-faces :override #'ignore)
+#+end_src
+
 #+begin_src emacs-lisp
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
@@ -426,6 +435,10 @@ palette overrides itself on every load and they cannot go stale when you toggle.
 Sizes and inherits only; the few colours still needed come from ~ads/modus-color~ because
 ~modus-themes-with-colors~ needs =cl-seq= at runtime and silently swallows the =void-function=
 error when it is missing, which is what used to leave this whole block unapplied.
+
+~custom-set-faces~ and not ~face-spec-set~, which would be the tidier call: the theme loads long
+before org or markdown do, and ~custom-declare-face~ clears a =face-override-spec= when the
+package finally declares the face.  Only the =user= theme spec survives being set first.
 
 #+begin_src emacs-lisp :tangle no :noweb-ref modus-tweaks
 (let ((c '((class color) (min-colors 256)))
