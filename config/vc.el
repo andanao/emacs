@@ -4,6 +4,7 @@
 ;;; Code:
 
 (use-package ediff
+  :ensure nil                           ; built in
   :custom
   (ediff-window-setup-function 'ediff-setup-windows-plain) ;; keep in one frame
   (ediff-split-window-function 'split-window-horizontally) ;; side-by-side

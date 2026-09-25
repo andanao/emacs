@@ -11,6 +11,7 @@
 
 (setopt revert-without-query '(".*"))
 (use-package autorevert
+  :ensure nil                           ; built in
   :custom
   ;; kqueue says the moment a file changes, so this is faster than the 0.1s
   ;; interval it replaces *and* free, where that one was stat-ing every one of a
@@ -115,6 +116,7 @@
    "pk" 'projectile-previous-project-buffer)
 
 (use-package recentf
+  :ensure nil                           ; built in
   :custom
   (recentf-max-menu-items 1000 "Offer more recent files in menu")
   (recentf-max-saved-items 1000 "Save more recent files")
@@ -129,6 +131,7 @@
   (rg-enable-menu))
 
 (use-package savehist
+  :ensure nil                           ; built in
   :config
   (savehist-mode 1)
   (add-to-list 'savehist-additional-variables 'search-ring)
