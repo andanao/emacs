@@ -3,14 +3,14 @@
 ;; Computer specific configs
 ;;; Code:
 
-(when (eq system-type 'windows-nt)
-  (load-file (concat user-emacs-directory "ms-windows.el")))
-
-(when (eq system-type 'gnu/linux)
-  (load-file (concat user-emacs-directory "linux.el")))
-
-(when (eq system-type 'darwin)
-  (load-file (concat user-emacs-directory "mac.el")))
+;; Beside this config, not under user-emacs-directory.  The two are the
+;; same thing when Emacs is started with --init-directory, and different
+;; after cutover, when ~/.emacs.d holds symlinks and nothing else.
+(when-let* ((system (pcase system-type
+                      ('windows-nt "ms-windows")
+                      ('gnu/linux "linux")
+                      ('darwin "mac"))))
+  (ads/load-config system))
 
 ;; not reliable when called at startup
 ;; (when (string-equal-ignore-case system-name "k2-mac.local")

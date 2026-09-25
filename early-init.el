@@ -14,9 +14,14 @@
 
 (setq org-directory (concat git-directory "org/"))
 
-;; Wherever this config was loaded from, not a fixed path under ~/git, so
-;; that "open my config" follows --init-directory into a worktree.
-(setq ads/config-file (expand-file-name "readme.org" user-emacs-directory))
+;; Wherever this config really lives, not a fixed path under ~/git and not
+;; user-emacs-directory, which after cutover is ~/.emacs.d holding only a
+;; symlink to here.  file-truename follows that symlink.
+(setq ads/config-file
+      (expand-file-name
+       "readme.org"
+       (file-name-directory
+        (file-truename (or load-file-name buffer-file-name)))))
 
 (set-language-environment "UTF-8")
 

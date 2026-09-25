@@ -121,8 +121,12 @@
             # goes into the store as an init file.
             defaultInitFile = false;
 
-            override = epkgs: epkgs
-              // lib.mapAttrs (buildFromGit epkgs) gitSources;
+            # Self-referential, because agent-shell-knockknock depends on
+            # knockknock and both are built here.
+            override = epkgs:
+              let built = lib.mapAttrs (buildFromGit (epkgs // built))
+                gitSources;
+              in epkgs // built;
           };
 
           # The package set the parser resolved, so it can be read without

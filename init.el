@@ -5,11 +5,20 @@
 ;; does not depend on how the sections were regrouped into files.
 ;;; Code:
 
+(defvar ads/config-directory
+  (file-name-directory (file-truename (or load-file-name buffer-file-name)))
+  "Directory this init.el really lives in.
+Not `user-emacs-directory': after cutover ~/.emacs.d/init.el is a symlink
+into this repo, so user-emacs-directory is ~/.emacs.d and the config is
+somewhere else entirely.  `file-truename' follows the symlink to here.
+State keeps using `user-emacs-directory'; only config resolves against
+this.")
+
 (defun ads/load-config (relative)
-  "Load RELATIVE, an elisp file below `user-emacs-directory'.
+  "Load RELATIVE, an elisp file below `ads/config-directory'.
 Loaded by explicit path rather than with `require', so that a file named
 after a package (org.el, dired.el) cannot shadow the real one."
-  (load (expand-file-name relative user-emacs-directory) nil :nomessage))
+  (load (expand-file-name relative ads/config-directory) nil :nomessage))
 
 (ads/load-config "config/settings")
 (ads/load-config "config/theme")
