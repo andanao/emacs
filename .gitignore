@@ -1,2 +1,48 @@
-!readme.org
-*
+# The elisp under config/, lisp/ and the repo root is tracked source.
+# Everything below is state Emacs writes into user-emacs-directory, which is
+# this repo once init.el is loaded from here.
+
+# Compiled output
+*.elc
+eln-cache/
+
+# Packages, should any escape the flake
+elpa/
+quelpa/
+
+# Per-machine state
+custom.el
+auto-save-list/
+tmp/
+var/
+etc/
+url/
+.cache/
+transient/
+org-persist/
+eshell/
+dirvish/
+tree-sitter/
+request/
+
+# Single-file state
+bookmarks
+history
+projects
+recentf
+tramp
+network-security.data
+.org-id-locations
+.mc-lists.el
+.time-zones.el
+modus-reload.log
+async-bytecomp.log
+
+# Editor and tooling scratch
+.agent-shell/
+\#*\#
+.\#*
+*~
+
+# Migration scaffolding, not configuration
+spec.org
