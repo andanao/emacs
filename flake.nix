@@ -82,6 +82,41 @@
           hash = "sha256-ouGBcsdL00f5lzDg88TzfiFo8wY2ws+q6F0AYwLx5Hk=";
           deps = _: [ ];
         };
+
+        # The config pins a personal fork, and the overlay would otherwise
+        # hand over abo-abo's upstream without saying so.
+        org-download = {
+          version = "20250430.1854";
+          owner = "andanao";
+          repo = "org-download";
+          rev = "7387a584b6308e6713350b76e3f27cdbb8ca2097";
+          hash = "sha256-CtiU0tYL3bxgrmYqZLXgtI6PWC6e93wD3bC0n3Gp8fs=";
+          deps = _: [ ];
+        };
+
+        # dakra/ghostel is a Zig terminal that carries its Emacs client in
+        # lisp/.  The overlay's package builds the terminal too, which needs
+        # Ghostty's vendored Zig dependencies and fails fetching them.
+        # package-vc only ever took the elisp, so that is what is taken here.
+        # The native module stays a system concern, as it already was.
+        ghostel = {
+          version = "20260921.1634";
+          owner = "dakra";
+          repo = "ghostel";
+          rev = "c2c411f2b0051465a5f5e7826ebab4ed216d4c0e";
+          hash = "sha256-IHcFxvkCKz/YANJrrHWFOiACfkHQJsN6YOnX8cLqi1A=";
+          files = [ "lisp/*.el" ];
+          deps = p: [ p.compat ];
+        };
+        evil-ghostel = {
+          version = "20260921.1634";
+          owner = "dakra";
+          repo = "ghostel";
+          rev = "c2c411f2b0051465a5f5e7826ebab4ed216d4c0e";
+          hash = "sha256-IHcFxvkCKz/YANJrrHWFOiACfkHQJsN6YOnX8cLqi1A=";
+          files = [ "extensions/evil-ghostel/*.el" ];
+          deps = p: [ p.evil p.ghostel ];
+        };
       };
     in
     {
@@ -109,7 +144,11 @@
               inherit (spec) owner repo rev hash;
             };
             recipe = pkgs.writeText "recipe" ''
-              (${pname} :fetcher github :repo "${spec.owner}/${spec.repo}")
+              (${pname} :fetcher github :repo "${spec.owner}/${spec.repo}"${
+                lib.optionalString (spec ? files)
+                  (" :files (" + lib.concatMapStringsSep " "
+                    (f: ''"${f}"'') spec.files + ")")
+              })
             '';
             packageRequires = spec.deps epkgs;
           };
