@@ -27,23 +27,32 @@ python3 tools/port/port.py "$tmp" .
 the output is byte-equivalent to the tangled original.  Without it the drops
 in ~manifest.py~ apply.
 
-* Before cutover
-One thing outside this repo breaks, and it breaks at cutover rather than
-during the trial.
+* Before cutover: konfig has to move first
+Dropping tangle-on-save broke something outside this repo, and it is the one
+thing standing between a clean startup and a backtrace.
 
-~~/git/konfig/work.el~ line 44 does
+~~/git/konfig/readme.org~ line 86 does
 
 #+begin_src emacs-lisp
 (add-to-list 'org-babel-auto-tangle-file-list k2/config-file)
 #+end_src
 
-and that variable no longer exists, because the tangle-on-save section that
-defined it is gone.  Deleting the line is the whole fix.  It is left alone
-here because konfig is a separate repo and the work split is not this job.
+konfig only ever added to that list.  The variable and the ~after-save-hook~
+that acted on it both lived in this config, in the section requirement 5
+removed, so konfig now raises ~void-variable~ partway through startup and the
+daemon gives up.
 
-While running side by side, ~work.el~ also calls ~(server-mode)~, which wants the
-socket the live Emacs already holds.  Harmless once there is only one Emacs;
-until then the trial daemon needs its own ~server-name~.
+Two consequences, not one.  The error is the visible half; the quiet half is
+that konfig's own ~readme.org~ has lost its auto-tangle and will need tangling
+by hand.  So the fix is konfig's to choose:
+
+- keep auto-tangling, by defining the variable and the hook in konfig itself,
+  which is about six lines and makes konfig self-contained; or
+- drop line 86 and tangle konfig by hand.
+
+Left alone here on purpose.  konfig is a separate literate config with its own
+tangle model, ~work.el~ is tangled output rather than source, and the work split
+is explicitly not this job.
 
 * Checking it
 | ~verify.py REF .~   | the faithfulness gate: sorted top-level forms must match |
