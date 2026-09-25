@@ -60,12 +60,15 @@
 
 (setq native-comp-async-report-warnings-errors 'silent)
 
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu"  . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+;; Packages come from the flake and are already on load-path.  package.el
+;; stays off so it cannot put an elpa directory in front of them, and
+;; `use-package-always-ensure' stays nil so no use-package form tries to
+;; install anything at runtime.  The flake's alwaysEnsure covers the same
+;; forms at build time instead.
+(setq package-enable-at-startup nil
+      package-archives nil
+      use-package-always-ensure nil)
 
-(setq use-package-always-ensure t)
 (when (eq system-type 'gnu/linux)
   (setq use-package-always-demand t))
 
