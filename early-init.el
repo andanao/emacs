@@ -14,7 +14,9 @@
 
 (setq org-directory (concat git-directory "org/"))
 
-(setq ads/config-file (concat git-directory "emacs/readme.org"))
+;; Wherever this config was loaded from, not a fixed path under ~/git, so
+;; that "open my config" follows --init-directory into a worktree.
+(setq ads/config-file (expand-file-name "readme.org" user-emacs-directory))
 
 (set-language-environment "UTF-8")
 
