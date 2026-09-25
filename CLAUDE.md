@@ -35,12 +35,19 @@ worst possible time to find out.
 each one must name a real package.
 
 - `nix build .#packageNames` lists what resolved, without building Emacs. Run it after touching a
-  `use-package` form.
+  `use-package` form. **Check the source, not just that it resolved** — the overlay warns rather
+  than fails on a name it cannot place, and will hand over a different package that happens to
+  share the name. It was already doing that to `org-download`.
 - A form for something built into Emacs needs `:ensure nil`, or the parser reports it missing.
-- A package installed with `:vc` is not on MELPA and needs an entry in `gitSources` with a rev and
-  a hash. `nix flake prefetch --json github:owner/repo` gives both.
-- `package.el` is off. Nothing may turn it back on: an `elpa` directory on `load-path` silently
-  beats the pinned set.
+- A package installed with `:vc` is not on MELPA and needs an entry in `gitSources` with a rev, a
+  hash and a version. `nix flake prefetch --json github:owner/repo` gives the first two. The
+  version is MELPA's `YYYYMMDD.HHMM` of that commit with **no leading zero** in the time —
+  package.el reads `0627` as `627` and then refuses the tarball.
+- `package.el` runs, deliberately. The flake ships packages as an elpa tree in the store and
+  `package-activate-all` is the only thing that loads their autoloads; turning it off leaves every
+  package on `load-path` with every autoloaded command undefined. What must not change is
+  `package-user-dir`, which is pointed away from `~/.emacs.d/elpa` so the old unmanaged tree
+  cannot get in front of the pinned set.
 
 ## Changing the live session
 
