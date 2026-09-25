@@ -1,0 +1,39 @@
+#+TITLE: Migration scaffolding
+
+Scripts that turned the literate config into this tree.  They exist so the
+port can be re-run, not because anything here needs them at runtime.
+
+*Delete this directory at cutover.*  Once ~~/.emacs.d~ points at this repo the
+literate config is gone and none of this has an input.
+
+* Why it is still here
+Main kept moving while the port was being done.  Re-running the split against
+a newer ~readme.org~ is a few minutes; redoing it by hand is not.  That is the
+only reason to keep them.
+
+* Re-running the port
+Never tangle from a worktree while the old config still lives: one target,
+~~/.config/rustfmt/rustfmt.toml~, is an absolute path and a stale tree would
+overwrite live config.  Tangle a copy.
+
+#+begin_src shell
+tmp=$(mktemp -d) && cp ~/git/emacs/readme.org "$tmp/" && (cd "$tmp" \
+  && emacs --batch -l org readme.org -f org-babel-tangle)
+
+python3 tools/port/port.py "$tmp" .
+#+end_src
+
+~PORT_MECHANICAL=1~ keeps the sections the migration deliberately dropped, so
+the output is byte-equivalent to the tangled original.  Without it the drops
+in ~manifest.py~ apply.
+
+* Checking it
+| ~verify.py REF .~   | the faithfulness gate: sorted top-level forms must match |
+| ~review.py REF .~   | one line per remaining difference, for sign-off          |
+| ~reorder.py REF~    | how far each section moved, and the invariants that hold |
+| ~parsecheck.el~     | every file reads, no package set needed                  |
+| ~compile-check.sh~  | byte-compile against the flake's packages                |
+| ~startup-check.sh~  | start a throwaway daemon and look for a backtrace        |
+
+~analyze.py~ and ~outline.py~ were used to design the split and are kept only
+because they explain where ~manifest.py~ came from.

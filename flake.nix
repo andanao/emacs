@@ -27,9 +27,15 @@
 
       # Packages the config installs with use-package :vc, which the
       # overlay cannot resolve because they are not on MELPA or ELPA.
-      # Bumping one means changing its rev and hash here.
+      # Bumping one means a new rev, hash and version here;
+      # `nix flake prefetch --json github:owner/repo` gives the first two.
+      #
+      # version is MELPA's YYYYMMDD.HHMM of the pinned commit, and the time
+      # must carry no leading zero.  package.el reads 0627 as 627 and then
+      # refuses the tarball for unpacking under a name it did not expect.
       gitSources = {
         agent-shell-knockknock = {
+          version = "20260316.1504";
           owner = "xenodium";
           repo = "agent-shell-knockknock";
           rev = "56732434067fe1874dcda62c491f7800bdc0a2f3";
@@ -37,6 +43,7 @@
           deps = p: [ p.agent-shell p.knockknock ];
         };
         "bookmark+" = {
+          version = "20260902.2033";
           owner = "emacsmirror";
           repo = "bookmark-plus";
           rev = "39fb6818fc102c17cf15147d5c36810c59cd9ebb";
@@ -44,6 +51,7 @@
           deps = _: [ ];
         };
         kanata-kbd-mode = {
+          version = "20250902.1900";
           owner = "chmouel";
           repo = "kanata-kbd-mode";
           rev = "0315b567bd61951433c3bdb8e59160d77e1fdcda";
@@ -51,6 +59,7 @@
           deps = p: [ p.consult ];
         };
         knockknock = {
+          version = "20260316.1540";
           owner = "xenodium";
           repo = "knockknock";
           rev = "7a6ab46503554317b639a7333ec8046d7d181520";
@@ -58,6 +67,7 @@
           deps = p: [ p.posframe p.nerd-icons ];
         };
         org-modern-indent = {
+          version = "20260721.2333";
           owner = "jdtsmith";
           repo = "org-modern-indent";
           rev = "86bd83ee1ad95f123810eb3b116beb543db1960a";
@@ -65,6 +75,7 @@
           deps = p: [ p.compat ];
         };
         org-timegrid = {
+          version = "20260921.627";
           owner = "Gleek";
           repo = "org-timegrid";
           rev = "258e49c9c6f105ac3600f4e7f937ed90d87b90a3";
@@ -92,7 +103,7 @@
 
           buildFromGit = epkgs: pname: spec: epkgs.melpaBuild {
             inherit pname;
-            version = "0-unstable-${builtins.substring 0 7 spec.rev}";
+            inherit (spec) version;
             commit = spec.rev;
             src = pkgs.fetchFromGitHub {
               inherit (spec) owner repo rev hash;
