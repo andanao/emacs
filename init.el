@@ -5,14 +5,12 @@
 ;; does not depend on how the sections were regrouped into files.
 ;;; Code:
 
+;; early-init.el sets this; recomputed here so this file also works when
+;; loaded on its own, which is what the "load init" binding does.
 (defvar ads/config-directory
   (file-name-directory (file-truename (or load-file-name buffer-file-name)))
-  "Directory this init.el really lives in.
-Not `user-emacs-directory': after cutover ~/.emacs.d/init.el is a symlink
-into this repo, so user-emacs-directory is ~/.emacs.d and the config is
-somewhere else entirely.  `file-truename' follows the symlink to here.
-State keeps using `user-emacs-directory'; only config resolves against
-this.")
+  "Directory this configuration really lives in.
+See the definition in early-init.el.")
 
 (defun ads/load-config (relative)
   "Load RELATIVE, an elisp file below `ads/config-directory'.

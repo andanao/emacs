@@ -14,14 +14,17 @@
 
 (setq org-directory (concat git-directory "org/"))
 
-;; Wherever this config really lives, not a fixed path under ~/git and not
-;; user-emacs-directory, which after cutover is ~/.emacs.d holding only a
-;; symlink to here.  file-truename follows that symlink.
+(defvar ads/config-directory
+  (file-name-directory (file-truename (or load-file-name buffer-file-name)))
+  "Directory this configuration really lives in.
+Not `user-emacs-directory': after cutover ~/.emacs.d/early-init.el is a
+symlink into the config repo, so user-emacs-directory is ~/.emacs.d and
+the elisp is somewhere else.  `file-truename' follows the symlink here.
+State keeps using `user-emacs-directory'; only config resolves against
+this.")
+
 (setq ads/config-file
-      (expand-file-name
-       "readme.org"
-       (file-name-directory
-        (file-truename (or load-file-name buffer-file-name)))))
+      (expand-file-name "readme.org" ads/config-directory))
 
 (set-language-environment "UTF-8")
 
@@ -67,13 +70,20 @@
 
 (setq native-comp-async-report-warnings-errors 'silent)
 
-;; Packages come from the flake and are already on load-path.  package.el
-;; stays off so it cannot put an elpa directory in front of them, and
-;; `use-package-always-ensure' stays nil so no use-package form tries to
-;; install anything at runtime.  The flake's alwaysEnsure covers the same
-;; forms at build time instead.
-(setq package-enable-at-startup nil
-      package-archives nil
+;; Packages come from the flake, which lays them out as an elpa tree in the
+;; store.  package.el has to keep running, because `package-activate-all' is
+;; what loads each package's autoloads and nothing else does; turning it off
+;; leaves every package on load-path but every autoloaded command undefined.
+;;
+;; What it must not reach is the unmanaged ~/.emacs.d/elpa, which is where
+;; `package-user-dir' points by default and which still holds the packages
+;; the old package.el config installed.  Pointing it beside this config, at a
+;; directory nothing ever writes to, leaves `package-directory-list' with the
+;; store paths and nothing else.  With no archives there is also nothing to
+;; install from, and `use-package-always-ensure' stays nil so no form tries.
+;; The flake's alwaysEnsure covers those same forms at build time instead.
+(setq package-archives nil
+      package-user-dir (expand-file-name "elpa" ads/config-directory)
       use-package-always-ensure nil)
 
 (when (eq system-type 'gnu/linux)

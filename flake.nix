@@ -91,7 +91,7 @@
           repo = "org-download";
           rev = "7387a584b6308e6713350b76e3f27cdbb8ca2097";
           hash = "sha256-CtiU0tYL3bxgrmYqZLXgtI6PWC6e93wD3bC0n3Gp8fs=";
-          deps = _: [ ];
+          deps = p: [ p.async ];
         };
 
         # dakra/ghostel is a Zig terminal that carries its Emacs client in
