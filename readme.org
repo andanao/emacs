@@ -1209,6 +1209,7 @@ own agent-shell module, which binds the same map."
     "an" 'agent-shell-new-shell
     "aw" 'agent-shell-new-worktree-shell
     "aR" 'agent-shell-resume-session
+    "ag" 'agent-shell-prompt-steer
     "ac" 'agent-shell-prompt-compose
     "aq" 'agent-shell-interrupt
     "aX" 'agent-shell-restart
