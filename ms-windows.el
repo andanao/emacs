@@ -1,6 +1,6 @@
 ;;; ms-windows.el --- Windows-only configuration  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; MS Windows, copy files to ~.emacs.d~ on tangle, server mode, ahk,
+;; MS Windows, server mode, ahk,
 ;; Window Spy, align windows theme with emacs, auto hide taskbar,
 ;; browse in edge, org clip image, hide dos eol,
 ;; exec ~.bat~ in new cmd window, org-attach dir in windows explorer,
@@ -10,18 +10,6 @@
 
 (set-message-beep 'silent)
 (setq win/.emacs.d (concat "C:\\Users\\" user-login-name "\\AppData\\Roaming\\.emacs.d\\"))
-
-(defun win/copy-config-files-to-.emacs.d ()
-    (when (string-equal-ignore-case buffer-file-name ads/config-file)
-      (dolist (filename
-	       '("early-init.el"
-		 "init.el"
-		 "ms-windows.el"))
-	 (let ((target-filename (concat win/.emacs.d filename)))
-	   (delete-file target-filename)
-	   (copy-file filename target-filename)))
-      (message "Copied config files to win/.emacs.d")))
-(add-hook 'org-babel-tangle-finished-hook 'win/copy-config-files-to-.emacs.d)
 
 (ads/leader-def "cW" "Dired .emacs.d" (find-file win/.emacs.d))
 

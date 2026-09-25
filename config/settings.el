@@ -1,7 +1,6 @@
 ;;; settings.el --- General editor settings  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; Emacs Settings, replace-match case conversion fix, auto tangle files,
-;; auto chmod
+;; Emacs Settings, replace-match case conversion fix, auto chmod
 ;;; Code:
 
 ;; General QoL settings
@@ -49,17 +48,6 @@ machinery can still do is upcase the wrong region off stale registers."
     args))
 
 (advice-add 'replace-match :filter-args #'ads/replace-match-fixedcase-when-empty)
-
-(setq org-babel-auto-tangle-file-list
-      (list ads/config-file))
-
-(defun org-babel-auto-tangle-files ()
-  ;; Automatically tangle files in ~org-babel-auto-tangle-file-list~ when one of them is saved
-  (when (member buffer-file-name org-babel-auto-tangle-file-list)
-    (org-babel-tangle-file buffer-file-name)))
-
-(add-hook 'org-mode-hook
-  (lambda () (add-hook 'after-save-hook 'org-babel-auto-tangle-files)))
 
 (add-hook 'after-save-hook
           #'executable-make-buffer-file-executable-if-script-p)
