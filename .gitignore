@@ -46,3 +46,7 @@ async-bytecomp.log
 
 # Migration scaffolding, not configuration
 spec.org
+
+# nix build output symlink
+result
+result-*
