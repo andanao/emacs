@@ -177,6 +177,18 @@
               let built = lib.mapAttrs (buildFromGit (epkgs // built))
                 gitSources;
               in epkgs // built;
+
+            # treesit-auto compiles grammars from git on first use, which
+            # wants a compiler and the network at the moment a file opens.
+            # These are the two languages treesit-language-source-alist
+            # names; supplying them from the store means treesit-auto finds
+            # them already there and does nothing.
+            extraEmacsPackages = epkgs: [
+              (epkgs.treesit-grammars.with-grammars (g: [
+                g.tree-sitter-rust
+                g.tree-sitter-python
+              ]))
+            ];
           };
 
           # The package set the parser resolved, so it can be read without

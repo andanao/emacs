@@ -19,16 +19,20 @@ done
 RAW="$WORK/compile.log"
 
 cd "$WORK" || exit 1
+# Deliberately no -L for config/ or lisp/.  Putting them on load-path is
+# what makes (require 'dired) find config/dired.el, which is the shadowing
+# the loader exists to avoid; doing it here would only manufacture errors
+# the real startup cannot hit.  Package directories arrive via the wrapper.
 "$EMACS" --batch \
-  -L "$WORK" -L "$WORK/config" -L "$WORK/config/org" -L "$WORK/lisp" \
   --eval '(setq byte-compile-warnings t load-prefer-newer t)' \
+  --eval '(package-activate-all)' \
   -f batch-byte-compile \
   early-init.el init.el mac.el config/*.el config/org/*.el lisp/*.el \
   > "$RAW" 2>&1
 status=$?
 
-total=$(grep -c '^Compiling' "$RAW")
-echo "compiled $total files, batch-byte-compile exit $status"
+total=$(find "$WORK" -name '*.elc' | wc -l | tr -d ' ')
+echo "produced $total .elc files, batch-byte-compile exit $status"
 echo
 
 echo "=== errors ==="

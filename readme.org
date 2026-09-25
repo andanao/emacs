@@ -90,17 +90,25 @@ set.
 Six packages are installed from git rather than MELPA and are pinned by
 revision in ~gitSources~.  Bumping one is a rev and a hash.
 
+Tree-sitter grammars for Rust and Python come from the store too, so
+~treesit-auto~ finds them already there and never compiles one from git on
+first use.
+
 * Known leaks
-Things Nix does not pin here, deliberately:
+Things Nix does not pin here, each for a reason:
 
 - *Language servers.*  ~lsp-mode~ downloads rust-analyzer and pyright on first
   use.  Out of scope: they are system tools and belong to the machine config,
   not the editor's package set.
+- *ghostel's native module.*  The flake takes the elisp from ~lisp/~ and not
+  the Zig terminal around it, so ~ghostel-module.dylib~ is still whatever
+  ~ghostel-module-install~ put there.  ~package-vc~ never supplied it either, so
+  this is unchanged rather than lost.
+- *toggl.*  A private repo reached over SSH, which no pure evaluation can
+  fetch.  Making it public, or vendoring it, is what would close this.
 - *Emacs state.*  ~custom.el~, ~eln-cache~, history, bookmarks and
   ~.org-id-locations~ resolve against ~user-emacs-directory~ and are ignored by
   git.  They are per-machine by nature.
-- *toggl.*  Lives in a private repo reached over SSH, which no pure evaluation
-  can fetch, so the flake cannot supply it.
 
 * Inspiration
 - [[https://github.com/SystemCrafters/crafted-emacs][Crafted Emacs]]

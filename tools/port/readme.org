@@ -27,6 +27,24 @@ python3 tools/port/port.py "$tmp" .
 the output is byte-equivalent to the tangled original.  Without it the drops
 in ~manifest.py~ apply.
 
+* Before cutover
+One thing outside this repo breaks, and it breaks at cutover rather than
+during the trial.
+
+~~/git/konfig/work.el~ line 44 does
+
+#+begin_src emacs-lisp
+(add-to-list 'org-babel-auto-tangle-file-list k2/config-file)
+#+end_src
+
+and that variable no longer exists, because the tangle-on-save section that
+defined it is gone.  Deleting the line is the whole fix.  It is left alone
+here because konfig is a separate repo and the work split is not this job.
+
+While running side by side, ~work.el~ also calls ~(server-mode)~, which wants the
+socket the live Emacs already holds.  Harmless once there is only one Emacs;
+until then the trial daemon needs its own ~server-name~.
+
 * Checking it
 | ~verify.py REF .~   | the faithfulness gate: sorted top-level forms must match |
 | ~review.py REF .~   | one line per remaining difference, for sign-off          |
