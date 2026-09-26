@@ -82,6 +82,14 @@
           hash = "sha256-ouGBcsdL00f5lzDg88TzfiFo8wY2ws+q6F0AYwLx5Hk=";
           deps = _: [ ];
         };
+        toggl = {
+          version = "20260925.2144";
+          owner = "andanao";
+          repo = "emacs-toggl-track";
+          rev = "dd01ae4f890ddb50b2da4b2999b919080b627113";
+          hash = "sha256-Lyy8C2u2920vCz2qTjps9orlA3mvC4DHSPpdMfZBP8o=";
+          deps = p: [ p.plz p.transient ];
+        };
 
         # The config pins a personal fork, and the overlay would otherwise
         # hand over abo-abo's upstream without saying so.
