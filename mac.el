@@ -44,7 +44,21 @@
 
 (menu-bar-mode -1)
 
-(load-file (concat git-directory "konfig/work.el"))
+;; konfig is a separate repo with its own tangle model, so work.el is read by
+;; explicit path rather than supplied by the flake.  It adds to
+;; `org-babel-auto-tangle-file-list', which this config used to define and no
+;; longer does; the stub keeps that line from aborting startup 44 lines into a
+;; 2343-line file.  Restoring the hook that acted on it is konfig's to do.
+(defvar org-babel-auto-tangle-file-list nil
+  "Files konfig asks to be tangled on save.  Nothing acts on this yet.")
+
+;; Presence of the file is the machine test.  The old `system-name' check was
+;; not reliable this early in startup, and a Mac without konfig checked out is
+;; exactly a Mac that should skip it.
+(let ((work (concat git-directory "konfig/work.el")))
+  (when (file-exists-p work)
+    (with-demoted-errors "konfig: work.el stopped early: %S"
+      (load-file work))))
 
 (ads/leader-keys
   "tm" 'dwim-shell-commands-macos-toggle-menu-bar-autohide
