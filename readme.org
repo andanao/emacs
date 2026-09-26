@@ -4466,6 +4466,13 @@ on a keybinding instead.  Deciding that per project belongs to the project, not 
 hook.  =run-hook-with-args-until-success= means any predicate returning non-nil suppresses the
 start - explicit =M-x lsp= is unaffected either way.
 
+A deleted worktree stays in the session's folder list, and the watch a server registers walks
+every root of its workspace with =directory-files=, so one binned =git/pr/*= checkout makes every
+registration signal =file-missing= — ruff is multi-root, so that is every Python buffer sharing
+the server.  =ads/lsp-skip-missing-root= skips a root that isn't there, which is the one choke
+point both watch callers go through; =ads/lsp-prune-missing-folders= forgets the folders properly
+when the noise is worth clearing.
+
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
@@ -4480,6 +4487,28 @@ that is about to start one.")
     "Start a server for this buffer unless something has claimed it."
     (unless (run-hook-with-args-until-success 'ads/lsp-autostart-inhibit-functions)
       (lsp-deferred)))
+
+  (defun ads/lsp-skip-missing-root (fn dir &rest args)
+    "Don't set a file watch on DIR when it no longer exists.
+Deleting a worktree leaves its folder in the session, and the watch walks
+the directory before anything notices it is gone."
+    (when (file-directory-p dir)
+      (apply fn dir args)))
+
+  (defun ads/lsp-prune-missing-folders ()
+    "Drop workspace folders whose directory has been deleted.
+Remote folders are left alone: deciding whether one is missing would open
+a connection."
+    (interactive)
+    (if-let* ((session (lsp-session))
+              (dead (seq-remove (lambda (folder)
+                                  (or (file-remote-p folder)
+                                      (file-directory-p folder)))
+                                (lsp-session-folders session))))
+        (progn (mapc #'lsp-workspace-folders-remove dead)
+               (message "Dropped %d missing workspace folder(s): %s"
+                        (length dead) (string-join dead ", ")))
+      (message "No missing workspace folders")))
   :hook
   (rust-ts-mode . ads/lsp-maybe-deferred)
   (python-ts-mode . ads/lsp-maybe-deferred)
@@ -4498,6 +4527,7 @@ that is about to start one.")
   (lsp-warn-no-matched-clients nil)
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]external\\'")
+  (advice-add 'lsp-watch-root-folder :around #'ads/lsp-skip-missing-root)
   (ads/leader-keys
     :keymaps 'lsp-mode-map
     "l" '(:ignore t :which-key "lsp")
@@ -7273,6 +7303,12 @@ from parent headings the way the agenda does — the meeting file is yellow with
 in it having to say so.
 
 #+begin_src emacs-lisp
+;; `setf' on a struct accessor is only a slot write when the struct is defined
+;; as the form is macroexpanded, and these are defined before the package
+;; loads.  org-timegrid-model is the standalone file the events and blocks live
+;; in; the renderer's own structs stay deferred.
+(require 'org-timegrid-model nil t)
+
 (defvar ads/org-timegrid--underline nil
   "What to underline while a linked heading's block is being drawn.
 `t' on the all-day rail, which draws its title and nothing else, and the
@@ -7867,7 +7903,7 @@ canvas with = or 0, or open the rail with z, to reach the rest."
         (org-timegrid--set-all-day-cursor
          day (or (org-timegrid-block-rail-lane block) 0))
       (org-timegrid--set-cursor day minute 0))
-    (setf (org-timegrid--calendar-state-cursor-visible org-timegrid--state) t)
+    (org-timegrid--reveal-cursor)
     (org-timegrid--render-dynamic t)
     (org-timegrid--scroll-cursor-into-view)))
 
@@ -9061,9 +9097,10 @@ and tab-bar's own restore-the-tab-I-came-from with it.  Walking past a workspace
 having left it, which would scramble the ordering, so the visit times go back afterwards and only
 the one I really left is stamped.
 
-An agent shell in the workspace is nearly always what I am looking for, so it takes the annotation
-over the directory, wearing the [[*agent-shell consult source ~a~][same coloured status]] ~SPC a a~ shows — the one waiting on me if
-there is one.
+An agent shell in the workspace is nearly always what I am looking for, so it takes the first
+column over the directory, wearing the [[*agent-shell consult source ~a~][same coloured status]] ~SPC a a~ shows — the one waiting on
+me if there is one.  What is actually on screen follows, dimmed, because that is what tells two
+workspaces apart when neither is running anything.
 
 #+begin_src emacs-lisp
 (defvar ads/workspace-history nil
@@ -9085,28 +9122,56 @@ time I left it, which is the order I want the rest in."
                 (cons (if (> nth 1) (format "%s<%d>" name nth) name) (cdr entry))))
             (append rest (and mine (list mine))))))
 
-(defun ads/workspace--shell (index)
+(defun ads/workspace--shell (index &optional waiting)
   "The agent shell in the workspace at INDEX worth reporting on.
-Whichever one wants me, otherwise the one I used last."
+Whichever one is WAITING on me, otherwise the one I used last."
   (when (fboundp 'agent-shell-buffers)
     (let ((shells (seq-intersection (ads/workspace-buffers index) (agent-shell-buffers))))
-      (or (car (seq-intersection shells (ads/agent-shell-waiting)))
+      (or (car (seq-intersection shells waiting))
           (car shells)))))
 
+(defun ads/workspace--window-buffers (state)
+  "The buffer names in the `window-state' STATE, in window order.
+Walking both halves of every cons, because a window state is full of
+dotted pairs like =(pixel-width . 4)= that no list function will touch."
+  (cond
+   ((not (consp state)) nil)
+   ((and (eq (car state) 'buffer) (stringp (cadr state))) (list (cadr state)))
+   (t (append (ads/workspace--window-buffers (car state))
+              (ads/workspace--window-buffers (cdr state))))))
+
+(defun ads/workspace-windows (index)
+  "What is on screen in the workspace at INDEX, in window order.
+A workspace I am not in is a saved `window-state', so read the buffer
+names straight out of it rather than restoring anything to look."
+  (let ((tab (nth index (tab-bar-tabs))))
+    (if (eq (car tab) 'current-tab)
+        (mapcar (lambda (window) (buffer-name (window-buffer window)))
+                (window-list nil 'nomini))
+      (delete-dups (ads/workspace--window-buffers (alist-get 'ws tab))))))
+
 (defun ads/workspace--annotate (candidates)
-  "Annotation function for the workspaces in CANDIDATES."
-  (lambda (name)
-    (when-let* ((index (alist-get name candidates nil nil #'equal))
-                (buffers (ads/workspace-buffers index)))
-      (consult--annotate-align
-       name
-       (concat (propertize (format "%2d  " (length buffers))
-                           'face 'completions-annotations)
-               (or (when-let* ((shell (ads/workspace--shell index)))
-                     (ads/agent-shell-status-string shell))
-                   (propertize (abbreviate-file-name
-                                (buffer-local-value 'default-directory (car buffers)))
-                               'face 'completions-annotations)))))))
+  "Annotation function for the workspaces in CANDIDATES.
+Which sessions want me is settled once, when the picker opens: asking
+every agent shell its status again for every candidate on every
+keystroke is both slow and a way for the list to shift under me."
+  (let ((waiting (and (fboundp 'ads/agent-shell-waiting) (ads/agent-shell-waiting))))
+    (lambda (name)
+      (when-let* ((index (alist-get name candidates nil nil #'equal))
+                  (buffers (ads/workspace-buffers index)))
+        (consult--annotate-align
+         name
+         ;; Decoration is never worth an error: one unhappy shell would
+         ;; otherwise take out the whole list.
+         (with-demoted-errors "Workspace annotation: %S"
+           (concat
+            (or (when-let* ((shell (ads/workspace--shell index waiting)))
+                  (ads/agent-shell-status-string shell))
+                (propertize (abbreviate-file-name
+                             (buffer-local-value 'default-directory (car buffers)))
+                            'face 'completions-annotations))
+            (propertize (concat "   " (string-join (ads/workspace-windows index) "  "))
+                        'face 'shadow))))))))
 
 (defun ads/workspace--state (candidates origin)
   "Preview the workspace in CANDIDATES the cursor is on, ORIGIN on quit.
@@ -9117,7 +9182,17 @@ completion UI mid-thought and worth nothing but sitting still."
       (when-let* ((index (if name
                              (alist-get name candidates nil nil #'equal)
                            origin)))
-        (tab-bar-select-tab (1+ index))))))
+        ;; A preview runs from `post-command-hook', and an error thrown there
+        ;; gets the hook function removed — one layout Emacs is unhappy to
+        ;; restore would silently kill preview for the rest of the session,
+        ;; which is exactly what flaky previewing looks like.  Say so in
+        ;; *Messages* and carry on.
+        (with-demoted-errors "Workspace preview: %S"
+          (tab-bar-select-tab (1+ index))
+          ;; Emacs skips redisplay while there is input pending, so holding the
+          ;; movement key down swaps the whole frame without painting any of
+          ;; it.  A preview that cannot be seen is not one.
+          (redisplay t))))))
 
 (defun ads/workspace--restore-times (times origin)
   "Undo the visits preview logged, counting only ORIGIN as one I left.
@@ -9132,8 +9207,22 @@ TIMES is the time each workspace was last left, by position."
    (tab-bar-tabs)))
 
 (defun ads/workspace-switch ()
-  "Pick a workspace, previewing each layout on the way past it."
+  "Pick a workspace, previewing each layout on the way past it.
+Workspaces belong to a frame, so a second frame starts with none of
+them; say that rather than offering a list of one that previews nothing."
   (interactive)
+  (when (length< (tab-bar-tabs) 2)
+    (user-error "Only one workspace on this frame%s"
+                (if-let* ((elsewhere (seq-filter
+                                      (lambda (frame)
+                                        (and (not (eq frame (selected-frame)))
+                                             (length> (tab-bar-tabs frame) 1)))
+                                      (frame-list))))
+                    (format "; %s has the rest"
+                            (mapconcat (lambda (frame)
+                                         (format "%s" (frame-parameter frame 'name)))
+                                       elsewhere ", "))
+                  "")))
   (let* ((candidates (ads/workspace--candidates))
          (origin (ads/workspace-index))
          (times (mapcar (lambda (tab) (alist-get 'time tab)) (tab-bar-tabs)))
