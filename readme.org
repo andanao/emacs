@@ -3657,6 +3657,9 @@ I move down the list.
 Their buffer names are all much the same, so the annotation is the directory each terminal is
 sitting in, which is what I am really picking by.
 
+The popup is left out: it is a scratch terminal with its own key, not one of the shells I rotate
+through.
+
 ~consult-buffer~ takes its sources as an argument, so the same source is also the whole of
 =SPC s b=, in place of ~ghostel-list-buffers~.
 
@@ -3675,7 +3678,8 @@ sitting in, which is what I am really picking by.
                          (buffer-local-value 'default-directory buffer))))
           :items    (lambda ()
                       (mapcar #'buffer-name
-                              (match-buffers '(derived-mode . ghostel-mode)))))
+                              (match-buffers `(and (derived-mode . ghostel-mode)
+                                                   (not ,ads/ghostel-popup-regexp))))))
     "Open `ghostel' terminals, for `consult-buffer'.")
 
   (add-to-list 'consult-buffer-sources 'ads/consult-source-ghostel)
