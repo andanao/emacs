@@ -4446,6 +4446,35 @@ glyph, and a sequence missing from either one silently does nothing.
   (global-ligature-mode t))
 #+end_src
 
+** log files                                                       :custom:
+A log is terminal output redirected into a file, so its colours arrive as =^[[32m= litter and its
+columns are padded wider than the centred window [[*visual-fill-column][visual-fill-column]] gives it.  =ads/log-mode= applies
+the escapes and hands the log the whole window, long lines running off the right edge rather than
+wrapping into two.
+
+#+begin_src emacs-lisp
+(require 'ansi-color)
+
+(defun ads/log-colors ()
+  "Turn the ANSI escapes in this buffer into the colours they name."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))
+    ;; [[*auto-revert][auto-revert]] will not touch a modified buffer, and stripping the escapes is
+    ;; what modified it, so without this a log still being written stops following.
+    (set-buffer-modified-p nil)))
+
+(define-derived-mode ads/log-mode fundamental-mode "Log"
+  "Major mode for reading captured terminal output."
+  (visual-fill-column-mode -1)
+  (setq-local truncate-lines t)
+  ;; Reverting preserves the mode, so the colours have to be reapplied by hand
+  ;; every time the file grows.
+  (add-hook 'after-revert-hook #'ads/log-colors nil t)
+  (ads/log-colors))
+
+(add-to-list 'auto-mode-alist '("\\.log\\'" . ads/log-mode))
+#+end_src
+
 ** lsp-mode
 [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] - Language Server Protocol client for Emacs
 
