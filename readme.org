@@ -7994,6 +7994,8 @@ canvas with = or 0, or open the rail with z, to reach the rest."
 (ads/leader-keys
   "og" '(org-timegrid-week :wk "timegrid week")
   "oG" '(ads/org-timegrid-schedule-task :wk "timegrid schedule task"))
+
+(setq org-timegrid-org-capture-file ads/inbox-file)
 #+end_src
 
 ** org-transclusion
