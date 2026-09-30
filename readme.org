@@ -355,6 +355,29 @@ Add hook to after save hook when on org mode
 (customize-set-variable 'line-spacing 0.25)
 #+end_src
 
+** cjk width
+Org sizes table columns treating a Han character as two columns wide, which is right, but
+nothing here told Emacs which font to draw =han= in.  macOS falls back to PingFang or
+Hiragino, and those are CJK-proportional designs where a glyph fills a full 1em square.  Two
+FiraCode characters only span 1.2em — its advance is 600/1000 — so every Han glyph draws at
+83% of the slot org reserved for it and the rest of the row slides left.
+
+Pinning the charsets and rescaling by 1.2 puts one glyph back on exactly two columns.  Emacs
+rounds advances to whole pixels, so if a table still drifts compare ~(string-pixel-width "开")~
+against twice ~(frame-char-width)~ and nudge the factor.  The rescale grows the glyph
+vertically too, but ~line-spacing~ above absorbs it.
+
+A CJK font built to 2:1 against a monospace Latin — Sarasa Mono SC is the usual pick — would
+make the rescale unnecessary, but I would rather not carry another font file.
+
+#+begin_src emacs-lisp
+(let ((cjk "Hiragino Sans"))
+  (when (member cjk (font-family-list))
+    (dolist (charset '(han cjk-misc kana bopomofo))
+      (set-fontset-font t charset (font-spec :family cjk)))
+    (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2)))
+#+end_src
+
 ** modus-themes
 I used to maintain my own theme, but I wanted a change and modus themes are nice looking, I
 particularly like the light ~modus-operandi~ theme.
