@@ -2942,6 +2942,31 @@ what =<d= expands to.
           (:output-dir . "img"))))
 #+end_src
 
+*** default image width
+
+Babel rewrites the result on every run, so after each one a d2 image link without a width
+gets =#+ATTR_ORG: :width ads/d2-image-width= -- about half the =org-image-actual-width= default.
+
+#+begin_src emacs-lisp
+(defvar ads/d2-image-width 0.4
+  "Width given to a d2 result image, as a fraction of the text width.")
+
+(defun ads/d2-default-image-width ()
+  "Give the d2 image result of the block at point a width when it has none."
+  (let ((info (org-babel-get-src-block-info 'no-eval)))
+    (when (equal (car info) "d2")
+      (save-excursion
+        (when-let ((result (org-babel-where-is-src-block-result nil info)))
+          (goto-char result)
+          (forward-line)
+          (when (looking-at "\\([ \t]*\\)\\[\\[file:")
+            (insert (match-string 1)
+                    (format "#+ATTR_ORG: :width %s\n" ads/d2-image-width))))))))
+
+;; Ahead of `org-link-preview-refresh' on the same hook, so the preview sees the width.
+(add-hook 'org-babel-after-execute-hook #'ads/d2-default-image-width -50)
+#+end_src
+
 *** regenerate d2 diagrams on theme change
 
 Rewrites the image files only; re-executing the blocks properly would dirty the buffer on every
