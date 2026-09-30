@@ -2967,6 +2967,72 @@ gets =#+ATTR_ORG: :width ads/d2-image-width= -- about half the =org-image-actual
 (add-hook 'org-babel-after-execute-hook #'ads/d2-default-image-width -50)
 #+end_src
 
+=org-babel-result-end= only recognises a result that is a bare link line, so an =#+ATTR_ORG:=
+line above it leaves babel deleting nothing and stacking a fresh copy on every run.
+
+#+begin_src emacs-lisp
+(defconst ads/org-babel-result-attributes-re
+  "\\(?:[ \t]*#\\+ATTR_[-_A-Za-z0-9]+:.*\n\\)+"
+  "A run of `#+ATTR_...:' lines at the head of a babel result.")
+
+(defun ads/org-babel-result-end-past-attributes (orig)
+  "Let a result start with `#+ATTR_...:' lines, else fall through to ORIG.
+Covers a result image resized by hand as well as one the d2 hook widened."
+  (if (looking-at (concat ads/org-babel-result-attributes-re
+                          (format "[ \t]*%s[ \t]*$" org-link-bracket-re)))
+      (save-excursion (goto-char (match-end 0)) (line-beginning-position 2))
+    (funcall orig)))
+
+(advice-add 'org-babel-result-end :around #'ads/org-babel-result-end-past-attributes)
+#+end_src
+
+*** keep a hand-set width across a re-run
+
+Re-running the block deletes those attribute lines along with the result, so a width set with
+=+= / =-= would snap back to the default; carry them over instead, and leave the default to the
+blocks that never had any.
+
+#+begin_src emacs-lisp
+(defvar ads/org-babel--result-attributes nil
+  "Attribute lines carried from the result of the block being executed.
+A cons of the block's start position and the text, so the inner
+evaluation of a `:var' reference can't hand its attributes to the outer
+block.")
+
+(defun ads/org-babel--result-attributes (info)
+  "The `#+ATTR_...:' lines on the result of the block described by INFO."
+  (save-excursion
+    (when-let* ((result (org-babel-where-is-src-block-result nil info)))
+      (goto-char result)
+      (forward-line)
+      (and (looking-at ads/org-babel-result-attributes-re)
+           (match-string-no-properties 0)))))
+
+(defun ads/org-babel-save-result-attributes (&rest _)
+  "Remember the attribute lines babel is about to delete with the result."
+  (setq ads/org-babel--result-attributes
+        (when-let* ((info (ignore-errors (org-babel-get-src-block-info 'no-eval)))
+                    (attributes (ads/org-babel--result-attributes info)))
+          (cons (nth 5 info) attributes))))
+
+(defun ads/org-babel-restore-result-attributes ()
+  "Put the remembered attribute lines back, when the new result is an image."
+  (when-let* ((saved ads/org-babel--result-attributes)
+              (info (org-babel-get-src-block-info 'no-eval))
+              ((eq (car saved) (nth 5 info)))
+              (result (org-babel-where-is-src-block-result nil info)))
+    (setq ads/org-babel--result-attributes nil)
+    (save-excursion
+      (goto-char result)
+      (forward-line)
+      (when (looking-at (format "[ \t]*%s[ \t]*$" org-link-bracket-re))
+        (insert (cdr saved))))))
+
+(advice-add 'org-babel-execute-src-block :before #'ads/org-babel-save-result-attributes)
+;; Ahead of `ads/d2-default-image-width', which only fills in a width it finds missing.
+(add-hook 'org-babel-after-execute-hook #'ads/org-babel-restore-result-attributes -90)
+#+end_src
+
 *** regenerate d2 diagrams on theme change
 
 Rewrites the image files only; re-executing the blocks properly would dirty the buffer on every
