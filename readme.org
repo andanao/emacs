@@ -1278,7 +1278,7 @@ own agent-shell module, which binds the same map."
   ;; evil-collection ships an agent-shell module that binds this same map, and
   ;; it always gets the last word - re-apply from its own after-setup hook.
   (add-hook 'evil-collection-setup-hook #'ads/agent-shell-evil-keys)
-  (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-open-transcript)
+  (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-show-usage)
   ;; The buffer is always "modified" and never savable; red is a lie here.
   (add-hook 'agent-shell-mode-hook
             (lambda ()
