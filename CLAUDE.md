@@ -38,3 +38,9 @@ Evaluating into the running Emacs is fine, but it is running the *currently tang
 not the working tree. Never remove or unbind a function that init still calls — under a repeating
 timer that errors every tick and visibly slows the editor. Redefine the caller first, or leave
 both in place.
+
+## Active  Development on main branch happens in temp files
+For testing out potential while working out of the main config dir changes leave the `readme.org`
+unchanged and write all changes into a dedicated temporary `.el` file, at the end of your message
+leave an elisp section like `(load-file "/tmp/test-changes.el")` with a descriptive file name at the
+end of the message.
