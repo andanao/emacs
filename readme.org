@@ -2947,6 +2947,24 @@ ARGS are passed through untouched when the buffer is visiting one."
   (advice-add 'd2-compile :around #'ads/d2-compile-fileless))
 #+end_src
 
+*** refreshing the image after =C-c C-c=
+
+=d2-compile= shows its output with =find-file-noselect=, which hands back an already-open image
+buffer as it was; revert any image buffer whose file changed underneath it.
+
+#+begin_src emacs-lisp
+(defun ads/d2-revert-stale-images (&rest _)
+  "Revert every image buffer whose file has changed on disk."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (and (derived-mode-p 'image-mode) buffer-file-name
+                 (not (verify-visited-file-modtime buffer)))
+        (revert-buffer t t t)))))
+
+(with-eval-after-load 'd2-mode
+  (advice-add 'd2-compile :after #'ads/d2-revert-stale-images))
+#+end_src
+
 *** block defaults
 
 =:file-ext= and =:output-dir= let babel derive the filename from the block's =#+name=, so a
