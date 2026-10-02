@@ -44,6 +44,11 @@ async-bytecomp.log
 .\#*
 *~
 
+# Per-session Claude state.  Everything else under .claude/ — settings, skills,
+# agents — is deliberate and tracked.
+.claude/HANDOFF.md
+.claude/settings.local.json
+
 # Migration scaffolding, not configuration
 spec.org
 
