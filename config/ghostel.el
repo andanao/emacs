@@ -185,7 +185,8 @@ off the every-prompt path.  TITLE is ignored: nothing here emits one."
                          (buffer-local-value 'default-directory buffer))))
           :items    (lambda ()
                       (mapcar #'buffer-name
-                              (match-buffers '(derived-mode . ghostel-mode)))))
+                              (match-buffers `(and (derived-mode . ghostel-mode)
+                                                   (not ,ads/ghostel-popup-regexp))))))
     "Open `ghostel' terminals, for `consult-buffer'.")
 
   (add-to-list 'consult-buffer-sources 'ads/consult-source-ghostel)

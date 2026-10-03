@@ -19,10 +19,18 @@
     "Text scaling commands."
     :transient-suffix 'transient--do-stay
     :transient-non-suffix 'transient--do-quit-one
-    ["Text Scale"
-     ("j" "increase" default-text-scale-increase)
-     ("k" "decrease" default-text-scale-decrease)
-     ("h" "reset" default-text-scale-reset :transient nil)])
+    [["Buffer"
+      ("j" "increase" text-scale-increase)
+      ("k" "decrease" text-scale-decrease)
+      ("h" "reset" ads/text-scale-reset :transient nil)]
+     ["Global"
+      ("J" "increase" default-text-scale-increase)
+      ("K" "decrease" default-text-scale-decrease)
+      ("H" "reset" default-text-scale-reset :transient nil)]])
+  (defun ads/text-scale-reset ()
+    "Reset the current buffer's text scale."
+    (interactive)
+    (text-scale-set 0))
   (ads/leader-keys "ts" 'ads/text-scale-transient))
 
 (use-package emojify

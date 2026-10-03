@@ -111,11 +111,16 @@ already done, which is the whole of the filtering I want."
              ads/notify-appt--entries))
   t)
 
+(defvar ads/notify-appt--refreshing nil
+  "Non-nil while a refresh is scanning the agenda files.")
+
 (defun ads/notify-appt-refresh (&rest _)
   "Rebuild today's appt list from the timed agenda entries."
   (interactive)
-  (clrhash ads/notify-appt--entries)
-  (org-agenda-to-appt t #'ads/notify-appt--record))
+  (unless ads/notify-appt--refreshing
+    (let ((ads/notify-appt--refreshing t))
+      (clrhash ads/notify-appt--entries)
+      (org-agenda-to-appt t #'ads/notify-appt--record))))
 
 (defun ads/notify-appt--todo-regexp ()
   "A regexp matching any of my TODO keywords."
@@ -189,6 +194,5 @@ Either MINUTES or MSG may be a list when several are due at once."
 (appt-activate 1)
 (add-hook 'org-agenda-finalize-hook #'ads/notify-appt-refresh)
 (run-at-time "00:05" 86400 #'ads/notify-appt-refresh)
-(ads/notify-appt-refresh)
 
 ;;; org-meetings.el ends here

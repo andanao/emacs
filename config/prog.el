@@ -80,6 +80,28 @@ that is about to start one.")
     "Start a server for this buffer unless something has claimed it."
     (unless (run-hook-with-args-until-success 'ads/lsp-autostart-inhibit-functions)
       (lsp-deferred)))
+
+  (defun ads/lsp-skip-missing-root (fn dir &rest args)
+    "Don't set a file watch on DIR when it no longer exists.
+Deleting a worktree leaves its folder in the session, and the watch walks
+the directory before anything notices it is gone."
+    (when (file-directory-p dir)
+      (apply fn dir args)))
+
+  (defun ads/lsp-prune-missing-folders ()
+    "Drop workspace folders whose directory has been deleted.
+Remote folders are left alone: deciding whether one is missing would open
+a connection."
+    (interactive)
+    (if-let* ((session (lsp-session))
+              (dead (seq-remove (lambda (folder)
+                                  (or (file-remote-p folder)
+                                      (file-directory-p folder)))
+                                (lsp-session-folders session))))
+        (progn (mapc #'lsp-workspace-folders-remove dead)
+               (message "Dropped %d missing workspace folder(s): %s"
+                        (length dead) (string-join dead ", ")))
+      (message "No missing workspace folders")))
   :hook
   (rust-ts-mode . ads/lsp-maybe-deferred)
   (python-ts-mode . ads/lsp-maybe-deferred)
@@ -92,12 +114,14 @@ that is about to start one.")
   (lsp-log-io nil)
   (lsp-completion-provider :capf)
   (lsp-headerline-breadcrumb-enable t)
+  (lsp-enable-file-watchers nil)
   (lsp-modeline-diagnostics-enable t)
   (lsp-diagnostics-provider :flycheck)
   (lsp-file-watch-threshold 20000)
   (lsp-warn-no-matched-clients nil)
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]external\\'")
+  (advice-add 'lsp-watch-root-folder :around #'ads/lsp-skip-missing-root)
   (ads/leader-keys
     :keymaps 'lsp-mode-map
     "l" '(:ignore t :which-key "lsp")

@@ -218,6 +218,19 @@ tasks."
       (rename-file attach-dir attach-dir-new t))))
 (advice-add 'org-archive-subtree :before 'org-archive-with-attachments)
 
+(defun ads/org-archive-strip-leading-blank-line (&rest _)
+  "Delete blank lines at the top of the file just archived into."
+  (when-let* ((loc (or (org-entry-get nil "ARCHIVE" 'inherit) org-archive-location))
+              (file (expand-file-name (car (split-string loc "::"))))
+              (buf (find-buffer-visiting file)))
+    (with-current-buffer buf
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (when (looking-at "\\(?:[ \t]*\n\\)+")
+         (delete-region (point-min) (match-end 0))
+         (save-buffer))))))
+(advice-add 'org-archive-subtree :after #'ads/org-archive-strip-leading-blank-line)
+
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
   (let ((args (cons arg args))

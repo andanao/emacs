@@ -3,6 +3,12 @@
 ;; org-timegrid
 ;;; Code:
 
+;; `setf' on a struct accessor is only a slot write when the struct is defined
+;; as the form is macroexpanded, and these are defined before the package
+;; loads.  org-timegrid-model is the standalone file the events and blocks live
+;; in; the renderer's own structs stay deferred.
+(require 'org-timegrid-model nil t)
+
 (defvar ads/org-timegrid--underline nil
   "What to underline while a linked heading's block is being drawn.
 `t' on the all-day rail, which draws its title and nothing else, and the
@@ -146,6 +152,172 @@ rather than the calendar."
                            :fill (org-timegrid--blend foreground background 0.07)
                            :fill-opacity 0.6)))))))
 
+(defun ads/org-timegrid--body-timestamp ()
+  "Return the first active timestamp in the body of the heading at point.
+Only the heading's own section is searched, and only past its metadata, so
+a subheading's date and a logbook's inactive ones are left alone."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((limit (save-excursion (outline-next-heading) (point))))
+      (org-end-of-meta-data t)
+      (catch 'found
+        (while (re-search-forward org-ts-regexp limit t)
+          (goto-char (match-beginning 0))
+          (let ((timestamp (org-element-timestamp-parser)))
+            (if (memq (org-element-property :type timestamp)
+                      '(active active-range))
+                (throw 'found timestamp)
+              (goto-char (match-end 0)))))
+        nil))))
+
+(defun ads/org-timegrid--plan-heading (start)
+  "Give the heading at point a SCHEDULED value on START's day.
+Org writes the planning line, since getting the indentation and an
+existing DEADLINE beside it right is its business, not mine.  The value is
+date-only and the caller rewrites it to the range it wanted."
+  (org-add-planning-info 'scheduled (org-timegrid-org--absolute-time start))
+  (org-back-to-heading t)
+  (org-element-property :scheduled (org-element-at-point)))
+
+(defun ads/org-timegrid-retime-heading (fn record start end &optional all-day)
+  "Move the heading's one active timestamp to START through END.
+`org-timegrid-org--add-range' only ever inserts a plain timestamp under the
+heading, so scheduling a task the calendar already knew about left it
+carrying two dates that disagree -- and a second date on a heading means a
+second thing to do, not a correction of the first.  So the SCHEDULED value
+moves if there is one, the body's own timestamp moves if there isn't, and a
+heading with neither is scheduled rather than given a loose date.  The
+package's rewriters do the writing, so a repeater survives the move."
+  (let ((marker (if (markerp record) record (plist-get record :marker))))
+    (if (not (and (markerp marker) (marker-buffer marker)))
+        (funcall fn record start end all-day)
+      (with-current-buffer (marker-buffer marker)
+        (when buffer-read-only
+          (user-error "The source Org buffer is read-only"))
+        (org-with-wide-buffer
+         (goto-char marker)
+         (org-back-to-heading t)
+         (undo-boundary)
+         (atomic-change-group
+           (let* ((timestamp (or (org-element-property
+                                  :scheduled (org-element-at-point))
+                                 (ads/org-timegrid--body-timestamp)
+                                 (ads/org-timegrid--plan-heading start)))
+                  (beginning (org-element-property :begin timestamp))
+                  (replacement
+                   (if all-day
+                       (org-timegrid-org--rewrite-all-day-timestamp
+                        timestamp start end)
+                     (org-timegrid-org--rewrite-timestamp
+                      timestamp start end))))
+             ;; To `:end', not to the end of the value: the rewriters go
+             ;; through `org-element-interpret-data', which puts the
+             ;; timestamp's trailing space back on.
+             (goto-char beginning)
+             (delete-region beginning (org-element-property :end timestamp))
+             (insert replacement)))
+         (undo-boundary)
+         (org-timegrid-org--note-edit))))))
+
+(defun ads/org-timegrid--scrub-copy ()
+  "Strip identity, history and dates from the lone entry in this buffer.
+A copy is a new task: the original's ID, the hours clocked against it and
+the dates already on it all belong to the original alone.  The caller puts
+the one timestamp the copy does get back on."
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*:\\(?:ID\\|CUSTOM_ID\\):.*\n?" nil t)
+    (replace-match ""))
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*:\\(?:LOGBOOK\\|CLOCK\\):[ \t]*$" nil t)
+    (let ((beginning (match-beginning 0)))
+      (if (re-search-forward "^[ \t]*:END:[ \t]*\n?" nil t)
+          (delete-region beginning (point))
+        (goto-char (point-max)))))
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*CLOCK:.*\n?" nil t)
+    (replace-match ""))
+  ;; The drawer is left behind by the ID it was there to hold.
+  (goto-char (point-min))
+  (while (re-search-forward "^[ \t]*:PROPERTIES:[ \t]*\n[ \t]*:END:[ \t]*\n?"
+                            nil t)
+    (replace-match ""))
+  (goto-char (point-min))
+  (while (re-search-forward org-planning-line-re nil t)
+    (delete-region (line-beginning-position)
+                   (min (point-max) (line-beginning-position 2))))
+  (goto-char (point-min))
+  (while (re-search-forward org-ts-regexp nil t)
+    (replace-match "")
+    (when (string-blank-p (buffer-substring (line-beginning-position)
+                                            (line-end-position)))
+      (delete-region (line-beginning-position)
+                     (min (point-max) (line-beginning-position 2))))))
+
+(defun ads/org-timegrid--copy-text (marker title start end all-day)
+  "Return a copy of MARKER's entry, titled TITLE and scheduled START to END.
+The subtree keeps the level it had, so it goes back beside the original as
+a sibling rather than being promoted to the top of a file."
+  (let (subtree)
+    (with-current-buffer (marker-buffer marker)
+      (org-with-wide-buffer
+       (goto-char marker)
+       (org-back-to-heading t)
+       (let ((beginning (point)))
+         (org-end-of-subtree t t)
+         (setq subtree (buffer-substring-no-properties beginning (point))))))
+    (with-temp-buffer
+      (let ((org-inhibit-startup t)) (org-mode))
+      (insert subtree)
+      (goto-char (point-min))
+      (org-edit-headline title)
+      (ads/org-timegrid--scrub-copy)
+      (goto-char (point-min))
+      (end-of-line)
+      (insert "\n" org-scheduled-string " "
+              (if all-day
+                  (org-timegrid-org--format-all-day-range start end)
+                (org-timegrid-org--format-range start end)))
+      (goto-char (point-max))
+      (unless (bolp) (insert "\n"))
+      (buffer-string))))
+
+(defun ads/org-timegrid-duplicate-in-place (fn title start end
+                                               &optional source target
+                                               time-kind)
+  "Paste a copied entry beside the one it came from, scrubbed and scheduled.
+Without a TARGET the package sends a duplicate to the capture file, which
+is the wrong home for something that already had one, and its stripping
+reaches neither the planning line nor the logbook -- so the copy arrived in
+the inbox already clocked and carrying two dates."
+  (let* ((marker (and source (not target)
+                      (plist-get (org-timegrid-event-source source) :marker)))
+         (all-day (if time-kind
+                      (eq time-kind 'all-day)
+                    (org-timegrid-org--all-day-range-p start end))))
+    (if (not (and (markerp marker) (marker-buffer marker)))
+        (funcall fn title start end source target time-kind)
+      (let ((text (ads/org-timegrid--copy-text marker title start end all-day)))
+        (with-current-buffer (marker-buffer marker)
+          (when buffer-read-only
+            (user-error "The source Org buffer is read-only"))
+          (org-with-wide-buffer
+           (goto-char marker)
+           (org-back-to-heading t)
+           (org-end-of-subtree t t)
+           (undo-boundary)
+           (atomic-change-group
+             (unless (bolp) (insert "\n"))
+             (let ((beginning (point)))
+               (insert text)
+               (goto-char beginning)
+               (run-hooks 'org-timegrid-org-after-create-hook)))
+           (undo-boundary))
+          (org-timegrid-org--note-edit)
+          (message "Copied %s to %s" title
+                   (if buffer-file-name
+                       (file-name-nondirectory buffer-file-name)
+                     (buffer-name))))))))
+
 (defun ads/org-timegrid-drop-stateless (&rest _)
   "Kill a calendar buffer that a failed open left without state.
 `org-timegrid-open' creates the buffer and turns the mode on before it
@@ -187,6 +359,8 @@ renders as plain text.  The strip is worth less than the rest of it."
   (advice-add 'org-timegrid-week :before #'ads/org-agenda-files-update)
   (advice-add 'org-timegrid-open :before #'ads/org-timegrid-drop-stateless)
   (advice-add 'org-timegrid-org--event :around #'ads/org-timegrid-note-category)
+  (advice-add 'org-timegrid-org--add-range :around #'ads/org-timegrid-retime-heading)
+  (advice-add 'org-timegrid-org--create-event :around #'ads/org-timegrid-duplicate-in-place)
   (advice-add 'org-timegrid--draw-block :around #'ads/org-timegrid-plain-title)
   (advice-add 'org-timegrid--draw-all-day-block :around #'ads/org-timegrid-plain-title)
   (advice-add 'org-timegrid--wrap-title :filter-return #'ads/org-timegrid-underline-wrapped)
@@ -429,7 +603,7 @@ canvas with = or 0, or open the rail with z, to reach the rest."
         (org-timegrid--set-all-day-cursor
          day (or (org-timegrid-block-rail-lane block) 0))
       (org-timegrid--set-cursor day minute 0))
-    (setf (org-timegrid--calendar-state-cursor-visible org-timegrid--state) t)
+    (org-timegrid--reveal-cursor)
     (org-timegrid--render-dynamic t)
     (org-timegrid--scroll-cursor-into-view)))
 
@@ -478,5 +652,7 @@ canvas with = or 0, or open the rail with z, to reach the rest."
 (ads/leader-keys
   "og" '(org-timegrid-week :wk "timegrid week")
   "oG" '(ads/org-timegrid-schedule-task :wk "timegrid schedule task"))
+
+(setq org-timegrid-org-capture-file ads/inbox-file)
 
 ;;; timegrid.el ends here

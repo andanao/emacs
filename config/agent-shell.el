@@ -14,17 +14,6 @@
     (goto-char (point-max))
     (agent-shell-send-region)))
 
-(defun ads/agent-shell-resume-first (choices)
-  "Put the most recent session at the head of CHOICES.
-The startup prompt defaults to whatever comes first and agent-shell
-offers a new shell there; picking up the last conversation is the more
-common answer, whichever directory it was in.  Everything else keeps its
-place, so a new shell is still one key down."
-  (if-let* ((session (seq-find (lambda (choice) (not (keywordp (cdr choice))))
-                               choices)))
-      (cons session (remq session choices))
-    choices))
-
 (defun ads/agent-shell--button-action ()
   "Command the button under point binds to RET, if there is one.
 agent-shell hangs button actions off a `keymap' text property rather
@@ -140,10 +129,9 @@ own agent-shell module, which binds the same map."
   :custom
   ;; Named per project: "claude-agent @ emacs".  Fixes "which session is which".
   (agent-shell-buffer-name-format 'kebab-case)
-  ;; Resume vs new is a prompt at startup, not a separate command, and it
-  ;; opens on the last conversation rather than on a new shell.
+  ;; Resume vs new is a prompt at startup, not a separate command.  The order
+  ;; agent-shell ships is the right one: a new shell first, sessions under it.
   (agent-shell-session-strategy 'prompt)
-  (agent-shell-session-choices-function #'ads/agent-shell-resume-first)
   ;; Replay the conversation on restore.  The default `minimal' resumes
   ;; without one, so the agent has the context and I can't read any of it.
   (agent-shell-session-restore-verbosity 'full)
@@ -160,7 +148,7 @@ own agent-shell module, which binds the same map."
   ;; evil-collection ships an agent-shell module that binds this same map, and
   ;; it always gets the last word - re-apply from its own after-setup hook.
   (add-hook 'evil-collection-setup-hook #'ads/agent-shell-evil-keys)
-  (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-open-transcript)
+  (define-key agent-shell-mode-map (kbd "C-x C-s") #'agent-shell-show-usage)
   ;; The buffer is always "modified" and never savable; red is a lie here.
   (add-hook 'agent-shell-mode-hook
             (lambda ()
@@ -183,7 +171,8 @@ own agent-shell module, which binds the same map."
     "an" 'agent-shell-new-shell
     "aw" 'agent-shell-new-worktree-shell
     "aR" 'agent-shell-resume-session
-    "ac" 'agent-shell-prompt-compose
+    "ag" 'agent-shell-prompt-steer
+    ;; "ac" is the [[*review comments][review]] transient; compose is a key inside it.
     "aq" 'agent-shell-interrupt
     "aX" 'agent-shell-restart
     "ar" 'agent-shell-send-region
@@ -308,12 +297,11 @@ With prefix ALL, or when none are waiting, cycle through every shell."
   (ads/leader-keys "aN" '(agent-shell-knockknock-mode :wk "notify when done")))
 
 (with-eval-after-load 'consult
-  (defun ads/agent-shell-annotate (candidate)
-    "Status and session title for CANDIDATE, an agent shell buffer name."
-    (when-let* ((buffer (get-buffer candidate))
-                (status (agent-shell-status :shell-buffer buffer)))
+  (defun ads/agent-shell-status-string (buffer)
+    "Coloured status and session title for the agent shell in BUFFER."
+    (when-let* ((status (agent-shell-status :shell-buffer buffer)))
       (concat
-       (propertize (format " %-8s" status)
+       (propertize (format "%-8s" status)
                    'face (pcase status
                            ('busy 'agent-shell-warning)
                            ('blocked 'agent-shell-error)
@@ -322,6 +310,12 @@ With prefix ALL, or when none are waiting, cycle through every shell."
                                           '(:session :title))))
          (propertize (car (split-string (string-trim title) "\n"))
                      'face 'agent-shell-session-title)))))
+
+  (defun ads/agent-shell-annotate (candidate)
+    "Status and session title for CANDIDATE, an agent shell buffer name."
+    (when-let* ((buffer (get-buffer candidate))
+                (status (ads/agent-shell-status-string buffer)))
+      (concat " " status)))
 
   (defvar ads/consult-source-agent-shell
     (list :name     "Agent shell"

@@ -1,8 +1,8 @@
 ;;; files.el --- Files, projects, history and shell helpers  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; async, auto-revert, bookmark+, dwim-shell-commands, no-littering,
-;; nov (epub), pdf-tools, projectile, recentf, rg (ripgrep), save-hist,
-;; sudo-edit, tramp
+;; async, auto-revert, bookmark+, dwim-shell-commands, log files,
+;; no-littering, nov (epub), pdf-tools, projectile, recentf, rg (ripgrep),
+;; save-hist, sudo-edit, tramp
 ;;; Code:
 
 (use-package async
@@ -36,6 +36,27 @@
 (customize-set-variable 'bmkp-last-as-first-bookmark-file 'nil)
 
 (use-package dwim-shell-command)
+
+(require 'ansi-color)
+
+(defun ads/log-colors ()
+  "Turn the ANSI escapes in this buffer into the colours they name."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))
+    ;; [[*auto-revert][auto-revert]] will not touch a modified buffer, and stripping the escapes is
+    ;; what modified it, so without this a log still being written stops following.
+    (set-buffer-modified-p nil)))
+
+(define-derived-mode ads/log-mode fundamental-mode "Log"
+  "Major mode for reading captured terminal output."
+  (visual-fill-column-mode -1)
+  (setq-local truncate-lines t)
+  ;; Reverting preserves the mode, so the colours have to be reapplied by hand
+  ;; every time the file grows.
+  (add-hook 'after-revert-hook #'ads/log-colors nil t)
+  (ads/log-colors))
+
+(add-to-list 'auto-mode-alist '("\\.log\\'" . ads/log-mode))
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 (use-package no-littering)

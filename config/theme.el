@@ -1,6 +1,7 @@
 ;;; theme.el --- Fonts, Modus themes and per-project colours  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; fonts, modus-themes, modus-tweaks, force reload, project colors
+;; fonts, cjk width, modus-themes, modus-tweaks, force reload,
+;; project colors
 ;;; Code:
 
 (setq
@@ -29,6 +30,12 @@
 		    :weight 'regular)
 
 (customize-set-variable 'line-spacing 0.25)
+
+(let ((cjk "Hiragino Sans"))
+  (when (member cjk (font-family-list))
+    (dolist (charset '(han cjk-misc kana bopomofo))
+      (set-fontset-font t charset (font-spec :family cjk)))
+    (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2)))
 
 (use-package modus-themes
   :demand t
@@ -207,6 +214,25 @@ hook leave the rest of a toggle half applied."
   "Projects whose colour never moves, keyed by the name of their root directory.
 A nil colour means no tint at all.  Work projects are pushed on in konfig.")
 
+(defvar ads/project-colour-file
+  (expand-file-name "tmp/project-colours.eld" user-emacs-directory)
+  "Where the colours set with \\[ads/project-modeline-color-set] are kept.")
+
+(defvar ads/project-colour-overrides
+  (with-demoted-errors "Reading project colours: %S"
+    (when (file-exists-p ads/project-colour-file)
+      (with-temp-buffer
+        (insert-file-contents ads/project-colour-file)
+        (read (current-buffer)))))
+  "Colours set by hand, keyed like `ads/project-colour-pins' and beating them.")
+
+(defun ads/project--save-overrides ()
+  "Write `ads/project-colour-overrides' out for the next session."
+  (with-demoted-errors "Saving project colours: %S"
+    (make-directory (file-name-directory ads/project-colour-file) t)
+    (with-temp-file ads/project-colour-file
+      (prin1 ads/project-colour-overrides (current-buffer)))))
+
 (defvar ads/project-colour-exclude
   '("~/git/emacs/" "~/git/konfig/" "~/git/kode/" "~/git/org/" "~/Downloads/")
   "Projects under these directories keep the plain modeline.
@@ -219,18 +245,20 @@ Matched as directories, so =~/git/emacs/= leaves =~/git/emacs-toggl= alone.")
   "Face-remap cookies owned by this buffer, so re-running can't leak them.")
 
 (defun ads/project-root ()
-  "Root of the git project this buffer is in, or nil if it gets no colour.
+  "Root of the git project this buffer is in, or nil if it isn't in one.
 Not only file buffers: the agent shell, dired and magit all sit on a project's
 `default-directory' and want the same colour as the code they're about."
   (and default-directory
        (not (file-remote-p default-directory))
-       (when-let* ((dir (locate-dominating-file default-directory ".git"))
-                   (root (file-name-as-directory (expand-file-name dir))))
-         (and (not (seq-some
-                    (lambda (d)
-                      (string-prefix-p (file-name-as-directory (expand-file-name d)) root))
-                    ads/project-colour-exclude))
-              (directory-file-name root)))))
+       (when-let* ((dir (locate-dominating-file default-directory ".git")))
+         (directory-file-name (expand-file-name dir)))))
+
+(defun ads/project--excluded-p (root)
+  "Non-nil if ROOT sits under one of `ads/project-colour-exclude'."
+  (seq-some (lambda (d)
+              (string-prefix-p (file-name-as-directory (expand-file-name d))
+                               (file-name-as-directory root)))
+            ads/project-colour-exclude))
 
 (defun ads/project--live-roots ()
   "Roots with at least one buffer still open."
@@ -240,24 +268,32 @@ Not only file buffers: the agent shell, dired and magit all sit on a project's
 
 (defun ads/project-colour (root)
   "Colour for ROOT, allocating one on first sight, or nil if it stays bare.
-A pinned project is answered as-is - assoc, not the cdr, so a pin to nil
-reads as \"no tint\" rather than as a cache miss."
-  (if-let* ((pin (assoc (file-name-nondirectory root) ads/project-colour-pins)))
-      (cdr pin)
-    (or (cdr (assoc root ads/project--assigned))
-        (let ((live (ads/project--live-roots)))
-          ;; Only prune here: a colour is free the moment its project is closed,
-          ;; but nobody needs to know until something else asks for one.
-          (setq ads/project--assigned
-                (seq-filter (lambda (cell) (member (car cell) live))
-                            ads/project--assigned))
-          (let* ((taken (delq nil (append (mapcar #'cdr ads/project-colour-pins)
-                                          (mapcar #'cdr ads/project--assigned))))
-                 (colour (or (seq-find (lambda (c) (not (memq c taken)))
-                                       ads/project-palette)
-                             (car ads/project-palette))))
-            (push (cons root colour) ads/project--assigned)
-            colour)))))
+A pin or an override is answered as-is - assoc, not the cdr, so one set to
+nil reads as \"no tint\" rather than as a cache miss."
+  (let ((name (file-name-nondirectory root)))
+    (cond
+     ;; Asked for by hand, so it beats the exclude list too.
+     ((assoc name ads/project-colour-overrides)
+      (cdr (assoc name ads/project-colour-overrides)))
+     ((ads/project--excluded-p root) nil)
+     ((assoc name ads/project-colour-pins)
+      (cdr (assoc name ads/project-colour-pins)))
+     (t
+      (or (cdr (assoc root ads/project--assigned))
+          (let ((live (ads/project--live-roots)))
+            ;; Only prune here: a colour is free the moment its project is closed,
+            ;; but nobody needs to know until something else asks for one.
+            (setq ads/project--assigned
+                  (seq-filter (lambda (cell) (member (car cell) live))
+                              ads/project--assigned))
+            (let* ((taken (delq nil (append (mapcar #'cdr ads/project-colour-pins)
+                                            (mapcar #'cdr ads/project-colour-overrides)
+                                            (mapcar #'cdr ads/project--assigned))))
+                   (colour (or (seq-find (lambda (c) (not (memq c taken)))
+                                         ads/project-palette)
+                               (car ads/project-palette))))
+              (push (cons root colour) ads/project--assigned)
+              colour)))))))
 
 (defun ads/project--tint (face bg)
   "Remap FACE to background BG, recolouring its :box to match.
@@ -285,6 +321,54 @@ colour, so tinting only :background leaves the outer ring untinted."
   (dolist (b (buffer-list))
     (with-current-buffer b
       (when ads/project--remap (ads/project-colourise)))))
+
+(defun ads/project--recolourise-root (root)
+  "Re-tint every buffer sitting in ROOT, tinted until now or not."
+  (dolist (b (buffer-list))
+    (with-current-buffer b
+      (when (equal (ads/project-root) root) (ads/project-colourise)))))
+
+(defun ads/project--read-root ()
+  "The project to recolour: this buffer's, or one that is already open."
+  (or (ads/project-root)
+      (let ((roots (ads/project--live-roots)))
+        (unless roots (user-error "No project here and none open"))
+        (completing-read "Project: " roots nil t))))
+
+(defun ads/project-modeline-color-set (root colour)
+  "Tint ROOT's modeline with COLOUR, now and in every session after.
+An empty COLOUR means no tint, which is how to mute one project without
+touching `ads/project-colour-exclude'."
+  (interactive
+   (let* ((root (ads/project--read-root))
+          (current (ads/project-colour root)))
+     (list root
+           (completing-read (format "Colour for %s (empty for none): "
+                                    (file-name-nondirectory root))
+                            (mapcar #'symbol-name ads/project-palette)
+                            nil nil nil nil (and current (symbol-name current))))))
+  (let ((colour (and (not (string-empty-p colour)) (intern colour)))
+        (name (file-name-nondirectory root)))
+    (when (and colour (not (stringp (ads/modus-color colour))))
+      (user-error "`%s' is not a colour in this theme" colour))
+    (setf (alist-get name ads/project-colour-overrides nil nil #'equal) colour)
+    ;; Drop any allocation, so the colour it was holding goes back in the pool.
+    (setq ads/project--assigned (assoc-delete-all root ads/project--assigned))
+    (ads/project--save-overrides)
+    (ads/project--recolourise-root root)
+    (message "%s: %s" name (or colour "no tint"))))
+
+(defun ads/project-modeline-color-unset (root)
+  "Forget ROOT's hand-set colour, back to its pin or the next one going."
+  (interactive (list (ads/project--read-root)))
+  (let ((name (file-name-nondirectory root)))
+    (unless (assoc name ads/project-colour-overrides)
+      (user-error "%s has no colour set by hand" name))
+    (setq ads/project-colour-overrides
+          (assoc-delete-all name ads/project-colour-overrides))
+    (ads/project--save-overrides)
+    (ads/project--recolourise-root root)
+    (message "%s: back to %s" name (or (ads/project-colour root) "no tint"))))
 
 (add-hook 'after-change-major-mode-hook #'ads/project-colourise)
 (add-hook 'modus-themes-after-load-theme-hook #'ads/project-recolourise)

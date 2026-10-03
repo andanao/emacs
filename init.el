@@ -22,6 +22,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "config/theme")
 (ads/load-config "config/keybindings")
 (ads/load-config "config/agent-shell")
+(ads/load-config "config/review")
 (ads/load-config "config/ui")
 (ads/load-config "config/org/extras")
 (ads/load-config "config/prog")
@@ -54,6 +55,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "lisp/read-only-directories")
 (ads/load-config "config/toggl")
 (ads/load-config "lisp/window-resize")
+(ads/load-config "config/workspaces")
 (ads/load-config "config/platform")
 
 ;;; init.el ends here
