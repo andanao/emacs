@@ -103,19 +103,21 @@ def show(label, a, b, limit=60):
 
 def main(refdir, root):
     _, preamble, runs = load_runs(os.path.join(refdir, 'init.el'))
+    idx = {r['name']: i for i, r in enumerate(runs, 1)}
 
     dropped_lines = []
     for n in DROPPED:
-        dropped_lines += runs[n - 1]['body']
+        dropped_lines += runs[idx[n] - 1]['body']
 
     ref = []
-    for i, r in enumerate(runs, 1):
-        if i in DROPPED:
+    for r in runs:
+        if r['name'] in DROPPED:
             continue
         ref += r['body']
     ref = normalise(ref)
 
-    order = sorted(MANIFEST.items(), key=lambda kv: min(kv[1][1]))
+    order = sorted(MANIFEST.items(),
+                   key=lambda kv: min(idx[n] for n in kv[1][1]))
     new = []
     for path, _ in order:
         full = os.path.join(root, path)
@@ -134,7 +136,7 @@ def main(refdir, root):
     if dropped_lines:
         print('deliberately dropped:')
         for n, reason in DROPPED.items():
-            print(f'  run {n} ({runs[n-1]["name"]}): {reason}')
+            print(f'  run {idx[n]} ({n}): {reason}')
     return 0 if (a == 0 and b == 0) else 1
 
 

@@ -2,10 +2,14 @@
 """Which tangled run goes into which new file.
 
 Keys are output paths relative to the repo root.  Values are (title, [run
-numbers]) using the 1-based numbering from runs.py against the tangled
-init.el.  Runs keep tangle order inside a file, and files are loaded in order
-of their lowest run number, so the global sequence stays as close to the
-tangled original as a regrouping allows.
+names]) using the section headings runs.py reads out of the tangled init.el.
+
+Names rather than indices on purpose.  The numbering shifts the moment a
+section is inserted anywhere above, which silently refiles every run below
+it; a name that no longer exists is a hard error instead.  Runs keep tangle
+order inside a file, and files are loaded in order of their earliest run, so
+the global sequence stays as close to the tangled original as a regrouping
+allows.
 
 DROPPED lists runs deliberately left out, each with a reason.
 """
@@ -18,77 +22,171 @@ import os
 MECHANICAL = os.environ.get('PORT_MECHANICAL') == '1'
 
 DROPPED = {} if MECHANICAL else {
-    3: 'auto tangle files - tangle-on-save, removed by requirement 5',
+    'auto tangle files': 'auto tangle files - tangle-on-save, removed by requirement 5',
 }
 
-_SETTINGS = [1, 2, 4] if not MECHANICAL else [1, 2, 3, 4]
+_SETTINGS = (
+    ['Emacs Settings', 'replace-match case conversion fix', 'auto tangle files', 'auto chmod']
+    if MECHANICAL else
+    ['Emacs Settings', 'replace-match case conversion fix', 'auto chmod'])
 
 MANIFEST = {
-    # --- core, in original order ---------------------------------------
-    'config/settings.el': ('General editor settings', _SETTINGS),
-    'config/theme.el': ('Fonts, Modus themes and per-project colours',
-                        [5, 6, 7, 8, 9]),
-    'config/keybindings.el': ('general.el and the leader-key map',
-                              [10, 11, 12, 13, 14, 15, 16, 17, 18]),
-    'config/agent-shell.el': ('agent-shell sessions, notifications and resume',
-                              [19, 20, 21, 22, 23, 24, 25, 26]),
-
-    # --- packages, grouped by domain -----------------------------------
-    'config/ui.el': ('Icons, ligatures, padding, scrolling and other chrome',
-                     [27, 28, 47, 55, 67, 68, 75, 86,
-                      152, 153, 159, 171, 173, 174, 177]),
-    'config/prog.el': ('Language servers, formatting, treesit and modes',
-                       [30, 41, 60, 71, 72, 73, 76, 77, 78, 79, 87,
-                        157, 162, 169, 170, 176]),
-    'config/files.el': ('Files, projects, history and shell helpers',
-                        [31, 34, 35, 53, 88, 89, 149, 150, 155, 156,
-                         158, 160, 168]),
-    'config/text.el': ('Prose, markup and search syntax',
-                       [32, 33, 37, 39, 70, 83, 84, 85, 145,
-                        146, 147, 148]),
-    'config/completion.el': ('Vertico, corfu and the completion stack',
-                             [36, 38, 40, 82, 90, 172]),
-    'config/d2.el': ('d2 diagrams and their previews', [42, 43, 44, 45, 46]),
-    'config/dired.el': ('Dired and Dirvish', [48, 49]),
-    'config/modeline.el': ('doom-modeline and its indicators',
-                           [50, 51, 52, 161]),
-    'config/vc.el': ('Magit, ediff and git links', [54, 65, 80, 81]),
-    'config/evil.el': ('Evil and its companions', [56, 57, 58, 59]),
-    'config/ghostel.el': ('ghostel terminal sessions', [61, 62, 63, 64]),
-    'config/knockknock.el': ('knockknock notifications', [74]),
-    'config/toggl.el': ('Time zones and toggl time tracking',
-                        [163, 164, 165, 166, 167]),
-    'config/platform.el': ('Per-machine and per-system loading', [178]),
-
-    # --- org ------------------------------------------------------------
-    'config/org/org.el': ('Core org setup, tags, todo keywords, keybindings',
-                          [91, 92, 93, 94, 95, 96]),
-    'config/org/agenda.el': ('org-agenda and its task frame',
-                             [100, 101, 102]),
-    'config/org/babel.el': ('org-babel languages and templates', [105]),
-    'config/org/capture.el': ('org-capture templates', [106]),
-    'config/org/appearance.el': ('org-modern, org-appear, org-tidy',
-                                 [103, 118, 119, 141]),
-    'config/org/extras.el': ('Smaller org add-ons',
-                             [29, 104, 107, 108, 109, 110, 120]),
-    'config/org/roam.el': ('org-roam and the roam helpers',
-                           [122, 123, 124, 125, 126, 127, 128, 129, 130,
-                            131, 132, 133, 134, 135, 136, 138, 139, 140]),
-    'config/org/timegrid.el': ('org-timegrid calendar', [142]),
-    'config/org/transclusion.el': ('org-transclusion', [143, 144]),
-
-    # --- own code, the :custom: sections ---------------------------------
-    'lisp/gps-time.el': ('GPS time conversion', [66]),
-    'lisp/insert-variable-value.el': ('Insert a variable value at point', [69]),
-    'lisp/org-reviews.el': ('Morning, weekly and monthly review templates',
-                            [97, 98, 99]),
-    'lisp/org-latex-preview.el': ('LaTeX preview rendering in org',
-                                  [111, 112, 113, 114, 115]),
-    'lisp/org-meetings.el': ('Meetings and their agenda notifications',
-                             [116, 117]),
-    'lisp/org-prettify-symbols.el': ('Prettified org keywords', [121]),
-    'lisp/org-inbox-review.el': ('Inbox review workflow', [137]),
-    'lisp/quartz.el': ('Quartz site publishing', [151]),
-    'lisp/read-only-directories.el': ('Mark directories read-only', [154]),
-    'lisp/window-resize.el': ('Window resizing commands', [175]),
+    'config/settings.el':
+        ('General editor settings', _SETTINGS),
+    'config/theme.el':
+        ('Fonts, Modus themes and per-project colours',
+         ['fonts', 'cjk width', 'modus-themes', 'modus-tweaks',
+          'force reload', 'project colors']),
+    'config/keybindings.el':
+        ('general.el and the leader-key map',
+         ['General.el', 'eval ~e~', 'quit ~q~', 'narrow ~n~',
+          'windows, buffers, frames ~j~', 'kill and restore ~k~',
+          'config ~c~', 'Toggles ~t~', 'Toggle frame decoration']),
+    'config/agent-shell.el':
+        ('agent-shell sessions, notifications and resume',
+         ['agent-shell', 'waiting sessions', 'notify when a session finishes',
+          'agent-shell consult source ~a~', 'switch-buffer preview',
+          "last night's shells", 'global session resume',
+          'kickoff with the first prompt']),
+    'config/review.el':
+        ('Drafting review comments and sending them as one prompt',
+         ['review comments', 'entries', 'drawing them', 'writing one',
+          'the commands', 'sending the review', 'the transient']),
+    'config/ui.el':
+        ('Icons, ligatures, padding, scrolling and other chrome',
+         ['all-the-icons', 'all-the-icons-ibuffer', 'default-text-scale',
+          'emojify', 'helpful', 'ident-bars', 'ligature', 'nerd-icons',
+          'rainbow-delimiters', 'rainbow-mode', 'spacious-padding',
+          'ultra-scroll', 'visual-fill-column', 'which-key', 'zoom']),
+    'config/org/extras.el':
+        ('Smaller org add-ons',
+         ['anki-editor', 'org-autolist', 'org-cliplink', 'org-download',
+          'org-fragtog', 'org-habit', 'org-noter']),
+    'config/prog.el':
+        ('Language servers, formatting, treesit and modes',
+         ['apheleia', 'csv mode', 'flycheck', 'json', 'kanata', 'kdl',
+          'lsp-mode', 'lsp-ui', 'lsp-rust', 'lsp-pyright', 'nix', 'rust',
+          'terraform mode', 'treesit', 'treesit-auto', 'yaml']),
+    'config/files.el':
+        ('Files, projects, history and shell helpers',
+         ['async', 'auto-revert', 'bookmark+', 'dwim-shell-commands',
+          'log files', 'no-littering', 'nov (epub)', 'pdf-tools',
+          'projectile', 'recentf', 'rg (ripgrep)', 'save-hist', 'sudo-edit',
+          'tramp']),
+    'config/text.el':
+        ('Prose, markup and search syntax',
+         ['auctex LaTeX', 'auto-fill', 'cdlatex', 'copy (yank) as markdown',
+          'jinx', 'markdown', 'markdown keybindings', 'multiple-cursors',
+          'ox-gfm', 'pcre2el', 'Evil search arity fix',
+          'PCRE input for consult']),
+    'config/completion.el':
+        ('Vertico, corfu and the completion stack',
+         ['cape', 'consult', 'corfu', 'marginalia', 'orderless', 'vertico']),
+    'config/d2.el':
+        ('d2 diagrams and their previews',
+         ['d2-mode', 'making d2 blocks behave like latex previews',
+          "editing blocks with =C-c '=",
+          'refreshing the image after =C-c C-c=', 'block defaults',
+          'default image width', 'keep a hand-set width across a re-run',
+          'regenerate d2 diagrams on theme change']),
+    'config/dired.el':
+        ('Dired and Dirvish',
+         ['Dired', 'Dirvish']),
+    'config/modeline.el':
+        ('doom-modeline and its indicators',
+         ['display-time-mode', 'display-battery', 'doom-modeline',
+          'telephone-line']),
+    'config/vc.el':
+        ('Magit, ediff and git links',
+         ['ediff', 'git-link', 'magit', 'magit-pre-commit']),
+    # undo-tree lives here, not in settings.el, because its :config sets
+    # `evil-undo-system' through the defcustom's setter and borrows the
+    # visualizer remaps `evil-integration' installs.  Both need evil loaded
+    # first, so it has to sort after the evil run, not into an earlier file.
+    'config/evil.el':
+        ('Evil and its companions',
+         ['evil', 'evil-anzu', 'evil-collection', 'evil-surround',
+          'undo-tree']),
+    'config/ghostel.el':
+        ('ghostel terminal sessions',
+         ['ghostel', 'popup terminal', 'session names',
+          'ghostel consult source ~t~']),
+    'lisp/gps-time.el':
+        ('GPS time conversion',
+         ['GPS time conversion']),
+    'lisp/insert-variable-value.el':
+        ('Insert a variable value at point',
+         ['insert-variable-value']),
+    'config/knockknock.el':
+        ('knockknock notifications',
+         ['knockknock']),
+    'config/org/org.el':
+        ('Core org setup, tags, todo keywords, keybindings',
+         ['org', 'org-tags', 'org-todo-keywords', 'org keybindings',
+          'resize the image at point', 'org url links']),
+    'lisp/org-reviews.el':
+        ('Morning, weekly and monthly review templates',
+         ['good morning review', 'org weekly review', 'org monthly review']),
+    'config/org/agenda.el':
+        ('org-agenda and its task frame',
+         ['org-agenda', 'Task Frame', 'rebuild on theme change']),
+    'config/org/appearance.el':
+        ('org-modern, org-appear, org-tidy',
+         ['org-appear', 'org-modern', 'org-modern-indent', 'org-tidy']),
+    'config/org/babel.el':
+        ('org-babel languages and templates',
+         ['org-babel']),
+    'config/org/capture.el':
+        ('org-capture templates',
+         ['org-capture']),
+    'lisp/org-latex-preview.el':
+        ('LaTeX preview rendering in org',
+         ['Drawing preamble', 'inline previews',
+          'babel blocks to image files',
+          'regenerate previews on theme change', 'keybindings']),
+    'lisp/org-meetings.el':
+        ('Meetings and their agenda notifications',
+         ['org meetings', 'agenda notifications']),
+    'lisp/org-prettify-symbols.el':
+        ('Prettified org keywords',
+         ['org-prettify-symbols']),
+    'config/org/roam.el':
+        ('org-roam and the roam helpers',
+         ['org-roam', 'roam-agenda', 'roam-active-projects',
+          'roam-categories', 'roam-capture-dailies', 'roam-daily-today',
+          'roam-daily-archive', 'roam-insert-immediate', 'roam-node-display',
+          'roam-modeline', 'roam-project-complete',
+          'roam-refile-tag-file-list', 'roam-refile-category',
+          'roam-refile-note', 'roam-stub-tag', 'org-roam-consult',
+          'org-roam-ui', 'org-roam-ql']),
+    'lisp/org-inbox-review.el':
+        ('Inbox review workflow',
+         ['org-inbox-review']),
+    'config/org/timegrid.el':
+        ('org-timegrid calendar',
+         ['org-timegrid']),
+    'config/org/transclusion.el':
+        ('org-transclusion',
+         ['org-transclusion', 'transclusion quote only']),
+    'lisp/quartz.el':
+        ('Quartz site publishing',
+         ['quartz']),
+    'lisp/read-only-directories.el':
+        ('Mark directories read-only',
+         ['read-only-directories']),
+    'config/toggl.el':
+        ('Time zones and toggl time tracking',
+         ['time-zones', 'saved timers', 'the mode line', 'the package',
+          'toggl sketchybar']),
+    'lisp/window-resize.el':
+        ('Window resizing commands',
+         ['window-resize']),
+    'config/workspaces.el':
+        ('Workspaces, their switcher and per-project setup',
+         ['workspaces', 'switching, with preview ~hh~',
+          "this workspace's buffers ~w~", 'a workspace per project',
+          'keybindings ~h~']),
+    'config/platform.el':
+        ('Per-machine and per-system loading',
+         ['Computer specific configs']),
 }

@@ -13,67 +13,69 @@ from runs import load_runs                      # noqa: E402
 from manifest import MANIFEST, DROPPED          # noqa: E402
 
 
+# The tangled file opens with core setup and only then starts configuring
+# packages.  Named rather than numbered: this used to be "run >= 19", which
+# meant a section inserted above it quietly moved the boundary.
+FIRST_PACKAGE = 'agent-shell'
+PLATFORM = 'Computer specific configs'
+THEME = ('modus-themes', 'modus-tweaks', 'force reload')
+
+
 def main(refdir):
     _, _, runs = load_runs(os.path.join(refdir, 'init.el'))
+    tangled = {r['name']: i for i, r in enumerate(runs, 1)}
 
-    order = sorted(MANIFEST.items(), key=lambda kv: min(kv[1][1]))
+    order = sorted(MANIFEST.items(),
+                   key=lambda kv: min(tangled[n] for n in kv[1][1]))
     new_seq = []
-    for path, (_, nums) in order:
-        for n in nums:
+    for path, (_, names) in order:
+        for n in sorted(names, key=lambda n: tangled[n]):
             new_seq.append((n, path))
 
     old_pos = {}
-    p = 0
-    for i in range(1, len(runs) + 1):
-        if i in DROPPED:
+    for r in runs:
+        if r['name'] in DROPPED:
             continue
-        p += 1
-        old_pos[i] = p
+        old_pos[r['name']] = len(old_pos) + 1
     new_pos = {n: i + 1 for i, (n, _) in enumerate(new_seq)}
+    in_file = dict(new_seq)
 
     moves = []
     for n in old_pos:
         d = new_pos[n] - old_pos[n]
         if d:
-            moves.append((abs(d), d, n, runs[n - 1]['name'],
-                          dict(new_seq)[n]))
-    moves.sort(reverse=True)
+            moves.append((abs(d), d, n, in_file[n]))
+    moves.sort(key=lambda m: (-m[0], m[2]))
 
     print(f'sections: {len(old_pos)}   moved: {len(moves)}   '
           f'unmoved: {len(old_pos) - len(moves)}')
     print()
     print(f'{"move":>6}  {"was":>4} {"now":>4}  section -> file')
-    for _, d, n, name, path in moves[:30]:
-        print(f'{d:+6d}  {old_pos[n]:4d} {new_pos[n]:4d}  {name} -> {path}')
+    for _, d, n, path in moves[:30]:
+        print(f'{d:+6d}  {old_pos[n]:4d} {new_pos[n]:4d}  {n} -> {path}')
     if len(moves) > 30:
         print(f'   ... {len(moves) - 30} more')
 
     print()
     print('--- ordering facts that matter ---')
-    def where(pred):
-        return [(new_pos[n], runs[n - 1]['name'])
-                for n in old_pos if pred(runs[n - 1]['name'])]
+    pkg_from = tangled[FIRST_PACKAGE]
+    packages = [n for n in old_pos if tangled[n] >= pkg_from]
 
-    gen = min(p for p, _ in where(lambda s: s == 'General.el'))
-    first_pkg = min(new_pos[n] for n in old_pos if n >= 19)
+    gen = new_pos['General.el']
+    first_pkg = min(new_pos[n] for n in packages)
     print(f'General.el loads at {gen}; earliest package section at '
           f'{first_pkg}')
-    theme = max(p for p, _ in where(
-        lambda s: s in ('modus-themes', 'modus-tweaks', 'force reload')))
+    theme = max(new_pos[n] for n in old_pos if n in THEME)
     print(f'last theme section loads at {theme}')
-    early = [(new_pos[k], runs[k - 1]['name'])
-             for k in old_pos if k >= 19 and new_pos[k] < theme]
-    print(f'package sections loading before the theme: {len(early)}')
-    for p, s in sorted(early):
-        print(f'    {p:4d}  {s}')
-    before_general = [(new_pos[k], runs[k - 1]['name'])
-                      for k in old_pos if k >= 19 and new_pos[k] < gen]
-    print(f'package sections loading before General.el: '
-          f'{len(before_general)}')
-    for p, s in sorted(before_general):
-        print(f'    {p:4d}  {s}')
-    plat = new_pos[178]
-    print(f'"Computer specific configs" loads at {plat} of {len(old_pos)}')
+
+    for label, limit in (('the theme', theme), ('General.el', gen)):
+        early = sorted((new_pos[n], n) for n in packages
+                       if new_pos[n] < limit)
+        print(f'package sections loading before {label}: {len(early)}')
+        for p, s in early:
+            print(f'    {p:4d}  {s}')
+
+    print(f'"{PLATFORM}" loads at {new_pos[PLATFORM]} of {len(old_pos)}')
 
 
 if __name__ == '__main__':

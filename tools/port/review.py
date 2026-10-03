@@ -21,14 +21,17 @@ def label(form, width=76):
 def main(refdir, root):
     _, _, runs = load_runs(os.path.join(refdir, 'init.el'))
 
+    idx = {r['name']: i for i, r in enumerate(runs, 1)}
+
     ref = []
-    for i, r in enumerate(runs, 1):
-        if i in DROPPED:
+    for r in runs:
+        if r['name'] in DROPPED:
             continue
         ref += r['body']
     ref = normalise(ref)
 
-    order = sorted(MANIFEST.items(), key=lambda kv: min(kv[1][1]))
+    order = sorted(MANIFEST.items(),
+                   key=lambda kv: min(idx[n] for n in kv[1][1]))
     new = []
     for path, _ in order:
         new += strip_header(
@@ -52,7 +55,7 @@ def main(refdir, root):
     print()
     print(f'--- deliberately dropped runs ({len(DROPPED)}) ---')
     for n, why in DROPPED.items():
-        print(f'  ! {runs[n-1]["name"]}: {why}')
+        print(f'  ! {n}: {why}')
 
 
 if __name__ == '__main__':

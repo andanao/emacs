@@ -29,23 +29,40 @@ STANDALONE = {
 
 
 def check(runs):
+    """Resolve manifest names against the tangled runs; return name -> index.
+
+    Every failure here is loud on purpose.  The manifest used to key on run
+    number, which meant a section inserted anywhere in readme.org silently
+    refiled everything below it into the wrong files, and the sorted-form
+    check in verify.py could not see it.
+    """
+    idx = {}
+    for i, r in enumerate(runs, 1):
+        if r['name'] in idx:
+            raise SystemExit(f'duplicate run name {r["name"]!r} '
+                             f'at {idx[r["name"]]} and {i}')
+        idx[r['name']] = i
+
     seen = {}
-    for path, (_, nums) in MANIFEST.items():
-        for n in nums:
+    for path, (_, names) in MANIFEST.items():
+        for n in names:
+            if n not in idx:
+                raise SystemExit(f'{path}: no run named {n!r}')
             if n in seen:
-                raise SystemExit(f'run {n} in both {seen[n]} and {path}')
+                raise SystemExit(f'run {n!r} in both {seen[n]} and {path}')
             if n in DROPPED:
-                raise SystemExit(f'run {n} is both dropped and in {path}')
+                raise SystemExit(f'run {n!r} is both dropped and in {path}')
             seen[n] = path
-    missing = [i for i in range(1, len(runs) + 1)
-               if i not in seen and i not in DROPPED]
+    gone = [n for n in DROPPED if n not in idx]
+    if gone:
+        raise SystemExit(f'dropped runs no longer in the source: {gone}')
+
+    missing = [r['name'] for r in runs
+               if r['name'] not in seen and r['name'] not in DROPPED]
     if missing:
-        named = [f'{i} ({runs[i-1]["name"]})' for i in missing]
+        named = [f'{idx[n]} ({n})' for n in missing]
         raise SystemExit('unassigned runs:\n  ' + '\n  '.join(named))
-    over = [n for n in seen if n > len(runs)]
-    if over:
-        raise SystemExit(f'manifest references runs past the end: {over}')
-    return seen
+    return idx
 
 
 def trim(body):
@@ -108,14 +125,12 @@ LOADER_HEAD = '''\
 ;; does not depend on how the sections were regrouped into files.
 ;;; Code:
 
+;; early-init.el sets this; recomputed here so this file also works when
+;; loaded on its own, which is what the "load init" binding does.
 (defvar ads/config-directory
   (file-name-directory (file-truename (or load-file-name buffer-file-name)))
-  "Directory this init.el really lives in.
-Not `user-emacs-directory': after cutover ~/.emacs.d/init.el is a symlink
-into this repo, so user-emacs-directory is ~/.emacs.d and the config is
-somewhere else entirely.  `file-truename' follows the symlink to here.
-State keeps using `user-emacs-directory'; only config resolves against
-this.")
+  "Directory this configuration really lives in.
+See the definition in early-init.el.")
 
 (defun ads/load-config (relative)
   "Load RELATIVE, an elisp file below `ads/config-directory'.
@@ -136,15 +151,16 @@ def loader(order):
 
 def main(refdir, root):
     _, preamble, runs = load_runs(os.path.join(refdir, 'init.el'))
-    check(runs)
+    idx = check(runs)
     print(f'init.el: {len(runs)} runs, preamble {preamble}')
 
-    order = sorted(MANIFEST.items(), key=lambda kv: min(kv[1][1]))
+    order = sorted(MANIFEST.items(),
+                   key=lambda kv: min(idx[n] for n in kv[1][1]))
     total = 0
-    for path, (title, nums) in order:
-        names = [runs[n - 1]['name'] for n in nums]
+    for path, (title, names) in order:
+        names = sorted(names, key=lambda n: idx[n])
         text = render(os.path.basename(path), title,
-                      [runs[n - 1]['body'] for n in nums],
+                      [runs[idx[n] - 1]['body'] for n in names],
                       wrap_sections(names))
         write(os.path.join(root, path), text)
         n = len(text.splitlines())
