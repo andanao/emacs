@@ -39,6 +39,7 @@ modus-reload.log
 async-bytecomp.log
 
 # Editor and tooling scratch
+__pycache__/
 .agent-shell/
 \#*\#
 .\#*
