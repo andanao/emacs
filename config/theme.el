@@ -48,6 +48,26 @@
 (setq ef-themes-mixed-fonts t)
 (setq ef-themes-bold-constructs t)
 
+;; My own Ef themes, in themes/ beside this file.  Unlike config/ and lisp/
+;; that directory is safe on `load-path': every file in it is uniquely
+;; prefixed, so nothing can shadow a real package.  `load-path' is needed
+;; because the two themes share their mapping table via `require'.
+(let ((dir (expand-file-name "themes" ads/config-directory)))
+  (add-to-list 'load-path dir)
+  (add-to-list 'custom-theme-load-path dir))
+
+(require 'ef-folio-light-theme)
+(require 'ef-folio-dark-theme)
+
+;; Join the Ef family, so select/rotate/toggle treat them like the other 38.
+(dolist (cell '((ef-folio-light . light) (ef-folio-dark . dark)))
+  (let ((theme (car cell)))
+    (modus-themes-register theme)
+    (add-to-list 'ef-themes-items theme)
+    (if (eq (cdr cell) 'dark)
+        (add-to-list 'ef-themes-dark-themes theme)
+      (add-to-list 'ef-themes-light-themes theme))))
+
 (setq ef-themes-to-toggle
       '(ef-cyprus ef-autumn))
 

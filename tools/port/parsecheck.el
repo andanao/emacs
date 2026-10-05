@@ -10,7 +10,8 @@
                                  '("early-init.el" "init.el" "mac.el"
                                    "linux.el" "ms-windows.el"))
                      (directory-files-recursively "config" "\\.el\\'")
-                     (directory-files-recursively "lisp" "\\.el\\'"))))
+                     (directory-files-recursively "lisp" "\\.el\\'")
+                     (directory-files-recursively "themes" "\\.el\\'"))))
   (dolist (f (sort files #'string<))
     (setq n (1+ n))
     (condition-case err

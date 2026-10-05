@@ -1,0 +1,13 @@
+#+TITLE: themes
+
+My own Ef themes. =ef-folio-light= and =ef-folio-dark= — warm paper and ink,
+heavily inspired by Anthropic's published design system but unaffiliated with
+it.
+
+* Licence
+
+This directory is *GPL-3.0-or-later*, not MIT like the rest of the repository.
+The themes are built on the palette and mapping structure of Protesilaos
+Stavrou's =ef-themes= (Copyright (C) 2022-2026 Free Software Foundation, Inc.),
+which is GPL-3.0-or-later, so these follow. Each file carries its own
+=SPDX-License-Identifier=.
