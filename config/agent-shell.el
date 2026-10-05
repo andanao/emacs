@@ -6,6 +6,54 @@
 ;; kickoff with the first prompt
 ;;; Code:
 
+(defvar ads/agent-shell-sans-stack
+  '("Optima"                      ; macOS only, and Linotype's - cannot be pinned
+    "Libertinus Sans"             ; the flake's, and the nearest libre thing to it
+    "Source Sans 3"
+    "Cantarell"
+    "sans-serif")
+  "Families to render the conversation in, best first.
+The first one installed wins, so this reads as Optima on a Mac and as
+whatever the flake supplies everywhere else.  Resolved per buffer rather
+than once: `font-family-list' is empty until there is a frame, which on a
+daemon means every answer before the first client is wrong.")
+
+(defun ads/agent-shell-sans ()
+  "First family in `ads/agent-shell-sans-stack' this machine has."
+  (let ((have (font-family-list)))
+    (or (seq-find (lambda (f) (member f have)) ads/agent-shell-sans-stack)
+        "sans-serif")))
+
+(defvar-local ads/agent-shell--remap nil
+  "Face-remap cookies owned by this buffer, so re-running cannot leak them.")
+
+(defun ads/agent-shell-prose-font ()
+  "Render the conversation proportionally, leaving code and tables fixed.
+Buffer-local remaps rather than `custom-set-faces': they resolve against
+whatever theme is current, so a toggle needs no re-application, and they
+leave the faces themselves alone for every other mode that borrows them."
+  (mapc #'face-remap-remove-relative ads/agent-shell--remap)
+  (setq ads/agent-shell--remap nil)
+  (let ((family (ads/agent-shell-sans)))
+    (setq-local buffer-face-mode-face (list :family family))
+    (buffer-face-mode 1)
+    (setq ads/agent-shell--remap
+          (cons
+           ;; Inherits nothing upstream, so it would follow the body into a
+           ;; proportional face and the columns would stop lining up.  The
+           ;; header, border and zebra faces all inherit it.
+           (face-remap-add-relative 'agent-shell-markdown-table 'fixed-pitch)
+           ;; Headings inherit org-level-N, which `ef-themes-mixed-fonts'
+           ;; makes variable-pitch - EtBembo, the serif.  Swap the family
+           ;; and keep the size and weight `ef-themes-headings' set.
+           (mapcar (lambda (n)
+                     (face-remap-add-relative
+                      (intern (format "agent-shell-markdown-header-%d" n))
+                      (list :family family)))
+                   (number-sequence 1 6))))))
+
+(add-hook 'agent-shell-mode-hook #'ads/agent-shell-prose-font)
+
 (defun ads/agent-shell-send-buffer ()
   "Send the whole buffer to the project's agent shell."
   (interactive)
