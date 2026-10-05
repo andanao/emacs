@@ -174,11 +174,48 @@
           });
 
           emacsPackage = pkgs.emacs;
+
+          # Programs the config shells out to, pinned by this flake like the
+          # elisp is.  Only subprocesses belong here: jinx links against
+          # enchant at build time rather than calling it, so listing enchant
+          # would do nothing, and jinx and pdf-tools already ship their built
+          # binaries.
+          runtimeTools = with pkgs; [
+            d2                  # config/d2.el renders diagrams
+            imagemagick         # `magick', image conversion
+            zig                 # builds ghostel's native module
+            rust-analyzer       # lsp, Rust
+            basedpyright        # lsp, Python
+          ];
         in
         rec {
           default = emacs;
 
-          emacs = pkgs.emacsWithPackagesFromUsePackage {
+          # Put `runtimeTools' on Emacs' own PATH.  Newer nixpkgs do this for
+          # the package tree's bin/, but the pinned one only sets
+          # EMACSLOADPATH, so the prepend has to happen here.
+          #
+          # This matters most for the macOS app bundle: launched from Finder
+          # or `open' it inherits no shell PATH at all, which is why mac.el
+          # patches `exec-path' by hand for TeX.  Wrapping the bundle's own
+          # binary is the only thing that reaches that case.
+          emacs = pkgs.runCommand "${emacsUnwrapped.name}-with-tools"
+            {
+              nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
+              inherit (emacsUnwrapped) meta;
+            }
+            ''
+              cp -a ${emacsUnwrapped} $out
+              chmod -R u+w $out
+              for p in "$out"/bin/emacs "$out"/bin/emacs-* \
+                       "$out"/bin/emacsclient \
+                       "$out/Applications/Emacs.app/Contents/MacOS/Emacs"; do
+                [ -e "$p" ] || continue
+                wrapProgram "$p" --prefix PATH : "${lib.makeBinPath runtimeTools}"
+              done
+            '';
+
+          emacsUnwrapped = pkgs.emacsWithPackagesFromUsePackage {
             config = parsedConfig;
             package = emacsPackage;
 
@@ -218,7 +255,8 @@
             (lib.concatStringsSep "\n"
               (lib.unique (lib.sort (a: b: a < b)
                 (map (p: p.pname or p.name or "?")
-                  (lib.filter (p: p != null) emacs.explicitRequires)))));
+                  (lib.filter (p: p != null)
+                    emacsUnwrapped.explicitRequires)))));
         });
 
       devShells = forEachSystem (pkgs: {
