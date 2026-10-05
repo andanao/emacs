@@ -9,7 +9,16 @@
        :rev :newest)
   ;; Every command below is autoloaded, so the dynamic module stays unloaded
   ;; until I ask for a terminal.
-  :defer t)
+  :defer t
+  :custom
+  ;; ghostel is half Zig.  The flake supplies only the elisp, so the native
+  ;; module has to live somewhere ghostel can write to - and the package
+  ;; directory it defaults to is a read-only /nix/store path.  ghostel already
+  ;; keeps its ssh terminfo cache here, so the module joins it: outside both
+  ;; the repo and ~/.emacs.d, and so unaffected by cutover.
+  (ghostel-module-directory
+   (expand-file-name "ghostel" (or (getenv "XDG_CACHE_HOME")
+                                   (expand-file-name ".cache" "~")))))
 
 (use-package evil-ghostel
   :after (ghostel evil)
