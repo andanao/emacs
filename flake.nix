@@ -248,6 +248,24 @@
             ];
           };
 
+          # The faces config/theme.el names, pinned so a new machine gets
+          # the same ones.  All libre: the Mac has nicer humanist sans faces
+          # (Optima, Seravek) but they are Apple's and cannot be shipped.
+          #
+          # Emacs finds these through the OS, and macOS has no fontconfig,
+          # so being in the store is not enough - `nix run .#install-fonts'
+          # links them where the OS looks.
+          fonts = pkgs.symlinkJoin {
+            name = "emacs-fonts";
+            paths = with pkgs; [
+              et-book                     # ETBembo, the serif
+              source-sans                 # Source Sans 3
+              atkinson-hyperlegible-next
+              inter                       # registers as "Inter Variable"
+              libertinus                  # Libertinus Sans, nearest Optima
+            ];
+          };
+
           # The package set the parser resolved, so it can be read without
           # building Emacs.  Anything the overlay could not place comes back
           # as null and is traced during evaluation.
@@ -258,6 +276,38 @@
                   (lib.filter (p: p != null)
                     emacsUnwrapped.explicitRequires)))));
         });
+
+      # Put the pinned fonts where the OS looks for them.
+      #
+      # Copies rather than symlinks: macOS CoreText ignores symlinked font
+      # files outright, so a linked font silently never appears.  It does
+      # read subdirectories, so everything goes in one directory this owns
+      # and wipes each run - stale faces cannot pile up, and nothing
+      # hand-installed alongside is touched.
+      apps = forEachSystem (pkgs: {
+        install-fonts = {
+          type = "app";
+          program = toString (pkgs.writeShellScript "install-fonts" ''
+            set -eu
+            src=${self.packages.${pkgs.system}.fonts}
+            case "$(uname)" in
+              Darwin) root="$HOME/Library/Fonts" ;;
+              *)      root="''${XDG_DATA_HOME:-$HOME/.local/share}/fonts" ;;
+            esac
+            dest="$root/nix-emacs"
+            rm -rf "$dest"
+            mkdir -p "$dest"
+            # `cp -t' is GNU-only; BSD cp on macOS wants the destination last.
+            find -L "$src" \( -name '*.otf' -o -name '*.ttf' \) \
+              -exec cp -L {} "$dest" ';'
+            # Store files are read-only; the next run has to be able to
+            # delete these.
+            chmod -R u+w "$dest"
+            echo "installed $(ls "$dest" | wc -l | tr -d ' ') font files into $dest"
+            [ "$(uname)" = Darwin ] || fc-cache -f "$dest" >/dev/null 2>&1 || true
+          '');
+        };
+      });
 
       devShells = forEachSystem (pkgs: {
         default = pkgs.mkShell {
