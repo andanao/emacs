@@ -69,7 +69,7 @@
       (add-to-list 'ef-themes-light-themes theme))))
 
 (setq ef-themes-to-toggle
-      '(ef-cyprus ef-autumn))
+      '(ef-folio-light ef-folio-dark))
 
 (setq ef-themes-headings
       '((0 . (regular 1.75)) ;; title
@@ -114,15 +114,19 @@
         (date-scheduled fg-main)
         (date-scheduled-subtle fg-main)))
 
-;; dark theme.  Both values match ef-autumn's own defaults; they are written
-;; out so a palette change upstream cannot move them, and so the alternatives
-;; stay next to what they are alternatives to.
+;; ef-folio is the pair I actually use, so its colours live in themes/ rather
+;; than here.  Overriding one from this file is still the right move for a
+;; tweak that should survive editing the theme itself:
+;;   (setq ef-folio-dark-palette-overrides '((cursor "#ff3388")))
+
+;; The stock pair, kept for when I want them.  Both ef-autumn values match its
+;; own defaults; they are written out so a palette change upstream cannot move
+;; them, and so the alternatives stay next to what they are alternatives to.
 (setq ef-autumn-palette-overrides
       '((fg-main "#cfbcba")                ; default; #e4d9d8 and #f9f6f6 are brighter
         (cursor "#ffaa33")))               ; orange; #ff3388 pink, #ff4433 red, #88ff33 green
 
-;; light theme.  ef-cyprus's own bg-main is already a warm cream, so it needs
-;; no paper tint of its own.
+;; ef-cyprus's own bg-main is already a warm cream, so it needs no paper tint.
 (setq ef-cyprus-palette-overrides
       '((cursor red-intense)))
 
@@ -199,7 +203,7 @@ hook leave the rest of a toggle half applied."
 ;; Advised here it fires for both.
 (advice-add 'modus-themes-load-theme :around #'ads/theme-tolerant-hooks)
 
-(load-theme 'ef-autumn t)
+(load-theme 'ef-folio-dark t)
 
 (defvar ads/theme-reload-log (concat user-emacs-directory "theme-reload.log")
   "File where forced theme reloads are recorded, one entry each.")
