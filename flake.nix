@@ -115,6 +115,13 @@
           hash = "sha256-IHcFxvkCKz/YANJrrHWFOiACfkHQJsN6YOnX8cLqi1A=";
           files = [ "lisp/*.el" ];
           deps = p: [ p.compat ];
+          # etc/terminfo carries the xterm-ghostty entry ghostel sets TERM to.
+          # Without it every terminal falls back to xterm-256color and redraws
+          # badly.  `ghostel--resource-root' looks for etc/ beside the elisp,
+          # which for a flat MELPA install is the package directory itself.
+          postInstall = ''
+            cp -r "$src/etc" "$out"/share/emacs/site-lisp/elpa/ghostel-*/
+          '';
         };
         evil-ghostel = {
           version = "20260921.1634";
@@ -144,7 +151,10 @@
           parsedConfig = lib.concatMapStringsSep "\n" builtins.readFile
             elispFiles;
 
-          buildFromGit = epkgs: pname: spec: epkgs.melpaBuild {
+          # `postInstall' is for sources that ship more than elisp.  The MELPA
+          # :files spec flattens what it matches, which would lose a directory
+          # tree, so anything shaped has to be copied across by hand.
+          buildFromGit = epkgs: pname: spec: epkgs.melpaBuild ({
             inherit pname;
             inherit (spec) version;
             commit = spec.rev;
@@ -159,7 +169,9 @@
               })
             '';
             packageRequires = spec.deps epkgs;
-          };
+          } // lib.optionalAttrs (spec ? postInstall) {
+            inherit (spec) postInstall;
+          });
 
           emacsPackage = pkgs.emacs;
         in
