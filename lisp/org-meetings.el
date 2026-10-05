@@ -161,12 +161,12 @@ already done, which is the whole of the filtering I want."
 (defun ads/notify-appt--style (meeting)
   "Colours for an agenda popup.  MEETING earns the filled background.
 Resolved per notification, so a theme toggle is picked up."
-  (append (list :border (ads/modus-color 'blue)
-                :text (ads/modus-color 'fg-main))
+  (append (list :border (ads/theme-color 'blue)
+                :text (ads/theme-color 'fg-main))
           (if meeting
-              (list :background (ads/modus-color 'bg-blue-nuanced)
-                    :icon-color (ads/modus-color 'blue))
-            (list :icon-color (ads/modus-color 'fg-main)))))
+              (list :background (ads/theme-color 'bg-blue-nuanced)
+                    :icon-color (ads/theme-color 'blue))
+            (list :icon-color (ads/theme-color 'fg-main)))))
 
 (defun ads/notify-appt (minutes _time msg)
   "Show appt reminders through `ads/notify--broadcast'.

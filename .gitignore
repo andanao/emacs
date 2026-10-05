@@ -35,7 +35,7 @@ network-security.data
 .org-id-locations
 .mc-lists.el
 .time-zones.el
-modus-reload.log
+theme-reload.log
 async-bytecomp.log
 
 # Editor and tooling scratch

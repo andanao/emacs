@@ -68,7 +68,7 @@ visible regions first, so the theme switch itself stays instant."
                  (with-current-buffer buffer
                    (ads/org--latex-rerender (point-min) (point-max))))))))))
 
-(add-hook 'modus-themes-after-load-theme-hook #'ads/org-refresh-latex-previews)
+(add-hook 'ef-themes-after-load-theme-hook #'ads/org-refresh-latex-previews)
 
 (defun ads/org-latex-preview-buffer ()
   "Preview every LaTeX fragment in the buffer."

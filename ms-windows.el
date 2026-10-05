@@ -34,22 +34,27 @@
 
 (add-to-list 'display-buffer-alist
   (cons "win/theme-toggle" (cons #'display-buffer-no-window nil)))
+(defvar win/sync-os-appearance t
+  "Whether a theme change should drag Windows light/dark along with it.
+The Mac equivalent is off while the Ef themes are being chosen; this one
+is untested against them, so it keeps its old behaviour.")
+
 (defun win/theme-align-with-emacs ()
   ;;check if light or dark theme in emacs
-  (if (string-search "vivendi"
-		     (symbol-name (modus-themes-get-current-theme)))
-      (setq win/theme "0")
+  (when win/sync-os-appearance
+    (if (modus-themes-color-dark-p (ads/theme-color 'bg-main))
+	(setq win/theme "0")
       (setq win/theme "1"))
-  (async-shell-command
+    (async-shell-command
      (concat
       "powershell New-ItemProperty -Path HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize -Name AppsUseLightTheme -Value "
       win/theme
       " -Type Dword -Force")
      "win/theme-toggle"
-     ))
+     )))
 
 
-(add-hook 'modus-themes-after-load-theme-hook 'win/theme-align-with-emacs)
+(add-hook 'ef-themes-after-load-theme-hook 'win/theme-align-with-emacs)
 
 (defun win/taskbar-auto-hide ()
   (interactive)

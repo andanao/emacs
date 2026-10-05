@@ -124,6 +124,6 @@ when a human asked for it, so nothing moves but the colours."
            (with-demoted-errors "ads/org-agenda-rebuild: %S"
              (org-agenda-redo-all t))))))
 
-(add-hook 'modus-themes-after-load-theme-hook #'ads/org-agenda-rebuild)
+(add-hook 'ef-themes-after-load-theme-hook #'ads/org-agenda-rebuild)
 
 ;;; agenda.el ends here

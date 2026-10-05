@@ -44,7 +44,7 @@
     (csv-mode . (lambda ()
                   (visual-fill-column-mode -1)
                   (setq-local truncate-lines t)
-                  (face-remap-add-relative 'hl-line :background (modus-themes-get-color-value 'bg-dim))))
+                  (face-remap-add-relative 'hl-line :background (ef-themes-get-color-value 'bg-dim))))
     :bind (:map csv-mode-map
                 ("C-c C-a" . csv-align-fields)
                 ("C-c C-z" . csv-unalign-fields))

@@ -91,7 +91,7 @@
         (pdf-view-refresh-themed-buffer t)))))
 
 (with-eval-after-load 'pdf-tools
-  (add-hook 'modus-themes-after-load-theme-hook #'ads/pdf-view-refresh-theme))
+  (add-hook 'ef-themes-after-load-theme-hook #'ads/pdf-view-refresh-theme))
 
 (defvar ads/pdf-view-keys-set nil)
 

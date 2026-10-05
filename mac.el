@@ -26,18 +26,26 @@
   (when (file-exists-p libgs)
     (setenv "LIBGS" libgs)))
 
+(defvar mac/sync-os-appearance nil
+  "Whether a theme change should drag macOS light/dark along with it.
+Off while the Ef themes are being chosen: every reload would otherwise
+repaint the whole desktop.")
+
 (defun mac/dark-mode-emacs-align ()
   "Align OSX theme with emacs light or dark mode"
-  (let ((dark (if (string-search "vivendi"
-				 (symbol-name (modus-themes-get-current-theme)))
-		  "true"
-		"false")))
-    (start-process
-     "mac/dark-mode" nil "osascript" "-e"
-     (concat "tell app \"System Events\" to tell appearance preferences to set dark mode to "
-	     dark))))
+  ;; Asking the background whether it is dark covers every theme.  Matching
+  ;; the name only ever worked for modus-vivendi.  `modus-themes-color-dark-p'
+  ;; has no `ef-themes-' alias, so it keeps the Modus name.
+  (when mac/sync-os-appearance
+    (let ((dark (if (modus-themes-color-dark-p (ads/theme-color 'bg-main))
+		    "true"
+		  "false")))
+      (start-process
+       "mac/dark-mode" nil "osascript" "-e"
+       (concat "tell app \"System Events\" to tell appearance preferences to set dark mode to "
+	       dark)))))
 
-(add-hook 'modus-themes-after-load-theme-hook 'mac/dark-mode-emacs-align)
+(add-hook 'ef-themes-after-load-theme-hook 'mac/dark-mode-emacs-align)
 
 (ads/leader-def "cn" "nix config" (projectile-switch-project-by-name "~/nix"))
 (ads/leader-def "ch" "home-manager" (projectile-switch-project-by-name "~/home-manager"))

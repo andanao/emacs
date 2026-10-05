@@ -211,7 +211,7 @@ With INDIRECT, narrow an indirect clone in another window."
 
 (ads/leader-keys
     "t" '(:ignore t :which-key "toggles")
-    "tt" 'modus-themes-toggle    ; toggle theme
+    "tt" 'ef-themes-toggle       ; toggle theme
     "tl" 'toggle-truncate-lines  ; toggle lines
     "tb" 'display-battery-mode   ; toggle battery
     "td" 'toggle-debug-on-error

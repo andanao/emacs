@@ -192,6 +192,6 @@ finish painting before Emacs goes off and shells out to `d2'."
        (with-current-buffer (window-buffer window)
          (ads/org-refresh-d2-images))))))
 
-(add-hook 'modus-themes-after-load-theme-hook #'ads/org-refresh-d2-visible)
+(add-hook 'ef-themes-after-load-theme-hook #'ads/org-refresh-d2-visible)
 
 ;;; d2.el ends here

@@ -1,6 +1,6 @@
-;;; theme.el --- Fonts, Modus themes and per-project colours  -*- lexical-binding: t; -*-
+;;; theme.el --- Fonts, Ef themes and per-project colours  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; fonts, cjk width, modus-themes, modus-tweaks, force reload,
+;; fonts, cjk width, ef-themes, theme tweaks, force reload,
 ;; project colors
 ;;; Code:
 
@@ -37,88 +37,94 @@
       (set-fontset-font t charset (font-spec :family cjk)))
     (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2)))
 
-(use-package modus-themes
+;; ef-themes 2.x is built on the Modus engine, so the `ef-themes-' options are
+;; aliases onto the Modus ones.  They only exist once ef-themes has loaded,
+;; which is why these are set after the form rather than in `:custom' - that
+;; runs first and would quietly create plain variables nothing reads.
+(use-package ef-themes
   :demand t
-  :ensure t
-  :custom
-  (modus-themes-mixed-fonts t)
-  (modus-themes-bold-constructs t))
+  :ensure t)
 
-(setq modus-themes-to-toggle
-      '(modus-operandi modus-vivendi))
+(setq ef-themes-mixed-fonts t)
+(setq ef-themes-bold-constructs t)
 
-(setq modus-themes-headings
-  '((0 . (regular 1.75))
-    (1 . (regular 1.25))
-    (2 . (regular 1.20))
-    (3 . (regular 1.15))
-    (t . (regular 1.10))
-    ))
+(setq ef-themes-to-toggle
+      '(ef-cyprus ef-autumn))
+
+(setq ef-themes-headings
+      '((0 . (regular 1.75)) ;; title
+        (1 . (regular 1.25))
+        (2 . (regular 1.20))
+        (3 . (regular 1.15))
+        (t . (regular 1.10))
+        ))
 
 ;; all
-(setq modus-themes-common-palette-overrides
-  '((bg-prose-block-contents bg-main)
-    (bg-prose-block-delimiter bg-main)
-    (fg-heading-0 fg-main)
-    (fg-heading-1 fg-main)
-    (fg-heading-2 fg-main)
-    (fg-heading-3 fg-main)
-    (fg-heading-4 fg-main)
-    (fg-heading-5 fg-main)
-    (fg-heading-6 fg-main)
-    (fg-heading-7 fg-main)
-    (fg-heading-8 fg-main)
-    (fringe bg-main)
-    (bg-mode-line-active bg-dim)
-    (bg-mode-line-inactive bg-main)
-    ;; links are underlined, never coloured
-    (fg-link fg-main)
-    (fg-link-symbolic fg-main)
-    (fg-link-visited fg-main)
-    (underline-link fg-main)
-    (underline-link-symbolic fg-main)
-    (underline-link-visited fg-main)
-    ;; line numbers sit flush against the buffer
-    (bg-line-number-active bg-main)
-    (bg-line-number-inactive bg-main)
-    ;; org
-    (prose-done fg-dim)
-    (prose-table fg-main)
-    (fg-prose-code fg-alt)
-    (fg-prose-verbatim fg-main)
-    (date-event fg-main)
-    (date-scheduled fg-main)
-    (date-scheduled-subtle fg-main)))
+(setq ef-themes-common-palette-overrides
+      '((bg-prose-block-contents bg-main)
+        (bg-prose-block-delimiter bg-main)
+        (fg-heading-0 fg-main)
+        (fg-heading-1 fg-main)
+        (fg-heading-2 fg-main)
+        (fg-heading-3 fg-main)
+        (fg-heading-4 fg-main)
+        (fg-heading-5 fg-main)
+        (fg-heading-6 fg-main)
+        (fg-heading-7 fg-main)
+        (fg-heading-8 fg-main)
+        (fringe bg-main)
+        (bg-mode-line-active bg-dim)
+        (bg-mode-line-inactive bg-main)
+        ;; links are underlined, never coloured
+        (fg-link fg-main)
+        (fg-link-symbolic fg-main)
+        (fg-link-visited fg-main)
+        (underline-link fg-main)
+        (underline-link-symbolic fg-main)
+        (underline-link-visited fg-main)
+        ;; line numbers sit flush against the buffer
+        (bg-line-number-active bg-main)
+        (bg-line-number-inactive bg-main)
+        ;; org
+        (prose-done fg-dim)
+        (prose-table fg-main)
+        (fg-prose-code fg-alt)
+        (fg-prose-verbatim fg-main)
+        (date-event fg-main)
+        (date-scheduled fg-main)
+        (date-scheduled-subtle fg-main)))
 
-;; dark theme
-(setq modus-vivendi-palette-overrides
-      '((cursor "#ff2060")
-        (bg-main "#111111")))
+;; dark theme.  Both values match ef-autumn's own defaults; they are written
+;; out so a palette change upstream cannot move them, and so the alternatives
+;; stay next to what they are alternatives to.
+(setq ef-autumn-palette-overrides
+      '((fg-main "#cfbcba")                ; default; #e4d9d8 and #f9f6f6 are brighter
+        (cursor "#ffaa33")))               ; orange; #ff3388 pink, #ff4433 red, #88ff33 green
 
-;;light theme
-(setq modus-operandi-palette-overrides
-    '((cursor red-intense)
-      (bg-main "#fffff8")))
-;; (modus-themes-select (modus-themes-get-current-theme))
+;; light theme.  ef-cyprus's own bg-main is already a warm cream, so it needs
+;; no paper tint of its own.
+(setq ef-cyprus-palette-overrides
+      '((cursor red-intense)))
 
-(defun ads/modus-color (name)
-  "Return the current Modus palette value for NAME, overrides included."
-  (or (modus-themes-get-color-value name :with-overrides) 'unspecified))
+(defun ads/theme-color (name)
+  "Return the current theme's palette value for NAME, overrides included."
+  (or (ef-themes-get-color-value name :with-overrides) 'unspecified))
 
-(defun ads/modus-tweaks (&optional theme &rest _)
-  "Apply custom face tweaks for the Modus THEME just enabled.
-Called with no THEME, tweak whichever Modus theme is current."
-  (when (or (null theme) (string-prefix-p "modus-" (symbol-name theme)))
-    (with-demoted-errors "ads/modus-tweaks: %S"
+(defun ads/theme-tweaks (&optional theme &rest _)
+  "Apply custom face tweaks for the Ef THEME just enabled.
+Called with no THEME, tweak whichever Ef theme is current."
+  (when (or (null theme)
+            (string-prefix-p "ef-" (symbol-name theme)))
+    (with-demoted-errors "ads/theme-tweaks: %S"
       (let ((c '((class color) (min-colors 256)))
-            (bg-main (ads/modus-color 'bg-main))
-            (bg-dim (ads/modus-color 'bg-dim))
-            (bg-inactive (ads/modus-color 'bg-inactive))
-            (bg-blue-nuanced (ads/modus-color 'bg-blue-nuanced))
-            (bg-blue-subtle (ads/modus-color 'bg-blue-subtle))
-            (fg-main (ads/modus-color 'fg-main))
-            (fg-dim (ads/modus-color 'fg-dim))
-            (gold (ads/modus-color 'gold)))
+            (bg-main (ads/theme-color 'bg-main))
+            (bg-dim (ads/theme-color 'bg-dim))
+            (bg-inactive (ads/theme-color 'bg-inactive))
+            (bg-blue-nuanced (ads/theme-color 'bg-blue-nuanced))
+            (bg-blue-subtle (ads/theme-color 'bg-blue-subtle))
+            (fg-main (ads/theme-color 'fg-main))
+            (fg-dim (ads/theme-color 'fg-dim))
+            (gold (ads/theme-color 'gold)))
         (custom-set-faces
          ;; org mode
          `(org-checkbox ((,c :foreground ,fg-main)))
@@ -153,28 +159,32 @@ Called with no THEME, tweak whichever Modus theme is current."
          `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))))
       )))
 
-(add-hook 'enable-theme-functions #'ads/modus-tweaks)
+(add-hook 'enable-theme-functions #'ads/theme-tweaks)
 
-(defun ads/modus-tolerant-hooks (fn &rest args)
-  "Call FN with `modus-themes-after-load-theme-hook' made error tolerant.
+(defun ads/theme-tolerant-hooks (fn &rest args)
+  "Call FN with `ef-themes-after-load-theme-hook' made error tolerant.
 `run-hooks' stops at the first error, which would otherwise let one bad
 hook leave the rest of a toggle half applied."
-  (let ((modus-themes-after-load-theme-hook
+  (let ((ef-themes-after-load-theme-hook
          (mapcar (lambda (f)
                    (if (functionp f)
-                       (lambda () (with-demoted-errors "modus theme hook: %S" (funcall f)))
+                       (lambda () (with-demoted-errors "theme hook: %S" (funcall f)))
                      f))
-                 modus-themes-after-load-theme-hook)))
+                 ef-themes-after-load-theme-hook)))
     (apply fn args)))
 
-(advice-add 'modus-themes-load-theme :around #'ads/modus-tolerant-hooks)
+;; Must advise the Modus name, not `ef-themes-load-theme'.  That is a defalias,
+;; so advice on it only catches calls made through the alias - and the Ef
+;; commands, `ef-themes-toggle' included, call the Modus function directly.
+;; Advised here it fires for both.
+(advice-add 'modus-themes-load-theme :around #'ads/theme-tolerant-hooks)
 
-(load-theme 'modus-vivendi t)
+(load-theme 'ef-autumn t)
 
-(defvar ads/modus-reload-log (concat user-emacs-directory "modus-reload.log")
+(defvar ads/theme-reload-log (concat user-emacs-directory "theme-reload.log")
   "File where forced theme reloads are recorded, one entry each.")
 
-(defun ads/modus--recent-messages (n)
+(defun ads/theme--recent-messages (n)
   "The last N lines of the *Messages* buffer, or nil if there is none."
   (when-let* ((buf (get-buffer "*Messages*")))
     (with-current-buffer buf
@@ -183,29 +193,31 @@ hook leave the rest of a toggle half applied."
         (forward-line (- n))
         (buffer-substring-no-properties (point) (point-max))))))
 
-(defun ads/modus-log-reload (theme)
+(defun ads/theme-log-reload (theme)
   "Record a forced reload of THEME: where it was asked for and what was said."
   (let ((header (format "%s %s from %s (%s)\n"
                         (format-time-string "[%Y-%m-%d %a %H:%M]")
                         theme (buffer-name) major-mode))
-        (tail (string-trim-right (or (ads/modus--recent-messages 20) ""))))
+        (tail (string-trim-right (or (ads/theme--recent-messages 20) ""))))
     (write-region (concat header
                           (unless (string= tail "")
                             (concat (replace-regexp-in-string "^" "  | " tail) "\n"))
                           "\n")
-                  nil ads/modus-reload-log :append :silent)))
+                  nil ads/theme-reload-log :append :silent)))
 
-(defun ads/modus-reload ()
-  "Load the current Modus theme again, palette overrides and tweaks included."
+(defun ads/theme-reload ()
+  "Load the current theme again, palette overrides and tweaks included."
   (interactive)
+  ;; `modus-themes-get-current-theme' has no `ef-themes-' alias; it is the one
+  ;; reader left that has to go by the Modus name.
   (let ((theme (modus-themes-get-current-theme)))
-    (ads/modus-log-reload theme)
-    (modus-themes-load-theme theme)
+    (ads/theme-log-reload theme)
+    (ef-themes-load-theme theme)
     (message "Reloaded %s" theme)))
 
 (defconst ads/project-palette
   '(bg-blue-subtle bg-green-subtle bg-yellow-subtle bg-magenta-subtle bg-cyan-subtle
-    bg-red-subtle bg-lavender bg-sage bg-clay bg-ochre)
+                   bg-red-subtle bg-lavender bg-sage bg-clay bg-ochre)
   "Colours to hand out, one per project.  All exist in operandi and vivendi.")
 
 (defvar ads/project-colour-pins
@@ -310,7 +322,7 @@ colour, so tinting only :background leaves the outer ring untinted."
     (mapc #'face-remap-remove-relative ads/project--remap)
     (setq ads/project--remap nil)
     (when-let* ((colour (ads/project-colour root))
-                (bg (ads/modus-color colour)))
+                (bg (ads/theme-color colour)))
       (when (stringp bg)
         (setq ads/project--remap
               (list (ads/project--tint 'mode-line-active bg)
@@ -349,7 +361,7 @@ touching `ads/project-colour-exclude'."
                             nil nil nil nil (and current (symbol-name current))))))
   (let ((colour (and (not (string-empty-p colour)) (intern colour)))
         (name (file-name-nondirectory root)))
-    (when (and colour (not (stringp (ads/modus-color colour))))
+    (when (and colour (not (stringp (ads/theme-color colour))))
       (user-error "`%s' is not a colour in this theme" colour))
     (setf (alist-get name ads/project-colour-overrides nil nil #'equal) colour)
     ;; Drop any allocation, so the colour it was holding goes back in the pool.
@@ -371,6 +383,6 @@ touching `ads/project-colour-exclude'."
     (message "%s: back to %s" name (or (ads/project-colour root) "no tint"))))
 
 (add-hook 'after-change-major-mode-hook #'ads/project-colourise)
-(add-hook 'modus-themes-after-load-theme-hook #'ads/project-recolourise)
+(add-hook 'ef-themes-after-load-theme-hook #'ads/project-recolourise)
 
 ;;; theme.el ends here
