@@ -75,7 +75,7 @@
 (use-package indent-bars
   :hook ((prog-mode) . indent-bars-mode-unless-org-src-fontification))
 
-(defvar ads/org-ligature-sequences
+(defvar ads/ligature-sequences
   '(;; arrows
     "<--->" "<===>" "<-->" "<==>" "<---" "--->" "<===" "===>"
     "<--" "-->" "<==" "==>" "<->" "<=>" "<-" "->" "=>"
@@ -86,27 +86,28 @@
     "<=" ">=" "!=" "!==" "==" "===" "=/="
     ;; punctuation and misc
     "..." ".." "::" ":=" "++" "--" "<>" "</>" "|>" "<|" "www")
-  "Sequences ligated in org buffers, prose included.")
+  "Sequences ligated where output is read rather than source edited.")
 
 (defun ads/org-ligatures ()
-  "Render `ads/org-ligature-sequences' in `fixed-pitch' so FiraCode ligates them."
+  "Render `ads/ligature-sequences' in `fixed-pitch' so FiraCode ligates them."
   ;; regexp-opt rather than hand-ordered alternation: it prefers the longest
   ;; match, so "<-->" cannot be eaten by "<--" leaving a stray ">".
   (font-lock-add-keywords
    nil
-   `((,(regexp-opt ads/org-ligature-sequences) 0 'fixed-pitch prepend))
+   `((,(regexp-opt ads/ligature-sequences) 0 'fixed-pitch prepend))
    t))
 (add-hook 'org-mode-hook #'ads/org-ligatures)
 
 (use-package ligature
   :config
-  (ligature-set-ligatures
-   'prog-mode
-   '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-     "://" "//" "/*" "*/" "<-" "->" "=>" "<=" ">=" "!=" "==" "==="
-     "&&" "||" "++" "--" "::" ":=" "<>" "<<" ">>" "..." ".." "?."
-     "|>" "<|" "=>>" "<<=" "www"))
-  (ligature-set-ligatures 'org-mode ads/org-ligature-sequences)
+  ;; Deliberately not prog-mode.  Editing source is the one place the
+  ;; literal characters matter: a ligature hides whether that is -> or >
+  ;; preceded by a dash, and the prettier line is not worth the ambiguity.
+  ;;
+  ;; Reading output is the opposite case.  A terminal or an org buffer is
+  ;; something to look at rather than edit character by character, so the
+  ;; cleaner line wins and burying the exact bytes costs nothing.
+  (ligature-set-ligatures '(org-mode ghostel-mode) ads/ligature-sequences)
   (global-ligature-mode t))
 
 (use-package nerd-icons
