@@ -6,23 +6,12 @@
 ;; kickoff with the first prompt
 ;;; Code:
 
-(defvar ads/agent-shell-sans-stack
-  '("Optima"                      ; macOS only, and Linotype's - cannot be pinned
-    "Libertinus Sans"             ; the flake's, and the nearest libre thing to it
-    "Source Sans 3"
-    "Cantarell"
-    "sans-serif")
-  "Families to render the conversation in, best first.
-The first one installed wins, so this reads as Optima on a Mac and as
-whatever the flake supplies everywhere else.  Resolved per buffer rather
-than once: `font-family-list' is empty until there is a frame, which on a
-daemon means every answer before the first client is wrong.")
-
 (defun ads/agent-shell-sans ()
-  "First family in `ads/agent-shell-sans-stack' this machine has."
-  (let ((have (font-family-list)))
-    (or (seq-find (lambda (f) (member f have)) ads/agent-shell-sans-stack)
-        "sans-serif")))
+  "Family to render the conversation in.
+`ads/sans-stack' from config/theme.el, resolved per buffer rather than
+read out of `sans': that variable is nil until a frame exists, which on a
+daemon is every buffer made before the first client connects."
+  (ads/font-pick ads/sans-stack))
 
 (defvar-local ads/agent-shell--remap nil
   "Face-remap cookies owned by this buffer, so re-running cannot leak them.")

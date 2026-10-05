@@ -4,38 +4,81 @@
 ;; project colors
 ;;; Code:
 
-(setq
- mono "FiraCode Nerd Font"
- sans "Cantarell"
- serif "EtBembo")
+;; Each of these is a preference order, not a name: the first family the
+;; machine actually has wins.  Everything below the first entry of each is
+;; pinned by the flake, so the fallback is a known face rather than whatever
+;; the OS picks.  The last entry is a generic and always resolves.
+(defvar ads/mono-stack
+  '("FiraCode Nerd Font" "Fira Code" "monospace")
+  "Fixed-pitch families, best first.")
+
+(defvar ads/sans-stack
+  '("Optima"                      ; macOS only, Linotype's - cannot be pinned
+    "Libertinus Sans" "Source Sans 3" "Cantarell" "sans-serif")
+  "Proportional sans families, best first.")
+
+(defvar ads/serif-stack
+  '("ETBembo" "Libertinus Serif" "serif")
+  "Proportional serif families, best first.")
+
+(defvar ads/cjk-stack
+  '("Hiragino Sans" "Noto Sans CJK JP")
+  "CJK families, best first.
+No generic at the end: with none of these installed the default fontset
+is better left alone than pointed at something arbitrary.")
+
+(defvar mono nil "Resolved fixed-pitch family.  Set by `ads/apply-fonts'.")
+(defvar sans nil "Resolved sans family.  Set by `ads/apply-fonts'.")
+(defvar serif nil "Resolved serif family.  Set by `ads/apply-fonts'.")
 
 ;; Set Font sizes
 (defvar default-font-size 140)
 
-;; Set default font
-(set-face-attribute 'default nil
-		    :font mono
-		    :family mono
-		    :height default-font-size)
+(defun ads/font-first (stack)
+  "First family in STACK this machine actually has, or nil."
+  (let ((have (font-family-list)))
+    (seq-find (lambda (f) (member f have)) stack)))
 
-(set-face-attribute 'fixed-pitch nil
-		    :font mono
-		    :family mono
-		    :height 1.0)
+(defun ads/font-pick (stack)
+  "First family in STACK this machine has, falling back to its last entry.
+The last entry of the text stacks is a generic like \"monospace\", which
+always resolves but never appears in `font-family-list'."
+  (or (ads/font-first stack) (car (last stack))))
 
-(set-face-attribute 'variable-pitch nil
-		    :font serif
-		    :family serif
-		    :height 1.1
-		    :weight 'regular)
+(defun ads/apply-fonts (&optional frame)
+  "Resolve the font stacks and apply them to every frame.
+`font-family-list' answers nil until a frame exists, so on a daemon the
+first client is the first chance to ask what is installed - hence the
+`after-make-frame-functions' entry below.  Attributes are set on nil
+rather than on FRAME so that later frames inherit them too."
+  (with-selected-frame (or frame (selected-frame))
+    (when (display-graphic-p)
+      (setq mono (ads/font-pick ads/mono-stack)
+            sans (ads/font-pick ads/sans-stack)
+            serif (ads/font-pick ads/serif-stack))
+      (set-face-attribute 'default nil
+                          :family mono
+                          :height default-font-size)
+      (set-face-attribute 'fixed-pitch nil
+                          :family mono
+                          :height 1.0)
+      (set-face-attribute 'variable-pitch nil
+                          :family serif
+                          :height 1.1
+                          :weight 'regular)
+      ;; Same reason this lives here: the guard reads `font-family-list',
+      ;; so run from the top of the file it answers nil on a daemon and the
+      ;; rescale silently never happens.
+      (let ((cjk (ads/font-first ads/cjk-stack)))
+        (when cjk
+          (dolist (charset '(han cjk-misc kana bopomofo))
+            (set-fontset-font t charset (font-spec :family cjk)))
+          (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2))))))
+
+(add-hook 'after-make-frame-functions #'ads/apply-fonts)
+(ads/apply-fonts)
 
 (customize-set-variable 'line-spacing 0.25)
-
-(let ((cjk "Hiragino Sans"))
-  (when (member cjk (font-family-list))
-    (dolist (charset '(han cjk-misc kana bopomofo))
-      (set-fontset-font t charset (font-spec :family cjk)))
-    (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2)))
 
 ;; ef-themes 2.x is built on the Modus engine, so the `ef-themes-' options are
 ;; aliases onto the Modus ones.  They only exist once ef-themes has loaded,
