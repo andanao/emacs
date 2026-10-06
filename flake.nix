@@ -235,16 +235,12 @@
                 gitSources;
               in epkgs // built;
 
-            # treesit-auto compiles grammars from git on first use, which
-            # wants a compiler and the network at the moment a file opens.
-            # These are the two languages treesit-language-source-alist
-            # names; supplying them from the store means treesit-auto finds
-            # them already there and does nothing.
+            # Every grammar nixpkgs ships, so no mode ever stops to ask
+            # "Tree-sitter grammar for X is missing; install it?" and
+            # compile one from git.  The list in prog.el named only rust
+            # and python, which is how markdown got the prompt.
             extraEmacsPackages = epkgs: [
-              (epkgs.treesit-grammars.with-grammars (g: [
-                g.tree-sitter-rust
-                g.tree-sitter-python
-              ]))
+              epkgs.treesit-grammars.with-all-grammars
             ];
           };
 

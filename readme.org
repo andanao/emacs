@@ -85,15 +85,25 @@ Packages, and only packages.  ~flake.nix~ reads every ~use-package~ form under
 ~config/~ and ~lisp/~ and builds an Emacs carrying exactly those.  There is no
 elisp in the flake and nothing of this config goes into the store.
 
-~package.el~ is off, so an ~elpa~ directory cannot get in front of the pinned
-set.
+~package.el~ still runs, since it is what loads the packages' autoloads, but
+~package-user-dir~ points away from ~~/.emacs.d/elpa~ so the old tree cannot
+get in front of the pinned set.
 
 Six packages are installed from git rather than MELPA and are pinned by
 revision in ~gitSources~.  Bumping one is a rev and a hash.
 
-Tree-sitter grammars for Rust and Python come from the store too, so
-~treesit-auto~ finds them already there and never compiles one from git on
-first use.
+Every tree-sitter grammar nixpkgs ships comes from the store too, so no mode
+stops to ask for one.
+
+* Installing and upgrading packages
+- *Install.*  Add a ~use-package~ form in the right ~config/~ file, then check
+  ~nix build .#packageNames~ and the source it resolved.  Not ~M-x
+  package-install~: ~package-user-dir~ is pointed away from ~~/.emacs.d/elpa~.
+- *Upgrade.*  ~nix flake update~, or ~nix flake update emacs-overlay~ for the
+  overlay alone, then rebuild and restart.  ~flake.lock~ is the pin, so commit
+  it.  ~M-x package-upgrade~ does nothing here.
+- *Upgrade, git packages.*  A new rev, hash and version in ~gitSources~.
+- *Rollback.*  ~git checkout flake.lock~ and rebuild.
 
 * Known leaks
 Things Nix does not pin here, each for a reason:
