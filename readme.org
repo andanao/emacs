@@ -2666,6 +2666,20 @@ Called with one argument, print it at point inside a narrowing so
     (apply fn args)))
 #+end_src
 
+*** URL bookmarks start from the clipboard
+~bmkp-url-target-set~ offers a URL on the clipboard as the URL to bookmark, ahead of the one at point.
+
+#+begin_src emacs-lisp
+(define-advice ffap-read-file-or-url (:filter-args (args) ads/bmkp-url-from-clipboard)
+  "Offer a URL on the clipboard as the URL to bookmark."
+  (if (eq this-command 'bmkp-url-target-set)
+      (let ((clip (ignore-errors (string-trim (current-kill 0 t)))))
+        (if (and clip (not (string-match-p "[[:space:]]" clip)) (ffap-url-p clip))
+            (list (car args) clip)
+          args))
+    args))
+#+end_src
+
 *** repairing a bookmark file that already lost its closing paren
 Moves the stray paren back to the end of the file, keeping a ~.broken~ backup.  Only needed
 for files written before the ~pp~ advice above went in.
