@@ -258,8 +258,9 @@
           fonts = pkgs.symlinkJoin {
             name = "emacs-fonts";
             paths = with pkgs; [
-              nerd-fonts.fira-code        # "FiraCode Nerd Font", the mono
-              nerd-fonts.symbols-only     # nerd-icons' fallback glyphs
+              nerd-fonts.lilex            # "Lilex Nerd Font", the mono
+              nerd-fonts.fira-code        # kept as the fallback behind it
+              nerd-fonts.symbols-only     # glyphs for any font lacking them
               emacs-all-the-icons-fonts   # all-the-icons is used too
               et-book                     # ETBembo, the serif
               source-sans                 # Source Sans 3

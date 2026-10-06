@@ -9,8 +9,17 @@
 ;; pinned by the flake, so the fallback is a known face rather than whatever
 ;; the OS picks.  The last entry is a generic and always resolves.
 (defvar ads/mono-stack
-  '("FiraCode Nerd Font" "Fira Code" "monospace")
+  '("Lilex Nerd Font"            ; IBM Plex Mono's shapes, 37 of 38 ligatures
+    "FiraCode Nerd Font"
+    "Lilex" "Fira Code"          ; unpatched: icons come from the fallback below
+    "monospace")
   "Fixed-pitch families, best first.")
+
+(defvar ads/symbol-font "Symbols Nerd Font Mono"
+  "Font consulted for glyphs the fixed-pitch family does not have.
+Nerd Font builds carry the icons themselves, so this only matters when
+the stack falls through to an unpatched face - but registering it costs
+nothing and means `nerd-icons' and the modeline survive that.")
 
 (defvar ads/sans-stack
   '("Optima"                      ; macOS only, Linotype's - cannot be pinned
@@ -66,6 +75,12 @@ rather than on FRAME so that later frames inherit them too."
                           :family serif
                           :height 1.1
                           :weight 'regular)
+      ;; Icon glyphs live in the Private Use Area.  Appending a fallback
+      ;; there decouples the icons from the text font: anything the mono
+      ;; family cannot draw is taken from the symbol font instead, so an
+      ;; unpatched face still gets a correct modeline and dired.
+      (when (member ads/symbol-font (font-family-list))
+        (set-fontset-font t '(#xe000 . #xf8ff) ads/symbol-font nil 'append))
       ;; Same reason this lives here: the guard reads `font-family-list',
       ;; so run from the top of the file it answers nil on a daemon and the
       ;; rescale silently never happens.
