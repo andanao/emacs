@@ -268,13 +268,13 @@
               inter                       # registers as "Inter Variable"
               libertinus                  # Libertinus Sans, nearest Optima
 
-              # CJK.  Simplified Chinese cuts: han glyphs differ by language
-              # and the JP forms were wrong for reading Chinese.
-              sarasa-gothic               # "Sarasa Mono SC" - exactly 2:1 with
-                                          # the Latin mono, so no rescale fudge
-              noto-fonts-cjk-sans         # "Noto Sans CJK SC"
-              noto-fonts-cjk-serif        # "Noto Serif CJK SC"
-              lxgw-wenkai                 # a Kai face, for reading prose
+              # CJK, one per role.  Simplified Chinese cuts: han glyphs differ
+              # by language and the JP forms were wrong for reading Chinese.
+              maple-mono.NF-CN            # "Maple Mono NF CN" - mono: code,
+                                          # terminals, src blocks, tables
+              lxgw-wenkai                 # "LXGW WenKai" - serif: a Kai face,
+                                          # brush script, for reading prose
+              noto-fonts-cjk-sans         # "Noto Sans CJK SC" - sans
             ];
           };
 
