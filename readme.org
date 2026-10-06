@@ -32,6 +32,7 @@ lives, following the symlink, so they are found whether Emacs is started with
 ** config/ — package setup
 | settings.el     | general editor settings                          |
 | theme.el        | fonts, Modus themes, per-project colours         |
+| cjk.el          | CJK fonts per role, tagged onto Han text         |
 | keybindings.el  | general.el and the leader-key map                |
 | agent-shell.el  | agent-shell sessions, notifications, resume      |
 | ui.el           | icons, ligatures, padding, scrolling             |

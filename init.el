@@ -20,6 +20,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 
 (ads/load-config "config/settings")
 (ads/load-config "config/theme")
+(ads/load-config "config/cjk")
 (ads/load-config "config/keybindings")
 (ads/load-config "config/agent-shell")
 (ads/load-config "config/review")

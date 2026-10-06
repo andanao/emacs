@@ -1,6 +1,6 @@
 ;;; theme.el --- Fonts, Ef themes and per-project colours  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; fonts, cjk width, ef-themes, theme tweaks, force reload,
+;; fonts, ef-themes, theme tweaks, force reload,
 ;; project colors
 ;;; Code:
 
@@ -30,12 +30,6 @@ nothing and means `nerd-icons' and the modeline survive that.")
   '("ETBembo" "Libertinus Serif" "serif")
   "Proportional serif families, best first.")
 
-(defvar ads/cjk-stack
-  '("Hiragino Sans" "Noto Sans CJK JP")
-  "CJK families, best first.
-No generic at the end: with none of these installed the default fontset
-is better left alone than pointed at something arbitrary.")
-
 (defvar mono nil "Resolved fixed-pitch family.  Set by `ads/apply-fonts'.")
 (defvar sans nil "Resolved sans family.  Set by `ads/apply-fonts'.")
 (defvar serif nil "Resolved serif family.  Set by `ads/apply-fonts'.")
@@ -58,7 +52,8 @@ always resolves but never appears in `font-family-list'."
   "Resolve the font stacks and apply them to every frame.
 `font-family-list' answers nil until a frame exists, so on a daemon the
 first client is the first chance to ask what is installed - hence the
-`after-make-frame-functions' entry below.  Attributes are set on nil
+`after-make-frame-functions' entry below.  CJK is deliberately absent: a
+fontset rule for han would override every face's :family (see config/cjk.el).  Attributes are set on nil
 rather than on FRAME so that later frames inherit them too."
   (with-selected-frame (or frame (selected-frame))
     (when (display-graphic-p)
@@ -80,15 +75,7 @@ rather than on FRAME so that later frames inherit them too."
       ;; family cannot draw is taken from the symbol font instead, so an
       ;; unpatched face still gets a correct modeline and dired.
       (when (member ads/symbol-font (font-family-list))
-        (set-fontset-font t '(#xe000 . #xf8ff) ads/symbol-font nil 'append))
-      ;; Same reason this lives here: the guard reads `font-family-list',
-      ;; so run from the top of the file it answers nil on a daemon and the
-      ;; rescale silently never happens.
-      (let ((cjk (ads/font-first ads/cjk-stack)))
-        (when cjk
-          (dolist (charset '(han cjk-misc kana bopomofo))
-            (set-fontset-font t charset (font-spec :family cjk)))
-          (setf (alist-get cjk face-font-rescale-alist nil nil #'equal) 1.2))))))
+        (set-fontset-font t '(#xe000 . #xf8ff) ads/symbol-font nil 'append)))))
 
 (add-hook 'after-make-frame-functions #'ads/apply-fonts)
 (ads/apply-fonts)
