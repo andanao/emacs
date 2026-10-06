@@ -267,6 +267,14 @@
               atkinson-hyperlegible-next
               inter                       # registers as "Inter Variable"
               libertinus                  # Libertinus Sans, nearest Optima
+
+              # CJK.  Simplified Chinese cuts: han glyphs differ by language
+              # and the JP forms were wrong for reading Chinese.
+              sarasa-gothic               # "Sarasa Mono SC" - exactly 2:1 with
+                                          # the Latin mono, so no rescale fudge
+              noto-fonts-cjk-sans         # "Noto Sans CJK SC"
+              noto-fonts-cjk-serif        # "Noto Serif CJK SC"
+              lxgw-wenkai                 # a Kai face, for reading prose
             ];
           };
 
@@ -301,8 +309,13 @@
             dest="$root/nix-emacs"
             rm -rf "$dest"
             mkdir -p "$dest"
+            # .ttc/.otc are collections - several faces in one file, which
+            # is how the CJK families ship.  Matching only .otf/.ttf drops
+            # them silently and the families never appear.
+            #
             # `cp -t' is GNU-only; BSD cp on macOS wants the destination last.
-            find -L "$src" \( -name '*.otf' -o -name '*.ttf' \) \
+            find -L "$src" \( -name '*.otf' -o -name '*.ttf' \
+                           -o -name '*.otc' -o -name '*.ttc' \) \
               -exec cp -L {} "$dest" ';'
             # Store files are read-only; the next run has to be able to
             # delete these.
