@@ -100,6 +100,15 @@ as a single alist."
           (write-region (point-min) (point-max) file)
           (message "Repaired %s: %d bookmarks (backup at %s.broken)" file n file))))))
 
+(define-advice ffap-read-file-or-url (:filter-args (args) ads/bmkp-url-from-clipboard)
+  "Offer a URL on the clipboard as the URL to bookmark."
+  (if (eq this-command 'bmkp-url-target-set)
+      (let ((clip (ignore-errors (string-trim (current-kill 0 t)))))
+        (if (and clip (not (string-match-p "[[:space:]]" clip)) (ffap-url-p clip))
+            (list (car args) clip)
+          args))
+    args))
+
 (use-package dwim-shell-command)
 
 (require 'ansi-color)
