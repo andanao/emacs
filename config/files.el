@@ -35,6 +35,71 @@
 (customize-set-variable 'bmkp-last-bookmark-file '"~/.emacs.d/bookmarks")
 (customize-set-variable 'bmkp-last-as-first-bookmark-file 'nil)
 
+;; [[*no-littering][no-littering]] loads later and re-`setq's these out from under the
+;; settings above, so set them again once it is up.  `bookmark-save' writes
+;; `bmkp-current-bookmark-file', which is how saving ended up aimed at a
+;; year-old file under var/bmkp/.  It is a plain `defvar', hence the `setq'.
+(with-eval-after-load 'no-littering
+  (customize-set-variable 'bookmark-default-file '"~/.emacs.d/bookmarks")
+  (customize-set-variable 'bmkp-last-bookmark-file '"~/.emacs.d/bookmarks")
+  (setq bmkp-current-bookmark-file (expand-file-name "~/.emacs.d/bookmarks")))
+
+;; `bookmark-write-file' prints each record with `pp'.  Since Emacs 29 `pp'
+;; prints straight into the buffer via `pp-fill', which is not narrowed to the
+;; object: breaking a long line it steps over the enclosing alist's own closing
+;; paren.  Every later record then lands outside the alist and the next save
+;; dies with "Invalid bookmark-file".  It only bites the first record of a save.
+(require 'pp)
+
+(defun ads/pp-fill-narrowed (object-or-beg &optional end)
+  "Like `pp-fill', but never reflow text outside the object being printed.
+Called with one argument, print it at point inside a narrowing so
+`pp-fill' cannot pull a following close paren onto the object's last line."
+  (if end
+      (pp-fill object-or-beg end)
+    (let ((print-escape-newlines pp-escape-newlines)
+          (print-quoted t)
+          (start (point)))
+      (prin1 object-or-beg (current-buffer))
+      (save-restriction
+        (narrow-to-region start (point))
+        (pp-fill (point-min) (point-max))
+        (goto-char (point-max))))))
+
+(define-advice bookmark-write-file (:around (fn &rest args) ads/narrowed-pp)
+  "Keep `pp' inside the record it is printing.  See `ads/pp-fill-narrowed'."
+  (let ((pp-default-function #'ads/pp-fill-narrowed))
+    (apply fn args)))
+
+;; Only needed for files written before the `pp' advice above went in.
+(defun ads/repair-bookmark-file (file)
+  "Move FILE's stray alist-closing paren back to the end of the file.
+Back FILE up to FILE.broken first.  Do nothing if FILE already parses
+as a single alist."
+  (interactive (list (read-file-name "Bookmark file: " nil bmkp-current-bookmark-file t)))
+  (let ((file   (expand-file-name file))
+        (stamp  ";;; -*- End Of Bookmark File Format Version Stamp -*-\n"))
+    (with-temp-buffer
+      (insert-file-contents file)
+      (emacs-lisp-mode)
+      (goto-char (point-min))
+      (search-forward stamp)
+      (forward-sexp 1)
+      (if (save-excursion (skip-chars-forward " \t\n") (eobp))
+          (message "%s is already well formed" file)
+        (copy-file file (concat file ".broken") t)
+        (delete-char -1)                ; drop the premature ")"
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))
+        (insert ")\n")
+        (goto-char (point-min))         ; verify before writing anything out
+        (search-forward stamp)
+        (let ((n  (length (read (current-buffer)))))
+          (unless (save-excursion (skip-chars-forward " \t\n") (eobp))
+            (error "Repair failed: still junk after the alist"))
+          (write-region (point-min) (point-max) file)
+          (message "Repaired %s: %d bookmarks (backup at %s.broken)" file n file))))))
+
 (use-package dwim-shell-command)
 
 (require 'ansi-color)
