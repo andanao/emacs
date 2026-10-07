@@ -54,17 +54,11 @@ repaint the whole desktop.")
 
 ;; konfig is a separate repo with its own tangle model, so work.el is read by
 ;; explicit path rather than supplied by the flake.
-;; Off until cutover.  work.el also calls `server-mode', so a test daemon
-;; contends with the live editor for the "server" socket; and konfig is being
-;; nixified separately anyway.  Flip this back on when the trial is over.
-(defvar ads/load-work-config nil
-  "Whether to load konfig's `work.el'.  Off while the nix port is in progress.")
-
 ;; Presence of the file is the machine test.  The old `system-name' check was
 ;; not reliable this early in startup, and a Mac without konfig checked out is
 ;; exactly a Mac that should skip it.
 (let ((work (concat git-directory "konfig/work.el")))
-  (when (and ads/load-work-config (file-exists-p work))
+  (when (file-exists-p work)
     (with-demoted-errors "konfig: work.el stopped early: %S"
       (load-file work))))
 
