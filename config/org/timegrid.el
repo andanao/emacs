@@ -71,12 +71,18 @@ and the rename prompt still starts from the real heading."
     args))
 
 (defun ads/org-timegrid-color (headline)
-  "Colour HEADLINE by its TIMEGRID_COLOR property, else by its tags.
+  "Colour HEADLINE red while it is clocked, else by TIMEGRID_COLOR or its tags.
 Tags are read the way the agenda reads them, with inheritance, so a
 =#+FILETAGS: :meeting:= colours every entry in the file.  The package
 reads `org-element-property' `:tags', which is only what is written on
 the heading itself, and the buffer is current while it parses."
-  (or (when-let* ((name (org-element-property :TIMEGRID_COLOR headline))
+  (or (when (and (org-clocking-p)
+                 (eq (marker-buffer org-clock-hd-marker)
+                     (or (buffer-base-buffer) (current-buffer)))
+                 (eql (marker-position org-clock-hd-marker)
+                      (org-element-property :begin headline)))
+        (if (assq 'red org-timegrid-colors) 'red "red"))
+      (when-let* ((name (org-element-property :TIMEGRID_COLOR headline))
                   (name (string-trim name)))
         (if (assq (intern name) org-timegrid-colors) (intern name) name))
       (seq-some (lambda (tag)
@@ -339,6 +345,13 @@ It runs first on `org-agenda-finalize-hook', so a signal here takes
 renders as plain text.  The strip is worth less than the rest of it."
   (with-demoted-errors "org-timegrid strip: %S" (apply fn args)))
 
+(defun ads/org-timegrid-clock-stale ()
+  "Mark open calendars stale, so the clocked block's colour is redrawn."
+  (dolist (buffer (buffer-list))
+    (when (provided-mode-derived-p
+           (buffer-local-value 'major-mode buffer) 'org-timegrid-mode)
+      (with-current-buffer buffer (setq-local org-timegrid--stale t)))))
+
 (use-package org-timegrid
   :vc (:url "https://github.com/Gleek/org-timegrid"
        :rev :newest)
@@ -356,6 +369,8 @@ renders as plain text.  The strip is worth less than the rest of it."
         ;; calendar for.
         org-timegrid-org-tag-color-alist '(("meeting" . yellow)))
   (evil-set-initial-state 'org-timegrid-mode 'emacs)
+  (add-hook 'org-clock-in-hook #'ads/org-timegrid-clock-stale)
+  (add-hook 'org-clock-out-hook #'ads/org-timegrid-clock-stale)
   (advice-add 'org-timegrid-week :before #'ads/org-agenda-files-update)
   (advice-add 'org-timegrid-open :before #'ads/org-timegrid-drop-stateless)
   (advice-add 'org-timegrid-org--event :around #'ads/org-timegrid-note-category)
