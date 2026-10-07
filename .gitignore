@@ -49,6 +49,7 @@ __pycache__/
 # agents — is deliberate and tracked.
 .claude/HANDOFF.md
 .claude/settings.local.json
+.claude/worktrees/
 
 # Migration scaffolding, not configuration
 spec.org
