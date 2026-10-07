@@ -66,14 +66,6 @@
           hash = "sha256-hkvEuad3Gh++PMeaMJHd2j//ho+FA59QGxCex3NVi98=";
           deps = p: [ p.posframe p.nerd-icons ];
         };
-        org-modern-indent = {
-          version = "20260721.2333";
-          owner = "jdtsmith";
-          repo = "org-modern-indent";
-          rev = "86bd83ee1ad95f123810eb3b116beb543db1960a";
-          hash = "sha256-vQzYk5qejCBehpbxkMceOMsmeLyjnAstpezZw/ZR1jQ=";
-          deps = p: [ p.compat ];
-        };
         org-timegrid = {
           version = "20260921.627";
           owner = "Gleek";

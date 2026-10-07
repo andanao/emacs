@@ -71,6 +71,7 @@ package configuration.
 | org-latex-preview.el     | LaTeX preview rendering           |
 | org-meetings.el          | meetings and agenda notifications |
 | org-prettify-symbols.el  | prettified org keywords           |
+| org-block-brackets.el    | SVG brackets beside org blocks    |
 | org-inbox-review.el      | inbox review workflow             |
 | quartz.el                | Quartz site publishing            |
 | read-only-directories.el | mark directories read-only        |

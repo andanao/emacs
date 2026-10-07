@@ -1,6 +1,6 @@
 ;;; appearance.el --- org-modern, org-appear, org-tidy  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; org-appear, org-modern, org-modern-indent, org-tidy
+;; org-appear, org-modern, org-indent, org-tidy
 ;;; Code:
 
 (use-package org-appear
@@ -69,13 +69,11 @@ tall, even though org-modern has shrunk the rest of the row."
 		       'face `(:height ,org-modern-table-horizontal)))))))
   (advice-add 'org-modern--table :around #'ads/org-modern-table-thin-hline))
 
-(use-package org-modern-indent
-  :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+(use-package org-indent
+  :ensure nil
   :custom
   (org-startup-indented t)
-  (org-indent-indentation-per-level 2)
-  :config ; add late to hook
-  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+  (org-indent-indentation-per-level 2))
 
 (use-package org-tidy
   :ensure t
