@@ -235,4 +235,31 @@ as a single alist."
 (require 'tramp)
 (setopt remote-file-name-access-timeout 300)
 
+;; SPC s r / SPC s R: a terminal or dired on a Host from ~/.ssh/config,
+;; wildcard patterns left out.  Both start in the remote home directory.
+(defun ads/ssh-hosts ()
+  "Hosts named in ~/.ssh/config, without the wildcard patterns."
+  (seq-uniq
+   (seq-remove (lambda (host) (string-match-p "[*?!]" host))
+               (delq nil (mapcar #'cadr (tramp-parse-sconfig "~/.ssh/config"))))))
+
+(defun ads/read-ssh-host ()
+  "Ask for a host from ~/.ssh/config."
+  (completing-read "Host: " (ads/ssh-hosts)))
+
+(defun ads/remote-ghostel (host)
+  "Start a terminal in HOST's home directory."
+  (interactive (list (ads/read-ssh-host)))
+  (let ((default-directory (format "/ssh:%s:~/" host)))
+    (ghostel '(4))))
+
+(defun ads/remote-dired (host)
+  "Open HOST's home directory in dired."
+  (interactive (list (ads/read-ssh-host)))
+  (dired (format "/ssh:%s:~/" host)))
+
+(ads/leader-keys
+  "sr" 'ads/remote-ghostel
+  "sR" 'ads/remote-dired)
+
 ;;; files.el ends here
