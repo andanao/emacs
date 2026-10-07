@@ -84,9 +84,18 @@ tall, even though org-modern has shrunk the rest of the row."
   (org-tidy-protect-overlay nil)
   :hook  (org-mode . org-tidy-mode)
   )
+
+;; `org-tidy-toggle' trusts a flag that goes stale when `org-tidy-mode'
+;; re-tidies on save, so this one asks the buffer instead.
+(defun ads/org-tidy-toggle ()
+  "Untidy the buffer if any drawer is hidden, otherwise tidy it."
+  (interactive)
+  (if org-tidy-overlays
+      (org-tidy-untidy-buffer)
+    (org-tidy-buffer)))
 (ads/leader-keys
   :keymaps 'org-mode-map
-  "ot" 'org-tidy-untidy-buffer
+  "ot" 'ads/org-tidy-toggle
   "oT" 'org-tidy-toggle
   "o C-t" 'org-tidy-mode)
 
