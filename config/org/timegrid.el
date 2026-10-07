@@ -116,7 +116,7 @@ it does not move point in the Org buffer to answer a question about it."
        (or (org-element-property :hour-start timestamp)
            (not (org-element-property :repeater-type timestamp)))))
 
-(defvar ads/org-timegrid-work-hours '(9 . 19.5)
+(defvar ads/org-timegrid-work-hours '(9 . 19)
   "First and last hour of the working day, tinted on the calendar.
 Fractional, so 19.5 is half past seven.")
 
@@ -344,8 +344,8 @@ renders as plain text.  The strip is worth less than the rest of it."
        :rev :newest)
   :defer t
   :init
-  (setq org-timegrid-start-hour 8
-        org-timegrid-end-hour 22
+  (setq org-timegrid-start-hour 6.5
+        org-timegrid-end-hour 23
         org-timegrid-all-day-max-lanes 2
         org-timegrid-highlight-current-day t
         org-timegrid-org-capture-file ads/inbox-file
@@ -522,10 +522,10 @@ the block over it."
                 org-timegrid-end-hour end))
   (org-timegrid-refresh))
 
-(defvar ads/org-timegrid-hour-ranges '((8 . 22) (9 . 20) (0 . 24))
+(defvar ads/org-timegrid-hour-ranges '((6.5 . 23) (9 . 19) (0 . 24))
   "Canvas hours cycled by `ads/org-timegrid-cycle-hours'.
-Whole hours: the grid draws one labelled line per hour, so the working
-day rounds out past `ads/org-timegrid-work-hours'.")
+The grid draws a line every half hour, so a half-hour start such as 6.5
+is fine; the third entry is the whole day.")
 
 (defun ads/org-timegrid-cycle-hours ()
   "Show waking hours, then working hours, then the whole day."
@@ -571,6 +571,8 @@ not scroll, so a week of thirty would push the grid off the bottom."
 Both settings are buffer-local: `calendar-week-start-day' is Sunday
 everywhere else and stays that way."
   (interactive)
+  (when (equal (buffer-name) ads/org-timegrid-day-buffer-name)
+    (user-error "This is the one-day calendar"))
   ;; Anchor on the middle of what is on screen.  `org-timegrid--range-start'
   ;; ends a range shorter than a week *on* the date it is handed, so passing
   ;; the current first day walked the calendar a week backwards per press; the
@@ -584,6 +586,57 @@ everywhere else and stays that way."
                   calendar-week-start-day 0))
     (setq-local org-timegrid--stale t)
     (org-timegrid-week anchor)))
+
+(defvar ads/org-timegrid-day-buffer-name "*Org Time Grid Day*"
+  "Buffer holding the one-day calendar, apart from the week's.")
+
+(defvar ads/org-timegrid-day-width 30
+  "Columns the pinned one-day calendar takes from the right edge.")
+
+(add-to-list 'display-buffer-alist
+             `(,(regexp-quote ads/org-timegrid-day-buffer-name)
+               (display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . ,ads/org-timegrid-day-width)
+               (dedicated . t)
+               (window-parameters (no-delete-other-windows . t))))
+
+(defun ads/org-timegrid--day-setup ()
+  "Make the day buffer one day wide and its own calendar.
+Runs from the mode hook, ahead of the load that reads `org-timegrid-days'.
+The buffer name is local so the package's own calls from inside it, which
+reopen the calendar by name, land back here and not in the week."
+  (when (equal (buffer-name) ads/org-timegrid-day-buffer-name)
+    (setq-local org-timegrid-days 1
+                org-timegrid-buffer-name ads/org-timegrid-day-buffer-name)))
+
+(add-hook 'org-timegrid-mode-hook #'ads/org-timegrid--day-setup)
+
+(defun ads/org-timegrid-fit-day (&rest _)
+  "Stretch the day buffer's hours to fill its window.
+Only the vertical scale: text and the label column keep their zoom.  A
+:before advice on `org-timegrid-refresh', so the hour keys refit as well."
+  (when-let* (((equal (buffer-name) ads/org-timegrid-day-buffer-name))
+              (window (get-buffer-window (current-buffer))))
+    (setq-local org-timegrid-pixels-per-minute
+                (/ (float (- (window-body-height window t)
+                             (org-timegrid--grid-top-inset)
+                             2))
+                   (* 60 (- org-timegrid-end-hour org-timegrid-start-hour)
+                      (org-timegrid--zoom-factor))))))
+
+(advice-add 'org-timegrid-refresh :before #'ads/org-timegrid-fit-day)
+
+(defun ads/org-timegrid-toggle-day ()
+  "Show today's calendar pinned to the right edge, or hide it."
+  (interactive)
+  (if-let* ((window (get-buffer-window ads/org-timegrid-day-buffer-name)))
+      (delete-window window)
+    (let ((org-timegrid-buffer-name ads/org-timegrid-day-buffer-name))
+      (org-timegrid-week)
+      (with-current-buffer ads/org-timegrid-day-buffer-name
+        (org-timegrid-refresh)))))
 
 (defun ads/org-timegrid--on-screen-p (block)
   "Return non-nil when BLOCK is actually drawn right now.
@@ -635,9 +688,17 @@ canvas with = or 0, or open the rail with z, to reach the rest."
     (org-timegrid--render-dynamic t)
     (org-timegrid--scroll-cursor-into-view)))
 
+(defun ads/org-timegrid-leader ()
+  "Offer the leader map, as SPC does in normal state.
+Looked up when pressed: the grid is in emacs state, where general leaves SPC
+unbound and the package's own page-down wins."
+  (interactive)
+  (set-transient-map (key-binding (kbd "C-SPC"))))
+
 (with-eval-after-load 'org-timegrid
   (general-define-key
    :keymaps 'org-timegrid-mode-map
+   "SPC" 'ads/org-timegrid-leader
    "h" 'org-timegrid-cursor-backward-day
    "l" 'org-timegrid-cursor-forward-day
    "j" 'org-timegrid-cursor-forward
@@ -680,6 +741,7 @@ canvas with = or 0, or open the rail with z, to reach the rest."
 
 (ads/leader-keys
   "og" '(org-timegrid-week :wk "timegrid week")
+  "od" '(ads/org-timegrid-toggle-day :wk "timegrid day")
   "oG" '(ads/org-timegrid-schedule-task :wk "timegrid schedule task"))
 
 (setq org-timegrid-org-capture-file ads/inbox-file)
