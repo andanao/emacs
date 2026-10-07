@@ -436,6 +436,29 @@ package rather than by me."
       (user-error "Nothing under the cursor; o makes something"))
     (funcall visitor event)))
 
+(defvar ads/org-timegrid-archive-function #'ads/org-archive-done
+  "Command `ads/org-timegrid-archive-entry' runs on the heading behind a block.
+The same command as SPC o X, which the work config points at its own.")
+
+(defun ads/org-timegrid-archive-entry ()
+  "Mark the Org heading behind the block at the cursor done and archive it."
+  (interactive)
+  (let* ((block (org-timegrid--block-at-cursor))
+         (event (and block (org-timegrid-block-event block)))
+         (marker (and event
+                      (plist-get (org-timegrid-event-source event) :marker))))
+    (unless (and (markerp marker) (marker-buffer marker))
+      (user-error "No Org heading under the cursor"))
+    (with-current-buffer (marker-buffer marker)
+      (org-with-wide-buffer
+       (goto-char marker)
+       (org-back-to-heading t)
+       (call-interactively ads/org-timegrid-archive-function))
+      (org-timegrid-org--note-edit))
+    (setq-local org-timegrid--stale t)
+    (org-timegrid-week (+ (org-timegrid--calendar-state-week-start org-timegrid--state)
+                          (/ org-timegrid-days 2)))))
+
 (defun ads/org-timegrid-delete-entry ()
   "Delete the Org heading behind the block at the cursor.
 The package's D only removes the timestamp, which leaves the task behind in
@@ -739,6 +762,7 @@ unbound and the package's own page-down wins."
    "y" 'org-timegrid-copy-selected
    "p" 'org-timegrid-yank
    "X" 'ads/org-timegrid-delete-entry
+   "A" 'ads/org-timegrid-archive-entry
    "o" 'org-timegrid-create-at-cursor
    "a" 'ads/org-timegrid-schedule-task
    "RET" 'ads/org-timegrid-visit
