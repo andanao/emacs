@@ -47,9 +47,11 @@ __pycache__/
 
 # Per-session Claude state.  Everything else under .claude/ — settings, skills,
 # agents — is deliberate and tracked.
+.claude/
 .claude/HANDOFF.md
 .claude/settings.local.json
 .claude/worktrees/
+!.claude/skills/
 
 # Migration scaffolding, not configuration
 spec.org
