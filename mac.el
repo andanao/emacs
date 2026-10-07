@@ -53,13 +53,7 @@ repaint the whole desktop.")
 (menu-bar-mode -1)
 
 ;; konfig is a separate repo with its own tangle model, so work.el is read by
-;; explicit path rather than supplied by the flake.  It adds to
-;; `org-babel-auto-tangle-file-list', which this config used to define and no
-;; longer does; the stub keeps that line from aborting startup 44 lines into a
-;; 2343-line file.  Restoring the hook that acted on it is konfig's to do.
-(defvar org-babel-auto-tangle-file-list nil
-  "Files konfig asks to be tangled on save.  Nothing acts on this yet.")
-
+;; explicit path rather than supplied by the flake.
 ;; Off until cutover.  work.el also calls `server-mode', so a test daemon
 ;; contends with the live editor for the "server" socket; and konfig is being
 ;; nixified separately anyway.  Flip this back on when the trial is over.
