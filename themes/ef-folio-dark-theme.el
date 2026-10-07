@@ -63,6 +63,9 @@
     (red-warmer "#e08a6a")
     (red-cooler "#c6613f")              ; deep
     (red-faint "#b08878")
+    ;; TODO chips fill with this, black text on top.  red-warmer is a salmon
+    ;; that read as muted beside the blues; this is a clear red, 5.2:1 on black.
+    (todo-red "#d94f4f")
     (green "#8fa571")
     (green-warmer "#a0b57f")
     (green-cooler "#bcd1ca")            ; cactus
@@ -134,7 +137,10 @@
    ef-folio-dark-palette-partial
    'warm
    nil
-   (append ef-folio-mappings-partial ef-themes-palette-common)))
+   (append '((prose-todo todo-red))
+           (seq-remove (lambda (m) (eq (car m) 'prose-todo))
+                       ef-folio-mappings-partial)
+           ef-themes-palette-common)))
 
 ;;;###theme-autoload
 (modus-themes-theme
@@ -145,6 +151,20 @@
  'ef-folio-dark-palette
  nil
  'ef-folio-dark-palette-overrides)
+
+;; agent-shell's Me and Claude chips are inverse video, so the foreground set
+;; here becomes the chip.  Stock they inherit keyword and function-name, which
+;; come out as pale heather and kraft; these take the blue and the salmon.
+;; A theme's spec replaces the face's default one rather than adding to it, so
+;; the inverse video and box have to be repeated or the chip turns to plain text.
+(custom-theme-set-faces
+ 'ef-folio-dark
+ `(agent-shell-chat-me-label
+   ((t :inherit (bold font-lock-keyword-face) :inverse-video t :box t
+       :foreground ,(cadr (assq 'blue-warmer ef-folio-dark-palette)))))
+ `(agent-shell-chat-agent-label
+   ((t :inherit (bold font-lock-function-name-face) :inverse-video t :box t
+       :foreground ,(cadr (assq 'red-warmer ef-folio-dark-palette))))))
 
 (provide 'ef-folio-dark-theme)
 
