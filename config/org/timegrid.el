@@ -421,6 +421,34 @@ package rather than by me."
       (user-error "Nothing under the cursor; o makes something"))
     (funcall visitor event)))
 
+(defun ads/org-timegrid-delete-entry ()
+  "Delete the Org heading behind the block at the cursor.
+The package's D only removes the timestamp, which leaves the task behind in
+its file.  A heading with subheadings is refused rather than taken with them."
+  (interactive)
+  (let* ((block (org-timegrid--block-at-cursor))
+         (event (and block (org-timegrid-block-event block)))
+         (marker (and event
+                      (plist-get (org-timegrid-event-source event) :marker))))
+    (unless (and (markerp marker) (marker-buffer marker))
+      (user-error "No Org heading under the cursor"))
+    (with-current-buffer (marker-buffer marker)
+      (when buffer-read-only
+        (user-error "The source Org buffer is read-only"))
+      (org-with-wide-buffer
+       (goto-char marker)
+       (org-back-to-heading t)
+       (let ((title (org-get-heading t t t t)))
+         (when (save-excursion (org-goto-first-child))
+           (user-error "%s has subheadings; delete it from the file" title))
+         (unless (yes-or-no-p (format "Delete %s? " title))
+           (user-error "Kept %s" title))
+         (delete-region (point) (progn (org-end-of-subtree t t) (point)))))
+      (org-timegrid-org--note-edit))
+    (setq-local org-timegrid--stale t)
+    (org-timegrid-week (+ (org-timegrid--calendar-state-week-start org-timegrid--state)
+                          (/ org-timegrid-days 2)))))
+
 (defun ads/org-timegrid-cursor-hour-forward (&optional count)
   "Move the cursor COUNT hours later."
   (interactive "p")
@@ -634,6 +662,7 @@ canvas with = or 0, or open the rail with z, to reach the rest."
    "C-c C-o" 'ads/org-timegrid-open-link
    "y" 'org-timegrid-copy-selected
    "p" 'org-timegrid-yank
+   "X" 'ads/org-timegrid-delete-entry
    "o" 'org-timegrid-create-at-cursor
    "a" 'ads/org-timegrid-schedule-task
    "RET" 'ads/org-timegrid-visit
