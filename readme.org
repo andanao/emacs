@@ -13,7 +13,7 @@ Build the package set and start Emacs against this directory:
 
 #+begin_src shell
 nix build
-result/bin/emacs --init-directory ~/git/emacs-nix
+result/bin/emacs --init-directory ~/git/emacs
 #+end_src
 
 ~nix build .#packageNames~ writes the resolved package list without building
