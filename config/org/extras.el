@@ -55,6 +55,21 @@
 (use-package org-cliplink)
 (ads/leader-keys "oL" '(org-cliplink :wk "org-cliplink"))
 
+;; ~/Downloads is where most attachments start.
+(defun ads/org-attach-from-downloads ()
+  "Attach a file to the heading at point, prompting from ~/Downloads."
+  (interactive)
+  (org-attach-attach (read-file-name "Attach from downloads: " "~/Downloads/")))
+
+(ads/leader-keys
+  "oF" '(ads/org-attach-from-downloads :wk "attach from downloads")
+  "oj" '(ads/open-downloads :wk "dired downloads"))
+
+(defun ads/open-downloads ()
+  "Open ~/Downloads in dired."
+  (interactive)
+  (dired "~/Downloads/"))
+
 (use-package org-download
   :vc (org-download
        :url "https://github.com/andanao/org-download"
