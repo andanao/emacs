@@ -53,6 +53,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "config/org/roam")
 (ads/load-config "lisp/org-inbox-review")
 (ads/load-config "config/org/timegrid")
+(ads/load-config "config/org/elgantt")
 (ads/load-config "config/org/transclusion")
 (ads/load-config "lisp/quartz")
 (ads/load-config "lisp/read-only-directories")

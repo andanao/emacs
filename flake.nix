@@ -58,6 +58,14 @@
           hash = "sha256-nh62MfmlUGZAW8Mk8ooNoStbSIzAdOhH6PTzqAD8aHs=";
           deps = p: [ p.consult ];
         };
+        elgantt = {
+          version = "20240224.342";
+          owner = "legalnonsense";
+          repo = "elgantt";
+          rev = "23fe6a3dd4f1a991e077f13869fb960b8b29e183";
+          hash = "sha256-SGC5sD3FzMtWQ+ttNfHebm+zYEq88VlIMlGuedGrj6E=";
+          deps = p: [ p.dash p.org-ql p.s p.ts ];
+        };
         knockknock = {
           version = "20260316.1540";
           owner = "xenodium";
