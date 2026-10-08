@@ -45,6 +45,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "config/org/appearance")
 (ads/load-config "lisp/org-block-brackets")
 (ads/load-config "config/org/babel")
+(ads/load-config "config/mermaid")
 (ads/load-config "config/org/capture")
 (ads/load-config "lisp/org-latex-preview")
 (ads/load-config "lisp/org-meetings")

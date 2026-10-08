@@ -41,6 +41,7 @@ lives, following the symlink, so they are found whether Emacs is started with
 | text.el         | prose, markup, search syntax                     |
 | completion.el   | vertico, corfu and the completion stack          |
 | d2.el           | d2 diagrams and their previews                   |
+| mermaid.el      | mermaid diagrams and their previews              |
 | dired.el        | Dired and Dirvish                                |
 | modeline.el     | doom-modeline and its indicators                 |
 | vc.el           | magit, ediff, git links                          |

@@ -174,6 +174,7 @@
           # binaries.
           runtimeTools = with pkgs; [
             d2                  # config/d2.el renders diagrams
+            mermaid-cli         # `mmdc', config/mermaid.el renders diagrams
             imagemagick         # `magick', image conversion
             zig                 # builds ghostel's native module
             rust-analyzer       # lsp, Rust
