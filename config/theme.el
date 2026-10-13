@@ -224,6 +224,13 @@ Called with no THEME, tweak whichever Ef theme is current."
          `(line-number-current-line ((,c :inherit line-number)))
          ;; mode line - the buffer name and the clocked project are what you read
          `(ads/modeline-context ((,c :foreground ,fg-dim)))
+         ;; bookmark+ paints a highlighted bookmark's whole line, which is
+         ;; unreadable on a heading; the fringe mark is enough
+         `(bmkp-light-autonamed ((,c :background ,bg-main)))
+         `(bmkp-light-autonamed-region ((,c :background ,bg-main)))
+         `(bmkp-light-non-autonamed ((,c :background ,bg-main)))
+         `(bmkp-light-non-autonamed-region ((,c :background ,bg-main)))
+         `(bmkp-light-mark ((,c :background ,bg-main)))
          ;; misc
          `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))))
       )))
