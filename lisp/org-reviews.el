@@ -60,6 +60,7 @@
 "
     (ads/roam-active-projects)
     (ads/monthly-goals)))
+ (ads/org-scan-unclosed-drawers t)
  (package-upgrade-all))
 
 (defun ads/monthly-file ()

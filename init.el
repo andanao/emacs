@@ -40,6 +40,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "lisp/insert-variable-value")
 (ads/load-config "config/knockknock")
 (ads/load-config "config/org/org")
+(ads/load-config "lisp/org-drawer-lint")
 (ads/load-config "lisp/org-reviews")
 (ads/load-config "config/org/agenda")
 (ads/load-config "config/org/appearance")
