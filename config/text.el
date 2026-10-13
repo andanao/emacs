@@ -35,9 +35,11 @@
 (customize-set-variable 'fill-column 100)
 (add-hook 'text-mode-hook 'auto-fill-mode)
 
+;; `org-cdlatex-mode' is not on `org-mode-hook': with it on in every agenda
+;; file, the first agenda hangs inside `org-element-cache-map'.  Turn it on
+;; per buffer with M-x org-cdlatex-mode.
 (use-package cdlatex
-  :hook ((org-mode . org-cdlatex-mode)
-         (LaTeX-mode . turn-on-cdlatex))
+  :hook (LaTeX-mode . turn-on-cdlatex)
   :config
   (with-eval-after-load 'org
     (define-key org-cdlatex-mode-map (kbd "`") nil)
