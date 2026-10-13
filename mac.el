@@ -26,10 +26,10 @@
   (when (file-exists-p libgs)
     (setenv "LIBGS" libgs)))
 
-(defvar mac/sync-os-appearance nil
+(defvar mac/sync-os-appearance t
   "Whether a theme change should drag macOS light/dark along with it.
-Off while the Ef themes are being chosen: every reload would otherwise
-repaint the whole desktop.")
+Set it to nil while trying themes out: every reload repaints the whole
+desktop.")
 
 (defun mac/dark-mode-emacs-align ()
   "Align OSX theme with emacs light or dark mode"
