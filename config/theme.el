@@ -231,7 +231,9 @@ Called with no THEME, tweak whichever Ef theme is current."
          `(bmkp-light-non-autonamed ((,c :background ,bg-main)))
          `(bmkp-light-non-autonamed-region ((,c :background ,bg-main)))
          `(bmkp-light-mark ((,c :background ,bg-main)))
+         `(bmkp-light-fringe-non-autonamed ((,c :background ,bg-main)))
          ;; misc
+         `(hl-line ((,c :background ,bg-dim)))
          `(bookmark-face ((,c :foreground ,fg-dim :distant-foreground ,fg-dim)))))
       )))
 
