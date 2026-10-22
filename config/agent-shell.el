@@ -635,4 +635,30 @@ running there gets the prompt instead of a second one being started."
       (agent-shell-prompt-queue prompt))
     shell))
 
+(defun ads/agent-shell--project-candidates ()
+  "~/Downloads and every directory one level under ~/git and ~/git/pr.
+Read off the disk each time, so a repo cloned a minute ago is already
+here - projectile only knows the ones it has visited."
+  (cons (abbreviate-file-name (expand-file-name "~/Downloads/"))
+        (mapcan (lambda (parent)
+                  (when (file-directory-p parent)
+                    (mapcar (lambda (dir) (abbreviate-file-name (file-name-as-directory dir)))
+                            (seq-filter #'file-directory-p
+                                        (directory-files parent t "\\`[^.]")))))
+                (list (expand-file-name "~/git") (expand-file-name "~/git/pr")))))
+
+(defun ads/agent-shell-in-project (directory)
+  "Start a new agent shell in DIRECTORY.
+For asking about a repo without first opening a file in it.  From a
+temp buffer, for the reason `ads/agent-shell--cwd' gives."
+  (interactive (list (completing-read "Agent shell in: "
+                                      (ads/agent-shell--project-candidates) nil t)))
+  (with-temp-buffer
+    (setq default-directory (file-name-as-directory (expand-file-name directory)))
+    (let ((agent-shell-cwd-function nil))
+      (agent-shell-new-shell))))
+
+(with-eval-after-load 'agent-shell
+  (ads/leader-keys "aP" 'ads/agent-shell-in-project))
+
 ;;; agent-shell.el ends here
