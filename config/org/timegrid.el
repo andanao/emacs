@@ -225,6 +225,37 @@ package's rewriters do the writing, so a repeater survives the move."
          (undo-boundary)
          (org-timegrid-org--note-edit))))))
 
+(defun ads/org-timegrid-schedule-created ()
+  "Make the heading the calendar just created a TODO, scheduled at its time.
+The package writes a bare heading over a loose active timestamp, which
+C-c C-s then answers with a second date rather than moving the first.  A
+heading already scheduled -- a pasted copy -- is left as it is."
+  (save-excursion
+    (org-back-to-heading t)
+    (when-let* (((not (org-element-property :scheduled (org-element-at-point))))
+                (timestamp (ads/org-timegrid--body-timestamp))
+                (beginning (org-element-property :begin timestamp))
+                (text (buffer-substring-no-properties
+                       beginning (org-element-property :end timestamp))))
+      (goto-char beginning)
+      (delete-region beginning (org-element-property :end timestamp))
+      (when (string-blank-p (buffer-substring (line-beginning-position)
+                                              (line-end-position)))
+        (delete-region (line-beginning-position)
+                       (min (point-max) (line-beginning-position 2))))
+      (org-back-to-heading t)
+      ;; Org writes the planning line, then its date-only value gives way to
+      ;; the timestamp as the package wrote it, range and all.
+      (org-add-planning-info 'scheduled (org-timestamp-to-time timestamp))
+      (org-back-to-heading t)
+      (let ((scheduled (org-element-property :scheduled (org-element-at-point))))
+        (goto-char (org-element-property :begin scheduled))
+        (delete-region (point) (org-element-property :end scheduled))
+        (insert text))
+      (org-back-to-heading t)
+      (unless (org-get-todo-state)
+        (org-todo "TODO")))))
+
 (defun ads/org-timegrid--scrub-copy ()
   "Strip identity, history and dates from the lone entry in this buffer.
 A copy is a new task: the original's ID, the hours clocked against it and
@@ -371,6 +402,7 @@ renders as plain text.  The strip is worth less than the rest of it."
   (evil-set-initial-state 'org-timegrid-mode 'emacs)
   (add-hook 'org-clock-in-hook #'ads/org-timegrid-clock-stale)
   (add-hook 'org-clock-out-hook #'ads/org-timegrid-clock-stale)
+  (add-hook 'org-timegrid-org-after-create-hook #'ads/org-timegrid-schedule-created)
   (advice-add 'org-timegrid-week :before #'ads/org-agenda-files-update)
   (advice-add 'org-timegrid-open :before #'ads/org-timegrid-drop-stateless)
   (advice-add 'org-timegrid-org--event :around #'ads/org-timegrid-note-category)
