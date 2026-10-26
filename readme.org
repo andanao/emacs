@@ -74,6 +74,7 @@ package configuration.
 | org-prettify-symbols.el  | prettified org keywords           |
 | org-block-brackets.el    | SVG brackets beside org blocks    |
 | org-inbox-review.el      | inbox review workflow             |
+| try-package.el           | try a package this session       |
 | quartz.el                | Quartz site publishing            |
 | read-only-directories.el | mark directories read-only        |
 | window-resize.el         | window resizing commands          |

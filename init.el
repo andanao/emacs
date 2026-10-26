@@ -38,6 +38,7 @@ after a package (org.el, dired.el) cannot shadow the real one."
 (ads/load-config "config/ghostel")
 (ads/load-config "lisp/gps-time")
 (ads/load-config "lisp/insert-variable-value")
+(ads/load-config "lisp/try-package")
 (ads/load-config "config/knockknock")
 (ads/load-config "config/org/org")
 (ads/load-config "lisp/org-drawer-lint")
