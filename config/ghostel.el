@@ -44,7 +44,7 @@ The leading star is optional because only the creation name carries one.")
   "The popup terminal, whatever `ads/ghostel-buffer-name' has renamed it to."
   (car (match-buffers ads/ghostel-popup-regexp)))
 
-(defvar ads/ghostel-popup-height 0.3
+(defvar ads/ghostel-popup-height 0.5
   "Fraction of the frame the popup takes, kept for the rest of the session.")
 
 (defun ads/ghostel--popup-fraction (window)
@@ -66,6 +66,20 @@ elsewhere, and starts it the first time."
      (window (select-window window))
      (t (let ((ghostel-buffer-name ads/ghostel-popup-name))
           (ghostel))))))
+
+(defun ads/ghostel--popup-hide-on-blur (frame)
+  "Close the popup in FRAME once focus has moved off it.
+Left alone while the minibuffer is up, so a command run from the popup
+can prompt without losing it."
+  (when-let* (((not (minibuffer-window-active-p (minibuffer-window frame))))
+              (buffer (ads/ghostel-popup-buffer))
+              (window (get-buffer-window buffer frame))
+              ((not (eq window (frame-selected-window frame))))
+              ((window-parameter window 'window-side)))
+    (setq ads/ghostel-popup-height (ads/ghostel--popup-fraction window))
+    (delete-window window)))
+
+(add-hook 'window-selection-change-functions #'ads/ghostel--popup-hide-on-blur)
 
 (defun ads/ghostel--popup-fit (window)
   "Size WINDOW to `ads/ghostel-popup-height'."
