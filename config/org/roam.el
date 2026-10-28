@@ -19,9 +19,8 @@
   ;; forward/backlinks like any other roam link.  org-roam excludes the
   ;; "transclude" keyword by default; drop it from the exclusion list.
   (org-roam-db-extra-links-exclude-keys '((node-property . ("ROAM_REFS"))))
-  (org-roam-db-node-include-function
-   (lambda ()
-     (not (member "ATTACH" (org-get-tags))))) ;; ignore node if ATTACH is a tag
+  ;; Only files are nodes; heading IDs stay plain org-id link targets.
+  (org-roam-db-node-include-function #'org-before-first-heading-p)
 
   (org-roam-capture-templates '(("d" "default" plain "%?" :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
 ":PROPERTIES:
