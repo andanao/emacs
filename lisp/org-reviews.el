@@ -43,6 +43,8 @@
   - [ ] Downloads
   - [ ] [[https:gmail.com][gmail]]
 - [ ] Clean Apartment
+- [ ] Auto review: merge or delete the auto/ branches in emacs and konfig
+- [ ] Packages: =nix flake update= in emacs, rebuild, commit =flake.lock=
 - [ ] Week agenda
 
 #+begin_src emacs-lisp
@@ -60,8 +62,7 @@
 "
     (ads/roam-active-projects)
     (ads/monthly-goals)))
- (ads/org-scan-unclosed-drawers t)
- (package-upgrade-all))
+ (ads/org-scan-unclosed-drawers t))
 
 (defun ads/monthly-file ()
   "Return path of this month's review"
