@@ -44,7 +44,7 @@ lives, following the symlink, so they are found whether Emacs is started with
 | mermaid.el      | mermaid diagrams and their previews              |
 | dired.el        | Dired and Dirvish                                |
 | modeline.el     | doom-modeline and its indicators                 |
-| vc.el           | magit, ediff, git links                          |
+| vc.el           | magit, forge, ediff, git links                   |
 | evil.el         | evil and its companions                          |
 | ghostel.el      | ghostel terminal sessions                        |
 | knockknock.el   | knockknock notifications                         |

@@ -1,6 +1,6 @@
 ;;; vc.el --- Magit, ediff and git links  -*- lexical-binding: t; -*-
 ;;; Commentary:
-;; ediff, git-link, magit, magit-pre-commit
+;; ediff, git-link, magit, forge, magit-pre-commit
 ;;; Code:
 
 (use-package ediff
@@ -64,6 +64,15 @@
    "gS" 'magit-stage
    "gu" 'magit-file-unstage
    "gU" 'magit-unstage))
+
+;; Forge's own N is spent on evil-search-previous in magit buffers, so the
+;; dispatch lives on the leader.  GitLab hosts, review lists and inline threads
+;; are in konfig.
+(use-package forge
+  :after magit
+  :config
+  (ads/leader-keys
+   "gN" 'forge-dispatch))
 
 (use-package magit-pre-commit
   :vc (:url  "https://github.com/DamianB-BitFlipper/magit-pre-commit.el":rev :newest)
