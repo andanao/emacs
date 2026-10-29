@@ -110,27 +110,36 @@
                        (src-block . ads/org-plain-value)
                        (example-block . ads/org-plain-value))))
 
+(defun ads/region-as-plaintext (start end)
+  "Return START to END as plain text, unwrapped and stripped of org markup.
+Outside org there is no markup to strip, so the text is only unfilled."
+  (require 'ox-ascii)
+  (let ((text (if (derived-mode-p 'org-mode)
+                  ;; Exporting a string loses the buffer, so an unresolved
+                  ;; attachment: link has no directory to look in and errors.
+                  (ads/org-region-with-absolute-links start end)
+                (buffer-substring-no-properties start end))))
+    (if (not (derived-mode-p 'org-mode))
+        (ads/unfill-string text major-mode)
+      ;; A finite width: `most-positive-fixnum' is taken literally
+      ;; when underlining a headline and exhausts memory.
+      (let ((org-ascii-text-width 10000)
+            (org-ascii-global-margin 0)
+            (org-ascii-inner-margin 0)
+            (org-ascii-links-to-notes nil))
+        (string-trim
+         (replace-regexp-in-string
+          "\n\\{3,\\}" "\n\n"
+          (org-export-string-as
+           text 'ads-plain t
+           '(:with-toc nil :with-tags nil :section-numbers nil
+             :with-properties nil :with-drawers nil))))))))
+
 (defun ads/yank-region-as-plaintext (start end)
   "Copy START to END as plain text, unwrapped and stripped of org markup.
 Outside org there is no markup to strip, so the text is only unfilled."
   (interactive (ads/region-or-buffer))
-  (require 'ox-ascii)
-  (let* ((text (buffer-substring-no-properties start end))
-         (text (if (not (derived-mode-p 'org-mode))
-                   (ads/unfill-string text major-mode)
-                 ;; A finite width: `most-positive-fixnum' is taken literally
-                 ;; when underlining a headline and exhausts memory.
-                 (let ((org-ascii-text-width 10000)
-                       (org-ascii-global-margin 0)
-                       (org-ascii-inner-margin 0)
-                       (org-ascii-links-to-notes nil))
-                   (string-trim
-                    (replace-regexp-in-string
-                     "\n\\{3,\\}" "\n\n"
-                     (org-export-string-as
-                      text 'ads-plain t
-                      '(:with-toc nil :with-tags nil :section-numbers nil
-                        :with-properties nil :with-drawers nil))))))))
+  (let ((text (ads/region-as-plaintext start end)))
     (kill-new text)
     (message "Yanked %d chars as plain text" (length text))))
 
@@ -148,9 +157,200 @@ Outside org there is nothing to convert, so the text is only unfilled."
     (kill-new text)
     (message "Yanked %d chars as markdown" (length text))))
 
+;; Markdown has no way to carry an image, so these put HTML or RTFD on the
+;; macOS pasteboard instead, each with the plain text beside it for fields
+;; that take nothing richer.
+(defun ads/org-region-with-absolute-links (start end)
+  "Return START to END with attachment: and relative file: links made absolute.
+An exported string has lost the buffer, and with it the entry whose
+attachment directory a link points into, so resolve them here."
+  (require 'org-attach)
+  (let ((pos start) pieces)
+    (save-excursion
+      (goto-char start)
+      (while (re-search-forward "\\[\\[\\(attachment\\|file\\):\\([^]\n]+\\)\\]"
+                                end t)
+        (let* ((beg (match-beginning 0))
+               (mend (match-end 0))
+               (type (match-string 1))
+               (path (match-string 2))
+               (abs (ignore-errors
+                      (if (equal type "attachment")
+                          (org-attach-expand path)
+                        (expand-file-name path)))))
+          (when abs
+            (push (buffer-substring-no-properties pos beg) pieces)
+            (push (concat "[[file:" abs "]") pieces)
+            (setq pos mend)))))
+    (push (buffer-substring-no-properties pos end) pieces)
+    (apply #'concat (nreverse pieces))))
+
+(defun ads/org-image-files (text)
+  "Return the readable local image files linked as [[file:...]] in TEXT."
+  (let ((pos 0) files)
+    (while (string-match "\\[\\[file:\\([^]\n]+\\)\\]" text pos)
+      (setq pos (match-end 0))
+      (let ((file (match-string 1 text)))
+        (when (and (file-readable-p file) (image-type-from-file-name file))
+          (push file files))))
+    (nreverse files)))
+
+(defun ads/html-embed-images (html)
+  "Return HTML with each local <img> inlined as a data: URI."
+  (with-temp-buffer
+    (insert html)
+    (goto-char (point-min))
+    (while (re-search-forward "<img[^>]* src=\"\\(\\(?:file://\\)?\\(/[^\"]+\\)\\)\""
+                              nil t)
+      (let* ((file (url-unhex-string (match-string 2)))
+             (type (and (file-readable-p file)
+                        (image-type-from-file-name file))))
+        (when type
+          (replace-match
+           (concat "data:image/" (if (eq type 'svg) "svg+xml" (symbol-name type))
+                   ";base64,"
+                   (base64-encode-string
+                    (with-temp-buffer
+                      (set-buffer-multibyte nil)
+                      (insert-file-contents-literally file)
+                      (buffer-string))
+                    t))
+           t t nil 1))))
+    (buffer-string)))
+
+(defconst ads/rich-clipboard-script
+  "ObjC.import('AppKit');
+function read(path) {
+  return $.NSString.stringWithContentsOfFileEncodingError(
+    path, $.NSUTF8StringEncoding, null);
+}
+function run(argv) {
+  var html = read(argv[1]), plain = read(argv[2]);
+  var pb = $.NSPasteboard.generalPasteboard;
+  pb.clearContents;
+  if (argv[0] == 'rtfd') {
+    var data = html.dataUsingEncoding($.NSUTF8StringEncoding);
+    var attr = $.NSAttributedString.alloc.initWithHTMLDocumentAttributes(data, null);
+    var rtfd = attr.RTFDFromRangeDocumentAttributes(
+      $.NSMakeRange(0, attr.length), $());
+    pb.setDataForType(rtfd, 'com.apple.flat-rtfd');
+    pb.setStringForType(plain, $.NSPasteboardTypeString);
+    return;
+  }
+  // One item carrying every flavor: an app reads the richest one it knows.
+  // Slack ignores images inside HTML but takes image data; Confluence and
+  // the rest take the HTML.  Only the first item is ever read, so one image.
+  var item = $.NSPasteboardItem.alloc.init;
+  item.setStringForType(html, $.NSPasteboardTypeHTML);
+  item.setStringForType(plain, $.NSPasteboardTypeString);
+  if (argv[3]) {
+    var img = $.NSImage.alloc.initWithContentsOfFile(argv[3]);
+    if (img.js !== undefined)
+      item.setDataForType(img.TIFFRepresentation, $.NSPasteboardTypeTIFF);
+  }
+  pb.writeObjects($.NSArray.arrayWithObject(item));
+}"
+  "JXA that puts HTML or RTFD, and plain text, on the pasteboard.
+Takes the kind, then the paths of the HTML and plain text files, since an
+image-laden HTML string is far over the argument size limit, then optionally
+the path of an image to offer as image data.")
+
+(defun ads/yank-region-as-rich (kind start end)
+  "Copy START to END to the clipboard with its images, as KIND.
+KIND is `html' or `rtfd'.  The plain text goes along for fields that
+take nothing richer."
+  (unless (eq system-type 'darwin)
+    (user-error "Rich clipboard is only implemented for macOS"))
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Rich clipboard needs an org buffer"))
+  (require 'ox-html)
+  (let* ((plain (ads/region-as-plaintext start end))
+         (image (car (ads/org-image-files
+                      (ads/org-region-with-absolute-links start end))))
+         ;; An id: link has nowhere to point once it leaves org, so keep its
+         ;; text rather than abort the copy over it.
+         (html (ads/html-embed-images
+                (let ((org-export-with-broken-links t))
+                  (org-export-string-as
+                   (ads/org-region-with-absolute-links start end)
+                   'html t '(:with-toc nil :section-numbers nil)))))
+         (html-file (make-temp-file "ads-clip" nil ".html"))
+         (plain-file (make-temp-file "ads-clip" nil ".txt"))
+         (coding-system-for-write 'utf-8))
+    (unwind-protect
+        (progn
+          (write-region html nil html-file nil 'silent)
+          (write-region plain nil plain-file nil 'silent)
+          ;; Before the pasteboard is set: `kill-new' would overwrite it.
+          (kill-new plain)
+          (with-temp-buffer
+            (unless (zerop (call-process "osascript" nil t nil
+                                         "-l" "JavaScript" "-e"
+                                         ads/rich-clipboard-script
+                                         (symbol-name kind)
+                                         html-file plain-file
+                                         (or image "")))
+              (user-error "Clipboard script failed: %s"
+                          (string-trim (buffer-string)))))
+          (message "Copied %d chars as %s with %d images" (length plain)
+                   (upcase (symbol-name kind))
+                   (with-temp-buffer
+                     (insert html)
+                     (how-many "src=\"data:" (point-min)))))
+      (delete-file html-file)
+      (delete-file plain-file))))
+
+(defun ads/yank-region-as-html (start end)
+  "Copy START to END as HTML with its images embedded."
+  (interactive (ads/region-or-buffer))
+  (ads/yank-region-as-rich 'html start end))
+
+(defun ads/yank-region-as-rtfd (start end)
+  "Copy START to END as RTFD with its images, for Apple's own apps."
+  (interactive (ads/region-or-buffer))
+  (ads/yank-region-as-rich 'rtfd start end))
+
+(defconst ads/files-clipboard-script
+  "ObjC.import('AppKit');
+function run(argv) {
+  var pb = $.NSPasteboard.generalPasteboard;
+  pb.clearContents;
+  var urls = $.NSMutableArray.alloc.init;
+  argv.forEach(function (path) {
+    urls.addObject($.NSURL.fileURLWithPath(path));
+  });
+  pb.writeObjects(urls);
+}"
+  "JXA that puts the files at the given paths on the pasteboard, as Finder does.")
+
+(defun ads/yank-region-images-as-files (start end)
+  "Copy the images linked from START to END to the clipboard as files.
+Slack takes images only as files, and then ignores any text beside them, so
+the text has to be pasted separately."
+  (interactive (ads/region-or-buffer))
+  (unless (eq system-type 'darwin)
+    (user-error "Rich clipboard is only implemented for macOS"))
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Rich clipboard needs an org buffer"))
+  (let ((files (ads/org-image-files
+                (ads/org-region-with-absolute-links start end))))
+    (unless files
+      (user-error "No local images in the region"))
+    (with-temp-buffer
+      (unless (zerop (apply #'call-process "osascript" nil t nil
+                            "-l" "JavaScript" "-e" ads/files-clipboard-script
+                            files))
+        (user-error "Clipboard script failed: %s"
+                    (string-trim (buffer-string)))))
+    (message "Copied %d image files" (length files))))
+
 (ads/leader-keys
-  "oY" 'ads/yank-region-as-plaintext
-  "oy" 'ads/yank-region-as-markdown)
+  "oy" '(:ignore t :wk "yank as")
+  "oyf" 'ads/yank-region-images-as-files
+  "oym" 'ads/yank-region-as-markdown
+  "oyp" 'ads/yank-region-as-plaintext
+  "oyh" 'ads/yank-region-as-html
+  "oya" 'ads/yank-region-as-rtfd)
 
 (use-package jinx
   :ensure t
