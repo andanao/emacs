@@ -34,6 +34,9 @@
 (customize-set-variable 'bookmark-default-file '"~/.emacs.d/bookmarks")
 (customize-set-variable 'bmkp-last-bookmark-file '"~/.emacs.d/bookmarks")
 (customize-set-variable 'bmkp-last-as-first-bookmark-file 'nil)
+;; Write the file after every set, rename, delete or annotation edit, not only
+;; on exit, so a crash or a killed Emacs no longer loses the session's bookmarks.
+(customize-set-variable 'bookmark-save-flag 1)
 
 ;; [[*no-littering][no-littering]] loads later and re-`setq's these out from under the
 ;; settings above, so set them again once it is up.  `bookmark-save' writes
