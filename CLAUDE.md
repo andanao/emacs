@@ -29,6 +29,10 @@ symlink into this repo, so `user-emacs-directory` is `~/.emacs.d` and the elisp 
 Getting this backwards works fine under `--init-directory` and breaks at cutover, which is the
 worst possible time to find out.
 
+A file that needs a sibling (an autoload, a lazy load) finds it from its own `load-file-name`, never
+from `ads/config-directory`: in the live session that variable points at the main checkout, so a
+file loaded from a worktree would go looking for its other half in the wrong tree.
+
 ## Nix
 
 `flake.nix` parses every `use-package` form under `config/` and `lisp/` with `alwaysEnsure`, so

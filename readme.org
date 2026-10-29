@@ -45,6 +45,8 @@ lives, following the symlink, so they are found whether Emacs is started with
 | dired.el        | Dired and Dirvish                                |
 | modeline.el     | doom-modeline and its indicators                 |
 | vc.el           | magit, forge, ediff, git links                   |
+| review.el       | review state, editor and prompt to the agent     |
+| review-diff.el  | the review in magit: diff comments and an index  |
 | evil.el         | evil and its companions                          |
 | ghostel.el      | ghostel terminal sessions                        |
 | knockknock.el   | knockknock notifications                         |

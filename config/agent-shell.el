@@ -209,7 +209,7 @@ own agent-shell module, which binds the same map."
     "aw" 'agent-shell-new-worktree-shell
     "aR" 'agent-shell-resume-session
     "ag" 'agent-shell-prompt-steer
-    ;; "ac" is the [[*review comments][review]] transient; compose is a key inside it.
+    ;; "ac" and "aC" are the review, in review.el; compose is a key in its menu.
     "aq" 'agent-shell-interrupt
     "aX" 'agent-shell-restart
     "ar" 'agent-shell-send-region
