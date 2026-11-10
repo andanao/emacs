@@ -246,6 +246,10 @@ as a single alist."
 (setopt auto-save-interval 100
         auto-save-timeout 10)
 
+;; Reopen the same buffers and frames after a crash.
+(setopt desktop-auto-save-timeout 60)
+(desktop-save-mode 1)
+
 (use-package sudo-edit)
 
 (require 'tramp)
