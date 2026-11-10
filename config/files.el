@@ -242,6 +242,10 @@ as a single alist."
                             (cl-remove-if-not #'stringp kill-ring)))))
   )
 
+;; Emacs crashes on macOS 27; keep the #file# auto-saves close behind.
+(setopt auto-save-interval 100
+        auto-save-timeout 10)
+
 (use-package sudo-edit)
 
 (require 'tramp)

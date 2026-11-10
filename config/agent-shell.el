@@ -426,7 +426,8 @@ A shell still negotiating has no session id yet, and nothing to resume."
 
 (defun ads/agent-shell-save-sessions ()
   "Record the open agent shells for `ads/agent-shell-resume-last'.
-Runs from `kill-emacs-hook', where an error would hold up the exit."
+Runs from `kill-emacs-hook', where an error would hold up the exit, and
+from a timer, since a crash never reaches the hook."
   (with-demoted-errors "Saving agent shells: %S"
     (when-let* ((sessions (ads/agent-shell--live-sessions)))
       (make-directory (file-name-directory ads/agent-shell-session-file) t)
@@ -464,6 +465,7 @@ gone away - a worktree I finished with isn't somewhere to pick up."
 
 (with-eval-after-load 'agent-shell
   (add-hook 'kill-emacs-hook #'ads/agent-shell-save-sessions)
+  (run-with-timer 60 60 #'ads/agent-shell-save-sessions)
   (ads/leader-keys "aL" 'ads/agent-shell-resume-last))
 
 (defvar ads/agent-shell-transcript-directory "~/.claude/projects/"
