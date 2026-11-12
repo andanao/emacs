@@ -157,19 +157,32 @@ tasks."
          :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>"))))
 
 (setq org-roam-dailies-directory "daily/")
+
+;; The day ends at 4am, so working past midnight stays in yesterday's daily.
+(setq org-extend-today-until 4)
+(defun ads/roam-daily-time ()
+  "Current time moved back by `org-extend-today-until' hours."
+  (time-subtract (current-time) (* 3600 org-extend-today-until)))
+
+(defun ads/roam-dailies-capture-today (&optional goto keys)
+  "Capture to the daily of `ads/roam-daily-time' rather than the calendar date."
+  (interactive "P")
+  (org-roam-dailies--capture (ads/roam-daily-time) goto keys))
+(advice-add 'org-roam-dailies-capture-today :override #'ads/roam-dailies-capture-today)
+
 (defun ads/roam-daily-today ()
   "Return path of active daily"
   (concat
    org-roam-directory
    org-roam-dailies-directory
-   (format-time-string "%Y-%m-%d.org")))
+   (format-time-string "%Y-%m-%d.org" (ads/roam-daily-time))))
 
 (defun ads/roam-refile-today ()
   "Refile current node to active daily"
   (interactive)
   (org-roam-refile
     (org-roam-node-from-title-or-alias
-     (format-time-string "%Y-%m-%d"))))
+     (format-time-string "%Y-%m-%d" (ads/roam-daily-time)))))
 
 (ads/leader-keys
   "fdr" 'ads/roam-refile-today)
@@ -177,7 +190,7 @@ tasks."
 (setq org-archive-location (concat (ads/roam-daily-today) "::")
       org-archive-save-context-info '(time file olpath category itags))
 
-(run-at-time "00:01"
+(run-at-time "04:01"
              86400
              '(lambda ()
                 (setq org-archive-location
