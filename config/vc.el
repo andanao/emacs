@@ -13,6 +13,7 @@
 (use-package git-link
   :custom
   (git-link-use-single-line-number nil)
+  (git-link-use-commit t)               ; link the commit hash, not the branch
   :config
   (ads/leader-keys
     "gf" 'git-link
